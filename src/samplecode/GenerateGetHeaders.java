@@ -1,18 +1,17 @@
 package samplecode;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Properties;
-
-import org.apache.logging.log4j.Logger;
-
 import com.cybersource.authentication.core.Authorization;
 import com.cybersource.authentication.core.MerchantConfig;
 import com.cybersource.authentication.log.Log4j;
 import com.cybersource.authentication.util.GlobalLabelParameters;
 import com.cybersource.authentication.util.PropertiesUtil;
 import com.cybersource.authentication.util.Utility;
+import org.apache.logging.log4j.Logger;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Properties;
 /**
  * This class generates the Headers that are present in the token was sent the server for transaction,
  * GET operations.
@@ -37,12 +36,13 @@ public class GenerateGetHeaders {
 	 * 
 	 * @param getID
 	 *            : Unique getID
-	 * @throws Exception
+	 * @throws Exceptionrequest-target
 	 *             :
 	 */
 	public GenerateGetHeaders(String getID) throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties(cybsPath);
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig.setRequestType(requestType);
 		Utility.logEnable = false;
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);

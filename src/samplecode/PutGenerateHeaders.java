@@ -1,18 +1,17 @@
 package samplecode;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Properties;
-
-import org.apache.logging.log4j.Logger;
-
 import com.cybersource.authentication.core.Authorization;
 import com.cybersource.authentication.core.MerchantConfig;
 import com.cybersource.authentication.log.Log4j;
 import com.cybersource.authentication.payloaddigest.PayloadDigest;
 import com.cybersource.authentication.util.GlobalLabelParameters;
 import com.cybersource.authentication.util.PropertiesUtil;
+import org.apache.logging.log4j.Logger;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Properties;
 
 /**
  * This class generates the Headers that are present in the token was sent the
@@ -78,7 +77,7 @@ public class PutGenerateHeaders {
 			System.out.println(" Authorization, Bearer " + TempSig.toString());
 		}
 	}
-
+	/* This method initiate the PUT Header program.*/
 	public static void main(String[] args) throws Exception {
 		new PutGenerateHeaders();
 	}

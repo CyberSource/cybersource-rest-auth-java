@@ -3,7 +3,6 @@ phoneNumber
 cardNumber 
 expirationDate
 cardType 
-cardCode 
-
+cardCode
 nameOnAccount
 currency

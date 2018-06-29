@@ -1,6 +1,6 @@
 {
   "clientReferenceInformation": {
-    "code": "TC50171_4"
+    "code": "TC50171_3"
   },
   "processingInformation": {
     "commerceIndicator": "internet"
@@ -38,7 +38,7 @@
       "email": "test@cybs.com"
     },
     "amountDetails": {
-      "totalAmount": "22",
+      "totalAmount": "102.21",
       "currency": "USD"
     }
   },

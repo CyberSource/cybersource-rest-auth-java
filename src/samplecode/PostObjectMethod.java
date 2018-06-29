@@ -2,16 +2,15 @@ package samplecode;
 
 
 
-import java.util.Properties;
-import org.apache.logging.log4j.Logger;
-
+import Data.Configuration;
+import Data.PayloadData;
 import com.cybersource.api.controller.ApiController;
 import com.cybersource.authentication.core.MerchantConfig;
 import com.cybersource.authentication.log.Log4j;
 import com.cybersource.authentication.util.GlobalLabelParameters;
+import org.apache.logging.log4j.Logger;
 
-import Data.Configuration;
-import Data.PayloadData;
+import java.util.Properties;
 
 
 
@@ -81,7 +80,7 @@ public class PostObjectMethod {
 		logger = Log4j.getInstance(merchantConfig);
 		logger.info(GlobalLabelParameters.BEGIN_TRANSCATION);
 		/* Call payment method of Api Controller class */
-		apiController.payment(merchantConfig, requestType, null, logger);
+		apiController.paymentPost(merchantConfig);
 		/* Display Response Message from the server and Headers. */
 		responseCode = merchantConfig.getResponseCode();
 		try {
