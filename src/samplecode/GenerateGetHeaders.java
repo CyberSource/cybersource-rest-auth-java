@@ -1,95 +1,114 @@
 package samplecode;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Properties;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 import com.cybersource.authentication.core.Authorization;
 import com.cybersource.authentication.core.MerchantConfig;
 import com.cybersource.authentication.log.Log4j;
 import com.cybersource.authentication.util.GlobalLabelParameters;
 import com.cybersource.authentication.util.PropertiesUtil;
 import com.cybersource.authentication.util.Utility;
-import org.apache.logging.log4j.Logger;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Properties;
 /**
- * This class generates the Headers that are present in the token was sent the server for transaction,
- * GET operations.
- *  *
+ * This class generates the Headers that are present in the token was sent the
+ * server for transaction, GET operations. *
  */
 public class GenerateGetHeaders {
 
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private String cybsPath = "Resource/cybs.properties";
 	private String authenticationType = null;
 	private Authorization auth;
-	private String requestType = "GET";
-	private String getID = "5246387105766473203529";
-	private String host = "apitest.cybersource.com";
-	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
-	Logger logger;
-
+	private Logger logger;
 	private String tempSig;
-
+	/**
+	 * DATE
+	 * [Non-Editable]
+	 */
+	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
+	/**
+	 * REQUEST - TYPE
+	 * [Non-Editable]
+	 * 
+	 */
+	private String requestType = "GET";
+	/**
+	 * 
+	 * UNQUIE GetID
+	 * [Editable]
+	 */
+	private String getID = "5265502011846829204101";
 	/**
 	 * 
 	 * @param getID
 	 *            : Unique getID
-	 * @throws Exceptionrequest-target
+	 * @throws Exception
 	 *             :
 	 */
-	public GenerateGetHeaders(String getID) throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties(cybsPath);
+	public GenerateGetHeaders(String requestTarget) throws Exception {
+		setGenerateHeaders();
+		Utility.logEnable = false;
+		this.getID = Utility.retrieveGetIDFromRequestTarget(requestTarget);
+		generateGetHeaders();
+	}
+
+	public GenerateGetHeaders() throws Exception {
+		setGenerateHeaders();
+		Utility.logEnable = merchantConfig.getEnableLog();
+		Utility.logException(this.logger,
+				GlobalLabelParameters.BEGIN_TRANSCATION + " Generate GET Headers *******************", Level.INFO);
+		merchantConfig.validateMerchantDetails(logger);
+		generateGetHeaders();
+		Utility.logException(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
+		Utility.logException(this.logger, " ", Level.OFF);
+	}
+
+	private void setGenerateHeaders() throws Exception {
+		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType(requestType);
-		Utility.logEnable = false;
-		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		this.logger = Log4j.getInstance(merchantConfig);
+
 		auth = new Authorization();
-		this.getID = getID;
-		generateGetHeaders();
 	}
 
 	/**
+	 * This method generates the detailed header detail of the transaction and
+	 * displays and log them.
 	 * 
-	 * @param getID
-	 *            : Unique getID
-	 * @param merchantConfig:
-	 *            This object contains all the details present in the
-	 *            cybs.properties.
 	 * @throws Exception
-	 */
-	public GenerateGetHeaders(String getID, MerchantConfig merchantConfig) throws Exception {
-		this.merchantConfig = merchantConfig;
-		Utility.logEnable = false;
-		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
-		auth = new Authorization();
-		this.getID = getID;
-		generateGetHeaders();
-	}
-
-	/**
-	 * This method generates the detailed header detail of the transaction and displays and log them. 
-	 * @throws Exception
+	 *             : Throws runtime exception.
 	 */
 	private void generateGetHeaders() throws Exception {
+
 		authenticationType = merchantConfig.getAuthenticationType().trim();
+		Utility.logException(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE + authenticationType, Level.INFO);
+		Utility.logException(this.logger, GlobalLabelParameters.REQUEST_TYPE + " : " + requestType, Level.INFO);
 		System.out.println(" Request Type        : " + requestType);
 		System.out.println(" ID                  : " + this.getID);
+		System.out.println(" Date                : " + date);
+		Utility.logException(logger, GlobalLabelParameters.DATE + " : " + date, Level.INFO);
 
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			System.out.println(
 					" " + GlobalLabelParameters.USERAGENT + "          : " + GlobalLabelParameters.USER_AGENT_VALUE);
+			Utility.logException(logger,
+					GlobalLabelParameters.USERAGENT + " : " + GlobalLabelParameters.USER_AGENT_VALUE, Level.INFO);
 			System.out.println(" MerchantID          : " + merchantConfig.getMerchantID().trim());
-			System.out.println(" Date                : " + date);
+			Utility.logException(logger,
+					GlobalLabelParameters.V_C_MERCHANTID + " : " + merchantConfig.getMerchantID().trim(), Level.INFO);
 			/* Signature Header */
 			tempSig = auth.getToken(merchantConfig, merchantConfig.getMerchantKeyId().trim(),
 					merchantConfig.getMerchantsecretKey().trim(), merchantConfig.getMerchantID().trim(), requestType,
 					getID);
-			System.out.println(" Signature Header    : " + tempSig.toString());
-			System.out.println(" HOST                : " + host);
+			System.out.println(" Signature           : " + tempSig.toString());
+			System.out.println(" HOST                : " + merchantConfig.getRequestHost());
+			Utility.logException(logger, GlobalLabelParameters.HOST + " : " + merchantConfig.getRequestHost(),
+					Level.INFO);
 		} else {
 			/* JWT */
 			String jwtRequestBody = getID;
@@ -100,15 +119,17 @@ public class GenerateGetHeaders {
 		}
 		System.out.println(
 				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
+		Utility.logException(logger,
+				GlobalLabelParameters.CONTENT_TYPE + " : " + GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
 	}
 
 	/**
 	 * 
-	 * @param args : Contains getId entry. 
+	 * @param args
+	 *            : Contains getId entry.
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		String getID = "5246387105766473203529";
-		new GenerateGetHeaders(getID);
+		new GenerateGetHeaders();
 	}
 }

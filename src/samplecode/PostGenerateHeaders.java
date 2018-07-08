@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authentication.core.Authorization;
@@ -23,25 +24,32 @@ import com.cybersource.authentication.util.Utility;
 public class PostGenerateHeaders {
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private String cybsPath = "Resource/cybs.properties";
 	private String authenticationType = null;
 	private Authorization auth;
-	private String requestType = "POST";
-	private String host = "apitest.cybersource.com";
-	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
 	private PayloadDigest digest;
-	private Logger logger;
-
+	private Logger logger = null;
 	private String tempSig;
-
+	/**
+	 * DATE GMT
+	 * [Non - Editable]
+	 * 
+	 */
+	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
+	/**
+	 * REQUEST - TYPE
+	 * [Non-Editable]
+	 * 
+	 */
+	private String requestType = "POST";
 	/**
 	 * 
 	 * @throws Exception
 	 *             : Error while generating headers.
 	 */
 	public PostGenerateHeaders() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties(cybsPath);
+		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig.setRequestType(requestType);
 		Utility.logEnable = false;
 		logger = Log4j.getInstance(merchantConfig);
 		auth = new Authorization();
@@ -72,7 +80,11 @@ public class PostGenerateHeaders {
 	 */
 	private void generatePostHeaders() throws Exception {
 		authenticationType = merchantConfig.getAuthenticationType().trim();
+		Utility.logException(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE + authenticationType, Level.INFO);
+		Utility.logException(this.logger, GlobalLabelParameters.REQUEST_TYPE + " : " + requestType, Level.INFO);
 		System.out.println(" Request Type        : " + requestType);
+		System.out.println(" Date                : " + date);
+		Utility.logException(logger, GlobalLabelParameters.DATE + " : " + date, Level.INFO);
 		System.out.println(
 				" " + GlobalLabelParameters.CONTENT_TYPE + "           : " + GlobalLabelParameters.APPLICATION_JSON);
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -85,8 +97,8 @@ public class PostGenerateHeaders {
 			tempSig = auth.getToken(merchantConfig, merchantConfig.getMerchantKeyId().trim(),
 					merchantConfig.getMerchantsecretKey().trim(), merchantConfig.getMerchantID().trim(), requestType,
 					null);
-			System.out.println(" Signature Header    : " + tempSig.toString());
-			System.out.println(" HOST                : " + host);
+			System.out.println(" Signature           : " + tempSig.toString());
+			System.out.println(" HOST                : " + merchantConfig.getRequestHost());
 		} else {
 			/* JWT */
 			String jwtRequestBody = PropertiesUtil.getJSONInput(merchantConfig.getRequestJsonPath());

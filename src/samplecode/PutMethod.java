@@ -1,31 +1,35 @@
 package samplecode;
 
-import Data.PayloadData;
+import java.util.Properties;
 import com.cybersource.api.controller.ApiController;
 import com.cybersource.authentication.core.MerchantConfig;
-import com.cybersource.authentication.util.GlobalLabelParameters;
 import com.cybersource.authentication.util.PropertiesUtil;
-
-import java.util.Properties;
+import Data.PayloadData;
 /**
  * Depending on the authentication type HTTP or JWT , this class performs the
- * PUT operation on the test url 'apitest.cybersource.com'.
+ * PUT operation on the given working domain.
  */
 public class PutMethod {
 	private ApiController apiController;
 	private String authenticationType;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	/* Request Type is always PUT*/
-	private String requestType = "PUT";
-	/* Give the url path to where the data needs to be authenticated.*/
-	private String url = GlobalLabelParameters.HttpUriPrefix;
-	/* Give the path of cbys properties file, which needs to be read.*/
-	private String cybsPath = "Resource/cybs.properties";
-	/* Request Target.*/
+	/**
+	 * REQUEST-TARGET
+	 * [Editable]
+	 */
 	private String requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
-	/* Request json path */
+	/**
+	 * JSON-PATH
+	 * [Editable]
+	 */
 	private String requestJsonPath = "Resource/TRRReport.json";
+	/**
+	 *  REQUEST-TYPE. 
+	 *  [Non-Editable]
+	 * */
+	private String requestType = "PUT";
+	private String url;
 	/* Request Data.*/
 	private String requestData = PayloadData.readData();
 	/* This method initiates or begins the process. */
@@ -35,7 +39,6 @@ public class PutMethod {
 		 */
 		new PutMethod(args);
 	}
-
 	/**
 	 * 
 	 * @param
@@ -44,12 +47,7 @@ public class PutMethod {
 	 */
 	public PutMethod(String[] args) throws Exception {
 		apiController = new ApiController();
-		/* Read the cbys.properites file. */
-		if (cybsPath == null || this.cybsPath.isEmpty()) {
-			System.err.println("Cybs Path is Missing/Null");
-			return;
-		}
-		merchantProp = PropertiesUtil.getMerchantProperties(cybsPath);
+		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
@@ -59,10 +57,10 @@ public class PutMethod {
 		merchantConfig.setRequestTarget(requestTarget);
 		merchantConfig.setRequestData(requestData);
 		/* Construct the URL with respect to PUTID. */
-		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		/* Set the URL. */
+		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
+		/* Set the URL.*/
 		merchantConfig.setURL(url);
-		/* Begin PUT process. */
+		/* Begin PUT process.*/
 		process();
 	}
 

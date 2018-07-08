@@ -5,7 +5,7 @@
   "startTime":"1100",
   "reportFrequency":"DAILY",
   "ReportName":"TRRReport",
-  "reportFormat":"xml",
+  "reportFormat":"csv",
   "orgId":"testrest",
   "reportType":"detail",
   "reportFields": ["Request.RequestID","Request.TransactionDate","Request.MerchantReferenceNumber","Request.MerchantID"]

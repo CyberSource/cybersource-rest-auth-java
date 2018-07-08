@@ -2,19 +2,16 @@ package samplecode;
 
 
 
-import Data.Configuration;
-import Data.PayloadData;
+import java.util.Properties;
+import org.apache.logging.log4j.Logger;
+
 import com.cybersource.api.controller.ApiController;
 import com.cybersource.authentication.core.MerchantConfig;
 import com.cybersource.authentication.log.Log4j;
 import com.cybersource.authentication.util.GlobalLabelParameters;
-import org.apache.logging.log4j.Logger;
 
-import java.util.Properties;
-
-
-
-
+import Data.Configuration;
+import Data.PayloadData;
 /**
  * Depending on the authentication type HTTP or JWT , this class performs the
  * POST operation on the test url 'apitest.cybersource.com'.
@@ -27,11 +24,18 @@ public class PostObjectMethod {
 	private MerchantConfig merchantConfig;
 	private String responseCode;
 	private Logger logger;
-	/**/
+	/**
+	 * REQUEST-TYPE. 
+	 * [Non-Editable]
+	 */
 	private String requestType = "POST";
 	/* Give the url path to where the data needs to be authenticated. */
-	private String url = GlobalLabelParameters.HttpUriPrefix;
+	private String url;
 	private String requestData = PayloadData.readData();
+	/**
+	 * REQUEST TARGET
+	 * [Editable]
+	 */
 	private String requestTarget = "/pts/v2/payments";
 
 	/* This method initiates or begins the process. */
@@ -62,7 +66,7 @@ public class PostObjectMethod {
 		merchantConfig.setRequestTarget(requestTarget);
 		/* Set URL path w.r.t Post operation. */
 
-		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
+		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setURL(url);
 
 		/* Begin Post process. */

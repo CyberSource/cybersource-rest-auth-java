@@ -1,11 +1,9 @@
 package samplecode;
 
+import java.util.Properties;
 import com.cybersource.api.controller.ApiController;
 import com.cybersource.authentication.core.MerchantConfig;
-import com.cybersource.authentication.util.GlobalLabelParameters;
 import com.cybersource.authentication.util.PropertiesUtil;
-
-import java.util.Properties;
 /**
  * Depending on the authentication type HTTP or JWT , this class performs the
  * POST operation on the test url 'apitest.cybersource.com'.
@@ -17,16 +15,23 @@ public class PostMethod {
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
 	private String responseCode;
-	/**/
-	private String requestType = "POST";
-	/* Give the url path to where the data needs to be authenticated. */
-	private String url = GlobalLabelParameters.HttpUriPrefix;
-	/* Give the path of cbys properties file, which needs to be read. */
-	private String cybsPath = "Resource/cybs.properties";
-	/* request json path */
+	/**
+	 * REQUEST TARGET
+	 * [Editable]
+	 */
+	private String requestTarget = "/pts/v2/payments/";
+	/**
+	 * JSON PATH
+	 * [Editable]
+	 */
 	private String requestJsonPath = "Resource/request.json";
-	/* Request Target. */
-	private String requestTarget = "/pts/v2/payments";
+	/**
+	 * REQUEST-TYPE. 
+	 * [Non-Editable]
+	 */
+	private String requestType = "POST";
+	private String url;
+	
 	/* This method initiates or begins the process. */
 	public static void main(String[] args) throws Exception {
 		/**
@@ -42,24 +47,19 @@ public class PostMethod {
 	 */
 	public PostMethod() throws Exception {
 		apiController = new ApiController();
-		/* Read the cbys.properites file */
-		if (cybsPath == null || this.cybsPath.isEmpty()) {
-			System.err.println("Cybs Path is Missing/Null for POST Operation.");
-			return;
-		}
-		merchantProp = PropertiesUtil.getMerchantProperties(cybsPath);
+	
+		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		/* Set Request Type. */
-		merchantConfig.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType().trim();
-		merchantConfig.setCybsPath(cybsPath);
+		/* Set request Type.*/
+		merchantConfig.setRequestType(requestType);
 		/* Set request data */
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 		/* Set request target */
 		merchantConfig.setRequestTarget(requestTarget);
 		/* Set URL path w.r.t Post operation. */
-		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
+		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setURL(url);
 		/* Begin Post process. */
 		process();
