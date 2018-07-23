@@ -35,29 +35,29 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 
 ```
    authenticationType  = http_Signature
-   merchantID 	       = testrest
+   merchantID 	       = <merchantId>
    runEnvironment      = CyberSource.Environment.SANDBOX
-   merchantKeyId       = 08c94330-f618-42a3-b09d-e1e43be5efda
-   merchantsecretKey   = yBJxy6LjM2TmcPGu+GaJrHtkke25fPpUX+UY6/L/1tE=
+   merchantKeyId       = <merchantKeyId>
+   merchantsecretKey   = <merchantSecretKey>
    enableLog           = true
-   logDirectory        = log
-   logMaximumSize      = 5M
-   logFilename         = cybs
+   logDirectory        = <logDirectory>
+   logMaximumSize      = <logSize>
+   logFilename         = <logFileName>
 ```
   * Jwt
 
 ```
-   authenticationType  = Jwt
-   merchantID 	       = testrest
-   runEnvironment      = CyberSource.Environment.SANDBOX
-   keyAlias		       = testrest
-   keyPassword	       = testrest
-   keyFileName         = testrest
-   keysDirectory       = resources
-   enableLog           = true
-   logDirectory        = log
-   logMaximumSize      = 5M
-   logFilename         = cybs
+   authenticationType = Jwt
+   merchantID 	      = <merchantId>
+   runEnvironment     = CyberSource.Environment.SANDBOX
+   keyAlias           = <keyAlias>
+   keyPassword	      = <keyPassword>
+   keyFileName        = <keyFileName>
+   keysDirectory      = <keysDirectory>
+   enableLog          = true
+   logDirectory       = <logDirectory>
+   logMaximumSize     = <logSize>
+   logFilename        = <logFileName>
 ```
 
 ### Switching between the sandbox environment and the production environment
