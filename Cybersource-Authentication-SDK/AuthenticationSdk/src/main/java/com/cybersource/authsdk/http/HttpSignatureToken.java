@@ -2,7 +2,10 @@ package com.cybersource.authsdk.http;
 
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
+import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.Utility;
+import org.apache.logging.log4j.Logger;
 
 /* HttpSigToken return SignatureHeader Value that contains following paramters
  * keyid     -- Merchant ID obtained from EBC portal
@@ -22,6 +25,7 @@ public class HttpSignatureToken implements TokenGenerator {
 	private String httpMethodSig = null;
 	private String httpMerchantID = null;
 	private String httpGetID = null;
+	private Logger logger;
 
 	/**
 	 * 
@@ -42,16 +46,17 @@ public class HttpSignatureToken implements TokenGenerator {
 		this.httpMethodSig = httpMethod;
 		this.httpMerchantID = merchantId;
 		this.httpGetID = getID;
+		this.logger = Log4j.getInstance(merchantConfig);
 	}
 
 	@Override
 	public String getToken() {
-		String signature = null;
+		String signature;
 		try {
 			signature = signatureHeader();
 		} catch (Exception e) {
-			//Utility.logException(logger, e);
-			return null;
+			Utility.log(logger, e);
+			signature =  null;
 		}
 		return signature;
 	}
@@ -75,9 +80,8 @@ public class HttpSignatureToken implements TokenGenerator {
 		/*
 		 * Get Value for paramter 'Signature' to be passed to Signature Header
 		 */
-		sigParam = new SignatureGenerator(this.merchantConfigSigHead, merchantSecertKeySig, httpMerchantID,
-				httpMethodSig, httpGetID);
-		String signatureValue = sigParam.getSignatureParameterBase64Encoded();
+		String signatureValue = new SignatureGenerator(this.merchantConfigSigHead, merchantSecertKeySig, httpMerchantID,
+				httpMethodSig, httpGetID).signatureGeneration();
 		signatureHeader.append(", signature=\"" + signatureValue + "\"");
 		return signatureHeader.toString();
 	}

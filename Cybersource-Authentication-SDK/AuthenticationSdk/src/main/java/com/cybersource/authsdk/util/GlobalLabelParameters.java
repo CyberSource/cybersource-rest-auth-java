@@ -58,7 +58,7 @@ public class GlobalLabelParameters {
 	public static final String REQUEST_JSON_MIS_NULL      = "Request Json File Missing/Null";
 	public static final String KEY_FILE_EMPTY             = "KeyFileName is empty, assigning merchantID value :: ";
 	public static final String KEY_DIRECTORY_EMPTY        = "Key Directory is empty, assigning default path :: " + DEF_KEY_DIRECTORY_PATH;
-	public static final String REFER_LOG                  = "Refer log for details";
+	//public static final String REFER_LOG                  = "Refer log for details";
 	public static final String USER_AGENT_ERROR           = "Unable to set USER_AGENT";
 	public static final String SIG_SET_ERROR              = "Unable to set Signature ";
 	public static final String REQUEST_SET_ERROR          = "Unable to set Request type :: ";

@@ -71,7 +71,6 @@ public class HttpConnection implements Connection, Headers {
 			httpConnection();
 		} catch (Exception e) {
 			Utility.log(logger, e);
-			System.err.println(" HTTP Transcation Failed :: " + GlobalLabelParameters.REFER_LOG);
 		}
 	}
 
@@ -201,7 +200,7 @@ public class HttpConnection implements Connection, Headers {
 	 */
 	private void httpConnection() throws IOException  {
 		/* Set proxy Connection */
-		setProxyConnection();
+		setProxyConnection(merchantConfig);
 		/* Make a new connection using the URL. */
 		openConnection();
 		/*
@@ -286,27 +285,6 @@ public class HttpConnection implements Connection, Headers {
 		return (DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT"))));
 	}
 
-	@Override
-	public void setProxyConnection() {
-		String proxyAddress = merchantConfig.getProxyAddress(),
-				proxyPort = String.valueOf(merchantConfig.getProxyPort());
-
-		try {
-			if (StringUtils.isBlank(proxyAddress)|| proxyAddress.isEmpty() || StringUtils.isBlank(proxyPort) || proxyPort.isEmpty()) {
-				return;
-			} else {
-				if (StringUtils.isNotBlank(proxyAddress) && !proxyAddress.isEmpty() && StringUtils.isNotBlank(proxyPort) && !proxyPort.isEmpty()) {
-					Utility.log(logger, GlobalLabelParameters.PROXY_HOST + " : " + proxyAddress, Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.PROXY_PORT + " : " + proxyPort, Level.INFO);
-					Properties systemProperties = System.getProperties();
-					systemProperties.setProperty(GlobalLabelParameters.PROXY_HOST, proxyAddress);
-					systemProperties.setProperty(GlobalLabelParameters.PROXY_PORT, proxyPort);
-				}
-			}
-		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.PROXY_HOST_PORT_ERR, Level.FATAL);
-			Utility.log(logger, e);
-		}
-	}
+	
 
 }

@@ -45,19 +45,21 @@ public class Utility {
 	public static void log(Logger logger, String exceptionMessage, Level logLevel) {
 		try {
 			if (logEnable) {
-				if (logLevel == Level.ERROR) {
-					logger.error(exceptionMessage);
-				} else if (logLevel == Level.DEBUG) {
-					logger.debug(exceptionMessage);
-				} else if (logLevel == Level.FATAL) {
-					logger.fatal(exceptionMessage);
-				} else if (logLevel == Level.OFF) {
-					logger.printf(Level.OFF, "%n");
-				} else {
-					logger.info(exceptionMessage);
+				if (exceptionMessage != null && !exceptionMessage.isEmpty()) {
+					if (logLevel == Level.ERROR) {
+						logger.error(exceptionMessage);
+					} else if (logLevel == Level.DEBUG) {
+						logger.debug(exceptionMessage);
+					} else if (logLevel == Level.FATAL) {
+						logger.fatal(exceptionMessage);
+					} else if (logLevel == Level.OFF) {
+						logger.printf(Level.OFF, "%n");
+					} else {
+						logger.info(exceptionMessage);
+					}
 				}
 			}
-		} catch (NullPointerException e) {
+		} catch (Exception e) {
 			log(logger, e);
 		}
 	}
@@ -70,9 +72,9 @@ public class Utility {
 	 *            : Exception caught during the process.
 	 */
 	public static void log(Logger logger, Exception e) {
-		String logMessage = null;
+
 		if (Utility.logEnable) {
-			logMessage = getStackTrace(e);
+			String logMessage = getStackTrace(e);
 			logger.error(logMessage);
 		}
 	}
@@ -101,13 +103,14 @@ public class Utility {
 	 */
 	public static String retrieveGetIDFromRequestTarget(String requestTarget) {
 		StringTokenizer str = new StringTokenizer(requestTarget, "/");
+		String temp = null;
 		while (str.hasMoreTokens()) {
-			String temp = str.nextToken();
+			 temp = str.nextToken();
 			if (temp.matches("^[0-9]+$")) {
 				return temp;
 			}
 		}
-		return null;
+		return temp;
 	}
 
 	/**
@@ -131,7 +134,7 @@ public class Utility {
 				logger.info(tempResponseCodeMessage);
 				break;
 			case "401":
-				tempResponseCodeMessage = tempResponseCodeMessage +"Authentication Failed";
+				tempResponseCodeMessage = tempResponseCodeMessage + "Authentication Failed";
 				logger.info(tempResponseCodeMessage);
 				break;
 			case "201":

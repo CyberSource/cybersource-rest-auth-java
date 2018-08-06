@@ -32,7 +32,7 @@ public class JwtUrlConnection implements Connection, Headers {
 	private int responseCode;
 	/**/
 	private String method = null;
-	private String Id = null;
+	private String id = null;
 
 	private String requestBody = null;
 
@@ -41,7 +41,7 @@ public class JwtUrlConnection implements Connection, Headers {
 		this.merchantConfig = mc;
 		this.logger = logger;
 		this.method = mc.getRequestType();
-		this.Id = Utility.retrieveGetIDFromRequestTarget(merchantConfig.getRequestTarget());
+		this.id = Utility.retrieveGetIDFromRequestTarget(merchantConfig.getRequestTarget());
 
 		jwtHttpConnection();
 	}
@@ -51,10 +51,9 @@ public class JwtUrlConnection implements Connection, Headers {
 
 		if (method.equalsIgnoreCase(GlobalLabelParameters.GET)
 				|| method.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-			requestBody = Id;
+			requestBody = id;
 		} else /* jwtMethod = POST */ {
 			requestBody = merchantConfig.getRequestData();
-
 		}
 
 		String responseMessage = "";
@@ -64,8 +63,6 @@ public class JwtUrlConnection implements Connection, Headers {
 				responseMessage = get();
 			} catch (Exception e) {
 				Utility.log(logger, e);
-				System.err.println("JWT Transcation Failed :: " + GlobalLabelParameters.REFER_LOG);
-
 			}
 		} else if (method.equalsIgnoreCase(GlobalLabelParameters.POST)
 				|| method.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
@@ -73,8 +70,6 @@ public class JwtUrlConnection implements Connection, Headers {
 				responseMessage = postDocument(requestBody);
 			} catch (Exception e) {
 				Utility.log(logger, e);
-				System.err.println(" JWT Transcation Failed :: " + GlobalLabelParameters.REFER_LOG);
-
 			}
 		}
 
@@ -90,6 +85,8 @@ public class JwtUrlConnection implements Connection, Headers {
 	 * @throws Exception
 	 */
 	public String get() throws IOException  {
+		/* Set Proxy Connection.*/
+		setProxyConnection(merchantConfig);
 		/* Open Connection with API server. */
 		openConnection();
 		/* Set Json input Type in the connection object. */
@@ -99,7 +96,6 @@ public class JwtUrlConnection implements Connection, Headers {
 		/* Set encrypted signature in the connection object. */
 		setSignature();
 		if (signatureAlert) {
-			System.err.println("JWT Transcation Failed :: " + GlobalLabelParameters.REFER_LOG);
 			return "No Response";
 		}
 		responseCode = con.getResponseCode();
@@ -116,7 +112,7 @@ public class JwtUrlConnection implements Connection, Headers {
 	 * @throws Exception
 	 */
 	public String postDocument(String request) throws IOException  {
-
+		setProxyConnection(merchantConfig);
 		openConnection();
 		setContentType();
 		setRequestMethod(method);
@@ -124,7 +120,6 @@ public class JwtUrlConnection implements Connection, Headers {
 				Level.INFO);
 		setSignature();
 		if (signatureAlert) {
-			System.err.println("JWT Transcation Failed :: " + GlobalLabelParameters.REFER_LOG);
 			return "No Response";
 		}
 
@@ -225,7 +220,7 @@ public class JwtUrlConnection implements Connection, Headers {
 			Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE + " : " + method, Level.INFO);
 			this.con.setRequestMethod(method);
 			if (method.equalsIgnoreCase(GlobalLabelParameters.GET))
-				logger.info("GETID" + " : " + this.Id);
+				logger.info("GETID" + " : " + this.id);
 		} catch (Exception e) {
 			Utility.log(logger, GlobalLabelParameters.REQUEST_SET_ERROR, Level.FATAL);
 
@@ -238,29 +233,6 @@ public class JwtUrlConnection implements Connection, Headers {
 		con = null;
 	}
 
-	@Override
-	public void setProxyConnection() {
-		String proxyAddress = merchantConfig.getProxyAddress();
-		String proxyPort = String.valueOf(merchantConfig.getProxyPort());
-
-		try {
-			if (proxyAddress == null || proxyAddress.isEmpty() || proxyPort == null || proxyPort.isEmpty()) {
-				return;
-			} else {
-				if (!proxyAddress.isEmpty() && !proxyPort.isEmpty()) {
-					Utility.log(logger, GlobalLabelParameters.PROXY_HOST + " : " + proxyAddress, Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.PROXY_PORT + " : " + proxyPort, Level.INFO);
-					Properties systemProperties = System.getProperties();
-					systemProperties.setProperty(GlobalLabelParameters.PROXY_HOST, proxyAddress);
-					systemProperties.setProperty(GlobalLabelParameters.PROXY_PORT, proxyPort);
-				}
-			}
-		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.PROXY_HOST_PORT_ERR, Level.FATAL);
-
-		}
-
-	}
 
 	@Override
 	public void setUserAgent() {

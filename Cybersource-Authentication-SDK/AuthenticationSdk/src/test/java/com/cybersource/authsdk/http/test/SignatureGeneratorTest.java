@@ -29,10 +29,9 @@ public class SignatureGeneratorTest {
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("GET");
 
-		signatureGenerator = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
-				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID);
-
-		String str = signatureGenerator.getSignatureParameterBase64Encoded();
+		String str = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
+				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID).signatureGeneration();
+		
 		Assert.assertNotNull(str);
 
 	}
@@ -45,10 +44,10 @@ public class SignatureGeneratorTest {
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 
-		signatureGenerator = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
-				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID);
+		String str = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
+				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID).signatureGeneration();
 
-		String str = signatureGenerator.getSignatureParameterBase64Encoded();
+		
 		Assert.assertNotNull(str);
 
 	}
@@ -61,10 +60,9 @@ public class SignatureGeneratorTest {
 		merchantConfig.setRequestType("PUT");
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 
-		signatureGenerator = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
-				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID);
-
-		String str = signatureGenerator.getSignatureParameterBase64Encoded();
+		String str = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
+				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID).signatureGeneration();
+		
 		Assert.assertNotNull(str);
 
 	}

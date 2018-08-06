@@ -11,8 +11,8 @@ import java.util.Properties;
  *
  *
  */
-public class PropertiesUtil {
-	private static InputStream jsonIn;
+public final class PropertiesUtil {
+	
 
 	private PropertiesUtil(){
 		
@@ -24,7 +24,7 @@ public class PropertiesUtil {
 	 * @throws IOException
 	 */
 	public static String getJSONInput(String fileName) throws IOException {
-		jsonIn = getPropertyFile(fileName);
+		InputStream jsonIn = getPropertyFile(fileName);
 		byte[] jsonBytes = new byte[jsonIn.available()];
 		jsonIn.read(jsonBytes);
 		return new String(jsonBytes);
@@ -36,9 +36,8 @@ public class PropertiesUtil {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public static InputStream getPropertyFile(String fileName) throws FileNotFoundException {
-		
-		return new FileInputStream(fileName);
+	private static  InputStream getPropertyFile(String fileName) throws FileNotFoundException {
+				return new FileInputStream(fileName);
 	}
 
 

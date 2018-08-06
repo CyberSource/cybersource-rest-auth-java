@@ -60,7 +60,7 @@ public class GetGenerateHeaders {
 
 	public GetGenerateHeaders() throws Exception {
 		setGenerateHeaders();
-		Utility.logEnable = merchantConfig.getEnableLog();
+		
 		System.out.println(" Authentication Type : " +  merchantConfig.getAuthenticationType().trim());
 		Utility.log(this.logger,
 				GlobalLabelParameters.BEGIN_TRANSCATION + " Generate GET Headers *******************", Level.INFO);
@@ -75,7 +75,6 @@ public class GetGenerateHeaders {
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType(requestType);
 		this.logger = Log4j.getInstance(merchantConfig);
-
 		auth = new Authorization();
 	}
 

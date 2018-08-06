@@ -38,7 +38,7 @@ public class DeleteGenerateHeaders {
 	 *             :
 	 */
 	public DeleteGenerateHeaders(MerchantConfig merchantConfig) throws Exception {
-		Utility.logEnable = false;
+		merchantConfig.setEnableLog(false);
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 		auth = new Authorization();
@@ -47,11 +47,12 @@ public class DeleteGenerateHeaders {
 
 	public DeleteGenerateHeaders() throws Exception {
 		
-		Utility.logEnable = true;
+		
 		auth = new Authorization();
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType(requestType);
+		
 		logger = Log4j.getInstance(merchantConfig);
 		Utility.log(this.logger,
 				GlobalLabelParameters.BEGIN_TRANSCATION + " Delete Generate Headers *******************", Level.INFO);

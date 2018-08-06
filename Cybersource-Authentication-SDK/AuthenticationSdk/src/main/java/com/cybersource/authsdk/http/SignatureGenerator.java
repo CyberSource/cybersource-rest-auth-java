@@ -27,25 +27,19 @@ public class SignatureGenerator {
 	private MerchantConfig merchantConfigSigParam;
 	private String signatureParameterBase64Encoded;
 	private String space = GlobalLabelParameters.SPACE;
+	private String httpMethod;
+	private String merchantSecertKey;
+	private String merchantId;
 
 	public SignatureGenerator(MerchantConfig merchantConfig, String merchantSecertKey, String merchantId,
 			String httpMethod, String getID) throws InvalidKeyException, NoSuchAlgorithmException {
 		this.merchantConfigSigParam = merchantConfig;
-		this.signatureGeneration(merchantSecertKey, merchantId, httpMethod);
-
+		this.httpMethod = httpMethod;
+		this.merchantSecertKey = merchantSecertKey;
+		this.merchantId = merchantId;
 	}
-
-	/**
-	 * 
-	 * @param merchantSecertKey
-	 * @param merchantId
-	 * @param getID
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeyException
-	 * @throws Exception
-	 */
-	private void signatureGeneration(String merchantSecertKey, String merchantId, String httpMethod)
-			throws NoSuchAlgorithmException, InvalidKeyException {
+	
+	public String signatureGeneration() throws NoSuchAlgorithmException, InvalidKeyException {
 
 		StringBuilder signatureString = new StringBuilder();
 		signatureString.append('\n');
@@ -92,9 +86,7 @@ public class SignatureGenerator {
 		 * SecretKey hased with SHA256 and base64 encoded. Secret Key is Base64
 		 * decoded before signing
 		 */
-		// Here We are using MerchantSecretKey value in ProxyUser, since it is
-		// not available in merchant confif
-
+		
 		SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(merchantSecertKey), "HmacSHA256");
 		Mac aKeyId = Mac.getInstance("HmacSHA256");
 		aKeyId.init(secretKey);
@@ -102,10 +94,10 @@ public class SignatureGenerator {
 		byte[] aHeaders = aKeyId.doFinal();
 		signatureParameterBase64Encoded = Base64.getEncoder().encodeToString(aHeaders);
 		secretKey = null;
-	}
-
-	public String getSignatureParameterBase64Encoded() {
+		
+		
 		return signatureParameterBase64Encoded;
+		
 	}
 
 	/**

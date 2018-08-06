@@ -94,8 +94,6 @@ public class ApiController {
 		authenticationType = merchantConfig.getAuthenticationType().trim();
 		authType = Utility.checkAuthenticationValidation(authenticationType);
 		if (MerchantConfig.isSetMerchantDetails) {
-			/* Enable/Disable Log. */
-			Utility.logEnable = merchantConfig.getEnableLog();
 			/* Initializing the logging object. */
 			this.logger = Log4j.getInstance(merchantConfig);
 			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, Level.INFO);
@@ -120,7 +118,6 @@ public class ApiController {
 	 */
 	private void paymentEndException() {
 		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
-		System.err.println(GlobalLabelParameters.REFER_LOG);
 		Utility.log(this.logger, " ", Level.OFF);
 	}
 }

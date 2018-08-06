@@ -153,66 +153,6 @@ public class JwtUrlConnectionTest {
 	}
 
 	@Test
-	public void setProxyConnectionTestPass() throws Exception {
-
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
-		requestTarget = requestTarget + get_ID;
-		merchantConfig.setRequestTarget(requestTarget);
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setProxyAddress("userproxy.visa.com");
-
-		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
-
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
-		jwtUrlConnection.setProxyConnection();
-		Assert.assertNotNull(merchantConfig.getProxyPort());
-
-	}
-
-	@Test
-	public void setProxyConnectionTestForNull() throws Exception {
-
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
-		requestTarget = requestTarget + get_ID;
-		merchantConfig.setRequestTarget(requestTarget);
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setProxyAddress(null);
-
-		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
-
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
-		jwtUrlConnection.setProxyConnection();
-		Assert.assertNotNull(merchantConfig.getProxyPort());
-
-	}
-
-	@Test
-	public void setProxyConnectionTestForEmpty() throws Exception {
-
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
-		requestTarget = requestTarget + get_ID;
-		merchantConfig.setRequestTarget(requestTarget);
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setProxyAddress("");
-
-		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
-
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
-		jwtUrlConnection.setProxyConnection();
-		Assert.assertNotNull(merchantConfig.getProxyPort());
-
-	}
-
-	@Test
 	public void openConnectionEmptyUrlTest() throws Exception {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();

@@ -25,6 +25,7 @@ public class JwtSignatureToken implements TokenGenerator {
 	private Cache cache;
 	private RSAPrivateKey rsaPrivateKey = null;
 	private X509Certificate x509Certificate = null;
+	private String signature;
 
 	public JwtSignatureToken(MerchantConfig merchantConfig, String requestBody, Logger logger, String jwtRequestType) {
 
@@ -38,10 +39,11 @@ public class JwtSignatureToken implements TokenGenerator {
 	@Override
 	public String getToken() {
 		try {
-			return generateSignature();
+			signature =  generateSignature();
 		} catch (Exception e) {
-			return null;
+			signature = null;
 		}
+		return signature;
 	}
 	/**
 	 * 
@@ -49,12 +51,12 @@ public class JwtSignatureToken implements TokenGenerator {
 	 * @throws Exception
 	 */
 	public String generateSignature() throws Exception {
-
-		String signature = null;
+		
 		try {
 			if (merchantConfig != null && merchantConfig.getKeyType() != null) {
 				/* Generating private key. */
 				if (Cache.isCache) {
+					
 					rsaPrivateKey = KeyCertificateGenerator.initializePrivateKey(merchantConfig);
 					x509Certificate = KeyCertificateGenerator.initializeCertificate(merchantConfig);
 					setUpCache();
@@ -126,7 +128,7 @@ public class JwtSignatureToken implements TokenGenerator {
 		} catch (Exception e) {
 			Utility.log(logger, GlobalLabelParameters.JWT_SIG_FAILED, Level.FATAL);
 			Utility.log(logger, e);
-			return null;
+			signature =  null;
 		}
 		return signature;
 	}

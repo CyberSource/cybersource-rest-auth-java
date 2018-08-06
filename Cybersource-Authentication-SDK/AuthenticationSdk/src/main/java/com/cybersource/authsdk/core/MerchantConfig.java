@@ -462,7 +462,6 @@ public class MerchantConfig {
 	public boolean checkRunEvironment() {
 		if (this.runEnvironment == null || this.runEnvironment.isEmpty()) {
 			Utility.log(log, GlobalLabelParameters.RUN_ENVIRONMENT_ERR, Level.ERROR);
-			System.err.println(GlobalLabelParameters.RUN_ENVIRONMENT_ERR + "  " + GlobalLabelParameters.REFER_LOG);
 			return false;
 		} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)) {
@@ -474,7 +473,6 @@ public class MerchantConfig {
 	public boolean checkMerchantKeyId() {
 		if (this.merchantKeyId == null || this.merchantKeyId.isEmpty()) {
 			Utility.log(log, GlobalLabelParameters.MERCHANT_KEYID_MISSING, Level.ERROR);
-			System.err.println(GlobalLabelParameters.MERCHANT_KEYID_MISSING + "  " + GlobalLabelParameters.REFER_LOG);
 			return false;
 		}
 		return true;
@@ -487,7 +485,6 @@ public class MerchantConfig {
 	public boolean checkMerchantSecertKey() {
 		if (this.merchantsecretKey == null || this.merchantsecretKey.isEmpty()) {
 			Utility.log(log, GlobalLabelParameters.MERCHANTSECERT_KEY_MISSING, Level.ERROR);
-			System.err.println(GlobalLabelParameters.MERCHANTSECERT_KEY_MISSING + GlobalLabelParameters.REFER_LOG);
 			return false;
 		}
 		return true;
@@ -529,7 +526,6 @@ public class MerchantConfig {
 			}
 			if (jsonPath == null || jsonPath.isEmpty()) {
 				Utility.log(log, GlobalLabelParameters.REQUEST_JSON_MIS_NULL, Level.ERROR);
-				System.err.println(GlobalLabelParameters.REQUEST_JSON_MIS_NULL + " " + GlobalLabelParameters.REFER_LOG);
 				return false;
 			}
 			f = new File(jsonPath);
@@ -566,31 +562,31 @@ public class MerchantConfig {
 	public void setMerchantDetails()  {
 		/* Common Parameters */
 		
-		this.requestJsonPath = this.getProperty(this.requestJsonPath, "requestJsonPath");
+		//this.requestJsonPath = this.getProperty(this.requestJsonPath, "requestJsonPath").trim();
 
 		/* Logging Parameters */
-		this.logDirectory = this.getProperty(this.merchantID, "logDirectory");
-		this.logFilename = this.getProperty(this.merchantID, "logFilename");
-		this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize");
+		this.logDirectory = this.getProperty(this.merchantID, "logDirectory").trim();
+		this.logFilename = this.getProperty(this.merchantID, "logFilename").trim();
+		this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize").trim();
 		/* JWT Parameters */
-		this.recipientID = this.getProperty(this.merchantID, "recipientID");
-		this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory");
-		this.keyAlias = this.getProperty(this.merchantID, "keyAlias");
+		//this.recipientID = this.getProperty(this.merchantID, "recipientID").trim();
+		this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory").trim();
+		this.keyAlias = this.getProperty(this.merchantID, "keyAlias").trim();
 		this.keyPass = this.getProperty(this.merchantID, "keyPass");
-		this.keyType = this.getProperty(this.merchantID, "keyType");
-		this.keyFilename = this.getProperty(this.merchantID, "keyFileName");
-		this.password = this.getProperty(this.merchantID, "password");
+		//this.keyType = this.getProperty(this.merchantID, "keyType").trim();
+		this.keyFilename = this.getProperty(this.merchantID, "keyFileName").trim();
+		//this.password = this.getProperty(this.merchantID, "password").trim();
 		this.enableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
 		/* Optional use [ TIME OUT ]*/
 		this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
 		this.proxyPort = this.getIntegerProperty(this.merchantID, "proxyPort", 8080);
-		this.proxyUser = this.getProperty(this.merchantID, "proxyUser");
+		//this.proxyUser = this.getProperty(this.merchantID, "proxyUser").trim();
 		this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
 		this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
 		/* HTTP Parameters */
-		this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId");
-		this.merchantsecretKey = this.getProperty(this.merchantID, "merchantsecretKey");
-		this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment");
+		this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId").trim();
+		this.merchantsecretKey = this.getProperty(this.merchantID, "merchantsecretKey").trim();
+		this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment").trim();
 		/* Run Environment.*/
 		try {
 			if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)) {
@@ -613,7 +609,6 @@ public class MerchantConfig {
 		}
 		if (this.merchantID == null || this.merchantID.isEmpty()) {
 			this.log = Log4j.getInstance(this);
-			Utility.logEnable = this.enableLog;
 			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, Level.INFO);
 			Utility.log(this.log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, Level.ERROR);
 			isSetMerchantDetails = false;
@@ -640,7 +635,6 @@ public class MerchantConfig {
 		isSetMerchantDetails = false;	
 		this.authenticationType = "Not Present in file";
 		this.log = Log4j.getInstance(this);
-		Utility.logEnable = this.enableLog;
 		Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, Level.INFO);
 		return;
 	}
