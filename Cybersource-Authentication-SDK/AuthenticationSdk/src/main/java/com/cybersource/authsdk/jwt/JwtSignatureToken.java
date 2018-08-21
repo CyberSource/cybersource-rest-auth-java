@@ -14,9 +14,10 @@ import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
+import com.cybersource.authsdk.jwtsecurity.JWTCryptoProcessorImpl;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
-import com.cybersource.security.jwt.JWTCryptoProcessorImpl;
+
 
 public class JwtSignatureToken implements TokenGenerator {
 	private MerchantConfig merchantConfig;
@@ -56,18 +57,20 @@ public class JwtSignatureToken implements TokenGenerator {
 			if (merchantConfig != null && merchantConfig.getKeyType() != null) {
 				/* Generating private key. */
 				if (Cache.isCache) {
-					
 					rsaPrivateKey = KeyCertificateGenerator.initializePrivateKey(merchantConfig);
 					x509Certificate = KeyCertificateGenerator.initializeCertificate(merchantConfig);
+					Utility.log(logger, GlobalLabelParameters.CACHE_BEGIN, Level.INFO);
 					setUpCache();
 					Cache.isCache = false;
 				} else {
 					boolean lastModified = cache.isLastModifiedTimeP12();
 					if (lastModified) {
+						Utility.log(logger, GlobalLabelParameters.CACHE_EXTRACT, Level.INFO);
 						cache.retriveP12DataFromCache();
 						rsaPrivateKey = cache.getRsaPrivateKey();
 						x509Certificate = cache.getX509Certificate();
 					} else { /**/
+						Utility.log(logger, GlobalLabelParameters.CACHE_EXTEND, Level.INFO);
 						rsaPrivateKey = KeyCertificateGenerator.initializePrivateKey(merchantConfig);
 						x509Certificate = KeyCertificateGenerator.initializeCertificate(merchantConfig);
 						setUpCache();
@@ -97,7 +100,7 @@ public class JwtSignatureToken implements TokenGenerator {
 
 				}
 				/* Preparing the Signature Header. */
-				HashMap<String, String> customHeaders = new HashMap<String, String>();
+				HashMap<String, Object> customHeaders = new HashMap<String, Object>();
 				if (merchantConfig.getMerchantID() != null) {
 					customHeaders.put(JWTCryptoProcessorImpl.MERCHANT_ID, merchantConfig.getMerchantID());
 				}

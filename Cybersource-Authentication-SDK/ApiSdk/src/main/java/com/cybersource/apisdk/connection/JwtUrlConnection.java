@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +20,6 @@ import org.apache.logging.log4j.Logger;
  * Here all the data ( header + claimSet + Signature ) are set inside the HTTP
  * connection and the call is made to APIserver. On successful transaction,
  * response message and response code : 200 is obtained.
- *
  */
 public class JwtUrlConnection implements Connection, Headers {
 	private boolean signatureAlert = false;
@@ -72,7 +70,6 @@ public class JwtUrlConnection implements Connection, Headers {
 				Utility.log(logger, e);
 			}
 		}
-
 		merchantConfig.setResponseMessage(new Masking(responseMessage, logger).getMaskingResult());
 		maskingPayload(responseMessage);
 		endConnection();

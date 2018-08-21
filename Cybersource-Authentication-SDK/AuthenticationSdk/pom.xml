@@ -6,24 +6,24 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>AuthenticationSdk</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <dependencies>
 
-		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk16 -->
+		
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk16</artifactId>
 			<version>1.45</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt -->
+		
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
 			<version>4.22</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/net.minidev/asm -->
+		
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>asm</artifactId>
@@ -31,7 +31,7 @@
 		</dependency>
 
 
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j -->
+		
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -39,21 +39,21 @@
 			<type>pom</type>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
+		
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 			<version>2.11.0</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+		
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.11.0</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-1.2-api -->
+		
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-1.2-api</artifactId>
@@ -61,21 +61,21 @@
 		</dependency>
 
 
-		<!-- https://mvnrepository.com/artifact/net.minidev/json-smart -->
+		
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
 			<version>1.0.9</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.4</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -83,14 +83,14 @@
 		</dependency>
 
 
-		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+		
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -98,7 +98,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+		
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
@@ -106,12 +106,13 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- dependency for jwt-security -->
 		<dependency>
-			<groupId>com.cybersource.commongatekeeper</groupId>
-			<artifactId>jwt-security</artifactId>
-			<version>1.10.0</version>
-		</dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+		
+		
 
 	</dependencies>
 
@@ -134,8 +135,9 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.16</version>
 					<configuration>
-						<reuseForks>false</reuseForks>
-						<forkCount>1</forkCount>
+						<parallel>classes</parallel>
+                   		 <threadCount>10</threadCount>
+                   		 <skipTests>true</skipTests> 
 					</configuration>
 				</plugin>
 

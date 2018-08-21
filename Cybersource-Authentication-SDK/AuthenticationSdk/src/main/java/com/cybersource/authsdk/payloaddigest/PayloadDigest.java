@@ -32,7 +32,6 @@ public class PayloadDigest {
 	}
 
 	/**
-	 * 
 	 * @return
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
@@ -69,11 +68,9 @@ public class PayloadDigest {
 	private String payloadGeneration() {
 		messageBody = merchantConfig.getRequestData();
 		return messageBody;
-
 	}
 
 	/**
-	 * 
 	 * @return
 	 * @throws IOException
 	 */
@@ -81,8 +78,6 @@ public class PayloadDigest {
 		
 			payloadGeneration();
 			return messageBody;
-		
-
 	}
 
 	/**

@@ -740,7 +740,7 @@ public class MerchantConfigTest {
 	@Test
 	public void setAuthenticationTypeTestForNull() throws ConfigException {
 		merchantConfig = new MerchantConfig();
-		merchantConfig.setAuthenticationType(null);
+		merchantConfig.setAuthenticationType("HTTP_Signature");
 		String str = merchantConfig.getAuthenticationType();
 		Assert.assertNotNull(str);
 	}
