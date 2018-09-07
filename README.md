@@ -35,14 +35,14 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
   
   Configure the following information in cybs.properties file
   
-*	Authentication Type:  Merchant should enter “HTTP_Signature” for HTTP authentication mechanism.
-*	Merchant ID: Merchant will provide the merchant ID, which has taken from EBC portal.
-*	MerchantSecretKey: Merchant will provide the secret Key value, which has taken from EBC portal.
-*	MerchantKeyId:  Merchant will provide the Key ID value, which has taken from EBC portal.
-*	Enable Log: To start the log entry provide true else enter false.
-*   LogDirectory :Merchant will provide directory path where logs will be created.
-*   LogMaximumSize :Merchant will provide size value for log file.
-*   LogFilename  :Merchant will provide log file name.
+*	Authentication Type:  User should enter “HTTP_Signature” for HTTP authentication mechanism.
+*	Merchant ID: User will provide the merchant ID, which has taken from EBC portal.
+*	MerchantSecretKey: User will provide the secret Key value, which has taken from EBC portal.
+*	MerchantKeyId:  User will provide the Key ID value, which has taken from EBC portal.
+*	Enable Log: To start the log entry provide true else enter false.logging should normally be disabled in production as it would slow                 down the processing. Enable it only when troubleshooting an issue.
+*   LogDirectory :User will provide directory path where logs will be created.
+*   LogMaximumSize :User will provide size in MB.
+*   LogFilename  :User will provide log file name.
 
 
 ```
@@ -60,16 +60,16 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 
   Configure the following information in the cybs.properties file
   
-*	Authentication Type:  Merchant should enter “JWT” for JWT authentication mechanism.
-*	Merchant ID: Merchant will provide the merchant ID, which has taken from EBC portal.
+*	Authentication Type:  User should enter “JWT” for JWT authentication mechanism.
+*	Merchant ID: User will provide the merchant ID, which has taken from EBC portal.
 *	keyAlias: Alias of the Merchant ID, to be used while generating the JWT token.
 *	keyPassword: Alias of the Merchant password, to be used while generating the JWT token.
 *	keyfilepath: Path of the folder where the .P12 file is placed. This file has generated from the EBC portal.
 *   Keys Directory: path of the directory,where keys are placed.
-*	Enable Log: To start the log entry provide true else enter false.
-*   LogDirectory :Merchant will provide directory path where logs will be created.
-*   LogMaximumSize :Merchant will provide size value for log file.
-*   LogFilename  :Merchant will provide log file name.
+*	Enable Log: To start the log entry provide true else enter false.logging should normally be disabled in production as it would slow                 down the processing. Enable it only when troubleshooting an issue.
+*   LogDirectory :User will provide directory path where logs will be created.
+*   LogMaximumSize :User will provide size value for log file.
+*   LogFilename  :User will provide log file name.
 
 ```
    authenticationType  = Jwt
