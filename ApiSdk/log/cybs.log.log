@@ -1,0 +1,1295 @@
+2018-07-13 15:30:11.900 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:11.917 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:11.917 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:11.917 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:11.917 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:11.933 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:11.933 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:11.933 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:15.712 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:30:16.230 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:30:16.771 [main] INFO   - ********* START *********
+2018-07-13 15:30:16.771 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:30:16.771 [main] ERROR  - Request Json File Missing/Null
+2018-07-13 15:30:16.771 [main] INFO   - ********* END   *********
+2018-07-13 15:30:16.787 [main] OFF    - 
+
+2018-07-13 15:30:16.787 [main] INFO   - ********* START *********
+2018-07-13 15:30:16.787 [main] ERROR  - KeyAlias Mismatch. Assigning merchantID value 
+2018-07-13 15:30:16.787 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:30:16.787 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:30:16.787 [main] INFO   - Content-Type : application/json
+2018-07-13 15:30:16.803 [main] INFO   - Request Type : GET
+2018-07-13 15:30:16.803 [main] INFO   - GETID : null
+2018-07-13 15:30:16.974 [main] FATAL  - Server returned HTTP response code ::  0 URL :: https://apitest.cybersource.com/pts/v2/payments/
+2018-07-13 15:30:16.974 [main] ERROR  - java.io.FileNotFoundException: https://apitest.cybersource.com/pts/v2/payments/
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1872)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1474)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:254)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:109)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.service.PaymentRequestService.processPaymentRequest(PaymentRequestService.java:59)
+	at com.cybersource.apisdk.service.PaymentRequestService.<init>(PaymentRequestService.java:38)
+	at com.cybersource.apisdk.controller.ApiController.processPayment(ApiController.java:50)
+	at com.cybersource.apisdk.controller.ApiController.paymentGet(ApiController.java:40)
+	at com.cybersource.apisdk.controller.test.ApiControllerTest.PaymentTestIsMerchantDetailsFailForGet(ApiControllerTest.java:187)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:134)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:113)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:103)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:74)
+
+2018-07-13 15:30:16.974 [main] INFO   - ********* END   *********
+2018-07-13 15:30:16.974 [main] OFF    - 
+
+2018-07-13 15:30:16.974 [main] INFO   - ********* START *********
+2018-07-13 15:30:16.974 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:30:16.974 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:30:16.990 [main] INFO   - Content-Type : application/json
+2018-07-13 15:30:16.990 [main] INFO   - Request Type : GET
+2018-07-13 15:30:16.990 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:30:17.505 [main] INFO   - Response Code : 200
+2018-07-13 15:30:17.505 [main] INFO   - v-c-correlation-id : 9b6b817a-16bc-4b8b-b114-b20ff5f2e54b
+2018-07-13 15:30:17.505 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:30:17.505 [main] INFO   - ********* END   *********
+2018-07-13 15:30:17.505 [main] OFF    - 
+
+2018-07-13 15:30:17.505 [main] INFO   - ********* START *********
+2018-07-13 15:30:17.505 [main] ERROR  - Request Json File Missing/Null
+2018-07-13 15:30:17.505 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:30:17.505 [main] INFO   - ********* END   *********
+2018-07-13 15:30:17.505 [main] INFO   - ********* START *********
+2018-07-13 15:30:17.505 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:30:17.505 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:30:17.505 [main] INFO   - Content-Type : application/json
+2018-07-13 15:30:17.523 [main] INFO   - Request Type : POST
+2018-07-13 15:30:17.523 [main] INFO   - ClaimSet : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:30:17.974 [main] INFO   - Response Code : 201
+2018-07-13 15:30:17.974 [main] INFO   - v-c-correlation-id : 7631ba56-8e3c-4a23-aeae-d55441fbcd35
+2018-07-13 15:30:17.974 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314760178956712103526","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61014152BJ9PTCP8","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:00:17Z","_links":{"self":{"href":"/pts/v2/payments/5314760178956712103526","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314760178956712103526/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314760178956712103526/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314760178956712103526/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314760178956712103526/voids","method":"POST"}}}
+2018-07-13 15:30:17.991 [main] INFO   - ********* END   *********
+2018-07-13 15:30:17.991 [main] OFF    - 
+
+2018-07-13 15:30:17.991 [main] INFO   - ********* START *********
+2018-07-13 15:30:17.995 [main] INFO   - Authentication Type : HTTP_Signature
+2018-07-13 15:30:17.995 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:17.996 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:30:17.997 [main] INFO   - Request Type: GET
+2018-07-13 15:30:17.997 [main] INFO   - User-Agent : Mozilla/5.0
+2018-07-13 15:30:17.997 [main] INFO   - Content-Type : application/json
+2018-07-13 15:30:18.512 [main] INFO   - Date : Fri, 13 Jul 2018 10:00:18 GMT
+2018-07-13 15:30:18.512 [main] INFO   - Host : apitest.cybersource.com
+2018-07-13 15:30:18.512 [main] INFO   - Response Code : 200
+2018-07-13 15:30:18.512 [main] INFO   - v-c-correlation-id : a689d273-76a7-4637-a3ff-0d7832648240
+2018-07-13 15:30:18.512 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:30:18.512 [main] INFO   - ********* END   *********
+2018-07-13 15:30:18.512 [main] OFF    - 
+
+2018-07-13 15:30:18.512 [main] INFO   - ********* START *********
+2018-07-13 15:30:18.512 [main] INFO   - Authentication Type : HTTP_Signature
+2018-07-13 15:30:18.512 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:30:18.528 [main] INFO   - Request Type: POST
+2018-07-13 15:30:18.528 [main] INFO   - User-Agent : Mozilla/5.0
+2018-07-13 15:30:18.528 [main] INFO   - Content-Type : application/json
+2018-07-13 15:30:18.747 [main] INFO   - Date : Fri, 13 Jul 2018 10:00:18 GMT
+2018-07-13 15:30:18.747 [main] INFO   - Host : apitest.cybersource.com
+2018-07-13 15:30:18.762 [main] INFO   - Digest : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:30:18.762 [main] INFO   - Response Code : 201
+2018-07-13 15:30:18.762 [main] INFO   - v-c-correlation-id : cf50520c-b5b2-4569-b77a-00faa23aa1fe
+2018-07-13 15:30:18.762 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314760186696712203526","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61014154BJ9PTCPA","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:00:18Z","_links":{"self":{"href":"/pts/v2/payments/5314760186696712203526","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314760186696712203526/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314760186696712203526/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314760186696712203526/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314760186696712203526/voids","method":"POST"}}}
+2018-07-13 15:30:18.762 [main] INFO   - ********* END   *********
+2018-07-13 15:30:18.762 [main] OFF    - 
+
+2018-07-13 15:30:18.762 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:30:18.762 [main] INFO   - ********* END   *********
+2018-07-13 15:30:43.031 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:43.147 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:43.147 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:43.147 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:43.147 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:43.147 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:43.163 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:43.163 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:45.410 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:30:45.909 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:30:47.260 [main] INFO   - ********* START *********
+2018-07-13 15:30:47.260 [main] INFO   - Authentication Type : HTTP_Signature
+2018-07-13 15:30:47.276 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:30:47.276 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:30:47.276 [main] INFO   - Request Type: GET
+2018-07-13 15:30:47.276 [main] INFO   - User-Agent : Mozilla/5.0
+2018-07-13 15:30:47.276 [main] INFO   - Content-Type : application/json
+2018-07-13 15:30:47.557 [main] INFO   - Date : Fri, 13 Jul 2018 10:00:47 GMT
+2018-07-13 15:30:47.557 [main] INFO   - Host : apitest.cybersource.com
+2018-07-13 15:30:47.557 [main] INFO   - Response Code : 200
+2018-07-13 15:30:47.557 [main] INFO   - v-c-correlation-id : 526f91bb-f322-4b73-b948-95a91c432100
+2018-07-13 15:30:47.557 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:30:47.557 [main] INFO   - ********* END   *********
+2018-07-13 15:30:47.557 [main] OFF    - 
+
+2018-07-13 15:30:47.557 [main] INFO   - ********* START *********
+2018-07-13 15:30:47.557 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:30:47.557 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:30:47.557 [main] INFO   - Content-Type : application/json
+2018-07-13 15:30:47.573 [main] INFO   - Request Type : POST
+2018-07-13 15:30:47.573 [main] INFO   - ClaimSet : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:30:47.807 [main] INFO   - Response Code : 201
+2018-07-13 15:30:47.807 [main] INFO   - v-c-correlation-id : d55e0a8e-0001-41e1-907a-96816fecbaf9
+2018-07-13 15:30:47.807 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314760477266748103529","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61015267YJ9PV3B9","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:00:47Z","_links":{"self":{"href":"/pts/v2/payments/5314760477266748103529","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314760477266748103529/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314760477266748103529/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314760477266748103529/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314760477266748103529/voids","method":"POST"}}}
+2018-07-13 15:30:47.807 [main] INFO   - ********* END   *********
+2018-07-13 15:30:47.807 [main] OFF    - 
+
+2018-07-13 15:30:47.822 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:30:47.822 [main] INFO   - ********* END   *********
+2018-07-13 15:30:47.822 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:30:47.822 [main] INFO   - ********* END   *********
+2018-07-13 15:30:47.822 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:30:47.822 [main] INFO   - ********* END   *********
+2018-07-13 15:30:47.822 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:30:47.822 [main] INFO   - ********* END   *********
+2018-07-13 15:30:47.822 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:30:47.822 [main] INFO   - ********* END   *********
+2018-07-13 15:30:47.838 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:30:47.838 [main] INFO   - ********* END   *********
+2018-07-13 15:31:52.562 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:31:52.584 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:31:52.600 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:31:52.615 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:31:52.615 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:31:52.615 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:31:52.631 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:31:52.631 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:31:58.132 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:31:58.709 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:32:04.376 [main] INFO   - ********* START *********
+2018-07-13 15:32:04.376 [main] ERROR  - KeyAlias Mismatch. Assigning merchantID value 
+2018-07-13 15:32:04.376 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:32:04.376 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:32:04.877 [main] INFO   - Content-Type : application/json
+2018-07-13 15:32:05.597 [main] INFO   - Request Type : GET
+2018-07-13 15:32:05.613 [main] INFO   - GETID : null
+2018-07-13 15:32:06.457 [main] FATAL  - Server returned HTTP response code ::  0 URL :: https://apitest.cybersource.com/pts/v2/payments/
+2018-07-13 15:32:06.457 [main] ERROR  - java.io.FileNotFoundException: https://apitest.cybersource.com/pts/v2/payments/
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1872)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1474)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:254)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:109)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.service.PaymentRequestService.processPaymentRequest(PaymentRequestService.java:59)
+	at com.cybersource.apisdk.service.PaymentRequestService.<init>(PaymentRequestService.java:38)
+	at com.cybersource.apisdk.controller.ApiController.processPayment(ApiController.java:50)
+	at com.cybersource.apisdk.controller.ApiController.paymentGet(ApiController.java:40)
+	at com.cybersource.apisdk.controller.test.ApiControllerTest.PaymentTestIsMerchantDetailsFailForGet(ApiControllerTest.java:187)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:264)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:124)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:158)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:86)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+
+2018-07-13 15:32:06.457 [main] INFO   - ********* END   *********
+2018-07-13 15:32:06.457 [main] OFF    - 
+
+2018-07-13 15:32:06.474 [main] INFO   - ********* START *********
+2018-07-13 15:32:06.474 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:32:06.474 [main] ERROR  - Request Json File Missing/Null
+2018-07-13 15:32:06.474 [main] INFO   - ********* END   *********
+2018-07-13 15:32:06.474 [main] OFF    - 
+
+2018-07-13 15:32:06.474 [main] INFO   - ********* START *********
+2018-07-13 15:32:06.474 [main] ERROR  - Request Json File Missing/Null
+2018-07-13 15:32:06.474 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:06.474 [main] INFO   - ********* END   *********
+2018-07-13 15:32:06.474 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:06.474 [main] INFO   - ********* END   *********
+2018-07-13 15:32:06.488 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:06.488 [main] INFO   - ********* END   *********
+2018-07-13 15:32:06.488 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:06.488 [main] INFO   - ********* END   *********
+2018-07-13 15:32:06.488 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:06.504 [main] INFO   - ********* END   *********
+2018-07-13 15:32:06.504 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:06.504 [main] INFO   - ********* END   *********
+2018-07-13 15:32:41.170 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:32:41.187 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:32:41.187 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:32:41.187 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:32:41.187 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:32:41.187 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:32:41.187 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:32:41.187 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:32:45.407 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:32:46.376 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:32:51.363 [main] INFO   - ********* START *********
+2018-07-13 15:32:51.363 [main] ERROR  - KeyAlias Mismatch. Assigning merchantID value 
+2018-07-13 15:32:51.363 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:32:51.363 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:32:51.802 [main] INFO   - Content-Type : application/json
+2018-07-13 15:32:52.514 [main] INFO   - Request Type : GET
+2018-07-13 15:32:52.514 [main] INFO   - GETID : null
+2018-07-13 15:32:53.311 [main] FATAL  - Server returned HTTP response code ::  0 URL :: https://apitest.cybersource.com/pts/v2/payments/
+2018-07-13 15:32:53.311 [main] ERROR  - java.io.FileNotFoundException: https://apitest.cybersource.com/pts/v2/payments/
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1872)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1474)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:254)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:109)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.service.PaymentRequestService.processPaymentRequest(PaymentRequestService.java:59)
+	at com.cybersource.apisdk.service.PaymentRequestService.<init>(PaymentRequestService.java:38)
+	at com.cybersource.apisdk.controller.ApiController.processPayment(ApiController.java:50)
+	at com.cybersource.apisdk.controller.ApiController.paymentGet(ApiController.java:40)
+	at com.cybersource.apisdk.controller.test.ApiControllerTest.PaymentTestIsMerchantDetailsFailForGet(ApiControllerTest.java:187)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:264)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:200)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+
+2018-07-13 15:32:53.311 [main] INFO   - ********* END   *********
+2018-07-13 15:32:53.327 [main] OFF    - 
+
+2018-07-13 15:32:53.327 [main] INFO   - ********* START *********
+2018-07-13 15:32:53.327 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:32:53.327 [main] ERROR  - Request Json File Missing/Null
+2018-07-13 15:32:53.327 [main] INFO   - ********* END   *********
+2018-07-13 15:32:53.327 [main] OFF    - 
+
+2018-07-13 15:32:53.327 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:53.327 [main] INFO   - ********* END   *********
+2018-07-13 15:32:53.345 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:53.345 [main] INFO   - ********* END   *********
+2018-07-13 15:32:53.345 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:53.345 [main] INFO   - ********* END   *********
+2018-07-13 15:32:53.358 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:53.358 [main] INFO   - ********* END   *********
+2018-07-13 15:32:53.358 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:53.358 [main] INFO   - ********* END   *********
+2018-07-13 15:32:53.358 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:32:53.358 [main] INFO   - ********* END   *********
+2018-07-13 15:33:52.694 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:33:52.829 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:33:52.845 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:33:52.845 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:33:52.845 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:33:52.845 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:33:52.860 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:33:52.860 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:33:56.317 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:33:56.600 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:33:57.121 [main] INFO   - ********* START *********
+2018-07-13 15:33:57.121 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:33:57.121 [main] ERROR  - Request Json File Missing/Null
+2018-07-13 15:33:57.121 [main] INFO   - ********* END   *********
+2018-07-13 15:33:57.121 [main] OFF    - 
+
+2018-07-13 15:33:57.137 [main] INFO   - ********* START *********
+2018-07-13 15:33:57.137 [main] ERROR  - KeyAlias Mismatch. Assigning merchantID value 
+2018-07-13 15:33:57.137 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:33:57.137 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:33:57.137 [main] INFO   - Content-Type : application/json
+2018-07-13 15:33:57.137 [main] INFO   - Request Type : GET
+2018-07-13 15:33:57.137 [main] INFO   - GETID : null
+2018-07-13 15:33:57.340 [main] FATAL  - Server returned HTTP response code ::  0 URL :: https://apitest.cybersource.com/pts/v2/payments/
+2018-07-13 15:33:57.340 [main] ERROR  - java.io.FileNotFoundException: https://apitest.cybersource.com/pts/v2/payments/
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1872)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1474)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:254)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:109)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.service.PaymentRequestService.processPaymentRequest(PaymentRequestService.java:59)
+	at com.cybersource.apisdk.service.PaymentRequestService.<init>(PaymentRequestService.java:38)
+	at com.cybersource.apisdk.controller.ApiController.processPayment(ApiController.java:50)
+	at com.cybersource.apisdk.controller.ApiController.paymentGet(ApiController.java:40)
+	at com.cybersource.apisdk.controller.test.ApiControllerTest.PaymentTestIsMerchantDetailsFailForGet(ApiControllerTest.java:187)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:134)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:113)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:103)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:74)
+
+2018-07-13 15:33:57.340 [main] INFO   - ********* END   *********
+2018-07-13 15:33:57.340 [main] OFF    - 
+
+2018-07-13 15:33:57.356 [main] INFO   - ********* START *********
+2018-07-13 15:33:57.356 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:33:57.356 [main] INFO   - ********* END   *********
+2018-07-13 15:33:57.356 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:33:57.356 [main] INFO   - ********* END   *********
+2018-07-13 15:33:57.356 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:33:57.356 [main] INFO   - ********* END   *********
+2018-07-13 15:33:57.356 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:33:57.356 [main] INFO   - ********* END   *********
+2018-07-13 15:33:57.371 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:33:57.371 [main] INFO   - ********* END   *********
+2018-07-13 15:33:57.371 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:33:57.371 [main] INFO   - ********* END   *********
+2018-07-13 15:34:09.948 [main] INFO   - ********* START *********
+2018-07-13 15:34:09.948 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:09.948 [main] ERROR  - Request Json File Missing/Null
+2018-07-13 15:34:09.948 [main] INFO   - ********* END   *********
+2018-07-13 15:34:09.962 [main] OFF    - 
+
+2018-07-13 15:34:09.966 [main] INFO   - ********* START *********
+2018-07-13 15:34:09.966 [main] INFO   - Authentication Type : HTTP_Signature
+2018-07-13 15:34:09.966 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:10.498 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:10.575 [main] INFO   - Request Type: GET
+2018-07-13 15:34:10.591 [main] INFO   - User-Agent : Mozilla/5.0
+2018-07-13 15:34:10.591 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:11.419 [main] INFO   - Date : Fri, 13 Jul 2018 10:04:11 GMT
+2018-07-13 15:34:11.419 [main] INFO   - Host : apitest.cybersource.com
+2018-07-13 15:34:11.419 [main] INFO   - Response Code : 200
+2018-07-13 15:34:11.419 [main] INFO   - v-c-correlation-id : 9407f82a-6742-4599-b053-7f70224912ae
+2018-07-13 15:34:11.419 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:34:11.435 [main] INFO   - ********* END   *********
+2018-07-13 15:34:11.435 [main] OFF    - 
+
+2018-07-13 15:34:11.437 [main] INFO   - ********* START *********
+2018-07-13 15:34:11.437 [main] INFO   - Authentication Type : HTTP_Signature
+2018-07-13 15:34:11.437 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:11.437 [main] INFO   - Request Type: POST
+2018-07-13 15:34:11.437 [main] INFO   - User-Agent : Mozilla/5.0
+2018-07-13 15:34:11.437 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:11.687 [main] INFO   - Date : Fri, 13 Jul 2018 10:04:11 GMT
+2018-07-13 15:34:11.687 [main] INFO   - Host : apitest.cybersource.com
+2018-07-13 15:34:11.687 [main] INFO   - Digest : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:34:11.687 [main] INFO   - Response Code : 201
+2018-07-13 15:34:11.687 [main] INFO   - v-c-correlation-id : fdf3f897-70ab-4770-aa9a-98091aebc6f6
+2018-07-13 15:34:11.687 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314762516076727103527","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61015858WJ9PTXWP","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:04:11Z","_links":{"self":{"href":"/pts/v2/payments/5314762516076727103527","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314762516076727103527/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314762516076727103527/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314762516076727103527/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314762516076727103527/voids","method":"POST"}}}
+2018-07-13 15:34:11.687 [main] INFO   - ********* END   *********
+2018-07-13 15:34:11.687 [main] OFF    - 
+
+2018-07-13 15:34:11.703 [main] INFO   - ********* START *********
+2018-07-13 15:34:11.703 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:11.703 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:34:11.703 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:12.375 [main] INFO   - Request Type : GET
+2018-07-13 15:34:12.375 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:34:12.609 [main] INFO   - Response Code : 200
+2018-07-13 15:34:12.609 [main] INFO   - v-c-correlation-id : 5d54e5ef-d1b0-4c26-9fdc-5fe56d6a1be7
+2018-07-13 15:34:12.609 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:34:12.609 [main] INFO   - ********* END   *********
+2018-07-13 15:34:12.609 [main] OFF    - 
+
+2018-07-13 15:34:12.626 [main] INFO   - ********* START *********
+2018-07-13 15:34:12.626 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:12.626 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:34:12.626 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:12.642 [main] INFO   - Request Type : POST
+2018-07-13 15:34:12.642 [main] INFO   - ClaimSet : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:34:13.095 [main] INFO   - Response Code : 201
+2018-07-13 15:34:13.095 [main] INFO   - v-c-correlation-id : ce2f4c38-8a7e-4cfa-9998-07284cadab43
+2018-07-13 15:34:13.095 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314762530126754803529","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61015297YJ9PV3CH","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:04:13Z","_links":{"self":{"href":"/pts/v2/payments/5314762530126754803529","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314762530126754803529/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314762530126754803529/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314762530126754803529/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314762530126754803529/voids","method":"POST"}}}
+2018-07-13 15:34:13.095 [main] INFO   - ********* END   *********
+2018-07-13 15:34:13.095 [main] OFF    - 
+
+2018-07-13 15:34:13.095 [main] INFO   - ********* START *********
+2018-07-13 15:34:13.095 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:34:13.095 [main] INFO   - ********* END   *********
+2018-07-13 15:34:13.095 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:34:13.095 [main] INFO   - ********* END   *********
+2018-07-13 15:34:13.095 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:34:13.095 [main] INFO   - ********* END   *********
+2018-07-13 15:34:13.111 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:13.111 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:13.126 [main] INFO   - Request Type : GET
+2018-07-13 15:34:13.126 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:34:13.611 [main] INFO   - Response Code : 200
+2018-07-13 15:34:13.611 [main] INFO   - v-c-correlation-id : a004465b-e8c9-48fe-ab62-4ace496a472e
+2018-07-13 15:34:13.611 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:34:13.611 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:13.626 [main] INFO   - Request Type : GET
+2018-07-13 15:34:13.626 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:34:14.189 [main] INFO   - Response Code : 200
+2018-07-13 15:34:14.189 [main] INFO   - v-c-correlation-id : 89715e9d-a7cf-4a7a-8e90-cb045fcea48a
+2018-07-13 15:34:14.204 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:14.204 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:14.204 [main] INFO   - Request Type : POST
+2018-07-13 15:34:14.204 [main] INFO   - ClaimSet : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:34:14.454 [main] INFO   - Response Code : 201
+2018-07-13 15:34:14.454 [main] INFO   - v-c-correlation-id : d8267f35-0a82-4b0c-852e-ba89a42b8beb
+2018-07-13 15:34:14.454 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314762543766716703528","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61016227XJ9PUKSC","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:04:14Z","_links":{"self":{"href":"/pts/v2/payments/5314762543766716703528","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314762543766716703528/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314762543766716703528/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314762543766716703528/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314762543766716703528/voids","method":"POST"}}}
+2018-07-13 15:34:14.454 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:14.470 [main] INFO   - Request Type : POST
+2018-07-13 15:34:14.470 [main] INFO   - ClaimSet : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:34:14.955 [main] INFO   - Response Code : 201
+2018-07-13 15:34:14.955 [main] INFO   - v-c-correlation-id : 06afdaf1-ab3a-41d8-9151-a8f3f991ee90
+2018-07-13 15:34:14.955 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:14.955 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:14.955 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:14.955 [main] FATAL  - Unable to set content type
+2018-07-13 15:34:14.970 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:14.970 [main] INFO   - Request Type : GET
+2018-07-13 15:34:14.970 [main] FATAL  - Unable to set Request type :: 
+2018-07-13 15:34:14.970 [main] FATAL  - Server returned HTTP response code ::  0 URL :: null
+2018-07-13 15:34:14.970 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:108)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.connection.test.JwtUrlConnectionTest.setSignatureTest(JwtUrlConnectionTest.java:130)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:14.980 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:14.980 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:14.980 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:14.996 [main] INFO   - Request Type : PUT
+2018-07-13 15:34:14.996 [main] INFO   - ClaimSet : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:34:15.121 [main] FATAL  - Server returned HTTP response code ::  0 URL :: https://apitest.cybersource.com/pts/v2/payments/
+2018-07-13 15:34:15.121 [main] ERROR  - java.io.IOException: Server returned HTTP response code: 400 for URL: https://apitest.cybersource.com/pts/v2/payments/
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1876)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1474)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:254)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.postDocument(JwtUrlConnection.java:134)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:74)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.connection.test.JwtUrlConnectionTest.getTestForPut(JwtUrlConnectionTest.java:93)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.121 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:15.137 [main] INFO   - Request Type : PUT
+2018-07-13 15:34:15.137 [main] INFO   - ClaimSet : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:34:15.512 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:15.512 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.512 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:15.512 [main] FATAL  - Unable to set content type
+2018-07-13 15:34:15.527 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:15.527 [main] INFO   - Request Type : GET
+2018-07-13 15:34:15.527 [main] FATAL  - Unable to set Request type :: 
+2018-07-13 15:34:15.527 [main] FATAL  - Server returned HTTP response code ::  0 URL :: null
+2018-07-13 15:34:15.527 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:108)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.connection.test.JwtUrlConnectionTest.setProxyConnectionTestForNull(JwtUrlConnectionTest.java:189)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.527 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:15.527 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.527 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:15.527 [main] FATAL  - Unable to set content type
+2018-07-13 15:34:15.543 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:15.543 [main] INFO   - Request Type : GET
+2018-07-13 15:34:15.543 [main] FATAL  - Unable to set Request type :: 
+2018-07-13 15:34:15.543 [main] FATAL  - Server returned HTTP response code ::  0 URL :: null
+2018-07-13 15:34:15.543 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:108)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.connection.test.JwtUrlConnectionTest.setProxyConnectionTestForEmpty(JwtUrlConnectionTest.java:209)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.543 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:15.543 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.543 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:15.543 [main] FATAL  - Unable to set content type
+2018-07-13 15:34:15.558 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:15.558 [main] INFO   - Request Type : GET
+2018-07-13 15:34:15.558 [main] FATAL  - Unable to set Request type :: 
+2018-07-13 15:34:15.558 [main] FATAL  - Server returned HTTP response code ::  0 URL :: null
+2018-07-13 15:34:15.558 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:108)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.connection.test.JwtUrlConnectionTest.setRequestMethodTest(JwtUrlConnectionTest.java:149)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.558 [main] INFO   - Request Type : GET
+2018-07-13 15:34:15.558 [main] FATAL  - Unable to set Request type :: 
+2018-07-13 15:34:15.558 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:15.558 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.558 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:15.558 [main] FATAL  - Unable to set content type
+2018-07-13 15:34:15.558 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:15.574 [main] INFO   - Request Type : GET
+2018-07-13 15:34:15.574 [main] FATAL  - Unable to set Request type :: 
+2018-07-13 15:34:15.574 [main] FATAL  - Server returned HTTP response code ::  0 URL :: null
+2018-07-13 15:34:15.574 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:108)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.connection.test.JwtUrlConnectionTest.setJsonApplicationTest(JwtUrlConnectionTest.java:111)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.574 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:15.574 [main] FATAL  - Unable to set content type
+2018-07-13 15:34:15.574 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:15.574 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.574 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:15.574 [main] FATAL  - Unable to set content type
+2018-07-13 15:34:15.574 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:15.574 [main] INFO   - Request Type : GET
+2018-07-13 15:34:15.574 [main] FATAL  - Unable to set Request type :: 
+2018-07-13 15:34:15.574 [main] FATAL  - Server returned HTTP response code ::  0 URL :: null
+2018-07-13 15:34:15.574 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:108)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.connection.test.JwtUrlConnectionTest.setProxyConnectionTestPass(JwtUrlConnectionTest.java:169)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.574 [main] INFO   - http.proxyHost : userproxy.visa.com
+2018-07-13 15:34:15.574 [main] INFO   - http.proxyPort : 8080
+2018-07-13 15:34:15.574 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:15.590 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.590 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:15.590 [main] FATAL  - Unable to set content type
+2018-07-13 15:34:15.590 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:15.590 [main] INFO   - Request Type : GET
+2018-07-13 15:34:15.606 [main] FATAL  - Unable to set Request type :: 
+2018-07-13 15:34:15.606 [main] FATAL  - Server returned HTTP response code ::  0 URL :: null
+2018-07-13 15:34:15.606 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:108)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.connection.test.JwtUrlConnectionTest.openConnectionEmptyUrlTest(JwtUrlConnectionTest.java:229)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.606 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.606 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:15.606 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.606 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:15.606 [main] FATAL  - Unable to set merchantID
+2018-07-13 15:34:15.606 [main] FATAL  - Server returned HTTP response code ::  0  for URL :: null
+2018-07-13 15:34:15.606 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.HttpConnection.httpConnection(HttpConnection.java:231)
+	at com.cybersource.apisdk.connection.HttpConnection.<init>(HttpConnection.java:78)
+	at com.cybersource.apisdk.connection.test.HttpConnectionTest.setSignatureTest(HttpConnectionTest.java:101)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.621 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:15.621 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:15.621 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.621 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:15.621 [main] FATAL  - Unable to set merchantID
+2018-07-13 15:34:15.621 [main] FATAL  - Server returned HTTP response code ::  0  for URL :: null
+2018-07-13 15:34:15.621 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.HttpConnection.httpConnection(HttpConnection.java:231)
+	at com.cybersource.apisdk.connection.HttpConnection.<init>(HttpConnection.java:78)
+	at com.cybersource.apisdk.connection.test.HttpConnectionTest.setProxyConnectionTestForNull(HttpConnectionTest.java:159)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.621 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:15.621 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.621 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:15.621 [main] FATAL  - Unable to set merchantID
+2018-07-13 15:34:15.621 [main] FATAL  - Server returned HTTP response code ::  0  for URL :: null
+2018-07-13 15:34:15.621 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.HttpConnection.httpConnection(HttpConnection.java:231)
+	at com.cybersource.apisdk.connection.HttpConnection.<init>(HttpConnection.java:78)
+	at com.cybersource.apisdk.connection.test.HttpConnectionTest.setProxyConnectionTestForEmpty(HttpConnectionTest.java:178)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.621 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:15.621 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.621 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:15.621 [main] FATAL  - Unable to set merchantID
+2018-07-13 15:34:15.621 [main] FATAL  - Server returned HTTP response code ::  0  for URL :: null
+2018-07-13 15:34:15.621 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.HttpConnection.httpConnection(HttpConnection.java:231)
+	at com.cybersource.apisdk.connection.HttpConnection.<init>(HttpConnection.java:78)
+	at com.cybersource.apisdk.connection.test.HttpConnectionTest.setRequestMethodTest(HttpConnectionTest.java:119)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.621 [main] INFO   - Request Type: GET
+2018-07-13 15:34:15.621 [main] FATAL  - Unable to set Signature 
+2018-07-13 15:34:15.637 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:15.637 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.637 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:15.637 [main] FATAL  - Unable to set merchantID
+2018-07-13 15:34:15.637 [main] FATAL  - Server returned HTTP response code ::  0  for URL :: null
+2018-07-13 15:34:15.637 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.HttpConnection.httpConnection(HttpConnection.java:231)
+	at com.cybersource.apisdk.connection.HttpConnection.<init>(HttpConnection.java:78)
+	at com.cybersource.apisdk.connection.test.HttpConnectionTest.openConnectionTestFail(HttpConnectionTest.java:65)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.637 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.637 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:15.637 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.637 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:15.637 [main] FATAL  - Unable to set merchantID
+2018-07-13 15:34:15.637 [main] FATAL  - Server returned HTTP response code ::  0  for URL :: null
+2018-07-13 15:34:15.637 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.HttpConnection.httpConnection(HttpConnection.java:231)
+	at com.cybersource.apisdk.connection.HttpConnection.<init>(HttpConnection.java:78)
+	at com.cybersource.apisdk.connection.test.HttpConnectionTest.setJsonApplicationTest(HttpConnectionTest.java:83)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.637 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:15.637 [main] FATAL  - Unable to set content type
+2018-07-13 15:34:15.637 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:15.637 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.637 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:15.637 [main] FATAL  - Unable to set merchantID
+2018-07-13 15:34:15.637 [main] FATAL  - Server returned HTTP response code ::  0  for URL :: null
+2018-07-13 15:34:15.637 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.HttpConnection.httpConnection(HttpConnection.java:231)
+	at com.cybersource.apisdk.connection.HttpConnection.<init>(HttpConnection.java:78)
+	at com.cybersource.apisdk.connection.test.HttpConnectionTest.setHeaderDataGetTest(HttpConnectionTest.java:47)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.637 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:15.637 [main] FATAL  - Unable to set merchantID
+2018-07-13 15:34:15.637 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:15.637 [main] INFO   - http.proxyHost : userproxy.visa.com
+2018-07-13 15:34:15.637 [main] INFO   - http.proxyPort : 8080
+2018-07-13 15:34:15.637 [main] ERROR  - Unable to open/set URL :: null
+2018-07-13 15:34:15.637 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:15.637 [main] FATAL  - Unable to set merchantID
+2018-07-13 15:34:15.655 [main] FATAL  - Server returned HTTP response code ::  0  for URL :: null
+2018-07-13 15:34:15.655 [main] ERROR  - java.lang.NullPointerException
+	at com.cybersource.apisdk.connection.HttpConnection.httpConnection(HttpConnection.java:231)
+	at com.cybersource.apisdk.connection.HttpConnection.<init>(HttpConnection.java:78)
+	at com.cybersource.apisdk.connection.test.HttpConnectionTest.setProxyConnectionTest(HttpConnectionTest.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:110)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+2018-07-13 15:34:15.655 [main] INFO   - http.proxyHost : userproxy.visa.com
+2018-07-13 15:34:15.655 [main] INFO   - http.proxyPort : 8080
+2018-07-13 15:34:45.619 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:45.778 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:45.793 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:45.793 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:45.793 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:45.793 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:45.809 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:45.809 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:47.225 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:34:48.256 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:34:50.318 [main] INFO   - ********* START *********
+2018-07-13 15:34:50.318 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:50.318 [main] ERROR  - Request Json File Missing/Null
+2018-07-13 15:34:50.318 [main] INFO   - ********* END   *********
+2018-07-13 15:34:50.318 [main] OFF    - 
+
+2018-07-13 15:34:50.318 [main] INFO   - ********* START *********
+2018-07-13 15:34:50.318 [main] ERROR  - KeyAlias Mismatch. Assigning merchantID value 
+2018-07-13 15:34:50.318 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:50.318 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:34:50.332 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:50.332 [main] INFO   - Request Type : GET
+2018-07-13 15:34:50.332 [main] INFO   - GETID : null
+2018-07-13 15:34:50.535 [main] FATAL  - Server returned HTTP response code ::  0 URL :: https://apitest.cybersource.com/pts/v2/payments/
+2018-07-13 15:34:50.535 [main] ERROR  - java.io.FileNotFoundException: https://apitest.cybersource.com/pts/v2/payments/
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1872)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1474)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:254)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.get(JwtUrlConnection.java:109)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.jwtHttpConnection(JwtUrlConnection.java:63)
+	at com.cybersource.apisdk.connection.JwtUrlConnection.<init>(JwtUrlConnection.java:45)
+	at com.cybersource.apisdk.service.PaymentRequestService.processPaymentRequest(PaymentRequestService.java:59)
+	at com.cybersource.apisdk.service.PaymentRequestService.<init>(PaymentRequestService.java:38)
+	at com.cybersource.apisdk.controller.ApiController.processPayment(ApiController.java:50)
+	at com.cybersource.apisdk.controller.ApiController.paymentGet(ApiController.java:40)
+	at com.cybersource.apisdk.controller.test.ApiControllerTest.PaymentTestIsMerchantDetailsFailForGet(ApiControllerTest.java:187)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:134)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:113)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:103)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:74)
+
+2018-07-13 15:34:50.535 [main] INFO   - ********* END   *********
+2018-07-13 15:34:50.535 [main] OFF    - 
+
+2018-07-13 15:34:50.535 [main] INFO   - ********* START *********
+2018-07-13 15:34:50.535 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:50.535 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:34:50.535 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:50.551 [main] INFO   - Request Type : GET
+2018-07-13 15:34:50.551 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:34:51.051 [main] INFO   - Response Code : 200
+2018-07-13 15:34:51.051 [main] INFO   - v-c-correlation-id : e9f2663a-6770-483a-a8d0-15b54ae61c4d
+2018-07-13 15:34:51.051 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:34:51.051 [main] INFO   - ********* END   *********
+2018-07-13 15:34:51.051 [main] OFF    - 
+
+2018-07-13 15:34:51.051 [main] INFO   - ********* START *********
+2018-07-13 15:34:51.066 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:34:51.066 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:34:51.066 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:51.082 [main] INFO   - Request Type : POST
+2018-07-13 15:34:51.082 [main] INFO   - ClaimSet : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:34:51.562 [main] INFO   - Response Code : 201
+2018-07-13 15:34:51.562 [main] INFO   - v-c-correlation-id : 37886ce6-8707-46a2-83dd-84508a878c0c
+2018-07-13 15:34:51.562 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314762914826721503526","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61017202BJ9PTCR9","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:04:51Z","_links":{"self":{"href":"/pts/v2/payments/5314762914826721503526","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314762914826721503526/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314762914826721503526/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314762914826721503526/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314762914826721503526/voids","method":"POST"}}}
+2018-07-13 15:34:51.562 [main] INFO   - ********* END   *********
+2018-07-13 15:34:51.562 [main] OFF    - 
+
+2018-07-13 15:34:51.578 [main] INFO   - ********* START *********
+2018-07-13 15:34:51.578 [main] INFO   - Authentication Type : HTTP_Signature
+2018-07-13 15:34:51.579 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:34:51.579 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:51.579 [main] INFO   - Request Type: GET
+2018-07-13 15:34:51.579 [main] INFO   - User-Agent : Mozilla/5.0
+2018-07-13 15:34:51.579 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:52.032 [main] INFO   - Date : Fri, 13 Jul 2018 10:04:52 GMT
+2018-07-13 15:34:52.032 [main] INFO   - Host : apitest.cybersource.com
+2018-07-13 15:34:52.032 [main] INFO   - Response Code : 200
+2018-07-13 15:34:52.032 [main] INFO   - v-c-correlation-id : 5ba5aa75-b821-4237-bbf9-6c7c5a7f5376
+2018-07-13 15:34:52.032 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:34:52.032 [main] INFO   - ********* END   *********
+2018-07-13 15:34:52.032 [main] OFF    - 
+
+2018-07-13 15:34:52.032 [main] INFO   - ********* START *********
+2018-07-13 15:34:52.032 [main] ERROR  - Request Json File Missing/Null
+2018-07-13 15:34:52.032 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:34:52.032 [main] INFO   - ********* END   *********
+2018-07-13 15:34:52.048 [main] INFO   - ********* START *********
+2018-07-13 15:34:52.048 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:34:52.048 [main] INFO   - ********* END   *********
+2018-07-13 15:34:52.048 [main] INFO   - ********* START *********
+2018-07-13 15:34:52.048 [main] INFO   - Authentication Type : HTTP_Signature
+2018-07-13 15:34:52.048 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:34:52.048 [main] INFO   - Request Type: POST
+2018-07-13 15:34:52.048 [main] INFO   - User-Agent : Mozilla/5.0
+2018-07-13 15:34:52.048 [main] INFO   - Content-Type : application/json
+2018-07-13 15:34:52.282 [main] INFO   - Date : Fri, 13 Jul 2018 10:04:52 GMT
+2018-07-13 15:34:52.282 [main] INFO   - Host : apitest.cybersource.com
+2018-07-13 15:34:52.282 [main] INFO   - Digest : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:34:52.282 [main] INFO   - Response Code : 201
+2018-07-13 15:34:52.282 [main] INFO   - v-c-correlation-id : 977a0904-4798-41d2-b333-6f5e4374ad05
+2018-07-13 15:34:52.298 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314762922026757103529","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61015307YJ9PV3D4","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:04:52Z","_links":{"self":{"href":"/pts/v2/payments/5314762922026757103529","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314762922026757103529/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314762922026757103529/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314762922026757103529/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314762922026757103529/voids","method":"POST"}}}
+2018-07-13 15:34:52.298 [main] INFO   - ********* END   *********
+2018-07-13 15:34:52.298 [main] OFF    - 
+
+2018-07-13 15:37:38.723 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:37:38.750 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:37:38.750 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:37:38.750 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:37:38.750 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:37:38.766 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:37:38.766 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:37:38.766 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:37:41.242 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:37:41.752 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:37:43.030 [main] INFO   - ********* START *********
+2018-07-13 15:37:43.030 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:37:43.030 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:37:43.030 [main] INFO   - Content-Type : application/json
+2018-07-13 15:37:43.046 [main] INFO   - Request Type : GET
+2018-07-13 15:37:43.046 [main] INFO   - GETID : 5281957982016993203523
+2018-07-13 15:37:43.296 [main] INFO   - Response Code : 200
+2018-07-13 15:37:43.296 [main] INFO   - v-c-correlation-id : 363263f2-a8f2-4aa9-a804-f40bed8b44d5
+2018-07-13 15:37:43.296 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:37:43.296 [main] INFO   - ********* END   *********
+2018-07-13 15:37:43.296 [main] OFF    - 
+
+2018-07-13 15:37:43.296 [main] INFO   - ********* START *********
+2018-07-13 15:37:43.296 [main] INFO   - Authentication Type : HTTP_Signature
+2018-07-13 15:37:43.311 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:37:43.311 [main] INFO   - Request Type: POST
+2018-07-13 15:37:43.311 [main] INFO   - User-Agent : Mozilla/5.0
+2018-07-13 15:37:43.311 [main] INFO   - Content-Type : application/json
+2018-07-13 15:37:43.842 [main] INFO   - Date : Fri, 13 Jul 2018 10:07:43 GMT
+2018-07-13 15:37:43.842 [main] INFO   - Host : apitest.cybersource.com
+2018-07-13 15:37:43.842 [main] INFO   - Digest : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:37:43.842 [main] INFO   - Response Code : 201
+2018-07-13 15:37:43.842 [main] INFO   - v-c-correlation-id : 7e7ac974-e67f-4b55-8b71-d22c5cbee1e0
+2018-07-13 15:37:43.842 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314764637666734103527","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61015894WJ9PTXY1","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:07:43Z","_links":{"self":{"href":"/pts/v2/payments/5314764637666734103527","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314764637666734103527/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314764637666734103527/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314764637666734103527/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314764637666734103527/voids","method":"POST"}}}
+2018-07-13 15:37:43.842 [main] INFO   - ********* END   *********
+2018-07-13 15:37:43.842 [main] OFF    - 
+
+2018-07-13 15:37:43.842 [main] INFO   - ********* START *********
+2018-07-13 15:37:43.842 [main] INFO   - KeyFile, Entered path/file name :: src/test/resources/testrest.p12
+2018-07-13 15:37:43.858 [main] INFO   - Authentication Type : JWT
+2018-07-13 15:37:43.858 [main] INFO   - Content-Type : application/json
+2018-07-13 15:37:43.858 [main] INFO   - Request Type : POST
+2018-07-13 15:37:43.858 [main] INFO   - ClaimSet : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-07-13 15:37:44.092 [main] INFO   - Response Code : 201
+2018-07-13 15:37:44.092 [main] INFO   - v-c-correlation-id : 1d6e755f-ffad-4d2d-80b9-d7b46bcc02af
+2018-07-13 15:37:44.108 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5314764640176724803528","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"61016256XJ9PUKU4","status":"AUTHORIZED","submitTimeUtc":"2018-07-13T10:07:44Z","_links":{"self":{"href":"/pts/v2/payments/5314764640176724803528","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5314764640176724803528/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5314764640176724803528/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5314764640176724803528/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5314764640176724803528/voids","method":"POST"}}}
+2018-07-13 15:37:44.108 [main] INFO   - ********* END   *********
+2018-07-13 15:37:44.108 [main] OFF    - 
+
+2018-07-13 15:37:44.110 [main] INFO   - ********* START *********
+2018-07-13 15:37:44.111 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:37:44.111 [main] INFO   - ********* END   *********
+2018-07-13 15:37:44.111 [main] INFO   - ********* START *********
+2018-07-13 15:37:44.111 [main] INFO   - Authentication Type : HTTP_Signature
+2018-07-13 15:37:44.111 [main] INFO   - GET_ID : 5281957982016993203523
+2018-07-13 15:37:44.111 [main] INFO   - v-c-merchant-id : testrest
+2018-07-13 15:37:44.111 [main] INFO   - Request Type: GET
+2018-07-13 15:37:44.111 [main] INFO   - User-Agent : Mozilla/5.0
+2018-07-13 15:37:44.111 [main] INFO   - Content-Type : application/json
+2018-07-13 15:37:44.580 [main] INFO   - Date : Fri, 13 Jul 2018 10:07:44 GMT
+2018-07-13 15:37:44.580 [main] INFO   - Host : apitest.cybersource.com
+2018-07-13 15:37:44.580 [main] INFO   - Response Code : 200
+2018-07-13 15:37:44.580 [main] INFO   - v-c-correlation-id : fe48b2a9-d689-4171-b6e4-958e6b5e502d
+2018-07-13 15:37:44.580 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5281957982016993203523","method":"GET"}},"id":"5281957982016993203523","submitTimeUTC":"2018-06-05T10:49:58Z","reconciliationID":"64533572AHKB9FKL","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"XXXXXXXXX","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"XXXXXXXXX","firstName":"RTS","lastName":"VDP","phoneNumber":"999999999","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-07-13 15:37:44.580 [main] INFO   - ********* END   *********
+2018-07-13 15:37:44.580 [main] OFF    - 
+
+2018-07-13 15:37:44.580 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:37:44.580 [main] INFO   - ********* END   *********
+2018-07-13 15:37:44.580 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:37:44.580 [main] INFO   - ********* END   *********
+2018-07-13 15:37:44.580 [main] FATAL  - Invalid Authentication Type in cybs.properties :: 
+2018-07-13 15:37:44.580 [main] INFO   - ********* END   *********

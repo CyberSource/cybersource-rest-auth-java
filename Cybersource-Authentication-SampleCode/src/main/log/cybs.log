@@ -1,0 +1,83 @@
+2018-06-22 17:29:35.306 [main] INFO   - ********* START *********
+2018-06-22 17:29:35.306 [main] INFO   - Authentication Type : http_Signature
+2018-06-22 17:29:35.306 [main] INFO   - GET_ID : 5265502011846829204101
+2018-06-22 17:29:35.322 [main] INFO   - http.proxyHost : null
+2018-06-22 17:29:35.322 [main] INFO   - http.proxyPort : 8080
+2018-06-22 17:29:35.619 [main] INFO   - v-c-merchant-id : testrest
+2018-06-22 17:29:35.666 [main] INFO   - Request Type: GET
+2018-06-22 17:29:35.666 [main] INFO   - User-Agent : Mozilla/5.0
+2018-06-22 17:29:35.666 [main] INFO   - Content-Type : application/json
+2018-06-22 17:29:36.525 [main] INFO   - Date : Fri, 22 Jun 2018 11:59:36 GMT
+2018-06-22 17:29:36.525 [main] INFO   - Host : apitest.cybersource.com
+2018-06-22 17:29:36.543 [main] INFO   - Response Code : 200
+2018-06-22 17:29:36.543 [main] INFO   - v-c-correlation-id : ebc64504-b2e2-480f-9151-25aeaaf0d51b
+2018-06-22 17:29:36.572 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5265502011846829204101","method":"GET"}},"id":"5265502011846829204101","submitTimeUTC":"2018-05-17T09:43:21Z","reconciliationID":"75500834DH91BUN5","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"12","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"test@cybs.com","firstName":"RTS","lastName":"VDP","phoneNumber":"XXXXXXXXX","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-06-22 17:29:36.572 [main] INFO   - ********* END   *********
+2018-06-22 17:29:36.572 [main] OFF    - 
+
+2018-06-22 17:31:15.232 [main] INFO   - ********* START *********
+2018-06-22 17:31:15.248 [main] INFO   - Authentication Type : http_Signature
+2018-06-22 17:31:15.279 [main] INFO   - GET_ID : 5265502011846829204101
+2018-06-22 17:31:15.279 [main] INFO   - http.proxyHost : null
+2018-06-22 17:31:15.279 [main] INFO   - http.proxyPort : 8080
+2018-06-22 17:31:15.654 [main] INFO   - v-c-merchant-id : testrest
+2018-06-22 17:32:30.199 [main] INFO   - ********* START *********
+2018-06-22 17:32:30.214 [main] INFO   - Authentication Type : http_Signature
+2018-06-22 17:32:30.235 [main] INFO   - GET_ID : 5265502011846829204101
+2018-06-22 17:32:30.235 [main] INFO   - http.proxyHost : null
+2018-06-22 17:32:30.235 [main] INFO   - http.proxyPort : 8080
+2018-06-22 17:32:30.543 [main] INFO   - v-c-merchant-id : testrest
+2018-06-22 17:33:47.211 [main] INFO   - Request Type: GET
+2018-06-22 17:33:47.868 [main] INFO   - User-Agent : Mozilla/5.0
+2018-06-22 17:33:48.539 [main] INFO   - Content-Type : application/json
+2018-06-22 17:38:52.698 [main] INFO   - ********* START *********
+2018-06-22 17:38:52.714 [main] INFO   - Authentication Type : http_Signature
+2018-06-22 17:38:52.714 [main] INFO   - GET_ID : 5265502011846829204101
+2018-06-22 17:38:52.714 [main] INFO   - http.proxyHost : null
+2018-06-22 17:38:52.714 [main] INFO   - http.proxyPort : 8080
+2018-06-22 17:38:53.007 [main] INFO   - v-c-merchant-id : testrest
+2018-06-22 17:38:53.054 [main] INFO   - Request Type: GET
+2018-06-22 17:38:53.054 [main] INFO   - User-Agent : Mozilla/5.0
+2018-06-22 17:38:53.054 [main] INFO   - Content-Type : application/json
+2018-06-22 17:38:53.982 [main] INFO   - Date : Fri, 22 Jun 2018 12:08:53 GMT
+2018-06-22 17:38:53.982 [main] INFO   - Host : apitest.cybersource.com
+2018-06-22 17:38:53.982 [main] INFO   - Response Code : 200
+2018-06-22 17:38:53.982 [main] INFO   - v-c-correlation-id : 1d22cdd1-2151-4640-a2af-938a17bfbe50
+2018-06-22 17:38:54.029 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5265502011846829204101","method":"GET"}},"id":"5265502011846829204101","submitTimeUTC":"2018-05-17T09:43:21Z","reconciliationID":"75500834DH91BUN5","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"12","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"test@cybs.com","firstName":"RTS","lastName":"VDP","phoneNumber":"XXXXXXXXX","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-06-22 17:38:54.029 [main] INFO   - ********* END   *********
+2018-06-22 17:38:54.029 [main] OFF    - 
+
+2018-06-22 17:39:00.855 [main] INFO   - ********* START *********
+2018-06-22 17:39:00.855 [main] INFO   - Authentication Type : http_Signature
+2018-06-22 17:39:00.870 [main] INFO   - http.proxyHost : null
+2018-06-22 17:39:00.870 [main] INFO   - http.proxyPort : 8080
+2018-06-22 17:39:01.151 [main] INFO   - v-c-merchant-id : testrest
+2018-06-22 17:39:01.213 [main] INFO   - Request Type: POST
+2018-06-22 17:39:01.213 [main] INFO   - User-Agent : Mozilla/5.0
+2018-06-22 17:39:01.213 [main] INFO   - Content-Type : application/json
+2018-06-22 17:39:02.081 [main] INFO   - Date : Fri, 22 Jun 2018 12:09:02 GMT
+2018-06-22 17:39:02.081 [main] INFO   - Host : apitest.cybersource.com
+2018-06-22 17:39:02.112 [main] INFO   - Digest : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"XXXXXXXXX","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"test@cybs.com"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"XXXXXXXXX","district":"MI","buildingNumber":"123","company":"Visa","email":"test@cybs.com"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"12","type":"002"}}}
+2018-06-22 17:39:02.112 [main] INFO   - Response Code : 201
+2018-06-22 17:39:02.112 [main] INFO   - v-c-correlation-id : d540bd9a-a55b-43c9-8e8f-b6764732d7fd
+2018-06-22 17:39:02.112 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5296693420016511103527","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","cardVerification":{"resultCode":""},"avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"67473556WINV7BOO","status":"AUTHORIZED","submitTimeUtc":"2018-06-22T00:09:02Z","_links":{"self":{"href":"/pts/v2/payments/5296693420016511103527","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5296693420016511103527/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5296693420016511103527/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5296693420016511103527/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5296693420016511103527/voids","method":"POST"}}}
+2018-06-22 17:39:02.112 [main] INFO   - ********* END   *********
+2018-06-22 17:39:02.112 [main] OFF    - 
+
+2018-06-22 17:39:24.109 [main] INFO   - ********* START *********
+2018-06-22 17:39:24.109 [main] INFO   - Authentication Type : http_Signature
+2018-06-22 17:39:24.109 [main] INFO   - GET_ID : 5296693420016511103527
+2018-06-22 17:39:24.109 [main] INFO   - http.proxyHost : null
+2018-06-22 17:39:24.109 [main] INFO   - http.proxyPort : 8080
+2018-06-22 17:39:24.392 [main] INFO   - v-c-merchant-id : testrest
+2018-06-22 17:39:24.439 [main] INFO   - Request Type: GET
+2018-06-22 17:39:24.439 [main] INFO   - User-Agent : Mozilla/5.0
+2018-06-22 17:39:24.439 [main] INFO   - Content-Type : application/json
+2018-06-22 17:39:25.323 [main] INFO   - Date : Fri, 22 Jun 2018 12:09:25 GMT
+2018-06-22 17:39:25.323 [main] INFO   - Host : apitest.cybersource.com
+2018-06-22 17:39:25.323 [main] INFO   - Response Code : 200
+2018-06-22 17:39:25.323 [main] INFO   - v-c-correlation-id : 0de8cf4b-4988-4da1-ae44-23dc720131d5
+2018-06-22 17:39:25.376 [main] INFO   - Response Message : {"_links":{"self":{"href":"https://apitest.cybersource.com/payment/v1/tss/payments/5296693420016511103527","method":"GET"}},"id":"5296693420016511103527","submitTimeUTC":"2018-06-22T12:09:02Z","reconciliationID":"67473556WINV7BOO","statusInformation":{"reason":"Success","message":"Request was processed successfully."},"clientReferenceInformation":{"code":"TC50171_3","applicationVersion":"1.0"},"processorInformation":{"approvalCode":"888888","avs":{"code":"X"}},"paymentInformation":{"card":{"suffix":"4444","expirationMonth":"12","expirationYear":"2031","type":"credit card"}},"orderInformation":{"billTo":{"address1":"201 S. Division St.","address2":"Address 2","locality":"Ann Arbor","company":"Visa","country":"US","email":"test@cybs.com","firstName":"RTS","lastName":"VDP","phoneNumber":"XXXXXXXXX","postalCode":"48104-2201","administrativeArea":"MI"}}}
+2018-06-22 17:39:25.377 [main] INFO   - ********* END   *********
+2018-06-22 17:39:25.379 [main] OFF    - 
+

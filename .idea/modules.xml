@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ApiSdk/ApiSdk.iml" filepath="$PROJECT_DIR$/ApiSdk/ApiSdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AuthenticationSdk/AuthenticationSdk.iml" filepath="$PROJECT_DIR$/AuthenticationSdk/AuthenticationSdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Cybersource-Authentication-SDK.iml" filepath="$PROJECT_DIR$/Cybersource-Authentication-SDK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Cybersource-Authentication-SampleCode/Cybersource-Authentication-SampleCode.iml" filepath="$PROJECT_DIR$/Cybersource-Authentication-SampleCode/Cybersource-Authentication-SampleCode.iml" />
+    </modules>
+  </component>
+</project>
