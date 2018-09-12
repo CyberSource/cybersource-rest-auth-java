@@ -35,14 +35,14 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
   
   Configure the following information in cybs.properties file
   
-*	Authentication Type:  User should enter “HTTP_Signature” for HTTP authentication mechanism.
-*	Merchant ID: User will provide the ID, which has taken from EBC portal.
-*	MerchantSecretKey: User will provide the secret Key value, which has taken from EBC portal.
-*	MerchantKeyId:  User will provide the Key ID value, which has taken from EBC portal.
-*	Enable Log: To start the log entry provide true else enter false.logging should normally be disabled in production as it would slow                 down the processing. Enable it only when troubleshooting an issue.
-*   LogDirectory :User will provide directory path where logs will be created.
-*   LogMaximumSize :User will provide size in MB.
-*   LogFilename  :User will provide log file name.
+*	Authentication Type  : User should enter “HTTP_Signature” for HTTP authentication mechanism.
+*	Merchant ID          : User will provide the ID, which has taken from EBC portal.
+*	MerchantSecretKey    : User will provide the secret Key value, which has taken from EBC portal.
+*	MerchantKeyId        : User will provide the Key ID value, which has taken from EBC portal.
+*	Enable Log           : To start the log entry provide true else enter false.logging should normally be disabled in production as it                            would slow down the processing. Enable it only when troubleshooting an issue.
+* LogDirectory         : User will provide directory path where logs will be created.
+* LogMaximumSize       : User will provide size in MB.
+* LogFilename          : User will provide log file name.
 
 
 ```
@@ -65,18 +65,18 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 *	keyAlias: Alias of the ID, to be used while generating the JWT token.
 *	keyPass: Alias of the Merchant password, to be used while generating the JWT token.
 *	keyFileName: User should enter keyFile name. 
-*   Keys Directory: Path of the folder where the .P12 file is placed. This file has generated from the EBC portal.
+* Keys Directory: Path of the folder where the .P12 file is placed. This file has generated from the EBC portal.
 *	Enable Log: To start the log entry provide true else enter false.logging should normally be disabled in production as it would slow                 down the processing. Enable it only when troubleshooting an issue.
-*   LogDirectory :User will provide directory path where logs will be created.
-*   LogMaximumSize :User will provide size value for log file.
-*   LogFilename  :User will provide log file name.
+* LogDirectory :User will provide directory path where logs will be created.
+* LogMaximumSize :User will provide size value for log file.
+* LogFilename  :User will provide log file name.
 
 ```
    authenticationType  = Jwt
    merchantID 	       = <merchantID>
    runEnvironment      = CyberSource.Environment.SANDBOX
-   keyAlias			   = <keyAlias>
-   keyPass	           = <keyPassword>
+   keyAlias            = <keyAlias>
+   keyPass	       = <keyPassword>
    keyFileName         = <keyFileName>
    keysDirectory       = <keysDirectory>
    enableLog           = true
@@ -114,4 +114,4 @@ To compile the SDK and create a jar...
   ` $ mvn clean package`
   
 ## License
-This repository is distributed under a proprietary license.
+This repository is distributed under a proprietary license. 
