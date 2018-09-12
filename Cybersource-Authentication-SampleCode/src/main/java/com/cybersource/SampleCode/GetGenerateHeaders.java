@@ -57,6 +57,25 @@ public class GetGenerateHeaders {
 		this.getID = Utility.retrieveGetIDFromRequestTarget(requestTarget);
 		generateGetHeaders();
 	}
+	
+	/**
+	 * 
+	 * @param merchantConfig
+	 *            : this object contains all the cybs.properites details.
+	 * @throws Exception
+	 */
+	public GetGenerateHeaders(MerchantConfig merchantConfig) throws Exception {
+		this.merchantConfig = merchantConfig;
+		Utility.logEnable = false;
+		merchantConfig.setGetID(getID);
+		merchantConfig.setRequestType(requestType);
+		this.logger = Log4j.getInstance(merchantConfig);
+		auth = new Authorization();
+		generateGetHeaders();
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
+		Utility.log(this.logger, " ", Level.OFF);
+
+	}
 
 	public GetGenerateHeaders() throws Exception {
 		setGenerateHeaders();
@@ -73,6 +92,7 @@ public class GetGenerateHeaders {
 	private void setGenerateHeaders() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		authenticationType = merchantConfig.getAuthenticationType().trim();
 		merchantConfig.setRequestType(requestType);
 		this.logger = Log4j.getInstance(merchantConfig);
 		auth = new Authorization();

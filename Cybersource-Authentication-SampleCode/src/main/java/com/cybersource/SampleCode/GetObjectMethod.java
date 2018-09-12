@@ -63,7 +63,7 @@ public class GetObjectMethod {
 		try {
 			if (!responseCode.isEmpty() && !responseMessage.isEmpty() && responseMessage != null
 					&& responseCode != null) {
-				new GetGenerateHeaders(requestTarget);
+				new GetGenerateHeaders(merchantConfig);
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + responseCode);
 				System.out.println(" V-C-Corealation ID  : " + merchantConfig.getV_c_CorelationID());

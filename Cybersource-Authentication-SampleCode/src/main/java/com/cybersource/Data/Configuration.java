@@ -9,7 +9,7 @@ public class Configuration {
 		Properties props = new Properties();
 
 		// HTTP_Signature and JWT
-		props.setProperty("authenticationType", "http_signature");
+		props.setProperty("authenticationType", "jwt");
 		props.setProperty("merchantID", "testrest");
 		props.setProperty("runEnvironment", "CyberSource.Environment.SANDBOX");
 		if(PropertiesUtil.runningFromIntelliJ()){
