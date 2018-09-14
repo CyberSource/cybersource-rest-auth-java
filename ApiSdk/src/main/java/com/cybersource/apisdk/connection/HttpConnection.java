@@ -9,7 +9,9 @@ import java.net.URL;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Properties;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.authsdk.core.Authorization;
@@ -17,10 +19,6 @@ import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Here all the data ( header + digest + Signature ) are set inside the HTTP
@@ -246,7 +244,7 @@ public class HttpConnection implements Connection, Headers {
 		int responseCode = con.getResponseCode();
 		String resVcCorelationId = con.getHeaderField(GlobalLabelParameters.V_C_CORRELATION_ID);
 		merchantConfig.setResponseCode(String.valueOf(responseCode));
-		merchantConfig.setV_c_CorelationID(resVcCorelationId);
+		merchantConfig.setVcCorelationID(resVcCorelationId);
 
 		Utility.log(logger, GlobalLabelParameters.DATE.concat(" : ").concat(getDate()), Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.HOST.concat(" : ").concat(requestHost), Level.INFO);

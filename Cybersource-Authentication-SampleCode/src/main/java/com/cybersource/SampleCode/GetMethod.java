@@ -62,7 +62,7 @@ public class GetMethod {
 				new GetGenerateHeaders(requestTarget);
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + responseCode);
-				System.out.println(" V-C-Corealation ID  : " + merchantConfig.getV_c_CorelationID());
+				System.out.println(" V-C-Corealation ID  : " + merchantConfig.getVcCorelationID());
 				System.out.println(" Response Message    : " + responseMessage);
 			}
 		} catch (Exception e) {

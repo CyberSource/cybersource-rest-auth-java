@@ -75,7 +75,7 @@ public class DeleteMethod {
 				new DeleteGenerateHeaders(merchantConfig);
 			System.out.println(" URL                : " + url);
 			System.out.println(" Response Code      : " + merchantConfig.getResponseCode());
-			System.out.println(" V-C-Corealation ID : " + merchantConfig.getV_c_CorelationID());
+			System.out.println(" V-C-Corealation ID : " + merchantConfig.getVcCorelationID());
 			System.out.println(" Response Message   : " + merchantConfig.getResponseMessage());
 			}
 		} catch (Exception e) {

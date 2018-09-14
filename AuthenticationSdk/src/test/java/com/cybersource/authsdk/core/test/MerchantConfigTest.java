@@ -628,8 +628,8 @@ public class MerchantConfigTest {
 	@Test
 	public void setV_c_CorelationIDTest() throws ConfigException {
 		merchantConfig = new MerchantConfig();
-		merchantConfig.setV_c_CorelationID("test");
-		String str = merchantConfig.getV_c_CorelationID();
+		merchantConfig.setVcCorelationID("test");
+		String str = merchantConfig.getVcCorelationID();
 		Assert.assertNotNull(str);
 	}
 

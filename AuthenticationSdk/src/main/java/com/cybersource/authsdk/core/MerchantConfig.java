@@ -57,7 +57,7 @@ public class MerchantConfig {
 	private String requestHost;
 	private String responseMessage;
 	private String responseCode;
-	private String v_c_CorelationID;
+	private String vcCorelationID;
 	private String requestType;
 
 	private boolean isRequestJson = true;
@@ -110,12 +110,14 @@ public class MerchantConfig {
 		this.requestData = requestData;
 	}
 
-	public String getV_c_CorelationID() {
-		return v_c_CorelationID;
+	
+
+	public String getVcCorelationID() {
+		return vcCorelationID;
 	}
 
-	public void setV_c_CorelationID(String v_c_CorelationID) {
-		this.v_c_CorelationID = v_c_CorelationID;
+	public void setVcCorelationID(String vcCorelationID) {
+		this.vcCorelationID = vcCorelationID;
 	}
 
 	public String getResponseCode() {

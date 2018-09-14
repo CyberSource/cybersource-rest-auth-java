@@ -84,7 +84,7 @@ public class PostMethod {
 				new PostGenerateHeaders(merchantConfig);
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + merchantConfig.getResponseCode());
-				System.out.println(" v-c-Co-relation ID  : " + merchantConfig.getV_c_CorelationID());
+				System.out.println(" v-c-Co-relation ID  : " + merchantConfig.getVcCorelationID());
 				System.out.println(" Response Message    : " + merchantConfig.getResponseMessage());
 			}
 		} catch (Exception e) {

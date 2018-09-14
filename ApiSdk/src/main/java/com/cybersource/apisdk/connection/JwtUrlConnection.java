@@ -146,7 +146,7 @@ public class JwtUrlConnection implements Connection, Headers {
 				Level.INFO);
 		
 		String responseHeader = con.getHeaderField(GlobalLabelParameters.V_C_CORRELATION_ID);
-		merchantConfig.setV_c_CorelationID(responseHeader);
+		merchantConfig.setVcCorelationID(responseHeader);
 		Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : " + String.valueOf(responseHeader),
 				Level.INFO);
 
