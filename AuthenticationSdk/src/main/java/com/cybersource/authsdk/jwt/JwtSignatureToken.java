@@ -59,18 +59,18 @@ public class JwtSignatureToken implements TokenGenerator {
 				if (Cache.isCache) {
 					rsaPrivateKey = KeyCertificateGenerator.initializePrivateKey(merchantConfig);
 					x509Certificate = KeyCertificateGenerator.initializeCertificate(merchantConfig);
-					Utility.log(logger, GlobalLabelParameters.CACHE_BEGIN, Level.INFO);
+					Utility.log(logger, GlobalLabelParameters.CACHE_BEGIN,"", Level.INFO);
 					setUpCache();
 					Cache.isCache = false;
 				} else {
 					boolean lastModified = cache.isLastModifiedTimeP12();
 					if (lastModified) {
-						Utility.log(logger, GlobalLabelParameters.CACHE_EXTRACT, Level.INFO);
+						Utility.log(logger, GlobalLabelParameters.CACHE_EXTRACT,"", Level.INFO);
 						cache.retriveP12DataFromCache();
 						rsaPrivateKey = cache.getRsaPrivateKey();
 						x509Certificate = cache.getX509Certificate();
 					} else { /**/
-						Utility.log(logger, GlobalLabelParameters.CACHE_EXTEND, Level.INFO);
+						Utility.log(logger, GlobalLabelParameters.CACHE_EXTEND,"", Level.INFO);
 						rsaPrivateKey = KeyCertificateGenerator.initializePrivateKey(merchantConfig);
 						x509Certificate = KeyCertificateGenerator.initializeCertificate(merchantConfig);
 						setUpCache();
@@ -129,7 +129,7 @@ public class JwtSignatureToken implements TokenGenerator {
 				throw new ConfigException("merchant config fields missing: keyType, key type");
 			}
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.JWT_SIG_FAILED, Level.FATAL);
+			Utility.log(logger, GlobalLabelParameters.JWT_SIG_FAILED,"", Level.FATAL);
 			Utility.log(logger, e);
 			signature =  null;
 		}

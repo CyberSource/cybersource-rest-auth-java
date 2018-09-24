@@ -46,10 +46,10 @@ public class MerchantConfig {
 	 *
 	 */
 	private String merchantKeyId;
-	private String merchantsecretKey;
+	private String merchantSecretKey;
 	/* Common parameters for HTTP and JWT. */
 	private String merchantID;
-	private String URL;
+	private String url;
 	private String requestTarget;
 	private String authenticationType;
 	private boolean sendToProduction;
@@ -91,15 +91,15 @@ public class MerchantConfig {
 	public String getRequestData() {
 
 		try {
-			if (this.getRequestJsonPath().equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)){
+			if (this.getRequestJsonPath().equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)) {
 				return requestData;
 			}
 
 			else if (this.getRequestJsonPath() != null && !this.getRequestJsonPath().isEmpty()) {
-				requestData = PropertiesUtil.getJSONInput(this.getRequestJsonPath());
+				requestData = PropertiesUtil.getJsonInput(this.getRequestJsonPath());
 			}
 		} catch (Exception e) {
-			Utility.log(log, GlobalLabelParameters.FILE_NOT_FOUND + this.getRequestJsonPath(), Level.FATAL);
+			Utility.log(log, GlobalLabelParameters.FILE_NOT_FOUND, this.getRequestJsonPath(), Level.FATAL);
 			Utility.log(log, e);
 			return null;
 		}
@@ -109,8 +109,6 @@ public class MerchantConfig {
 	public void setRequestData(String requestData) {
 		this.requestData = requestData;
 	}
-
-	
 
 	public String getVcCorelationID() {
 		return vcCorelationID;
@@ -172,8 +170,8 @@ public class MerchantConfig {
 		return getID;
 	}
 
-	public String getMerchantsecretKey() {
-		return merchantsecretKey;
+	public String getMerchantSecretKey() {
+		return merchantSecretKey;
 	}
 
 	public String getMerchantKeyId() {
@@ -249,12 +247,12 @@ public class MerchantConfig {
 		return this.keyFilename;
 	}
 
-	public String getURL() {
-		return this.URL;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setURL(String URL) {
-		this.URL = URL;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public String getRequestTarget() {
@@ -447,7 +445,7 @@ public class MerchantConfig {
 				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
 			return true;
 		}
-		Utility.log(log, GlobalLabelParameters.INVALID_REQUEST_TYPE + this.requestType, Level.ERROR);
+		Utility.log(log, GlobalLabelParameters.INVALID_REQUEST_TYPE, this.requestType, Level.ERROR);
 		return false;
 	}
 
@@ -456,7 +454,7 @@ public class MerchantConfig {
 	 */
 	public boolean checkKeyPassword() {
 		if (this.keyPass == null || this.keyPass.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.KEY_PASSWORD_EMPTY_NULL, Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.KEY_PASSWORD_EMPTY_NULL, "", Level.ERROR);
 			this.keyPass = this.merchantID;
 
 		}
@@ -468,7 +466,7 @@ public class MerchantConfig {
 	 */
 	public boolean checkRunEvironment() {
 		if (this.runEnvironment == null || this.runEnvironment.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.RUN_ENVIRONMENT_ERR, Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.RUN_ENVIRONMENT_ERR, "", Level.ERROR);
 			return false;
 		} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)) {
@@ -479,7 +477,7 @@ public class MerchantConfig {
 
 	public boolean checkMerchantKeyId() {
 		if (this.merchantKeyId == null || this.merchantKeyId.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.MERCHANT_KEYID_MISSING, Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.MERCHANT_KEYID_MISSING, "", Level.ERROR);
 			return false;
 		}
 		return true;
@@ -490,25 +488,25 @@ public class MerchantConfig {
 	}
 
 	public boolean checkMerchantSecertKey() {
-		if (this.merchantsecretKey == null || this.merchantsecretKey.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.MERCHANTSECERT_KEY_MISSING, Level.ERROR);
+		if (this.merchantSecretKey == null || this.merchantSecretKey.isEmpty()) {
+			Utility.log(log, GlobalLabelParameters.MERCHANTSECERT_KEY_MISSING, "", Level.ERROR);
 			return false;
 		}
 		return true;
 	}
 
-	public void setMerchantsecretKey(String merchantsecretKey) {
-		this.merchantsecretKey = merchantsecretKey;
+	public void setMerchantSecretKey(String merchantsecretKey) {
+		this.merchantSecretKey = merchantsecretKey;
 	}
 
 	/**
 	 *
-	 *@checkParameter
+	 * @checkParameter
 	 */
 	public boolean checkLogMaxSizeAndFolder() {
 
 		if (this.logDirectory == null || this.logDirectory.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.NO_LOG_DIRECTORY, Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.NO_LOG_DIRECTORY, "", Level.ERROR);
 			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
 			return true;
 		}
@@ -531,20 +529,20 @@ public class MerchantConfig {
 					|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
 				return true;
 			}
-			if(jsonPath.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)){
+			if (jsonPath.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)) {
 				return true;
 			}
 			if (jsonPath == null || jsonPath.isEmpty()) {
-				Utility.log(log, GlobalLabelParameters.REQUEST_JSON_MIS_NULL, Level.ERROR);
+				Utility.log(log, GlobalLabelParameters.REQUEST_JSON_MIS_NULL, "", Level.ERROR);
 				return false;
 			}
 			f = new File(jsonPath);
 			if (!f.exists()) {
-				Utility.log(log, GlobalLabelParameters.REQUEST_JSON_ERROR + f.getAbsolutePath(), Level.ERROR);
+				Utility.log(log, GlobalLabelParameters.REQUEST_JSON_ERROR, f.getAbsolutePath(), Level.ERROR);
 				return false;
 			}
 			if (!f.canRead()) {
-				Utility.log(log, GlobalLabelParameters.FILE_NOT_READ + f.getAbsolutePath(), Level.ERROR);
+				Utility.log(log, GlobalLabelParameters.FILE_NOT_READ, f.getAbsolutePath(), Level.ERROR);
 				return false;
 			}
 		} catch (Exception e) {
@@ -556,11 +554,11 @@ public class MerchantConfig {
 
 	public boolean checkKeyAlias() {
 		if (this.keyAlias == null || this.keyAlias.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY + this.merchantID, Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY, this.merchantID, Level.ERROR);
 			this.keyAlias = merchantID;
 		} else if (!this.keyAlias.equalsIgnoreCase(this.merchantID)) {
 			this.keyAlias = this.merchantID;
-			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_MISMATCH, Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_MISMATCH, "", Level.ERROR);
 		}
 		return true;
 	}
@@ -570,10 +568,6 @@ public class MerchantConfig {
 	 * @throws ConfigException
 	 */
 	public void setMerchantDetails() {
-		/* Common Parameters */
-
-		// this.requestJsonPath = this.getProperty(this.requestJsonPath,
-		// "requestJsonPath").trim();
 
 		/* Logging Parameters */
 		if (PropertiesUtil.runningFromIntelliJ()) {
@@ -584,8 +578,6 @@ public class MerchantConfig {
 		this.logFilename = this.getProperty(this.merchantID, "logFilename").trim();
 		this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize").trim();
 		/* JWT Parameters */
-		// this.recipientID = this.getProperty(this.merchantID,
-		// "recipientID").trim();
 		if (PropertiesUtil.runningFromIntelliJ()) {
 			this.keysDirectory = "./resources";
 		} else {
@@ -593,20 +585,18 @@ public class MerchantConfig {
 		}
 		this.keyAlias = this.getProperty(this.merchantID, "keyAlias").trim();
 		this.keyPass = this.getProperty(this.merchantID, "keyPass");
-		// this.keyType = this.getProperty(this.merchantID, "keyType").trim();
 		this.keyFilename = this.getProperty(this.merchantID, "keyFileName").trim();
-		// this.password = this.getProperty(this.merchantID, "password").trim();
 		this.enableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
 		/* Optional use [ TIME OUT ] */
 		this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
 		this.proxyPort = this.getIntegerProperty(this.merchantID, "proxyPort", 8080);
-		// this.proxyUser = this.getProperty(this.merchantID,
-		// "proxyUser").trim();
+		// this.proxyUser =
+		// this.getProperty(this.merchantID,"proxyUser").trim();
 		this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
 		this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
 		/* HTTP Parameters */
 		this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId").trim();
-		this.merchantsecretKey = this.getProperty(this.merchantID, "merchantsecretKey").trim();
+		this.merchantSecretKey = this.getProperty(this.merchantID, "merchantsecretKey").trim();
 		this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment").trim();
 		/* Run Environment. */
 		try {
@@ -616,22 +606,22 @@ public class MerchantConfig {
 				this.requestHost = GlobalLabelParameters.PRODUCTION_URL;
 			} else if (this.runEnvironment.isEmpty()) {
 				this.log = Log4j.getInstance(this);
-				Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, Level.INFO);
-				Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, Level.ERROR);
+				Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
+				Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, "", Level.ERROR);
 				isSetMerchantDetails = false;
 			} else {
 				this.requestHost = this.runEnvironment;
 			}
 		} catch (Exception e) {
 			this.log = Log4j.getInstance(this);
-			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, Level.INFO);
-			Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, Level.ERROR);
+			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
+			Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, "", Level.ERROR);
 			isSetMerchantDetails = false;
 		}
 		if (this.merchantID == null || this.merchantID.isEmpty()) {
 			this.log = Log4j.getInstance(this);
-			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, Level.INFO);
-			Utility.log(this.log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, Level.ERROR);
+			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
+			Utility.log(this.log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, "", Level.ERROR);
 			isSetMerchantDetails = false;
 		}
 		checkMandatoryFields();
@@ -655,7 +645,7 @@ public class MerchantConfig {
 		isSetMerchantDetails = false;
 		this.authenticationType = "Not Present in file";
 		this.log = Log4j.getInstance(this);
-		Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, Level.INFO);
+		Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 		return;
 	}
 
@@ -677,7 +667,7 @@ public class MerchantConfig {
 		keyFile = null;
 		try {
 			if (this.keyFilename == null || this.keyFilename.isEmpty()) {
-				Utility.log(log, GlobalLabelParameters.KEY_FILE_EMPTY + this.merchantID, Level.ERROR);
+				Utility.log(log, GlobalLabelParameters.KEY_FILE_EMPTY, this.merchantID, Level.ERROR);
 				if (this.merchantID != null) {
 					this.keyFilename = this.merchantID;
 				}
@@ -688,34 +678,33 @@ public class MerchantConfig {
 
 		try {
 			if (this.keysDirectory.isEmpty() || this.keysDirectory == null) {
-				Utility.log(log, GlobalLabelParameters.KEY_DIRECTORY_EMPTY, Level.ERROR);
+				Utility.log(log, GlobalLabelParameters.KEY_DIRECTORY_EMPTY, "", Level.ERROR);
 				this.keysDirectory = GlobalLabelParameters.DEF_KEY_DIRECTORY_PATH;
 			}
 		} catch (Exception e) {
-			Utility.log(log, GlobalLabelParameters.KEY_DIRECTORY_EMPTY, Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.KEY_DIRECTORY_EMPTY, "", Level.ERROR);
 			this.keysDirectory = GlobalLabelParameters.DEF_KEY_DIRECTORY_PATH;
 		}
 
 		keyFile = new File(this.keysDirectory);
 
 		if (!keyFile.isDirectory()) {
-			Utility.log(log, GlobalLabelParameters.KEY_FILE_DIRECTORY_NOT_FOUND + this.keysDirectory, Level.ERROR);
-			System.err.println(GlobalLabelParameters.KEY_FILE_DIRECTORY_NOT_FOUND + this.keysDirectory);
+			Utility.log(log, GlobalLabelParameters.KEY_FILE_DIRECTORY_NOT_FOUND, this.keysDirectory, Level.ERROR);
 			keyFile = null;
 			return false;
 		}
 		try {
-			keyFile = new File(this.keysDirectory, this.keyFilename + GlobalLabelParameters.P12_EXTENSION);
+			keyFile = new File(this.keysDirectory, this.keyFilename.concat(GlobalLabelParameters.P12_EXTENSION));
 			if (!keyFile.exists()) {
-				Utility.log(log, GlobalLabelParameters.KEY_FILE_NOT_FOUND + this.keysDirectory + "/" + this.keyFilename
-						+ GlobalLabelParameters.P12_EXTENSION, Level.ERROR);
-				System.err.println(GlobalLabelParameters.KEY_FILE_NOT_FOUND + this.keysDirectory + "/"
-						+ this.keyFilename + GlobalLabelParameters.P12_EXTENSION);
+				Utility.log(log, GlobalLabelParameters.KEY_FILE_NOT_FOUND,
+						this.keysDirectory.concat("/").concat(this.keyFilename) + GlobalLabelParameters.P12_EXTENSION,
+						Level.ERROR);
 				keyFile = null;
 				return false;
 			}
-			Utility.log(log, GlobalLabelParameters.KEY_FILE + this.keysDirectory + "/" + this.keyFilename
-					+ GlobalLabelParameters.P12_EXTENSION, Level.INFO);
+			Utility.log(log, GlobalLabelParameters.KEY_FILE,
+					this.keysDirectory.concat("/").concat(this.keyFilename) + GlobalLabelParameters.P12_EXTENSION,
+					Level.INFO);
 		} catch (Exception e) {
 			keyFile = null;
 			return false;
@@ -726,7 +715,8 @@ public class MerchantConfig {
 			/* Do Nothing. */
 			return true;
 		} else {
-			Utility.log(log, GlobalLabelParameters.FILE_NOT_READ + this.keysDirectory + this.keyFilename, Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.FILE_NOT_READ, this.keysDirectory.concat(this.keyFilename),
+					Level.ERROR);
 			keyFile = null;
 			return false;
 		}
@@ -735,7 +725,7 @@ public class MerchantConfig {
 	public boolean getLogFile() {
 		File dir = new File(this.getLogDirectory());
 		if (!dir.isDirectory()) {
-			Utility.log(log, GlobalLabelParameters.INVALID_LOG_DIRECTORY, Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.INVALID_LOG_DIRECTORY, "", Level.ERROR);
 			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
 			return getLogFileNameStatus();
 		}
@@ -749,22 +739,20 @@ public class MerchantConfig {
 	private boolean getLogFileNameStatus() {
 		try {
 			if (this.logFilename == null || this.logFilename.isEmpty()) {
-				Utility.log(log, GlobalLabelParameters.NO_LOG_FILENAME, Level.ERROR);
-				this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME + GlobalLabelParameters.LOG_EXTENSION;
+				Utility.log(log, GlobalLabelParameters.NO_LOG_FILENAME, "", Level.ERROR);
+				this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME.concat(GlobalLabelParameters.LOG_EXTENSION);
 			}
 		} catch (Exception e) {
-			Utility.log(log, GlobalLabelParameters.NO_LOG_FILENAME, Level.ERROR);
-			this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME + GlobalLabelParameters.LOG_EXTENSION;
+			Utility.log(log, GlobalLabelParameters.NO_LOG_FILENAME, "", Level.ERROR);
+			this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME.concat(GlobalLabelParameters.LOG_EXTENSION);
 			return true;
 		}
 		return true;
 	}
 
-	/*
+	/**
 	 * @param merchantID
-	 *
-	 * @param prop
-	 *
+     * @param prop
 	 * @return
 	 */
 	public String getProperty(String merchantID, String prop) {
@@ -843,7 +831,8 @@ public class MerchantConfig {
 			try {
 				return Integer.parseInt(strValue);
 			} catch (NumberFormatException var6) {
-				System.err.println((prop + " has an invalid value."));
+				Utility.log(log, GlobalLabelParameters.PROP_INVALID, "", Level.ERROR);
+
 			}
 		}
 		return defaultVal;

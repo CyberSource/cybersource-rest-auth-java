@@ -23,7 +23,7 @@ public final class PropertiesUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String getJSONInput(String fileName) throws IOException {
+	public static String getJsonInput(String fileName) throws IOException {
 		if(fileName.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)){
 			return null;
 		}

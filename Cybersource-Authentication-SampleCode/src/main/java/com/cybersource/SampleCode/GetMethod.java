@@ -41,7 +41,7 @@ public class GetMethod {
 		/* Construct the URL.*/
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		/* Set the URL. */
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 		/* Begin the Get process. */
 		process();
 	}

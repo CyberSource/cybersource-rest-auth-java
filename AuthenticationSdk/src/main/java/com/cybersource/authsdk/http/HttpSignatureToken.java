@@ -19,7 +19,6 @@ public class HttpSignatureToken implements TokenGenerator {
 
 	private MerchantConfig merchantConfigSigHead = null;
 	private StringBuilder signatureHeader;
-	private SignatureGenerator sigParam;
 	private String merchantkeyIdSig = null;
 	private String merchantSecertKeySig = null;
 	private String httpMethodSig = null;

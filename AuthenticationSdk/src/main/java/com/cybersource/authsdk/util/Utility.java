@@ -42,19 +42,25 @@ public class Utility {
 	 *            : Level at which logging should occur
 	 *            [INFO,ERROR,DEBUG,FATAL].
 	 */
-	public static void log(Logger logger, String exceptionMessage, Level logLevel) {
+	public static void log(Logger logger, String exceptionMessage,Object obj, Level logLevel) {
 		try {
 			if (logEnable) {
+				exceptionMessage=exceptionMessage.concat("%s");
 				if (exceptionMessage != null && !exceptionMessage.isEmpty()) {
 					if (logLevel == Level.ERROR) {
+						exceptionMessage=String.format(exceptionMessage, obj);
 						logger.error(exceptionMessage);
 					} else if (logLevel == Level.DEBUG) {
+						exceptionMessage=String.format(exceptionMessage, obj);
 						logger.debug(exceptionMessage);
 					} else if (logLevel == Level.FATAL) {
+						exceptionMessage=String.format(exceptionMessage, obj);
 						logger.fatal(exceptionMessage);
 					} else if (logLevel == Level.OFF) {
+						exceptionMessage=String.format(exceptionMessage , obj);
 						logger.printf(Level.OFF, "%n");
 					} else {
+						exceptionMessage=String.format(exceptionMessage , obj);
 						logger.info(exceptionMessage);
 					}
 				}

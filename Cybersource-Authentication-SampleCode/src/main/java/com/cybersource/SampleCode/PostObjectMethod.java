@@ -61,7 +61,7 @@ public class PostObjectMethod {
 		/* Set URL path w.r.t Post operation. */
 
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		/* Begin Post process. */
 		process();

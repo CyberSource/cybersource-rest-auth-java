@@ -23,7 +23,7 @@ public class Masking {
 		try {
 			result = prepareMasking(json);
 		} catch (Exception e) {
-			Utility.log(logger, "Unable to mask", Level.FATAL);
+			Utility.log(logger, "Unable to mask","", Level.FATAL);
 			Utility.log(logger, e);
 		}
 	}

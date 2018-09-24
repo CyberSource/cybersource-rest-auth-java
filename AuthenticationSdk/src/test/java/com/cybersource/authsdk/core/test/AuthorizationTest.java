@@ -40,7 +40,7 @@ public class AuthorizationTest {
 
 		authorization = new Authorization();
 		String token = authorization.getToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
+				merchantConfig.getMerchantSecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
 				getID);
 
 		Assert.assertNotNull(token);
@@ -60,7 +60,7 @@ public class AuthorizationTest {
 
 		authorization = new Authorization();
 		String token = authorization.getToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
+				merchantConfig.getMerchantSecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
 				getID);
 
 		Assert.assertNotNull(token);
@@ -78,7 +78,7 @@ public class AuthorizationTest {
 		merchantConfig.validateMerchantDetails(this.logger);
 		authorization = new Authorization();
 		String token = authorization.getToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
+				merchantConfig.getMerchantSecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
 				getID);
 
 		Assert.assertNull(token);

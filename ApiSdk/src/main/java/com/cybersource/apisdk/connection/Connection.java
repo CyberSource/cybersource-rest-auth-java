@@ -37,19 +37,19 @@ public interface Connection {
 				proxyPort = String.valueOf(merchantConfig.getProxyPort());
 
 		try {
-			if (StringUtils.isBlank(proxyAddress)|| proxyAddress.isEmpty() || StringUtils.isBlank(proxyPort) || proxyPort.isEmpty()) {
+			if (StringUtils.isBlank(proxyAddress)|| StringUtils.isBlank(proxyPort)) {
 				return;
 			} else {
-				if (StringUtils.isNotBlank(proxyAddress) && !proxyAddress.isEmpty() && StringUtils.isNotBlank(proxyPort) && !proxyPort.isEmpty()) {
-					Utility.log(logger, GlobalLabelParameters.PROXY_HOST + " : " + proxyAddress, Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.PROXY_PORT + " : " + proxyPort, Level.INFO);
+				if (StringUtils.isNotBlank(proxyAddress)  && StringUtils.isNotBlank(proxyPort)) {
+					Utility.log(logger, GlobalLabelParameters.PROXY_HOST , " : " .concat(proxyAddress) , Level.INFO);
+					Utility.log(logger, GlobalLabelParameters.PROXY_PORT , " : " .concat(proxyPort) , Level.INFO);
 					Properties systemProperties = System.getProperties();
 					systemProperties.setProperty(GlobalLabelParameters.PROXY_HOST, proxyAddress);
 					systemProperties.setProperty(GlobalLabelParameters.PROXY_PORT, proxyPort);
 				}
 			}
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.PROXY_HOST_PORT_ERR, Level.FATAL);
+			Utility.log(logger, GlobalLabelParameters.PROXY_HOST_PORT_ERR,"", Level.FATAL);
 			Utility.log(logger, e);
 		}
 	

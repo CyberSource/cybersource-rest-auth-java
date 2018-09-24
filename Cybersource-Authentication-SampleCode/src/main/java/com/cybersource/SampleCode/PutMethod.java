@@ -68,7 +68,7 @@ public class PutMethod {
 		/* Construct the URL with respect to PUTID. */
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		/* Set the URL. */
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 		/* Begin PUT process. */
 		process();
 	}

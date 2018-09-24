@@ -49,7 +49,7 @@ public class PayloadDigest {
 			digestString = MessageDigest.getInstance(sha256);
 			digestBytes = digestString.digest(messageBody.getBytes("UTF-8"));
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.DIGEST_GEN_FAILED, Level.FATAL);
+			Utility.log(logger, GlobalLabelParameters.DIGEST_GEN_FAILED,"", Level.FATAL);
 			Utility.log(logger, e);
 			return null;
 		} 

@@ -19,7 +19,7 @@ public class Configuration {
 		}
 		// JWT Parameters
 		props.setProperty("keyAlias", "testrest");
-		props.setProperty("keyPassword", "testrest");
+		props.setProperty("keyPass", "testrest");
 		props.setProperty("keyFileName", "testrest");
 
 		// P12 key path. Enter the folder path where the .p12 file is located.

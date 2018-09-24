@@ -113,7 +113,7 @@ public class JwtUrlConnection implements Connection, Headers {
 		openConnection();
 		setContentType();
 		setRequestMethod(method);
-		Utility.log(logger, "ClaimSet" + " : " + new Masking(requestBody, logger).getMaskingResult(),
+		Utility.log(logger, "ClaimSet" , " : " + new Masking(requestBody, logger).getMaskingResult(),
 				Level.INFO);
 		setSignature();
 		if (signatureAlert) {
@@ -142,12 +142,12 @@ public class JwtUrlConnection implements Connection, Headers {
 	private String readInputStream(InputStream inputStream) throws IOException {
 		
 		merchantConfig.setResponseCode(String.valueOf(responseCode));
-		Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE + " : " + responseCode,
+		Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE.concat(" : ") , responseCode,
 				Level.INFO);
 		
 		String responseHeader = con.getHeaderField(GlobalLabelParameters.V_C_CORRELATION_ID);
 		merchantConfig.setVcCorelationID(responseHeader);
-		Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : " + String.valueOf(responseHeader),
+		Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID .concat(" : ") , String.valueOf(responseHeader),
 				Level.INFO);
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -163,14 +163,14 @@ public class JwtUrlConnection implements Connection, Headers {
 	@Override
 	public void openConnection() {
 		try {
-			String getUrl = merchantConfig.getURL();
+			String getUrl = merchantConfig.getUrl();
 			url = new URL(getUrl);
 			this.con = (HttpURLConnection) url.openConnection();
 			int timeoutInMS = merchantConfig.getTimeout() * 1000;
 			con.setConnectTimeout(timeoutInMS);
 			con.setReadTimeout(timeoutInMS);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.URL_NOT_SET + url, Level.ERROR);
+			Utility.log(logger, GlobalLabelParameters.URL_NOT_SET ,url, Level.ERROR);
 
 		}
 
@@ -180,10 +180,10 @@ public class JwtUrlConnection implements Connection, Headers {
 	public void setContentType() {
 		try {
 			Utility.log(logger,
-					GlobalLabelParameters.CONTENT_TYPE + " : " + GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
+					GlobalLabelParameters.CONTENT_TYPE .concat(" : ") , GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
 			this.con.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE_NOT_SET, Level.FATAL);
+			Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE_NOT_SET,"", Level.FATAL);
 
 		}
 	}
@@ -191,7 +191,7 @@ public class JwtUrlConnection implements Connection, Headers {
 	@Override
 	public void maskingPayload(String serverResponse) {
 		Utility.log(logger,
-				"Response Message : " + new Masking(serverResponse, this.logger).getMaskingResult(), Level.INFO);
+				"Response Message : " , new Masking(serverResponse, this.logger).getMaskingResult(), Level.INFO);
 	}
 
 	@Override
@@ -207,19 +207,19 @@ public class JwtUrlConnection implements Connection, Headers {
 			}
 			this.con.setRequestProperty("Authorization", "Bearer " + encryptedJWTSignature);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.SIG_SET_ERROR, Level.FATAL);
+			Utility.log(logger, GlobalLabelParameters.SIG_SET_ERROR,"", Level.FATAL);
 		}
 	}
 
 	@Override
 	public void setRequestMethod(String method) {
 		try {
-			Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE + " : " + method, Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE .concat(" : "),method , Level.INFO);
 			this.con.setRequestMethod(method);
 			if (method.equalsIgnoreCase(GlobalLabelParameters.GET))
 				logger.info("GETID" + " : " + this.id);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.REQUEST_SET_ERROR, Level.FATAL);
+			Utility.log(logger, GlobalLabelParameters.REQUEST_SET_ERROR,"", Level.FATAL);
 
 		}
 	}

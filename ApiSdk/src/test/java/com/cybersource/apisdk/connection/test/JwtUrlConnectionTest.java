@@ -45,7 +45,7 @@ public class JwtUrlConnectionTest {
 		merchantConfig.setRequestTarget(requestTarget);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
@@ -64,7 +64,7 @@ public class JwtUrlConnectionTest {
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
@@ -83,7 +83,7 @@ public class JwtUrlConnectionTest {
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
@@ -161,14 +161,14 @@ public class JwtUrlConnectionTest {
 		requestTarget = requestTarget + get_ID;
 		merchantConfig.setRequestTarget(requestTarget);
 		merchantConfig.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setURL("");
+		merchantConfig.setUrl("");
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
 		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
 		jwtUrlConnection.openConnection();
-		Assert.assertNotNull(merchantConfig.getURL());
+		Assert.assertNotNull(merchantConfig.getUrl());
 
 	}
 

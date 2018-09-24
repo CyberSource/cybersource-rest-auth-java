@@ -37,13 +37,13 @@ public class Authorization {
 	 * @return
 	 * @throws Exception
 	 */
-	public String getToken(MerchantConfig merchantConfig, String merchantKeyId, String merchantsecretKey,
+	public String getToken(MerchantConfig merchantConfig, String merchantKeyId, String merchantSecretKey,
 			String merchantId, String requestType, String getID) throws Exception {
 
 		String authenticationType = merchantConfig.getAuthenticationType().trim();
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 
-			HttpSignatureToken httpSigToken = new HttpSignatureToken(merchantConfig, merchantKeyId, merchantsecretKey,
+			HttpSignatureToken httpSigToken = new HttpSignatureToken(merchantConfig, merchantKeyId, merchantSecretKey,
 					merchantId, requestType, getID);
 			return httpSigToken.getToken();
 

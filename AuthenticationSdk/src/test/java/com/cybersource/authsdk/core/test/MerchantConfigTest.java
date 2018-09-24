@@ -274,7 +274,7 @@ public class MerchantConfigTest {
 	public void checkMerchantSecertKeyTestForNull() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setMerchantsecretKey(null);
+		merchantConfig.setMerchantSecretKey(null);
 
 		boolean check = merchantConfig.checkMerchantSecertKey();
 		Assert.assertEquals(false, check);
@@ -285,7 +285,7 @@ public class MerchantConfigTest {
 	public void checkMerchantSecertKeyTestForEmpty() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setMerchantsecretKey("");
+		merchantConfig.setMerchantSecretKey("");
 
 		boolean check = merchantConfig.checkMerchantSecertKey();
 		Assert.assertEquals(false, check);
@@ -685,8 +685,8 @@ public class MerchantConfigTest {
 	@Test
 	public void setURLTest() throws ConfigException {
 		merchantConfig = new MerchantConfig();
-		merchantConfig.setURL("testrest");
-		String str = merchantConfig.getURL();
+		merchantConfig.setUrl("testrest");
+		String str = merchantConfig.getUrl();
 		Assert.assertNotNull(str);
 	}
 

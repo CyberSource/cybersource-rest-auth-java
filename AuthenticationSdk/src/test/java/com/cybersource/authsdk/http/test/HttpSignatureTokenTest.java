@@ -31,7 +31,7 @@ public class HttpSignatureTokenTest {
 		merchantConfig.setAuthenticationType("Http_signature");
 
 		signatureToken = new HttpSignatureToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
+				merchantConfig.getMerchantSecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
 				get_ID);
 
 		String str = signatureToken.getToken();
@@ -49,7 +49,7 @@ public class HttpSignatureTokenTest {
 		merchantConfig.setAuthenticationType("Http_signature");
 
 		signatureToken = new HttpSignatureToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
+				merchantConfig.getMerchantSecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
 				get_ID);
 
 		String str = signatureToken.getToken();
@@ -66,7 +66,7 @@ public class HttpSignatureTokenTest {
 		merchantConfig.setAuthenticationType("Http_signature");
 
 		signatureToken = new HttpSignatureToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
+				merchantConfig.getMerchantSecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
 				get_ID);
 
 		String str = signatureToken.getToken();
@@ -83,7 +83,7 @@ public class HttpSignatureTokenTest {
 		merchantConfig.setAuthenticationType("Http_signature");
 
 		signatureToken = new HttpSignatureToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
+				merchantConfig.getMerchantSecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
 				get_ID);
 
 		String str = signatureToken.getToken();

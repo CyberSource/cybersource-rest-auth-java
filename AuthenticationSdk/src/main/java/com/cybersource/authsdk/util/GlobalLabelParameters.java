@@ -80,6 +80,7 @@ public class GlobalLabelParameters {
 	public static final String MERCHANT_NULL_EMPTY = "MerchantID mandatory : NO MerchantID entered. ";
 	public static final String RUN_ENV_NULL_EMPTY = "Run Environment mandatory : NO Run Environment entered. ";
 	public static final String POST_OBJECT_METHOD_REQUEST_PATH="not required";
+	public static final String PROP_INVALID="Prop has an invalid Value";
 	/* Masking Parameter. */
 	public static final String MASKING_PATTERN = "XXXXXXXXX";
 	/* Proxy Parameter */

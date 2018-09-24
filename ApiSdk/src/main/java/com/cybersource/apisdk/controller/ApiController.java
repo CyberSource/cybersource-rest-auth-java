@@ -67,13 +67,13 @@ public class ApiController {
 		commonApiControllerCheck(merchantConfig);
 		if (authType) {
 			if (isMerchantDetail) {
-				Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE + authenticationType,
+				Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE , authenticationType,
 						Level.INFO);
 				try {
 					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, this.logger);
 					paymentRequest.processPaymentRequest();
-					Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
-					Utility.log(this.logger, " ", Level.OFF);
+					Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+					Utility.log(this.logger, " ","", Level.OFF);
 				} catch (Exception e) {
 					paymentEndException();
 				}
@@ -96,7 +96,7 @@ public class ApiController {
 		if (MerchantConfig.isSetMerchantDetails) {
 			/* Initializing the logging object. */
 			this.logger = Log4j.getInstance(merchantConfig);
-			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, Level.INFO);
+			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION,"", Level.INFO);
 			/* Validate Merchant Details. */
 			isMerchantDetail = merchantConfig.validateMerchantDetails(this.logger);
 		} else {
@@ -108,16 +108,16 @@ public class ApiController {
 	 * 
 	 */
 	private void authenticationException() {
-		Utility.log(this.logger, GlobalLabelParameters.AUTH_ERROR + authenticationType, Level.FATAL);
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
-		System.err.println(GlobalLabelParameters.AUTH_ERROR + authenticationType);
+		Utility.log(this.logger, GlobalLabelParameters.AUTH_ERROR , authenticationType, Level.FATAL);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+		
 	}
 
 	/**
 	 * 
 	 */
 	private void paymentEndException() {
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
-		Utility.log(this.logger, " ", Level.OFF);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+		Utility.log(this.logger, " ","", Level.OFF);
 	}
 }
