@@ -3,10 +3,10 @@
   <parent>
     <groupId>com.cybersource</groupId>
     <artifactId>Cybersource-Authentication-SDK</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
   </parent>
   <artifactId>Cybersource-Authentication-SampleCode</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.1.0</version>
   
   <dependencies>
  
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>com.cybersource</groupId>
 			<artifactId>ApiSdk</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.1.0</version>
 		</dependency>
 		</dependencies>
 </project>
