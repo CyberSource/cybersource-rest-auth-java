@@ -4,6 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 /**
@@ -12,19 +15,21 @@ import java.util.Properties;
  *
  */
 public final class PropertiesUtil {
-	
-    private static String cybsPath;
-	private PropertiesUtil(){
-		
+	public static String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
+	private static String cybsPath;
+
+	private PropertiesUtil() {
+
 	}
+
 	/**
 	 * 
 	 * @param fileName
 	 * @return
 	 * @throws IOException
 	 */
-	public static String getJSONInput(String fileName) throws IOException {
-		if(fileName.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)){
+	public static String getJsonInput(String fileName) throws IOException {
+		if (fileName.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)) {
 			return null;
 		}
 		InputStream jsonIn = getPropertyFile(fileName);
@@ -39,10 +44,9 @@ public final class PropertiesUtil {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	private static  InputStream getPropertyFile(String fileName) throws FileNotFoundException {
-				return new FileInputStream(fileName);
+	private static InputStream getPropertyFile(String fileName) throws FileNotFoundException {
+		return new FileInputStream(fileName);
 	}
-
 
 	/**
 	 * 
@@ -50,22 +54,11 @@ public final class PropertiesUtil {
 	 * @throws IOException
 	 */
 	public static Properties getMerchantProperties() throws IOException {
-		/* Give the path of cbys properties file which needs to be read. */
-		if (runningFromIntelliJ()) {
-			cybsPath = "./resources/cybs.properties";
-		} else {
-			cybsPath = "src/main/resources/cybs.properties";
-		}
+		cybsPath = "src/main/resources/cybs.properties";
 		InputStream merchantInput = getPropertyFile(cybsPath);
 		Properties merchantProperties = new Properties();
 		merchantProperties.load(merchantInput);
 		return merchantProperties;
 	}
 
-	public static boolean runningFromIntelliJ() {
-		String classPath = System.getProperty("java.class.path");
-		return classPath.contains("idea_rt.jar");
-	}
-
-	
 }

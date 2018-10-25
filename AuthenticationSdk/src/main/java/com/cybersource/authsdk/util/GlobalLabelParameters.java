@@ -50,6 +50,7 @@ public class GlobalLabelParameters {
 	public static final String KEY_FILE_DIRECTORY_NOT_FOUND = "KeyDirectory not found, Entered directory :: ";
 	public static final String KEY_FILE = "KeyFile, Entered path/file name :: ";
 	public static final String FILE_NOT_READ = "File cannot be read permission denied :: ";
+	public static final String AUTH_NULL_EMPTY="Authentication type is mandatory";
 	public static final String AUTH_ERROR = "Invalid Authentication Type in cybs.properties :: ";
 	public static final String KEY_ALIAS_NULL_EMPTY = "KeyAlias Empty/Null. Assigning merchantID value :: ";
 	public static final String KEY_ALIAS_MISMATCH = "KeyAlias Mismatch. Assigning merchantID value ";
@@ -80,6 +81,7 @@ public class GlobalLabelParameters {
 	public static final String MERCHANT_NULL_EMPTY = "MerchantID mandatory : NO MerchantID entered. ";
 	public static final String RUN_ENV_NULL_EMPTY = "Run Environment mandatory : NO Run Environment entered. ";
 	public static final String POST_OBJECT_METHOD_REQUEST_PATH="not required";
+	public static final String PROP_INVALID="Prop has an invalid Value";
 	/* Masking Parameter. */
 	public static final String MASKING_PATTERN = "XXXXXXXXX";
 	/* Proxy Parameter */

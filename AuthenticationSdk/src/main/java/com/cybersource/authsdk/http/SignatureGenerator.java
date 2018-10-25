@@ -12,6 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.PropertiesUtil;
 
 /* This method returns value for parameter Signature which is then passed to Signature header
  * paramter 'Signature' is calucated based on below key values and then signed with SECRET KEY -
@@ -24,32 +25,40 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
                      This ID can be found on EBC portal */
 public class SignatureGenerator {
 
-	private MerchantConfig merchantConfigSigParam;
+	private MerchantConfig merchantConfig;
 	private String signatureParameterBase64Encoded;
-	private String space = GlobalLabelParameters.SPACE;
 	private String httpMethod;
 	private String merchantSecertKey;
 	private String merchantId;
 
-	public SignatureGenerator(MerchantConfig merchantConfig, String merchantSecertKey, String merchantId,
-			String httpMethod, String getID) throws InvalidKeyException, NoSuchAlgorithmException {
-		this.merchantConfigSigParam = merchantConfig;
-		this.httpMethod = httpMethod;
-		this.merchantSecertKey = merchantSecertKey;
-		this.merchantId = merchantId;
+	/**
+	 * @param merchantConfig
+	 * @throws InvalidKeyException
+	 * @throws NoSuchAlgorithmException
+	 */
+	public SignatureGenerator(MerchantConfig merchantConfig) throws InvalidKeyException, NoSuchAlgorithmException {
+		this.merchantConfig = merchantConfig;
+		this.httpMethod = merchantConfig.getRequestType();
+		this.merchantSecertKey = merchantConfig.getMerchantSecretKey();
+		this.merchantId = merchantConfig.getMerchantID();
 	}
-	
+
+	/**
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeyException
+	 */
 	public String signatureGeneration() throws NoSuchAlgorithmException, InvalidKeyException {
 
 		StringBuilder signatureString = new StringBuilder();
 		signatureString.append('\n');
 		signatureString.append(GlobalLabelParameters.HOST.toLowerCase());
 		signatureString.append(": ");
-		signatureString.append(merchantConfigSigParam.getRequestHost());
+		signatureString.append(merchantConfig.getRequestHost());
 		signatureString.append('\n');
 		signatureString.append(GlobalLabelParameters.DATE.toLowerCase());
 		signatureString.append(": ");
-		signatureString.append(DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT"))));
+		signatureString.append(PropertiesUtil.date);
 		signatureString.append('\n');
 		signatureString.append("(request-target)");
 		signatureString.append(": ");
@@ -71,7 +80,7 @@ public class SignatureGenerator {
 				|| httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
 			signatureString.append(GlobalLabelParameters.DIGEST.toLowerCase());
 			signatureString.append(": ");
-			signatureString.append(new PayloadDigest(merchantConfigSigParam).getDigest());
+			signatureString.append(new PayloadDigest(merchantConfig).getDigest());
 			signatureString.append('\n');
 		}
 
@@ -86,7 +95,7 @@ public class SignatureGenerator {
 		 * SecretKey hased with SHA256 and base64 encoded. Secret Key is Base64
 		 * decoded before signing
 		 */
-		
+
 		SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(merchantSecertKey), "HmacSHA256");
 		Mac aKeyId = Mac.getInstance("HmacSHA256");
 		aKeyId.init(secretKey);
@@ -94,10 +103,7 @@ public class SignatureGenerator {
 		byte[] aHeaders = aKeyId.doFinal();
 		signatureParameterBase64Encoded = Base64.getEncoder().encodeToString(aHeaders);
 		secretKey = null;
-		
-		
 		return signatureParameterBase64Encoded;
-		
 	}
 
 	/**
@@ -109,18 +115,20 @@ public class SignatureGenerator {
 		String requestTarget;
 		switch (requestType) {
 		case GlobalLabelParameters.POST:
-			requestTarget = GlobalLabelParameters.POST.toLowerCase() + space
-					+ merchantConfigSigParam.getRequestTarget();
+			requestTarget = GlobalLabelParameters.POST.toLowerCase() + GlobalLabelParameters.SPACE
+					+ merchantConfig.getRequestTarget();
 			break;
 		case GlobalLabelParameters.GET:
-			requestTarget = GlobalLabelParameters.GET.toLowerCase() + space + merchantConfigSigParam.getRequestTarget();
+			requestTarget = GlobalLabelParameters.GET.toLowerCase() + GlobalLabelParameters.SPACE
+					+ merchantConfig.getRequestTarget();
 			break;
 		case GlobalLabelParameters.PUT:
-			requestTarget = GlobalLabelParameters.PUT.toLowerCase() + space + merchantConfigSigParam.getRequestTarget();
+			requestTarget = GlobalLabelParameters.PUT.toLowerCase() + GlobalLabelParameters.SPACE
+					+ merchantConfig.getRequestTarget();
 			break;
 		case GlobalLabelParameters.DELETE:
-			requestTarget = GlobalLabelParameters.DELETE.toLowerCase() + space
-					+ merchantConfigSigParam.getRequestTarget();
+			requestTarget = GlobalLabelParameters.DELETE.toLowerCase() + GlobalLabelParameters.SPACE
+					+ merchantConfig.getRequestTarget();
 			break;
 		default:
 			requestTarget = null;

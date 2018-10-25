@@ -41,8 +41,11 @@ public class Cache  {
 		return x509Certificate;
 	}
 	
-	public Cache(MerchantConfig mc) {
-		this.merchantConfig = mc;
+	/**
+	 * @param merchantConfig
+	 */
+	public Cache(MerchantConfig merchantConfig) {
+		this.merchantConfig = merchantConfig;
 		logger = Log4j.getInstance(this.merchantConfig);
 		 this.merchantID = merchantConfig.getMerchantID();
 		if(cacheP12.isEmpty()){

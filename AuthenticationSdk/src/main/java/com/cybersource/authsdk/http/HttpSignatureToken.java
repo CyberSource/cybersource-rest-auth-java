@@ -1,11 +1,15 @@
 package com.cybersource.authsdk.http;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import org.apache.logging.log4j.Logger;
+
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
-import org.apache.logging.log4j.Logger;
 
 /* HttpSigToken return SignatureHeader Value that contains following paramters
  * keyid     -- Merchant ID obtained from EBC portal
@@ -19,69 +23,70 @@ public class HttpSignatureToken implements TokenGenerator {
 
 	private MerchantConfig merchantConfigSigHead = null;
 	private StringBuilder signatureHeader;
-	private SignatureGenerator sigParam;
-	private String merchantkeyIdSig = null;
-	private String merchantSecertKeySig = null;
-	private String httpMethodSig = null;
+	private String merchantkeyId = null;
+	private String merchantSecertKey = null;
+	private String httpMethod = null;
 	private String httpMerchantID = null;
-	private String httpGetID = null;
+	private String requestData=null;
 	private Logger logger;
 
 	/**
-	 * 
 	 * @param merchantConfig
-	 * @param merchantsecretKey
-	 * @param merchantKeyId
-	 * @param merchantId
-	 * @param http_Get_ID
-	 * @param method
 	 * @throws Exception
 	 */
-	public HttpSignatureToken(MerchantConfig merchantConfig, String merchantKeyId, String merchantsecretKey,
-			String merchantId, String httpMethod, String getID) throws Exception {
+	public HttpSignatureToken(MerchantConfig merchantConfig) {
 
 		this.merchantConfigSigHead = merchantConfig;
-		this.merchantkeyIdSig = merchantKeyId;
-		this.merchantSecertKeySig = merchantsecretKey;
-		this.httpMethodSig = httpMethod;
-		this.httpMerchantID = merchantId;
-		this.httpGetID = getID;
+		this.merchantkeyId = merchantConfig.getMerchantKeyId();
+		this.merchantSecertKey = merchantConfig.getMerchantSecretKey();
+		this.httpMethod = merchantConfig.getRequestType();
+		this.httpMerchantID = merchantConfig.getMerchantID();
 		this.logger = Log4j.getInstance(merchantConfig);
 	}
 
+	/** 
+	 * Method to get Token.
+	 */
 	@Override
 	public String getToken() {
-		String signature;
+		String signature = null;
 		try {
 			signature = signatureHeader();
-		} catch (Exception e) {
+		} catch (NoSuchAlgorithmException e) {
 			Utility.log(logger, e);
-			signature =  null;
+
+		} catch (InvalidKeyException e) {
+			Utility.log(logger, e);
+
 		}
 		return signature;
 	}
 
-	private String signatureHeader() throws Exception {
+	/**
+	 * @return
+	 * @throws InvalidKeyException
+	 * @throws NoSuchAlgorithmException
+	 */
+	private String signatureHeader() throws InvalidKeyException, NoSuchAlgorithmException {
 
 		signatureHeader = new StringBuilder();
 		/* KeyId is the key obtained from EBC */
-		signatureHeader.append("keyid=\"" + merchantkeyIdSig + "\"");
+		signatureHeader.append("keyid=\"" + merchantkeyId + "\"");
 		/* Algorithm should be always HmacSHA256 for http signature */
 		signatureHeader.append(", algorithm=\"HmacSHA256\"");
 
-		if (httpMethodSig.equalsIgnoreCase(GlobalLabelParameters.GET))
+		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.GET))
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.GET) + "\"");
-		if (httpMethodSig.equalsIgnoreCase(GlobalLabelParameters.DELETE))
+		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.DELETE))
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.DELETE) + "\"");
-		if (httpMethodSig.equalsIgnoreCase(GlobalLabelParameters.POST))
+		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST))
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.POST) + "\"");
-		else if (httpMethodSig.equalsIgnoreCase(GlobalLabelParameters.PUT))
+		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT))
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PUT) + "\"");
 		/*
 		 * Get Value for paramter 'Signature' to be passed to Signature Header
 		 */
-		String signatureValue = new SignatureGenerator(this.merchantConfigSigHead, merchantSecertKeySig, httpMerchantID,
-				httpMethodSig, httpGetID).signatureGeneration();
+		String signatureValue = new SignatureGenerator(merchantConfigSigHead).signatureGeneration();
 		signatureHeader.append(", signature=\"" + signatureValue + "\"");
 		return signatureHeader.toString();
 	}

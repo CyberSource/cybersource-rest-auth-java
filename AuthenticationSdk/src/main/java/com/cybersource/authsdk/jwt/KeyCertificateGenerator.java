@@ -22,9 +22,17 @@ import com.cybersource.authsdk.core.MerchantConfig;
 
 
 public class KeyCertificateGenerator {
-	
-	
 
+	/**
+	 * @param merchantConfig
+	 * @return
+	 * @throws CertificateException
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
+	 * @throws KeyStoreException
+	 * @throws ConfigException
+	 * @throws Exception
+	 */
 	public static X509Certificate initializeCertificate(MerchantConfig merchantConfig) throws CertificateException,
 			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
 
@@ -57,9 +65,11 @@ public class KeyCertificateGenerator {
 		}
 	}
 
+	
 	/**
-	 * 
 	 * @param array
+	 * @param merchantID
+	 * @return
 	 */
 	private static String keyAliasValidator(ArrayList<String> array, String merchantID) {
 		int size = array.size();
@@ -157,6 +167,4 @@ public class KeyCertificateGenerator {
 			return null;
 		}
 	}
-	
-	
 }

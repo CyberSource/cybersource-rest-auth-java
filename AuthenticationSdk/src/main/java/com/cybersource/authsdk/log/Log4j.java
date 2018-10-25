@@ -24,15 +24,14 @@ import com.cybersource.authsdk.util.Utility;
 public class Log4j {
 	private String standardSize;
 	private String filePath = null;
-	private static Logger logger = null;
+	private static volatile Logger logger = null;
 	private String logDirectory;
 	private String logFileName;
 	private String logSize;
 	public static boolean logName = false;
 
 	/**
-	 * 
-	 * 
+	 * @param merchantConfig
 	 */
 	private Log4j(MerchantConfig merchantConfig) {
 		logDirectory = merchantConfig.getLogDirectory();
@@ -49,12 +48,19 @@ public class Log4j {
 	 * @param merchantConfig
 	 * @return
 	 */
-	public static Logger getInstance(MerchantConfig merchantConfig) {
+		public static Logger getInstance(MerchantConfig merchantConfig) {
+
 		if (logger == null) {
 			Utility.logEnable = merchantConfig.getEnableLog();
-			if (merchantConfig.getEnableLog()) {
-				logger = new Log4j(merchantConfig).getLogger();
+			// To provide thread-safe implementation.
+			synchronized (Log4j.class) {
+				if (merchantConfig.getEnableLog()) {
+					if (logger == null) {
+						logger = new Log4j(merchantConfig).getLogger();
+					}
+				}
 			}
+
 		}
 		return logger;
 	}
@@ -112,27 +118,27 @@ public class Log4j {
 	 */
 	private void checkLogMaxSizeAndFolder() {
 		File dir;
-	try {
-		if(this.logDirectory == null || this.logDirectory.isEmpty()){
+		try {
+			if (this.logDirectory == null || this.logDirectory.isEmpty()) {
+				this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
+			}
+			dir = new File(this.logDirectory);
+			if (!dir.isDirectory()) {
+				this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
+			}
+		} catch (Exception e) {
 			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
 		}
-		dir = new File(this.logDirectory);
-		if (!dir.isDirectory()) {
-			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
-		}
-	} catch (Exception e) {
-		this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
-	}
-	
-	try {
-		if(this.logFileName == null || this.logFileName.isEmpty()){
-			this.logFileName = GlobalLabelParameters.DEFAULT_LOG_NAME;
-		}
-	} catch (Exception e) {
-		this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_NAME;
-	}
 
-	if (this.logSize == null || this.logSize.isEmpty()) {
+		try {
+			if (this.logFileName == null || this.logFileName.isEmpty()) {
+				this.logFileName = GlobalLabelParameters.DEFAULT_LOG_NAME;
+			}
+		} catch (Exception e) {
+			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_NAME;
+		}
+
+		if (this.logSize == null || this.logSize.isEmpty()) {
 			this.logSize = GlobalLabelParameters.DEFAULT_LOG_SIZE;
 		}
 	}

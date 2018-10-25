@@ -38,8 +38,7 @@ public class JWTSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData(), logger,
-				merchantConfig.getRequestType());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
 		Assert.assertNotNull(token);
@@ -59,8 +58,7 @@ public class JWTSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData(), logger,
-				merchantConfig.getRequestType());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
 		Assert.assertNotNull(token);
@@ -79,8 +77,7 @@ public class JWTSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData(), logger,
-				merchantConfig.getRequestType());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
 		Assert.assertNotNull(token);
@@ -98,8 +95,7 @@ public class JWTSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData(), logger,
-				merchantConfig.getRequestType());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
 		Assert.assertNotNull(token);
@@ -118,8 +114,7 @@ public class JWTSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData(), logger,
-				merchantConfig.getRequestType());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
 		Assert.assertNotNull(token);
@@ -138,8 +133,7 @@ public class JWTSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData(), logger,
-				merchantConfig.getRequestType());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
 		Assert.assertNull(token);
@@ -158,8 +152,7 @@ public class JWTSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData(), logger,
-				merchantConfig.getRequestType());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
 		Assert.assertNull(token);
@@ -178,8 +171,7 @@ public class JWTSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData(), logger,
-				merchantConfig.getRequestType());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 		jwtSignatureToken.generateSignature();
 		Cache.lastModifiedTime = 1528;
 		String token1 = jwtSignatureToken.generateSignature();

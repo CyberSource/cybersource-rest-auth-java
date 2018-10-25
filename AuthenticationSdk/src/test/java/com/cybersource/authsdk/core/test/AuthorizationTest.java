@@ -16,7 +16,7 @@ public class AuthorizationTest {
 
 	@Mock
 	Authorization authorization;
-	
+
 	@Mock
 	MerchantConfig merchantConfig;
 	@Mock
@@ -24,8 +24,6 @@ public class AuthorizationTest {
 
 	private String requestJsonPath = "src/test/resources/request.json";
 	private Properties merchantProp;
-
-	private String getID = "5281957982016993203523";
 
 	@Test
 	public void getTokenTestForHttp() throws Exception {
@@ -39,9 +37,7 @@ public class AuthorizationTest {
 		merchantConfig.validateMerchantDetails(this.logger);
 
 		authorization = new Authorization();
-		String token = authorization.getToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
-				getID);
+		String token = authorization.getToken(merchantConfig);
 
 		Assert.assertNotNull(token);
 	}
@@ -59,9 +55,7 @@ public class AuthorizationTest {
 		merchantConfig.validateMerchantDetails(this.logger);
 
 		authorization = new Authorization();
-		String token = authorization.getToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
-				getID);
+		String token = authorization.getToken(merchantConfig);
 
 		Assert.assertNotNull(token);
 	}
@@ -77,9 +71,7 @@ public class AuthorizationTest {
 		this.logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(this.logger);
 		authorization = new Authorization();
-		String token = authorization.getToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
-				getID);
+		String token = authorization.getToken(merchantConfig);
 
 		Assert.assertNull(token);
 	}

@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.http.*;
+import com.cybersource.authsdk.http.SignatureGenerator;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class SignatureGeneratorTest {
@@ -19,7 +19,6 @@ public class SignatureGeneratorTest {
 
 	private Properties merchantProp;
 
-	private String get_ID = "5281957982016993203523";
 	private String requestJsonPath = "src/test/resources/request.json";
 
 	@Test
@@ -29,9 +28,8 @@ public class SignatureGeneratorTest {
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("GET");
 
-		String str = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
-				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID).signatureGeneration();
-		
+		String str = new SignatureGenerator(merchantConfig).signatureGeneration();
+
 		Assert.assertNotNull(str);
 
 	}
@@ -44,10 +42,7 @@ public class SignatureGeneratorTest {
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 
-		String str = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
-				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID).signatureGeneration();
-
-		
+		String str = new SignatureGenerator(merchantConfig).signatureGeneration();
 		Assert.assertNotNull(str);
 
 	}
@@ -60,9 +55,7 @@ public class SignatureGeneratorTest {
 		merchantConfig.setRequestType("PUT");
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 
-		String str = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
-				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID).signatureGeneration();
-		
+		String str = new SignatureGenerator(merchantConfig).signatureGeneration();
 		Assert.assertNotNull(str);
 
 	}
@@ -75,8 +68,7 @@ public class SignatureGeneratorTest {
 		merchantConfig.setRequestType("option");
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 
-		signatureGenerator = new SignatureGenerator(merchantConfig, merchantConfig.getMerchantsecretKey(),
-				merchantConfig.getMerchantID(), merchantConfig.getRequestType(), get_ID);
+		signatureGenerator = new SignatureGenerator(merchantConfig);
 
 		String str = signatureGenerator.getRequestTarget(merchantConfig.getRequestType());
 		Assert.assertNull(str);

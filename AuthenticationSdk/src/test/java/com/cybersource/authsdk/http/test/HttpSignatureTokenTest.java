@@ -19,7 +19,6 @@ public class HttpSignatureTokenTest {
 
 	private Properties merchantProp;
 
-	private String get_ID = "5281957982016993203523";
 	private String requestJsonPath = "src/test/resources/request.json";
 
 	@Test
@@ -30,9 +29,7 @@ public class HttpSignatureTokenTest {
 		merchantConfig.setRequestType("GET");
 		merchantConfig.setAuthenticationType("Http_signature");
 
-		signatureToken = new HttpSignatureToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
-				get_ID);
+		signatureToken = new HttpSignatureToken(merchantConfig);
 
 		String str = signatureToken.getToken();
 		Assert.assertNotNull(str);
@@ -48,9 +45,7 @@ public class HttpSignatureTokenTest {
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setAuthenticationType("Http_signature");
 
-		signatureToken = new HttpSignatureToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
-				get_ID);
+		signatureToken = new HttpSignatureToken(merchantConfig);
 
 		String str = signatureToken.getToken();
 		Assert.assertNotNull(str);
@@ -65,9 +60,7 @@ public class HttpSignatureTokenTest {
 		merchantConfig.setRequestType("PUT");
 		merchantConfig.setAuthenticationType("Http_signature");
 
-		signatureToken = new HttpSignatureToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
-				get_ID);
+		signatureToken = new HttpSignatureToken(merchantConfig);
 
 		String str = signatureToken.getToken();
 		Assert.assertNotNull(str);
@@ -82,9 +75,7 @@ public class HttpSignatureTokenTest {
 		merchantConfig.setRequestType("DELETE");
 		merchantConfig.setAuthenticationType("Http_signature");
 
-		signatureToken = new HttpSignatureToken(merchantConfig, merchantConfig.getMerchantKeyId(),
-				merchantConfig.getMerchantsecretKey(), merchantConfig.getMerchantID(), merchantConfig.getRequestType(),
-				get_ID);
+		signatureToken = new HttpSignatureToken(merchantConfig);
 
 		String str = signatureToken.getToken();
 		Assert.assertNotNull(str);
