@@ -2,8 +2,11 @@ package com.cybersource.SampleCode;
 
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cybersource.Data.Configuration;
 import com.cybersource.apisdk.controller.ApiController;
+import com.cybersource.apisdk.model.Response;
 import com.cybersource.authsdk.core.MerchantConfig;
 
 public class GetObjectMethod {
@@ -11,16 +14,16 @@ public class GetObjectMethod {
 	private String authenticationType;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private String responseCode, responseMessage;
-		/**
-	 * REQUEST TARGET
-	 * [Editable]
+	private Response response;
+	/**
+	 * REQUEST TARGET [Editable]
 	 */
-	private String requestTarget = "/pts/v2/payments/5265502011846829204101";
-	/* Request Type [Non-Editable.]*/
+	private String requestTarget = "/pts/v2/payments/5383910703156063603002";
+	/* Request Type [Non-Editable.] */
 	private String requestType = "GET";
-	/* [Non Editable]*/
+	/* [Non Editable] */
 	private String url;
+
 	/* This method initiates or begins the process. */
 	public static void main(String[] args) throws Exception {
 		new GetObjectMethod();
@@ -34,7 +37,7 @@ public class GetObjectMethod {
 		/* Read Merchant details. */
 		merchantProp = Configuration.getMerchantDetails();
 		merchantConfig = new MerchantConfig(merchantProp);
-		/* Set Request Type*/
+		/* Set Request Type */
 		merchantConfig.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType().trim();
@@ -42,7 +45,7 @@ public class GetObjectMethod {
 		/* Construct the URL with respect to GETID. */
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		/* Set the URL. */
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 		/* Begin the Get process. */
 		process();
 	}
@@ -54,23 +57,21 @@ public class GetObjectMethod {
 	 */
 	private void process() {
 		System.out.println(authenticationType.toUpperCase() + " Request");
-		apiController = new ApiController();
-		/* Calling APISDK, com.cybersouce.api.controller. */
-		apiController.paymentGet(merchantConfig);
-		/* Display response message and Headers in console. */
-		responseCode = merchantConfig.getResponseCode();
-		responseMessage = merchantConfig.getResponseMessage();
+
 		try {
-			if (!responseCode.isEmpty() && !responseMessage.isEmpty() && responseMessage != null
-					&& responseCode != null) {
-				new GetGenerateHeaders(requestTarget);
+			/* Calling APISDK, com.cybersouce.api.controller. */
+			response = apiController.paymentGet(merchantConfig);
+			/* Display response message and Headers in console. */
+			if (!StringUtils.isBlank(response.getResponseCode()) && !StringUtils.isBlank(response.getResponseMessage())) {
+				new GetGenerateHeaders(merchantConfig);
 				System.out.println(" URL                 : " + url);
-				System.out.println(" Response Code       : " + responseCode);
-				System.out.println(" V-C-Corealation ID  : " + merchantConfig.getV_c_CorelationID());
-				System.out.println(" Response Message    : " + responseMessage);
+				System.out.println(" Response Code       : " + response.getResponseCode());
+				System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());
+				System.out.println(" Response Message    : " + response.getResponseMessage());
 			}
 		} catch (Exception e) {
-			return;
+			System.out.println(e.getMessage());
+			// return;
 		}
 	}
 }

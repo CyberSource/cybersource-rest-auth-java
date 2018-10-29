@@ -1,10 +1,10 @@
 package com.cybersource.apisdk.masking;
 
 import java.util.Map.Entry;
-import org.apache.logging.log4j.Level;
+
 import org.apache.logging.log4j.Logger;
+
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.Utility;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,24 +16,13 @@ import com.google.gson.JsonSyntaxException;
 public class Masking {
 
 	private static final JsonElement mask = new JsonParser().parse(GlobalLabelParameters.MASKING_PATTERN);
-	private String result = null;
-
-	public Masking(String json, Logger logger) {
-
-		try {
-			result = prepareMasking(json);
-		} catch (Exception e) {
-			Utility.log(logger, "Unable to mask", Level.FATAL);
-			Utility.log(logger, e);
-		}
-	}
 
 	/**
-	 * 
 	 * @param json
+	 * @param logger
 	 * @return
 	 */
-	public static String prepareMasking(String json) {
+	public static String prepareMasking(String json, Logger logger) {
 		/* Add the fields need to be masked in this list */
 		String[] list = { "email", "cardNumber", "expirationDate", "expirationMonth", "cardType", "cardCode",
 				"nameOnAccount", "currency" };
@@ -65,6 +54,10 @@ public class Masking {
 
 	}
 
+	/**
+	 * @param obj
+	 * @param list
+	 */
 	private static void mask(JsonObject obj, String[] list) {
 
 		for (String current : list) {
@@ -75,7 +68,4 @@ public class Masking {
 		}
 	}
 
-	public String getMaskingResult() {
-		return result;
-	}
 }

@@ -1,7 +1,11 @@
 package com.cybersource.SampleCode;
 
 import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.cybersource.apisdk.controller.ApiController;
+import com.cybersource.apisdk.model.Response;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
@@ -12,8 +16,11 @@ import com.cybersource.authsdk.util.PropertiesUtil;
 public class DeleteMethod {
 	private ApiController apiController;
 	private String authenticationType;
+	private String response;
+	private String responseCode;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
+	private Response responseObj;
 	/* Request Type is always PUT */
 	private String requestType = "DELETE";
 	/* Give the url path to where the data needs to be authenticated. */
@@ -54,7 +61,7 @@ public class DeleteMethod {
 		/* Construct the URL with respect to PUTID. */
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		/* Set the URL. */
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 		/* Begin PUT process. */
 		process();
 	}
@@ -66,20 +73,22 @@ public class DeleteMethod {
 	 */
 	private void process() throws Exception {
 		System.out.println(authenticationType.toUpperCase() + " Request");
-		/* Call payment method of Api Controller class */
-		apiController.paymentGet(merchantConfig);
-		/* Display Response Message from the server. */
+
 		try {
-			if (!merchantConfig.getResponseCode().isEmpty() && !merchantConfig.getResponseMessage().isEmpty()
-					&& merchantConfig.getResponseMessage() != null && merchantConfig.getResponseCode() != null){
+			/* Call payment method of Api Controller class */
+			responseObj = apiController.paymentGet(merchantConfig);
+			/* Display Response Message from the server. */
+			responseCode=responseObj.getResponseCode();
+			if (!StringUtils.isBlank(responseCode)&& !StringUtils.isBlank(response)) {
 				new DeleteGenerateHeaders(merchantConfig);
-			System.out.println(" URL                : " + url);
-			System.out.println(" Response Code      : " + merchantConfig.getResponseCode());
-			System.out.println(" V-C-Corealation ID : " + merchantConfig.getV_c_CorelationID());
-			System.out.println(" Response Message   : " + merchantConfig.getResponseMessage());
+				System.out.println(" URL                : " + url);
+				System.out.println(" Response Code      : " + merchantConfig.getResponseCode());
+				System.out.println(" V-C-Corealation ID : " + merchantConfig.getVcCorelationID());
+				System.out.println(" Response Message   : " + response);
 			}
 		} catch (Exception e) {
-			return;
+			System.out.println(e.getMessage());
+			// return;
 		}
-		}
+	}
 }

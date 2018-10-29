@@ -130,6 +130,10 @@ public class SignatureGenerator {
 			requestTarget = GlobalLabelParameters.DELETE.toLowerCase() + GlobalLabelParameters.SPACE
 					+ merchantConfig.getRequestTarget();
 			break;
+		case GlobalLabelParameters.PATCH:
+			requestTarget = GlobalLabelParameters.PATCH.toLowerCase() + GlobalLabelParameters.SPACE
+					+ merchantConfig.getRequestTarget();
+			break;
 		default:
 			requestTarget = null;
 			break;

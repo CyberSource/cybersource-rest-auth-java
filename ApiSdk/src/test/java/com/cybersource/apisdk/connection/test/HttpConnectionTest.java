@@ -59,12 +59,12 @@ public class HttpConnectionTest {
 		merchantConfig.setRequestType("GET");
 		requestTarget = requestTarget + getID;
 		merchantConfig.setRequestTarget(requestTarget);
-		merchantConfig.setURL(null);
+		merchantConfig.setUrl(null);
 		logger = Log4j.getInstance(merchantConfig);
 
 		httpConnection = new HttpConnection(merchantConfig, logger);
 		httpConnection.openConnection();
-		Assert.assertNull(merchantConfig.getURL());
+		Assert.assertNull(merchantConfig.getUrl());
 
 	}
 

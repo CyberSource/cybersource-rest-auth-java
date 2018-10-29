@@ -27,19 +27,6 @@ public class MaskingTest {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	@Test
-	public void prepareMaskingTest() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		MerchantConfig merchantConfig = new MerchantConfig(merchantProp);
-		
-		logger = Log4j.getInstance(merchantConfig);
-		
-		thrown.expect(Exception.class);
-		
-		Masking.prepareMasking(null);
-		
-	}
-
 	
 	@Test
 	public void prepareMaskingTestFail() throws Exception {
@@ -52,8 +39,7 @@ public class MaskingTest {
 		
 		thrown.expect(Exception.class);
 		
-		Masking masking=new Masking(merchantConfig.getRequestData(), logger);
-		String str=masking.prepareMasking(null);
+		String str=Masking.prepareMasking(null,logger);
 		Assert.assertNotNull(str);
 	}
 }

@@ -57,22 +57,42 @@ public class GetGenerateHeaders {
 		this.getID = Utility.retrieveGetIDFromRequestTarget(requestTarget);
 		generateGetHeaders();
 	}
+	
+	/**
+	 * 
+	 * @param merchantConfig
+	 *            : this object contains all the cybs.properites details.
+	 * @throws Exception
+	 */
+	public GetGenerateHeaders(MerchantConfig merchantConfig) throws Exception {
+		this.merchantConfig = merchantConfig;
+		Utility.logEnable = false;
+		merchantConfig.setGetID(getID);
+		merchantConfig.setRequestType(requestType);
+		this.logger = Log4j.getInstance(merchantConfig);
+		auth = new Authorization();
+		generateGetHeaders();
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+		Utility.log(this.logger, " ","", Level.OFF);
+
+	}
 
 	public GetGenerateHeaders() throws Exception {
 		setGenerateHeaders();
 		
 		System.out.println(" Authentication Type : " +  merchantConfig.getAuthenticationType().trim());
 		Utility.log(this.logger,
-				GlobalLabelParameters.BEGIN_TRANSCATION + " Generate GET Headers *******************", Level.INFO);
+				GlobalLabelParameters.BEGIN_TRANSCATION , " Generate GET Headers *******************", Level.INFO);
 		merchantConfig.validateMerchantDetails(logger);
 		generateGetHeaders();
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
-		Utility.log(this.logger, " ", Level.OFF);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+		Utility.log(this.logger, " ","", Level.OFF);
 	}
 
 	private void setGenerateHeaders() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		authenticationType = merchantConfig.getAuthenticationType().trim();
 		merchantConfig.setRequestType(requestType);
 		this.logger = Log4j.getInstance(merchantConfig);
 		auth = new Authorization();
@@ -88,13 +108,13 @@ public class GetGenerateHeaders {
 	private void generateGetHeaders() throws Exception {
 
 		authenticationType = merchantConfig.getAuthenticationType().trim();
-		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE + authenticationType, Level.INFO);
-		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE + " : " + requestType, Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE , authenticationType, Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : ") , requestType, Level.INFO);
 		Utility.log(logger,
-				GlobalLabelParameters.V_C_MERCHANTID + " : " + merchantConfig.getMerchantID().trim(), Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.DATE + " : " + date, Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.GET + "_ID" + " : " +  this.getID, Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.HOST + " : " + merchantConfig.getRequestHost(),
+				GlobalLabelParameters.V_C_MERCHANTID .concat(" : ") , merchantConfig.getMerchantID().trim(), Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.DATE .concat(" : ") , date, Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.GET + "_ID" .concat(" : ") ,  this.getID, Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.HOST .concat(" : ") , merchantConfig.getRequestHost(),
 				Level.INFO);
 		
 		System.out.println(" Request Type        : " + requestType);
@@ -109,11 +129,9 @@ public class GetGenerateHeaders {
 			System.out.println(
 					" " + GlobalLabelParameters.USERAGENT + "          : " + GlobalLabelParameters.USER_AGENT_VALUE);
 			Utility.log(logger,
-					GlobalLabelParameters.USERAGENT + " : " + GlobalLabelParameters.USER_AGENT_VALUE, Level.INFO);
+					GlobalLabelParameters.USERAGENT .concat(" : ") , GlobalLabelParameters.USER_AGENT_VALUE, Level.INFO);
 			/* Signature Header */
-			tempSig = auth.getToken(merchantConfig, merchantConfig.getMerchantKeyId().trim(),
-					merchantConfig.getMerchantsecretKey().trim(), merchantConfig.getMerchantID().trim(), requestType,
-					getID);
+			tempSig = auth.getToken(merchantConfig);
 			System.out.println(" Signature           : " + tempSig.toString());
 			
 		} else {
@@ -121,13 +139,13 @@ public class GetGenerateHeaders {
 			String jwtRequestBody = getID;
 			auth.setJWTRequestBody(jwtRequestBody);
 			auth.setLogger(this.logger);
-			tempSig = auth.getToken(merchantConfig, null, null, null, requestType, null);
+			tempSig = auth.getToken(merchantConfig);
 			System.out.println(" Authorization, Bearer " + tempSig.toString());
 		}
 		System.out.println(
 				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
 		Utility.log(logger,
-				GlobalLabelParameters.CONTENT_TYPE + " : " + GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
+				GlobalLabelParameters.CONTENT_TYPE .concat(" : "), GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
 	}
 
 	/**
