@@ -47,7 +47,7 @@ public class ApiControllerTest {
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setRequestType("GET");
 		merchantConfig.setAuthenticationType("HTTP_Signature");
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		apiController.paymentGet(merchantConfig);
 		Assert.assertEquals(200, Integer.parseInt(merchantConfig.getResponseCode()));
@@ -66,7 +66,7 @@ public class ApiControllerTest {
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setAuthenticationType("HTTP_Signature");
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		apiController.paymentPost(merchantConfig);
 		Assert.assertEquals(201, Integer.parseInt(merchantConfig.getResponseCode()));
@@ -87,7 +87,7 @@ public class ApiControllerTest {
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setRequestType("GET");
 		merchantConfig.setAuthenticationType("JWT");
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		apiController.paymentGet(merchantConfig);
 		Assert.assertEquals(200, Integer.parseInt(merchantConfig.getResponseCode()));
@@ -106,7 +106,7 @@ public class ApiControllerTest {
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setAuthenticationType("JWT");
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		apiController.paymentPost(merchantConfig);
 		Assert.assertEquals(201, Integer.parseInt(merchantConfig.getResponseCode()));
@@ -126,10 +126,10 @@ public class ApiControllerTest {
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setAuthenticationType("test");
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		apiController.paymentPost(merchantConfig);
-		Assert.assertEquals(null, merchantConfig.getResponseCode());
+		Assert.assertNull(merchantConfig.getResponseCode());
 
 	}
 
@@ -144,7 +144,7 @@ public class ApiControllerTest {
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setRequestType("GET");
 		merchantConfig.setAuthenticationType("test");
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		apiController.paymentGet(merchantConfig);
 		Assert.assertEquals(true,MerchantConfig.isSetMerchantDetails);
@@ -164,10 +164,10 @@ public class ApiControllerTest {
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setAuthenticationType("JWT");
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		apiController.paymentPost(merchantConfig);
-		Assert.assertEquals(null, merchantConfig.getResponseCode());
+		Assert.assertNull(merchantConfig.getResponseCode());
 	}
 
 	@Test
@@ -181,11 +181,11 @@ public class ApiControllerTest {
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setRequestType("GET");
 		merchantConfig.setAuthenticationType("JWT");
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 		merchantConfig.setKeyAlias("test");
 
 		apiController.paymentGet(merchantConfig);
-		Assert.assertEquals(null, merchantConfig.getResponseCode());
+		Assert.assertNull(merchantConfig.getResponseCode());
 
 	}
 
@@ -200,11 +200,11 @@ public class ApiControllerTest {
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setRequestType("GET");
 		merchantConfig.setAuthenticationType("JWT");
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 		MerchantConfig.isSetMerchantDetails = false;
 
 		apiController.commonApiControllerCheck(merchantConfig);
-		Assert.assertEquals(null, merchantConfig.getResponseCode());
+		Assert.assertNull(merchantConfig.getResponseCode());
 
 	}
 }

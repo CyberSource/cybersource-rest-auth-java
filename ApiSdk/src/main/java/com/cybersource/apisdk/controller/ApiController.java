@@ -2,7 +2,10 @@ package com.cybersource.apisdk.controller;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+
+import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.PaymentRequestService;
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -18,13 +21,15 @@ public class ApiController {
 	private boolean authType;
 	private String authenticationType;
 	private boolean isMerchantDetail;
+	private Response responseObj;
 
 	/**
 	 * 
 	 * @param merchantConfig
+	 * @throws ConfigException 
 	 */
-	public void paymentGet(MerchantConfig merchantConfig) {
-		processPayment(merchantConfig);
+	public Response paymentGet(MerchantConfig merchantConfig) throws ConfigException {
+		return processPayment(merchantConfig);
 	}
 
 	/**
@@ -32,9 +37,10 @@ public class ApiController {
 	 * @param merchantConfig
 	 *            : This object contains all the details present in the
 	 *            cybs.properties.
+	 * @throws ConfigException 
 	 */
-	public void paymentPost(MerchantConfig merchantConfig) {
-		processPayment(merchantConfig);
+	public Response paymentPost(MerchantConfig merchantConfig) throws ConfigException {
+		return processPayment(merchantConfig);
 	}
 
 	/**
@@ -42,10 +48,11 @@ public class ApiController {
 	 * @param merchantConfig
 	 *            : This object contains all the details present in the
 	 *            cybs.properties.
+	 * @throws ConfigException 
 	 * 
 	 */
-	public void paymentPut(MerchantConfig merchantConfig) {
-		processPayment(merchantConfig);
+	public Response paymentPut(MerchantConfig merchantConfig) throws ConfigException {
+		return processPayment(merchantConfig);
 	}
 
 	/**
@@ -53,27 +60,30 @@ public class ApiController {
 	 * @param merchantConfig
 	 *            : This object contains all the details present in the
 	 *            cybs.properties.
+	 * @throws ConfigException 
 	 * 
 	 */
-	public void paymentDelete(MerchantConfig merchantConfig) {
-		processPayment(merchantConfig);
+	public Response paymentDelete(MerchantConfig merchantConfig) throws ConfigException {
+		return processPayment(merchantConfig);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
+	 * @throws ConfigException 
 	 */
-	private void processPayment(MerchantConfig merchantConfig) {
+	private Response processPayment(MerchantConfig merchantConfig) throws ConfigException {
 		commonApiControllerCheck(merchantConfig);
 		if (authType) {
 			if (isMerchantDetail) {
-				Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE + authenticationType,
+				Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE , authenticationType,
 						Level.INFO);
 				try {
-					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, this.logger);
-					paymentRequest.processPaymentRequest();
-					Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
-					Utility.log(this.logger, " ", Level.OFF);
+					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, logger);
+					responseObj =  paymentRequest.processPaymentRequest();
+					Utility.log(logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+					Utility.log(logger, " ","", Level.OFF);
+					return responseObj;
 				} catch (Exception e) {
 					paymentEndException();
 				}
@@ -83,41 +93,48 @@ public class ApiController {
 		} else {
 			authenticationException();
 		}
+		return responseObj;
 	}
 
 	/**
 	 * @param merchantConfig
+	 * @throws ConfigException 
 	 * 
 	 */
-	public void commonApiControllerCheck(MerchantConfig merchantConfig) {
+	public void commonApiControllerCheck(MerchantConfig merchantConfig) throws ConfigException {
 		/* Retrieve authentication type for validating. */
 		authenticationType = merchantConfig.getAuthenticationType().trim();
 		authType = Utility.checkAuthenticationValidation(authenticationType);
 		if (MerchantConfig.isSetMerchantDetails) {
 			/* Initializing the logging object. */
-			this.logger = Log4j.getInstance(merchantConfig);
-			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, Level.INFO);
+			logger = Log4j.getInstance(merchantConfig);
+			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSCATION,"", Level.INFO);
 			/* Validate Merchant Details. */
-			isMerchantDetail = merchantConfig.validateMerchantDetails(this.logger);
+			isMerchantDetail = merchantConfig.validateMerchantDetails(logger);
 		} else {
-			this.logger = Log4j.getInstance(merchantConfig);
+			logger = Log4j.getInstance(merchantConfig);
 		}
 	}
 
 	/**
+	 * @throws ConfigException 
 	 * 
 	 */
-	private void authenticationException() {
-		Utility.log(this.logger, GlobalLabelParameters.AUTH_ERROR + authenticationType, Level.FATAL);
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
-		System.err.println(GlobalLabelParameters.AUTH_ERROR + authenticationType);
+	private void authenticationException() throws ConfigException{
+		Utility.log(logger, GlobalLabelParameters.AUTH_ERROR , authenticationType, Level.FATAL);
+		try {
+			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
+		} finally{
+		Utility.log(logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+		}
+		
 	}
 
 	/**
 	 * 
 	 */
 	private void paymentEndException() {
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, Level.INFO);
-		Utility.log(this.logger, " ", Level.OFF);
+		Utility.log(logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+		Utility.log(logger, " ","", Level.OFF);
 	}
 }

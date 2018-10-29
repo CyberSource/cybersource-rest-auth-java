@@ -2,8 +2,11 @@ package com.cybersource.SampleCode;
 
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cybersource.Data.PayloadData;
 import com.cybersource.apisdk.controller.ApiController;
+import com.cybersource.apisdk.model.Response;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
@@ -14,6 +17,7 @@ import com.cybersource.authsdk.util.PropertiesUtil;
 public class PutMethod {
 	private ApiController apiController;
 	private String authenticationType;
+	private Response response;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
 	/**
@@ -58,9 +62,6 @@ public class PutMethod {
 		 * object.
 		 */
 
-		if(PropertiesUtil.runningFromIntelliJ()){
-			requestJsonPath="./resources/TRRReport.json";
-		}
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setRequestTarget(requestTarget);
 		merchantConfig.setRequestData(requestData);
@@ -68,7 +69,7 @@ public class PutMethod {
 		/* Construct the URL with respect to PUTID. */
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		/* Set the URL. */
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 		/* Begin PUT process. */
 		process();
 	}
@@ -80,19 +81,21 @@ public class PutMethod {
 	 */
 	private void process() throws Exception {
 		System.out.println(authenticationType.toUpperCase() + " Request");
-		/* Call payment method of Api Controller class */
-		apiController.paymentPut(merchantConfig);
 		try {
-			if (!merchantConfig.getResponseCode().isEmpty() && !merchantConfig.getResponseMessage().isEmpty()
-					&& merchantConfig.getResponseMessage() != null && merchantConfig.getResponseCode() != null) {
+			/* Call payment method of Api Controller class */
+			response = apiController.paymentPut(merchantConfig);
+
+			if (!StringUtils.isBlank(response.getResponseCode())
+					&& !StringUtils.isBlank(response.getResponseMessage())) {
 				new PutGenerateHeaders(merchantConfig);
 				System.out.println(" URL                 : " + url);
-				System.out.println(" Response Code       : " + merchantConfig.getResponseCode());
-				System.out.println(" v-c-Co-relation ID  : " + merchantConfig.getV_c_CorelationID());
-				System.out.println(" Response Message    : " + merchantConfig.getResponseMessage());
+				System.out.println(" Response Code       : " + response.getResponseCode());
+				System.out.println(" v-c-Co-relation ID  : " + response.getVcCorelationId());
+				System.out.println(" Response Message    : " + response.getResponseMessage());
 			}
 		} catch (Exception e) {
-			return;
+			System.out.println(e.getMessage());
+			// return;
 		}
 
 	}

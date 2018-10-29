@@ -8,7 +8,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
-import com.cybersource.apisdk.connection.JwtUrlConnection;
+import com.cybersource.apisdk.connection.JwtConnection;
+import com.cybersource.apisdk.model.Response;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -19,7 +20,7 @@ import junit.framework.Assert;
 public class JwtUrlConnectionTest {
 
 	@Mock
-	JwtUrlConnection jwtUrlConnection;
+	JwtConnection jwtUrlConnection;
 
 	@Mock
 	MerchantConfig merchantConfig;
@@ -45,13 +46,13 @@ public class JwtUrlConnectionTest {
 		merchantConfig.setRequestTarget(requestTarget);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
-		String str = jwtUrlConnection.get();
+		jwtUrlConnection = new JwtConnection(merchantConfig, logger);
+		Response str = jwtUrlConnection.jwtConnection();
 		Assert.assertNotNull(str);
 	}
 
@@ -64,14 +65,14 @@ public class JwtUrlConnectionTest {
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
-		String str = jwtUrlConnection.postDocument(merchantConfig.getRequestData());
-		Assert.assertNotNull(str);
+		jwtUrlConnection = new JwtConnection(merchantConfig, logger);
+		Response resp = jwtUrlConnection.postDocument(merchantConfig.getRequestData());
+		Assert.assertNotNull(resp);
 	}
 
 	@Test
@@ -83,14 +84,14 @@ public class JwtUrlConnectionTest {
 		merchantConfig.setRequestJsonPath(requestJsonPath);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setURL(url);
+		merchantConfig.setUrl(url);
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
 		thrown.expect(Exception.class);
 
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
+		jwtUrlConnection = new JwtConnection(merchantConfig, logger);
 		jwtUrlConnection.postDocument(merchantConfig.getRequestData());
 
 	}
@@ -108,7 +109,7 @@ public class JwtUrlConnectionTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
+		jwtUrlConnection = new JwtConnection(merchantConfig, logger);
 		jwtUrlConnection.setContentType();
 		Assert.assertNotNull(merchantConfig.getRequestJsonPath());
 
@@ -127,7 +128,7 @@ public class JwtUrlConnectionTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
+		jwtUrlConnection = new JwtConnection(merchantConfig, logger);
 		jwtUrlConnection.setSignature();
 		Assert.assertNotNull(merchantConfig.getRequestJsonPath());
 
@@ -146,7 +147,7 @@ public class JwtUrlConnectionTest {
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
+		jwtUrlConnection = new JwtConnection(merchantConfig, logger);
 		jwtUrlConnection.setRequestMethod("GET");
 		Assert.assertNotNull(merchantConfig.getRequestType());
 
@@ -161,14 +162,14 @@ public class JwtUrlConnectionTest {
 		requestTarget = requestTarget + get_ID;
 		merchantConfig.setRequestTarget(requestTarget);
 		merchantConfig.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setURL("");
+		merchantConfig.setUrl("");
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
-		jwtUrlConnection = new JwtUrlConnection(merchantConfig, logger);
+		jwtUrlConnection = new JwtConnection(merchantConfig, logger);
 		jwtUrlConnection.openConnection();
-		Assert.assertNotNull(merchantConfig.getURL());
+		Assert.assertNotNull(merchantConfig.getUrl());
 
 	}
 

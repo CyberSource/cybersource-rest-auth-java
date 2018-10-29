@@ -1,9 +1,12 @@
 package com.cybersource.apisdk.service;
 
+import java.io.IOException;
+
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.apisdk.connection.HttpConnection;
-import com.cybersource.apisdk.connection.JwtUrlConnection;
+import com.cybersource.apisdk.connection.JwtConnection;
+import com.cybersource.apisdk.model.Response;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
@@ -34,13 +37,18 @@ public class PaymentRequestService {
 	}
 
 	/**
+	 * @throws IOException 
 	 */
-	public void processPaymentRequest() {
+	public Response processPaymentRequest() throws IOException {
 
 		if (authenticatonType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			new HttpConnection(merchantConfig, logger);
+			HttpConnection connection = new HttpConnection(merchantConfig, logger);
+			return connection.httpConnection();
 		} else if (authenticatonType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			new JwtUrlConnection(merchantConfig, logger);
+			JwtConnection jwtConnection=new JwtConnection(merchantConfig, logger);
+			return jwtConnection.getJwtConnection();
 		}
+		return null;
+		
 	}
 }
