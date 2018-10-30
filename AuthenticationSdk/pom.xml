@@ -1,12 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.cybersource</groupId>
-		<artifactId>Cybersource-Authentication-SDK</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+    <groupId>com.cybersource</groupId>
 	<artifactId>AuthenticationSdk</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<name>CyberSource Java SDK</name>
+     <licenses>
+        <license>
+            <name>SDK License Agreement</name>
+            <url>https://github.com/CyberSource/cybersource-rest-auth-java/blob/master/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/CyberSource/cybersource-rest-auth-java.git</connection>
+        <developerConnection>scm:git:https://github.com/CyberSource/cybersource-rest-auth-java.git</developerConnection>
+        <url>https://github.com/CyberSource/cybersource-rest-auth-java.git</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>CyberSource</id>
+            <name>CyberSource Developer</name>
+            <email>developer@cybersource.com</email>
+        </developer>
+    </developers>
 	<dependencies>
 
 
