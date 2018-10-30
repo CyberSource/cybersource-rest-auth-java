@@ -59,8 +59,8 @@ public class Cache {
 	}
 
 	/**
-	 * @throws ConfigException - if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException
+	 *             - if some value is missing or wrong for merchant.
 	 * 
 	 */
 	public void setP12FileDetailsInCache() throws ConfigException {
