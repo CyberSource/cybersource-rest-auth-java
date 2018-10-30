@@ -17,7 +17,7 @@ public class KeyStoreUtil {
 	private static Logger logger = LoggerFactory.getLogger(KeyStoreUtil.class);
 
 	public static PrivateKey getPrivateKey(String keyStorePath, String keystorePassword, String privateKeyPassword,
-			String keyAlias) {                                                                                                                 
+			String keyAlias) {
 		FileInputStream is = null;
 		try {
 			is = new FileInputStream(keyStorePath);

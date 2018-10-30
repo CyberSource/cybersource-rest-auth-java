@@ -20,18 +20,24 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 
-
 public class KeyCertificateGenerator {
 
 	/**
 	 * @param merchantConfig
-	 * @return
-	 * @throws CertificateException
+	 *            -contains merchant information.
+	 * @return certificate which will be used to generate token.
+	 ** @throws CertificateException
+	 *             -if certificate is missing or wrong.
 	 * @throws NoSuchAlgorithmException
+	 *             -if algorithm is not available.
 	 * @throws IOException
+	 *             -if file is not found.
 	 * @throws KeyStoreException
+	 *             -if file is not available in key store or wrong.
 	 * @throws ConfigException
+	 *             -if some values is missing or wrong for merchant.
 	 * @throws Exception
+	 *             -if some other exception will happen.
 	 */
 	public static X509Certificate initializeCertificate(MerchantConfig merchantConfig) throws CertificateException,
 			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
@@ -61,15 +67,16 @@ public class KeyCertificateGenerator {
 			}
 
 		} else {
-			return null; 
+			return null;
 		}
 	}
 
-	
 	/**
 	 * @param array
+	 *            -list of keyAlias.
 	 * @param merchantID
-	 * @return
+	 *            -Id of merchant.
+	 * @return merchantKeyalias for merchant.
 	 */
 	private static String keyAliasValidator(ArrayList<String> array, String merchantID) {
 		int size = array.size();
@@ -87,12 +94,30 @@ public class KeyCertificateGenerator {
 						if (result.equalsIgnoreCase(merchantID)) {
 							return merchantKeyAlias;
 						} /* End if */
-					} /* End while (str.hasMoreElements()*/
-				} /* End if (tempKeyAlias.contains("CN"))*/
-			} /* End while (str.hasMoreTokens()*/
+					} /* End while (str.hasMoreElements() */
+				} /* End if (tempKeyAlias.contains("CN")) */
+			} /* End while (str.hasMoreTokens() */
 		} /* End for */
 		return null;
 	}
+
+	/**
+	 * @param merchantConfig
+	 *            -contains merchant information.
+	 * @return certificate which will be used to generate token.
+	 ** @throws CertificateException
+	 *             -if certificate is missing or wrong.
+	 * @throws NoSuchAlgorithmException
+	 *             -if algorithm is not available.
+	 * @throws IOException
+	 *             -if file is not found.
+	 * @throws KeyStoreException
+	 *             -if file is not available in key store or wrong.
+	 * @throws ConfigException
+	 *             -if some values is missing or wrong for merchant.
+	 * @throws Exception
+	 *             -if some other exception will happen.
+	 */
 	/* Currently this method is not used in the logic */
 	public static X509Certificate initializeRecipientCertificate(MerchantConfig merchantConfig)
 			throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException,
@@ -129,16 +154,23 @@ public class KeyCertificateGenerator {
 			throw new ConfigException("merchant config fields missing: recipientId, key file");
 		}
 	}
+
 	/**
-	 * 
 	 * @param merchantConfig
-	 * @return
-	 * @throws CertificateException
+	 *            -contains merchant information.
+	 * @return certificate which will be used to generate token.
+	 ** @throws CertificateException
+	 *             -if certificate is missing or wrong.
 	 * @throws NoSuchAlgorithmException
+	 *             -if algorithm is not available.
 	 * @throws IOException
+	 *             -if file is not found.
 	 * @throws KeyStoreException
+	 *             -if file is not available in key store or wrong.
 	 * @throws ConfigException
+	 *             -if some values is missing or wrong for merchant.
 	 * @throws Exception
+	 *             -if some other exception will happen.
 	 */
 	public static RSAPrivateKey initializePrivateKey(MerchantConfig merchantConfig) throws CertificateException,
 			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
