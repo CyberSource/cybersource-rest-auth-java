@@ -5,7 +5,6 @@ import java.io.File;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
@@ -13,6 +12,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
@@ -46,7 +46,7 @@ public class Log4j {
 	/**
 	 * 
 	 * @param merchantConfig
-	 * @return
+	 * @return logger object of LOG4j
 	 */
 		public static Logger getInstance(MerchantConfig merchantConfig) {
 
@@ -65,10 +65,7 @@ public class Log4j {
 		return logger;
 	}
 
-	/**
-	 * 
-	 *
-	 */
+	
 	private Logger getLogger() {
 		Logger logger;
 		addAppenderLogger(filePath, Level.ALL);
@@ -78,8 +75,8 @@ public class Log4j {
 
 	/**
 	 * 
-	 * @param filePath
-	 * @param vlevel
+	 * @param filePath - path for log file.
+	 * @param vlevel - level for log file.
 	 */
 	public void addAppenderLogger(String filePath, Level vlevel) {
 
@@ -112,10 +109,7 @@ public class Log4j {
 		Configurator.initialize(builder.build());
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
+	
 	private void checkLogMaxSizeAndFolder() {
 		File dir;
 		try {

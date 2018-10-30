@@ -1,9 +1,8 @@
 package com.cybersource.authsdk.payloaddigest;
 
-import java.io.IOException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -22,19 +21,15 @@ public class PayloadDigest {
 	private String sha256 = GlobalLabelParameters.SHA_256;
 
 	/**
-	 * 
-	 * @param merchantConfig
-	 * @throws NoSuchAlgorithmException
-	 * @throws IOException
+	 * @param merchantConfig-
+	 *            contains all information for merchant.
 	 */
 	public PayloadDigest(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
 	}
 
 	/**
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws IOException
+	 * @return generated digest from requestBody.
 	 */
 	private String digestGeneration() {
 
@@ -49,10 +44,10 @@ public class PayloadDigest {
 			digestString = MessageDigest.getInstance(sha256);
 			digestBytes = digestString.digest(messageBody.getBytes("UTF-8"));
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.DIGEST_GEN_FAILED,"", Level.FATAL);
+			Utility.log(logger, GlobalLabelParameters.DIGEST_GEN_FAILED, "", Level.FATAL);
 			Utility.log(logger, e);
 			return null;
-		} 
+		}
 		bluePrint = Base64.getEncoder().encodeToString(digestBytes);
 		bluePrint = sha256 + "=" + bluePrint;
 		return bluePrint;
@@ -62,8 +57,7 @@ public class PayloadDigest {
 	 * Reads the Payload data present in the request json file, if present, else
 	 * reads form the merchant config object.
 	 * 
-	 * @return
-	 * @throws IOException
+	 * @return generated payLoad from request body.
 	 */
 	private String payloadGeneration() {
 		messageBody = merchantConfig.getRequestData();
@@ -71,20 +65,17 @@ public class PayloadDigest {
 	}
 
 	/**
-	 * @return
-	 * @throws IOException
+	 * @return payLoad generated.
 	 */
 	public String getPayLoad() {
-		
-			payloadGeneration();
-			return messageBody;
+
+		payloadGeneration();
+		return messageBody;
 	}
 
 	/**
 	 * 
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws IOException
+	 * @return Digest generated from payload.
 	 */
 	public String getDigest() {
 		digestGeneration();
@@ -92,11 +83,10 @@ public class PayloadDigest {
 	}
 
 	/**
-	 * 
+	 * @return messageBody for request.
 	 */
 	public String getMessageBody() {
 		return messageBody;
 	}
 
-	
 }

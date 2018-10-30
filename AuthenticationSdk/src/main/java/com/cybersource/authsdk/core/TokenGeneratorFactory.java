@@ -9,10 +9,13 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 public class TokenGeneratorFactory {
 
 	/**
-	 * @param merchantConfig
-	 * @param jwtRequestBody
-	 * @return
-	 * @throws Exception
+	 * @param merchantConfig-
+	 *            contains information of merchant.
+	 * @param jwtRequestBody-
+	 *            list of values will get from merchant.
+	 * @return token as per http_signature and JWT.
+	 * @throws ConfigException
+	 *             - if some value is missing or wrong for merchant.
 	 */
 	public static TokenGenerator getAuthToken(MerchantConfig merchantConfig, String jwtRequestBody)
 			throws ConfigException {

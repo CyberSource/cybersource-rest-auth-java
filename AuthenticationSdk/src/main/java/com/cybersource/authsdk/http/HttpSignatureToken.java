@@ -27,12 +27,12 @@ public class HttpSignatureToken implements TokenGenerator {
 	private String merchantSecertKey = null;
 	private String httpMethod = null;
 	private String httpMerchantID = null;
-	private String requestData=null;
+	private String requestData = null;
 	private Logger logger;
 
 	/**
 	 * @param merchantConfig
-	 * @throws Exception
+	 *            -contains information for merchant.
 	 */
 	public HttpSignatureToken(MerchantConfig merchantConfig) {
 
@@ -44,7 +44,7 @@ public class HttpSignatureToken implements TokenGenerator {
 		this.logger = Log4j.getInstance(merchantConfig);
 	}
 
-	/** 
+	/**
 	 * Method to get Token.
 	 */
 	@Override
@@ -63,9 +63,11 @@ public class HttpSignatureToken implements TokenGenerator {
 	}
 
 	/**
-	 * @return
+	 * @return headers to generate signature.
 	 * @throws InvalidKeyException
+	 *             - if key is not valid.
 	 * @throws NoSuchAlgorithmException
+	 *             - if algorith is not available.
 	 */
 	private String signatureHeader() throws InvalidKeyException, NoSuchAlgorithmException {
 
@@ -95,7 +97,7 @@ public class HttpSignatureToken implements TokenGenerator {
 	 * 
 	 * @param requestType
 	 *            : GET/POST/PUT
-	 * @return
+	 * @return request header as per request type.
 	 */
 	private String getRequestHeaders(String requestType) {
 		String requestHeader = null;

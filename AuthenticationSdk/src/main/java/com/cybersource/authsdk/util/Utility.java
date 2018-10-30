@@ -20,6 +20,7 @@ public class Utility {
 	 * 
 	 * @param authenticationType
 	 *            : HTTP or JWT
+	 * @return -true if valid authentication type else return false.
 	 */
 	public static boolean checkAuthenticationValidation(String authenticationType) {
 		boolean status = false;
@@ -38,29 +39,31 @@ public class Utility {
 	 *            : Logging object (Log4j2).
 	 * @param exceptionMessage
 	 *            : Custom message for logging the log file.
+	 * @param obj
+	 *            : object to get exception message.
 	 * @param logLevel
 	 *            : Level at which logging should occur
 	 *            [INFO,ERROR,DEBUG,FATAL].
 	 */
-	public static void log(Logger logger, String exceptionMessage,Object obj, Level logLevel) {
+	public static void log(Logger logger, String exceptionMessage, Object obj, Level logLevel) {
 		try {
 			if (logEnable) {
-				exceptionMessage=exceptionMessage.concat("%s");
+				exceptionMessage = exceptionMessage.concat("%s");
 				if (exceptionMessage != null && !exceptionMessage.isEmpty()) {
 					if (logLevel == Level.ERROR) {
-						exceptionMessage=String.format(exceptionMessage, obj);
+						exceptionMessage = String.format(exceptionMessage, obj);
 						logger.error(exceptionMessage);
 					} else if (logLevel == Level.DEBUG) {
-						exceptionMessage=String.format(exceptionMessage, obj);
+						exceptionMessage = String.format(exceptionMessage, obj);
 						logger.debug(exceptionMessage);
 					} else if (logLevel == Level.FATAL) {
-						exceptionMessage=String.format(exceptionMessage, obj);
+						exceptionMessage = String.format(exceptionMessage, obj);
 						logger.fatal(exceptionMessage);
 					} else if (logLevel == Level.OFF) {
-						exceptionMessage=String.format(exceptionMessage , obj);
+						exceptionMessage = String.format(exceptionMessage, obj);
 						logger.printf(Level.OFF, "%n");
 					} else {
-						exceptionMessage=String.format(exceptionMessage , obj);
+						exceptionMessage = String.format(exceptionMessage, obj);
 						logger.info(exceptionMessage);
 					}
 				}
@@ -91,7 +94,7 @@ public class Utility {
 	 * 
 	 * @param e
 	 *            : Exception caught during the process.
-	 * @return
+	 * @return stackTrace of Exception.
 	 */
 	private static String getStackTrace(Exception e) {
 		StringWriter sw = new StringWriter();
@@ -105,13 +108,14 @@ public class Utility {
 	/**
 	 * 
 	 * @param requestTarget
-	 * @return
+	 *            : request target from where we will retrieve Id
+	 * @return id from request target.
 	 */
 	public static String retrieveGetIDFromRequestTarget(String requestTarget) {
 		StringTokenizer str = new StringTokenizer(requestTarget, "/");
 		String temp = null;
 		while (str.hasMoreTokens()) {
-			 temp = str.nextToken();
+			temp = str.nextToken();
 			if (temp.matches("^[0-9]+$")) {
 				return temp;
 			}
@@ -122,8 +126,9 @@ public class Utility {
 	/**
 	 * 
 	 * @param responseCode
-	 * @return
-	 * @return
+	 *            :responseCode to log .
+	 * @param logger
+	 *            :Log4j object
 	 */
 	public static void logResponseCodeMessage(int responseCode, Logger logger) {
 		if (logEnable) {

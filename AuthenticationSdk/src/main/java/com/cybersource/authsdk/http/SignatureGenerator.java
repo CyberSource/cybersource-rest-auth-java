@@ -2,13 +2,11 @@ package com.cybersource.authsdk.http;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
 import java.util.Base64;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -32,9 +30,12 @@ public class SignatureGenerator {
 	private String merchantId;
 
 	/**
-	 * @param merchantConfig
+	 * @param merchantConfig-contains
+	 *            all information of merchant.
 	 * @throws InvalidKeyException
+	 *             - if key is not valid.
 	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm is not available.
 	 */
 	public SignatureGenerator(MerchantConfig merchantConfig) throws InvalidKeyException, NoSuchAlgorithmException {
 		this.merchantConfig = merchantConfig;
@@ -44,9 +45,11 @@ public class SignatureGenerator {
 	}
 
 	/**
-	 * @return
+	 * @return generated signature.
 	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm is not available.
 	 * @throws InvalidKeyException
+	 *             - if key is not valid.
 	 */
 	public String signatureGeneration() throws NoSuchAlgorithmException, InvalidKeyException {
 
@@ -109,7 +112,8 @@ public class SignatureGenerator {
 	/**
 	 * 
 	 * @param requestType
-	 * @return
+	 *            - GET/PUT/POST
+	 * @return request target as per request type.
 	 */
 	public String getRequestTarget(String requestType) {
 		String requestTarget;
