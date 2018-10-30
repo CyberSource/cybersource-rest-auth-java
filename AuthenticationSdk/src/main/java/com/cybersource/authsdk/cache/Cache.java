@@ -44,8 +44,8 @@ public class Cache {
 	}
 
 	/**
-	 * @param merchantConfig-contains
-	 *            all information for merchant.
+	 * @param merchantConfig
+	 *            - contains all information for merchant.
 	 */
 	public Cache(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
@@ -59,7 +59,7 @@ public class Cache {
 	}
 
 	/**
-	 * @throws ConfigException-if
+	 * @throws ConfigException - if
 	 *             some value is missing or wrong for merchant.
 	 * 
 	 */
@@ -77,8 +77,8 @@ public class Cache {
 	}
 
 	/**
-	 * @throws ConfigException-if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException
+	 *             - if some value is missing or wrong for merchant.
 	 */
 	public void setUpP12Cache() throws ConfigException {
 		identity.setLastModifiedDate(getLastModifiedFileP12());
@@ -86,7 +86,6 @@ public class Cache {
 		identity.setRsaPrivateKey(rsaPrivateKey);
 		String tempMerchantID = merchantConfig.getMerchantID();
 		cacheP12.put(tempMerchantID, identity);
-		/* Set Last Modified Time. */
 		lastModifiedTime = merchantConfig.getKeyFile().lastModified();
 	}
 

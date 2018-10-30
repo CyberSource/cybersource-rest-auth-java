@@ -5,6 +5,7 @@ public class ConfigException extends Exception {
 
 	/**
 	 * @param message
+	 *            - messgae to print if exception occurs
 	 */
 	public ConfigException(String message) {
 		super(message);

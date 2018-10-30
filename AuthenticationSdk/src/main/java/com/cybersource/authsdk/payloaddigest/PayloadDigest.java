@@ -21,8 +21,8 @@ public class PayloadDigest {
 	private String sha256 = GlobalLabelParameters.SHA_256;
 
 	/**
-	 * @param merchantConfig-contains
-	 *            all information for merchant.
+	 * @param merchantConfig-
+	 *            contains all information for merchant.
 	 */
 	public PayloadDigest(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
@@ -83,7 +83,7 @@ public class PayloadDigest {
 	}
 
 	/**
-	 * return messageBody for request.
+	 * @return messageBody for request.
 	 */
 	public String getMessageBody() {
 		return messageBody;

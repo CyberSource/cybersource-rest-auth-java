@@ -64,10 +64,10 @@ public class HttpSignatureToken implements TokenGenerator {
 
 	/**
 	 * @return headers to generate signature.
-	 * @throws InvalidKeyException-if
-	 *             key is not valid.
-	 * @throws NoSuchAlgorithmException-if
-	 *             algorith is not available.
+	 * @throws InvalidKeyException
+	 *             - if key is not valid.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorith is not available.
 	 */
 	private String signatureHeader() throws InvalidKeyException, NoSuchAlgorithmException {
 

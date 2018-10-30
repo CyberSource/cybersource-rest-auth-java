@@ -32,10 +32,10 @@ public class SignatureGenerator {
 	/**
 	 * @param merchantConfig-contains
 	 *            all information of merchant.
-	 * @throws InvalidKeyException-if
-	 *             key is not valid.
-	 * @throws NoSuchAlgorithmException-if
-	 *             algorithm is not available.
+	 * @throws InvalidKeyException
+	 *             - if key is not valid.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm is not available.
 	 */
 	public SignatureGenerator(MerchantConfig merchantConfig) throws InvalidKeyException, NoSuchAlgorithmException {
 		this.merchantConfig = merchantConfig;
@@ -46,10 +46,10 @@ public class SignatureGenerator {
 
 	/**
 	 * @return generated signature.
-	 * @throws NoSuchAlgorithmException-if
-	 *             algorithm is not available.
-	 * @throws InvalidKeyException-if
-	 *             key is not valid.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm is not available.
+	 * @throws InvalidKeyException
+	 *             - if key is not valid.
 	 */
 	public String signatureGeneration() throws NoSuchAlgorithmException, InvalidKeyException {
 
@@ -111,7 +111,8 @@ public class SignatureGenerator {
 
 	/**
 	 * 
-	 * @param requestType-get/post/put
+	 * @param requestType
+	 *            - GET/PUT/POST
 	 * @return request target as per request type.
 	 */
 	public String getRequestTarget(String requestType) {

@@ -27,17 +27,17 @@ public class KeyCertificateGenerator {
 	 *            -contains merchant information.
 	 * @return certificate which will be used to generate token.
 	 ** @throws CertificateException
-	 *             -if certificate is missing or wrong.
+	 *              - if certificate is missing or wrong.
 	 * @throws NoSuchAlgorithmException
-	 *             -if algorithm is not available.
+	 *              - if algorithm is not available.
 	 * @throws IOException
-	 *             -if file is not found.
+	 *              - if file is not found.
 	 * @throws KeyStoreException
-	 *             -if file is not available in key store or wrong.
+	 *              - if file is not available in key store or wrong.
 	 * @throws ConfigException
-	 *             -if some values is missing or wrong for merchant.
+	 *              - if some values is missing or wrong for merchant.
 	 * @throws Exception
-	 *             -if some other exception will happen.
+	 *              - if some other exception will happen.
 	 */
 	public static X509Certificate initializeCertificate(MerchantConfig merchantConfig) throws CertificateException,
 			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
@@ -106,17 +106,17 @@ public class KeyCertificateGenerator {
 	 *            -contains merchant information.
 	 * @return certificate which will be used to generate token.
 	 ** @throws CertificateException
-	 *             -if certificate is missing or wrong.
+	 *              - if certificate is missing or wrong.
 	 * @throws NoSuchAlgorithmException
-	 *             -if algorithm is not available.
+	 *              - if algorithm is not available.
 	 * @throws IOException
-	 *             -if file is not found.
+	 *              - if file is not found.
 	 * @throws KeyStoreException
-	 *             -if file is not available in key store or wrong.
+	 *              - if file is not available in key store or wrong.
 	 * @throws ConfigException
-	 *             -if some values is missing or wrong for merchant.
+	 *              - if some values is missing or wrong for merchant.
 	 * @throws Exception
-	 *             -if some other exception will happen.
+	 *              - if some other exception will happen.
 	 */
 	/* Currently this method is not used in the logic */
 	public static X509Certificate initializeRecipientCertificate(MerchantConfig merchantConfig)
@@ -160,17 +160,17 @@ public class KeyCertificateGenerator {
 	 *            -contains merchant information.
 	 * @return certificate which will be used to generate token.
 	 ** @throws CertificateException
-	 *             -if certificate is missing or wrong.
+	 *              - if certificate is missing or wrong.
 	 * @throws NoSuchAlgorithmException
-	 *             -if algorithm is not available.
+	 *              - if algorithm is not available.
 	 * @throws IOException
-	 *             -if file is not found.
+	 *              - if file is not found.
 	 * @throws KeyStoreException
-	 *             -if file is not available in key store or wrong.
+	 *              - if file is not available in key store or wrong.
 	 * @throws ConfigException
-	 *             -if some values is missing or wrong for merchant.
+	 *              - if some values is missing or wrong for merchant.
 	 * @throws Exception
-	 *             -if some other exception will happen.
+	 *              - if some other exception will happen.
 	 */
 	public static RSAPrivateKey initializePrivateKey(MerchantConfig merchantConfig) throws CertificateException,
 			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {

@@ -45,8 +45,8 @@ public final class PropertiesUtil {
 	 * @param fileName
 	 *            -name of the file
 	 * @return stream for the file.
-	 * @throws FileNotFoundException-if
-	 *             file is not found.
+	 * @throws FileNotFoundException
+	 *             - if file is not found.
 	 */
 	private static InputStream getPropertyFile(String fileName) throws FileNotFoundException {
 		return new FileInputStream(fileName);
@@ -55,8 +55,8 @@ public final class PropertiesUtil {
 	/**
 	 * 
 	 * @return merchant properties.
-	 * @throws IOException-if
-	 *             some IO operation failed.
+	 * @throws IOException
+	 *             - if some IO operation failed.
 	 */
 	public static Properties getMerchantProperties() throws IOException {
 		cybsPath = "src/main/resources/cybs.properties";

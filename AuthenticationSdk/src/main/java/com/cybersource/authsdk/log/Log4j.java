@@ -46,7 +46,7 @@ public class Log4j {
 	/**
 	 * 
 	 * @param merchantConfig
-	 * @return
+	 * @return logger object of LOG4j
 	 */
 		public static Logger getInstance(MerchantConfig merchantConfig) {
 
@@ -65,9 +65,7 @@ public class Log4j {
 		return logger;
 	}
 
-	/**
-	 * @return
-	 */
+	
 	private Logger getLogger() {
 		Logger logger;
 		addAppenderLogger(filePath, Level.ALL);
@@ -77,8 +75,8 @@ public class Log4j {
 
 	/**
 	 * 
-	 * @param filePath
-	 * @param vlevel
+	 * @param filePath - path for log file.
+	 * @param vlevel - level for log file.
 	 */
 	public void addAppenderLogger(String filePath, Level vlevel) {
 
@@ -111,10 +109,7 @@ public class Log4j {
 		Configurator.initialize(builder.build());
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
+	
 	private void checkLogMaxSizeAndFolder() {
 		File dir;
 		try {

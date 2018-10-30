@@ -56,8 +56,8 @@ public class JwtSignatureToken implements TokenGenerator {
 	/**
 	 * 
 	 * @return the generated signature.
-	 * @throws Exception-if
-	 *             some exception will occur.
+	 * @throws Exception - 
+	 *             if some exception will occur.
 	 */
 	public String generateSignature() throws Exception {
 
@@ -146,7 +146,7 @@ public class JwtSignatureToken implements TokenGenerator {
 
 	/**
 	 * @throws ConfigException
-	 *             -if some value is missing or wrong for merchant.
+	 *             - if some value is missing or wrong for merchant.
 	 */
 	private void setUpCache() throws ConfigException {
 		cache.setX509Certificate(x509Certificate);

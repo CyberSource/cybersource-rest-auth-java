@@ -406,8 +406,8 @@ public class MerchantConfig {
 	 * @param logger
 	 *            -logger to log all information in log file.
 	 * @return true or false as per validation
-	 * @throws ConfigException-if
-	 *             some value is missing for merchant.
+	 * @throws ConfigException - 
+	 *             if some value is missing for merchant.
 	 */
 	public boolean validateMerchantDetails(Logger logger) throws ConfigException {
 		this.log = logger;
@@ -472,8 +472,8 @@ public class MerchantConfig {
 
 	/**
 	 * @return true if valid password else return false.
-	 * @throws ConfigException-if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException - 
+	 *             if some value is missing or wrong for merchant.
 	 */
 	public boolean checkKeyPassword() throws ConfigException {
 		if (this.keyPass == null || this.keyPass.isEmpty()) {
@@ -487,7 +487,7 @@ public class MerchantConfig {
 	/**
 	 * @return true if valid run environment else return false.
 	 * @throws ConfigException
-	 *             -if some value is missing or wrong for merchant.
+	 *              - if some value is missing or wrong for merchant.
 	 */
 	public boolean checkRunEvironment() throws ConfigException {
 		boolean runEnvironment = false;
@@ -506,8 +506,8 @@ public class MerchantConfig {
 
 	/**
 	 * @return true if merchant id is not null or empty else return false.
-	 * @throws ConfigException-if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException - 
+	 *             if some value is missing or wrong for merchant.
 	 */
 	public boolean checkMerchantKeyId() throws ConfigException {
 		if (this.merchantKeyId == null || this.merchantKeyId.isEmpty()) {
@@ -523,8 +523,8 @@ public class MerchantConfig {
 
 	/**
 	 * @return true if secretKey is not null or empty else return false.
-	 * @throws ConfigException-if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException - 
+	 *             if some value is missing or wrong for merchant.
 	 */
 	public boolean checkMerchantSecertKey() throws ConfigException {
 		if (this.merchantSecretKey == null || this.merchantSecretKey.isEmpty()) {
@@ -540,8 +540,8 @@ public class MerchantConfig {
 
 	/**
 	 * @return true if log size is valid else return false,
-	 * @throws ConfigException-if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException - 
+	 *             if some value is missing or wrong for merchant.
 	 */
 	public boolean checkLogMaxSizeAndFolder() throws ConfigException {
 
@@ -558,7 +558,8 @@ public class MerchantConfig {
 	 * @param jsonPath
 	 *            -path for request json.
 	 * @return true if path is valid else return false.
-	 * @throws ConfigException
+	 * @throws ConfigException - 
+	 *              if some value is missing or wrong for merchant.
 	 */
 	public boolean checkJsonPath(String jsonPath) throws ConfigException {
 		File f = null;
@@ -602,7 +603,7 @@ public class MerchantConfig {
 	/**
 	 * @return true if keyAlias is not null or empty else return false.
 	 * @throws ConfigException
-	 *             -if some value is missing or wrong for merchant.
+	 *              - if some value is missing or wrong for merchant.
 	 */
 	public boolean checkKeyAlias() throws ConfigException {
 		if (this.keyAlias == null || this.keyAlias.isEmpty()) {
@@ -663,7 +664,7 @@ public class MerchantConfig {
 	/**
 	 * @return true if authentication type is valid else return false.
 	 * @throws ConfigException
-	 *             -if some value is missing or wrong for merchant.
+	 *              - if some value is missing or wrong for merchant.
 	 */
 	private boolean checkAuthenticationType() throws ConfigException {
 		/* Authentication Type. */
@@ -680,8 +681,8 @@ public class MerchantConfig {
 
 	/**
 	 * @return true if merchant id or not null or return false.
-	 * @throws ConfigException-if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException - 
+	 *            if some value is missing or wrong for merchant.
 	 */
 	public boolean checkMerchantId() throws ConfigException {
 		boolean check = true;
@@ -709,8 +710,8 @@ public class MerchantConfig {
 
 	/**
 	 * @return true if key file is available else return false.
-	 * @throws ConfigException-if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException -
+	 *              if some value is missing or wrong for merchant.
 	 */
 	public boolean checkKeyFile() throws ConfigException {
 		keyFile = null;
@@ -768,7 +769,7 @@ public class MerchantConfig {
 	/**
 	 * @return true if log file is correct else return false.
 	 * @throws ConfigException
-	 *             -if some value is missing or wrong for merchant.
+	 *              - if some value is missing or wrong for merchant.
 	 */
 	public boolean getLogFile() throws ConfigException {
 		File dir = new File(this.getLogDirectory());
@@ -783,7 +784,7 @@ public class MerchantConfig {
 	/**
 	 * @return true if logFtle name is valid else return false.
 	 * @throws ConfigException
-	 *             -if some value is missing or wrong for merchant.
+	 *              - if some value is missing or wrong for merchant.
 	 */
 	private boolean getLogFileNameStatus() throws ConfigException {
 		boolean status = true;
@@ -853,8 +854,8 @@ public class MerchantConfig {
 	 * @param defaultVal
 	 *            -default value for property.
 	 * @return true if valid else return false.
-	 * @throws ConfigException-if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException - 
+	 *            if some value is missing or wrong for merchant.
 	 */
 	public boolean getBooleanProperty(String merchantID, String prop, boolean defaultVal) throws ConfigException {
 		String strValue = this.getProperty(merchantID, prop);
@@ -880,8 +881,8 @@ public class MerchantConfig {
 	 * @param defaultVal-default
 	 *            value for property
 	 * @return integer value as per property.
-	 * @throws ConfigException-if
-	 *             some value is missing or wrong for merchant.
+	 * @throws ConfigException
+	 *             - if some value is missing or wrong for merchant.
 	 */
 	public int getIntegerProperty(String merchantID, String prop, int defaultVal) {
 		String strValue = this.getProperty(merchantID, prop);
