@@ -7,7 +7,7 @@
     </parent>
     <groupId>com.cybersource</groupId>
 	<artifactId>AuthenticationSdk</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>CyberSource Java SDK</name>
      <licenses>
         <license>
