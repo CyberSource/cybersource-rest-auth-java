@@ -454,8 +454,8 @@ public class MerchantConfig {
 
 	/**
 	 * @return true if valid request type else return false.
-	 * @throws ConfigException-
-	 *             if some value is missing or wrong for merchant.
+	 * @throws ConfigException
+	 *             - if some value is missing or wrong for merchant.
 	 */
 	public boolean checkRequestType() throws ConfigException {
 		if (this.requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)
@@ -811,8 +811,8 @@ public class MerchantConfig {
 
 	/**
 	 *
-	 * @param merchantID-
-	 *            merchant id for merchant.
+	 * @param merchantID
+	 *            - merchant id for merchant.
 	 * @param prop
 	 *            -prop value from properties file.
 	 * @param defaultVal
@@ -847,8 +847,8 @@ public class MerchantConfig {
 
 	/**
 	 *
-	 * @param merchantID-
-	 *            merchant id for merchant.
+	 * @param merchantID
+	 *            - merchant id for merchant.
 	 * @param prop
 	 *            -prop from properties file.
 	 * @param defaultVal
@@ -874,12 +874,12 @@ public class MerchantConfig {
 
 	/**
 	 *
-	 * @param merchantID-
-	 *            id for merchant.
-	 * @param prop-prop
-	 *            from properties file.
-	 * @param defaultVal-default
-	 *            value for property
+	 * @param merchantID
+	 *            - id for merchant.
+	 * @param prop
+	 *            - prop from properties file.
+	 * @param defaultVal
+	 *            - default value for property
 	 * @return integer value as per property.
 	 * @throws ConfigException
 	 *             - if some value is missing or wrong for merchant.
@@ -908,10 +908,10 @@ public class MerchantConfig {
 	}
 
 	/**
-	 * @param merchantID-
-	 *           merchant id for merchant.
-	 * @param prop-property
-	 *            from properties file.
+	 * @param merchantID
+	 *            - merchant id for merchant.
+	 * @param prop
+	 *            - property from properties file.
 	 * @return true if valid else return false.
 	 */
 	private boolean checkBooleanLogValue(String merchantID, String prop) {
