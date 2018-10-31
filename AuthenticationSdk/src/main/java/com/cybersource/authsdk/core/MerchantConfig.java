@@ -881,9 +881,7 @@ public class MerchantConfig {
 	 * @param defaultVal
 	 *            - default value for property
 	 * @return integer value as per property.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
+	  */
 	public int getIntegerProperty(String merchantID, String prop, int defaultVal) {
 		String strValue = this.getProperty(merchantID, prop);
 		if (strValue == null) {
