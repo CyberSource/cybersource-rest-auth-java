@@ -27,8 +27,8 @@ public final class PropertiesUtil {
 	 * @param fileName
 	 *            -name of the request json file.
 	 * @return bytes for json file.
-	 * @throws IOException-
-	 *             if some IO operation failed.
+	 * @throws IOException
+	 *             - if some IO operation failed.
 	 */
 	public static String getJsonInput(String fileName) throws IOException {
 		if (fileName.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)) {
