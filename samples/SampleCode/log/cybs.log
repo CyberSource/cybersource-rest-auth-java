@@ -1,0 +1,16 @@
+2018-11-05 17:07:34.060 [main] INFO   - ********* START *********
+2018-11-05 17:07:34.060 [main] INFO   - Authentication Type : http_signature
+2018-11-05 17:07:34.984 [main] INFO   - v-c-merchant-id : testrest
+2018-11-05 17:07:35.062 [main] INFO   - Request Type: POST
+2018-11-05 17:07:35.062 [main] INFO   - User-Agent : Mozilla/5.0
+2018-11-05 17:07:35.062 [main] INFO   - Content-Type : application/json
+2018-11-05 17:07:37.060 [main] INFO   - Date : Mon, 5 Nov 2018 11:37:33 GMT
+2018-11-05 17:07:37.060 [main] INFO   - Host : apitest.cybersource.com
+2018-11-05 17:07:37.106 [main] INFO   - Digest : {"clientReferenceInformation":{"code":"TC50171_3"},"processingInformation":{"commerceIndicator":"internet"},"aggregatorInformation":{"subMerchant":{"cardAcceptorID":"1234567890","country":"US","phoneNumber":"650-432-0000","address1":"900 Metro Center","postalCode":"94404-2775","locality":"Foster City","name":"Visa Inc","administrativeArea":"CA","region":"PEN","email":"XXXXXXXXX"},"name":"V-Internatio","aggregatorID":"123456789"},"orderInformation":{"billTo":{"country":"US","lastName":"VDP","address2":"Address 2","address1":"201 S. Division St.","postalCode":"48104-2201","locality":"Ann Arbor","administrativeArea":"MI","firstName":"RTS","phoneNumber":"999999999","district":"MI","buildingNumber":"123","company":"Visa","email":"XXXXXXXXX"},"amountDetails":{"totalAmount":"102.21","currency":"XXXXXXXXX"}},"paymentInformation":{"card":{"expirationYear":"2031","number":"5555555555554444","securityCode":"123","expirationMonth":"XXXXXXXXX","type":"002"}}}
+2018-11-05 17:07:37.138 [main] INFO   - Response Code : 201
+2018-11-05 17:07:37.138 [main] INFO   - Status Information :: Transaction Successful
+2018-11-05 17:07:37.138 [main] INFO   - v-c-correlation-id : 1734096b-430b-4512-9fe2-ca876c729bc0
+2018-11-05 17:07:37.138 [main] INFO   - Response Message : {"clientReferenceInformation":{"code":"TC50171_3"},"id":"5414178566096624803006","orderInformation":{"amountDetails":{"authorizedAmount":"102.21","currency":"XXXXXXXXX"}},"processorInformation":{"approvalCode":"888888","avs":{"code":"X","codeRaw":"I1"},"responseCode":"100"},"reconciliationId":"63004964HNKQIPK1","status":"AUTHORIZED","submitTimeUtc":"2018-11-05T11:37:36Z","_links":{"self":{"href":"/pts/v2/payments/5414178566096624803006","method":"GET"},"authReversal":{"href":"/pts/v2/payments/5414178566096624803006/reversals","method":"POST"},"capture":{"href":"/pts/v2/payments/5414178566096624803006/captures","method":"POST"},"refund":{"href":"/pts/v2/payments/5414178566096624803006/refunds","method":"POST"},"void":{"href":"/pts/v2/payments/5414178566096624803006/voids","method":"POST"}}}
+2018-11-05 17:07:37.138 [main] INFO   - ********* END   *********
+2018-11-05 17:07:37.138 [main] OFF    - 
+

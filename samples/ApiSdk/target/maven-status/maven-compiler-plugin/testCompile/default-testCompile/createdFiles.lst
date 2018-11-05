@@ -1,0 +1,4 @@
+com\cybersource\apisdk\connection\test\JwtUrlConnectionTest.class
+com\cybersource\apisdk\masking\test\MaskingTest.class
+com\cybersource\apisdk\controller\test\ApiControllerTest.class
+com\cybersource\apisdk\connection\test\HttpConnectionTest.class
