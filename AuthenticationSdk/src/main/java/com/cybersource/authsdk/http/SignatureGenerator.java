@@ -75,12 +75,15 @@ public class SignatureGenerator {
 			requestTarget = getRequestTarget(GlobalLabelParameters.PUT);
 		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
 			requestTarget = getRequestTarget(GlobalLabelParameters.DELETE);
+		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+			requestTarget = getRequestTarget(GlobalLabelParameters.PATCH);
 		}
 		signatureString.append(requestTarget);
 		signatureString.append('\n');
 
 		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST)
-				|| httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+				|| httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT)
+				|| (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH))) {
 			signatureString.append(GlobalLabelParameters.DIGEST.toLowerCase());
 			signatureString.append(": ");
 			signatureString.append(new PayloadDigest(merchantConfig).getDigest());
