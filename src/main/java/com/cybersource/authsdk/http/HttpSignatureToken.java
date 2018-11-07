@@ -83,6 +83,10 @@ public class HttpSignatureToken implements TokenGenerator {
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.DELETE) + "\"");
 		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST))
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.POST) + "\"");
+		
+		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH))
+			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PATCH) + "\"");
+		
 		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT))
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PUT) + "\"");
 		/*
@@ -112,6 +116,9 @@ public class HttpSignatureToken implements TokenGenerator {
 			requestHeader = "host date (request-target) digest v-c-merchant-id";
 			break;
 		case GlobalLabelParameters.PUT:
+			requestHeader = "host date (request-target) digest v-c-merchant-id";
+			break;
+		case GlobalLabelParameters.PATCH:
 			requestHeader = "host date (request-target) digest v-c-merchant-id";
 			break;
 		default:

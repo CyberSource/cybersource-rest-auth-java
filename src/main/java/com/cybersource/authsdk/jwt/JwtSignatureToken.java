@@ -101,7 +101,8 @@ public class JwtSignatureToken implements TokenGenerator {
 					claimSet = "{\n            \"iat\":\"" + ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT)
 							+ "\"\n} \n\n";
 				} else if (method.equalsIgnoreCase(GlobalLabelParameters.POST)
-						|| method.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+						|| method.equalsIgnoreCase(GlobalLabelParameters.PUT)
+						|| method.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 					claimSet = "{\n            \"digest\":\"" + encryptedSigMessage
 							+ "\",\n            \"digestAlgorithm\":\"SHA-256\",\n            \"iat\":\""
 							+ ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT) + "\"\n} \n\n";
