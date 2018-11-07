@@ -461,7 +461,8 @@ public class MerchantConfig {
 		if (this.requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)
 				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.GET)
 				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
-				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
+				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)
+				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 			return true;
 		} else {
 			Utility.log(log, GlobalLabelParameters.INVALID_REQUEST_TYPE, this.requestType, Level.ERROR);
