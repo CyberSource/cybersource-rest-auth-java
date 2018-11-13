@@ -628,10 +628,12 @@ public class MerchantConfig {
 		this.logFilename = this.getProperty(this.merchantID, "logFilename").trim();
 		this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize").trim();
 		/* JWT Parameters */
-		this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory").trim();
-		this.keyAlias = this.getProperty(this.merchantID, "keyAlias").trim();
-		this.keyPass = this.getProperty(this.merchantID, "keyPass");
-		this.keyFilename = this.getProperty(this.merchantID, "keyFileName").trim();
+		if(authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWT)){
+				this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory").trim();
+				this.keyAlias = this.getProperty(this.merchantID, "keyAlias").trim();
+				this.keyPass = this.getProperty(this.merchantID, "keyPass");
+				this.keyFilename = this.getProperty(this.merchantID, "keyFileName").trim();
+		}
 		this.enableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
 		/* Optional use [ TIME OUT ] */
 		this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
@@ -641,10 +643,13 @@ public class MerchantConfig {
 		this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
 		this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
 		/* HTTP Parameters */
+		if(authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)){
 		this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId").trim();
 		this.merchantSecretKey = this.getProperty(this.merchantID, "merchantsecretKey").trim();
-		this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment").trim();
+		}
 		/* Run Environment. */
+		this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment").trim();
+		
 		try {
 			if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)) {
 				this.requestHost = GlobalLabelParameters.SANDBOX_URL;
