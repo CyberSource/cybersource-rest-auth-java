@@ -478,9 +478,8 @@ public class MerchantConfig {
 	 */
 	public boolean checkKeyPassword() throws ConfigException {
 		if (this.keyPass == null || this.keyPass.isEmpty()) {
+			this.keyPass = merchantID;
 			Utility.log(log, GlobalLabelParameters.KEY_PASSWORD_EMPTY_NULL, "", Level.ERROR);
-			throw new ConfigException(GlobalLabelParameters.KEY_PASSWORD_EMPTY_NULL);
-
 		}
 		return true;
 	}
@@ -610,12 +609,10 @@ public class MerchantConfig {
 		if (this.keyAlias == null || this.keyAlias.isEmpty()) {
 			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY, this.merchantID, Level.ERROR);
 			this.keyAlias = merchantID;
-			throw new ConfigException(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
 
 		} else if (!this.keyAlias.equalsIgnoreCase(this.merchantID)) {
 			this.keyAlias = this.merchantID;
 			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_MISMATCH, "", Level.ERROR);
-			throw new ConfigException(GlobalLabelParameters.KEY_ALIAS_MISMATCH);
 		}
 		return true;
 	}
@@ -727,13 +724,11 @@ public class MerchantConfig {
 			if (this.merchantID != null) {
 				this.keyFilename = this.merchantID;
 			}
-			throw new ConfigException(GlobalLabelParameters.KEY_FILE_EMPTY);
 
 		}
 		if (this.keysDirectory.isEmpty() || this.keysDirectory == null) {
 			Utility.log(log, GlobalLabelParameters.KEY_DIRECTORY_EMPTY, "", Level.ERROR);
 			this.keysDirectory = GlobalLabelParameters.DEF_KEY_DIRECTORY_PATH;
-			throw new ConfigException(GlobalLabelParameters.KEY_DIRECTORY_EMPTY);
 		}
 
 		keyFile = new File(this.keysDirectory);
