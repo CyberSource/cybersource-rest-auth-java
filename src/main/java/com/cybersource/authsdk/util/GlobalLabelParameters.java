@@ -38,7 +38,7 @@ public class GlobalLabelParameters {
 	public static final String DEFAULT_LOG_NAME = "cybs";
 	public static final String DEF_KEY_DIRECTORY_PATH = "src/main/resources";
 	/* Digest Constants */
-	public static String SHA_256 = "SHA-256";
+	public static final String SHA_256 = "SHA-256";
 	/* Logging Labels */
 	public static final String RESPONSE_CODE = "Response Code";
 	public static final String DEFAULT_LOG_SIZE = "5K";
@@ -53,6 +53,8 @@ public class GlobalLabelParameters {
 	public static final String FILE_NOT_READ = "File cannot be read permission denied :: ";
 	public static final String AUTH_NULL_EMPTY="Authentication type is mandatory";
 	public static final String AUTH_ERROR = "Invalid Authentication Type in cybs.properties :: ";
+	public static final String PAYMENT_ERROR = "Payment FAiled";
+	public static final String MERCHANT_VALIDATION_ERROR="Merchant Validation Failed";
 	public static final String KEY_ALIAS_NULL_EMPTY = "KeyAlias Empty/Null. Assigning merchantID value :: ";
 	public static final String KEY_ALIAS_MISMATCH = "KeyAlias Mismatch. Assigning merchantID value ";
 	public static final String KEY_PASSWORD_EMPTY_NULL = "KeyPassword Empty/Null. Assigning merchantID value";
@@ -66,10 +68,15 @@ public class GlobalLabelParameters {
 	public static final String SIG_SET_ERROR = "Unable to set Signature ";
 	public static final String REQUEST_SET_ERROR = "Unable to set Request type :: ";
 	public static final String PROXY_HOST_PORT_ERR = "Unable to set Proxy Host/Port";
+	public static final String No_SUCH_ALGORITHM="No Such algoritm found to generate digest.";
+	public static final String UNSUPPORTED_ENCODING = "Encoding is not supported.";
+	public static final String INVALID_KEY = "Key is not valid";
 	public static final String DIGEST_GEN_FAILED = "Digest generation failed";
+	public static final String TOKEN_GEN_FAILED = "Token generation failed";
 	public static final String MERCHANTID_NOT_SET = "Unable to set merchantID";
 	public static final String CONTENT_TYPE_NOT_SET = "Unable to set content type";
-	public static final String URL_NOT_SET = "Unable to open/set URL :: ";
+	public static final String URL_NOT_SET = "Unable to open/set URL ";
+	public static final String CONNECTION_ERROR = "Unable to open connection ";
 	public static final String MERCHANT_KEYID_MISSING = "Merchant KeyID missing/null, check cybs.properties";
 	public static final String MERCHANTSECERT_KEY_MISSING = "Merchant Secret Key missing/null, check cybs.properties";
 	public static final String JWT_SIG_FAILED = "JWT Signature production failed.";
@@ -92,5 +99,4 @@ public class GlobalLabelParameters {
 	public static final String CACHE_BEGIN = " Empty Cache :: Adding Data";
 	public static final String CACHE_EXTRACT = " Data present in Cache :: Extracting Data";
 	public static final String CACHE_EXTEND = " New Data present:: Inserting Data in Cache";
-
 }

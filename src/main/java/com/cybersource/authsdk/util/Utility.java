@@ -70,6 +70,7 @@ public class Utility {
 			}
 		} catch (Exception e) {
 			log(logger, e);
+			
 		}
 	}
 

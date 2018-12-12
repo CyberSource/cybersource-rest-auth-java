@@ -1,9 +1,6 @@
 package com.cybersource.authsdk.core;
 
 import java.io.File;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
@@ -15,52 +12,59 @@ import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /**
+ * This class will set merchant details as per properties file.
  */
 public class MerchantConfig {
-	/**/
 	private Properties props;
-	/**/
+	/**
+	 * JWT Merchant Config Parameters
+	 *
+	 */
 	private String keysDirectory;
 	private String keyAlias;
 	private String keyPass;
 	private String keyType;
 	private String keyFilename;
-	private String password;
-	private boolean enableLog;
-	private int timeout;
-	private String proxyUser;
-	private String proxyPassword;
-	private String recipientID;
-	private String effectivePassword;
-	private String requestData;
-	private String runEnvironment;
-	private String proxyAddress;
-	private int proxyPort;
 	private File keyFile;
-	private boolean isRequestType = false;
-	public static boolean isSetMerchantDetails = true;
+
 	/**
 	 * HTTP Merchant Config Parameters
 	 *
 	 */
 	private String merchantKeyId;
 	private String merchantSecretKey;
+
 	/* Common parameters for HTTP and JWT. */
 	private String merchantID;
 	private String url;
 	private String requestTarget;
 	private String authenticationType;
-	private boolean sendToProduction;
 	private String getID;
 	private String requestHost;
-	private String responseMessage;
-	private String responseCode;
-	private String vcCorelationID;
 	private String requestType;
-
-	private boolean isRequestJson = true;
-	/* Others. */
+	public static boolean isSetMerchantDetails = true;
+	/* Logging Parameters. */
 	private Logger log;
+	private boolean enableLog;
+	private String logDirectory;
+	private String logFilename;
+	private String logMaximumSize;
+	
+	/* Others. */
+	private int timeout;
+	private String proxyUser;
+	private String proxyPassword;
+	private String recipientID;
+	private String runEnvironment;
+	private String proxyAddress;
+	private int proxyPort;
+	private String date;
+
+
+
+	public String getRunEnvironment() {
+		return runEnvironment;
+	}
 
 	public void setRunEnvironment(String runEnvironment) {
 		this.runEnvironment = runEnvironment;
@@ -82,89 +86,8 @@ public class MerchantConfig {
 		this.proxyAddress = proxyAddress;
 	}
 
-	public boolean isRequestJson() {
-		return isRequestJson;
-	}
-
-	/**
-	 * @return request data according to availability of request Json.
-	 */
-	public String getRequestData() {
-
-		try {
-			if (this.getRequestJsonPath().equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)) {
-				return requestData;
-			}
-
-			else if (this.getRequestJsonPath() != null && !this.getRequestJsonPath().isEmpty()) {
-				requestData = PropertiesUtil.getJsonInput(this.getRequestJsonPath());
-			}
-		} catch (Exception e) {
-			Utility.log(log, GlobalLabelParameters.FILE_NOT_FOUND, this.getRequestJsonPath(), Level.FATAL);
-			Utility.log(log, e);
-			return null;
-		}
-		return requestData;
-	}
-
-	public void setRequestData(String requestData) {
-		this.requestData = requestData;
-	}
-
-	public String getVcCorelationID() {
-		return vcCorelationID;
-	}
-
-	public void setVcCorelationID(String vcCorelationID) {
-		this.vcCorelationID = vcCorelationID;
-	}
-
-	public String getResponseCode() {
-		return responseCode;
-	}
-
-	public void setResponseCode(String responseCode) {
-		this.responseCode = responseCode;
-	}
-
-	public String getResponseMessage() {
-		return responseMessage;
-	}
-
-	public void setResponseMessage(String responseMessage) throws NullPointerException {
-		this.responseMessage = responseMessage;
-	}
-
-	/* Logging Parameters. */
-	private boolean logSignedData;
-	private String logDirectory;
-	private String logFilename;
-
-	private String logMaximumSize;
-	/* Others */
-	private String date;
-	private String requestJsonPath;
-	private String urlRequestHeader;
-
-	public String getUrlRequestHeader() {
-		return urlRequestHeader;
-	}
-
-	public void setUrlRequestHeader(String urlRequestHeader) {
-		this.urlRequestHeader = urlRequestHeader;
-	}
-
 	public String getRequestHost() {
 		return requestHost;
-	}
-
-	public String getRequestJsonPath() {
-
-		return requestJsonPath;
-	}
-
-	public void setRequestJsonPath(String requestJsonPath) {
-		this.requestJsonPath = requestJsonPath;
 	}
 
 	public String getGetID() {
@@ -175,8 +98,16 @@ public class MerchantConfig {
 		return merchantSecretKey;
 	}
 
+	public void setMerchantSecretKey(String merchantSecretKey) {
+		this.merchantSecretKey = merchantSecretKey;
+	}
+
 	public String getMerchantKeyId() {
 		return merchantKeyId;
+	}
+
+	public void setMerchantKeyId(String merchantKeyId) {
+		this.merchantKeyId = merchantKeyId;
 	}
 
 	public String getDate() {
@@ -212,6 +143,10 @@ public class MerchantConfig {
 		this.keyPass = keyPass;
 	}
 
+	public String getKeyPass() {
+		return keyPass;
+	}
+
 	public boolean getrequestJson() {
 		return false;
 	}
@@ -240,10 +175,6 @@ public class MerchantConfig {
 		return this.authenticationType;
 	}
 
-	public boolean getSendToProduction() {
-		return this.sendToProduction;
-	}
-
 	public String getKeyFilename() {
 		return this.keyFilename;
 	}
@@ -262,10 +193,6 @@ public class MerchantConfig {
 
 	public void setRequestTarget(String requestTarget) {
 		this.requestTarget = requestTarget;
-	}
-
-	public String getPassword() {
-		return this.password;
 	}
 
 	public boolean getEnableLog() {
@@ -288,10 +215,6 @@ public class MerchantConfig {
 		this.keyFilename = keyFilename;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
@@ -304,28 +227,12 @@ public class MerchantConfig {
 		this.proxyPassword = proxyPassword;
 	}
 
-	public void setEffectivePassword(String effectivePassword) {
-		this.effectivePassword = effectivePassword;
-	}
-
-	public void setSendToProduction(boolean sendToProduction) {
-		this.sendToProduction = sendToProduction;
-	}
-
 	public void setGetID(String getID) {
 		this.getID = getID;
 	}
 
 	public void setRequestHost(String requestHost) {
 		this.requestHost = requestHost;
-	}
-
-	public void setRequestJson(boolean isRequestJson) {
-		this.isRequestJson = isRequestJson;
-	}
-
-	public void setLogSignedData(boolean logSignedData) {
-		this.logSignedData = logSignedData;
 	}
 
 	public void setLogMaximumSize(String logMaximumSize) {
@@ -338,10 +245,6 @@ public class MerchantConfig {
 
 	public void setEnableLog(boolean enableLog) {
 		this.enableLog = enableLog;
-	}
-
-	public boolean getLogSignedData() {
-		return this.logSignedData;
 	}
 
 	public String getLogDirectory() {
@@ -376,20 +279,23 @@ public class MerchantConfig {
 		return this.proxyPassword != null ? this.proxyPassword : "";
 	}
 
-	public String getEffectivePassword() {
-		return this.effectivePassword;
-	}
-
 	public void setLogFilename(String logFilename) {
 		this.logFilename = logFilename;
 	}
 
-	public MerchantConfig() throws ConfigException {
-
+	public void setLogDirectory(String logDirectory) {
+		this.logDirectory = logDirectory;
 	}
 
-	public void setIsRequestType(boolean b) {
-		this.isRequestType = b;
+	public void setKeyFile(File keyFile) {
+		this.keyFile = keyFile;
+	}
+
+	public File getKeyFile() {
+		return keyFile;
+	}
+
+	public MerchantConfig() throws ConfigException {
 
 	}
 
@@ -397,242 +303,26 @@ public class MerchantConfig {
 		if (_props != null) {
 			this.props = _props;
 			this.merchantID = this.props.getProperty("merchantID");
-			this.date = date();
+			this.date = PropertiesUtil.date;
 			setMerchantDetails();
 		}
 	}
 
-	/**
-	 * @param logger
-	 *            -logger to log all information in log file.
-	 * @return true or false as per validation
-	 * @throws ConfigException
-	 *             - if some value is missing for merchant.
-	 */
-	public boolean validateMerchantDetails(Logger logger) throws ConfigException {
-		this.log = logger;
-		isRequestType = checkRequestType();
-
-		boolean isMerchantId = true;
-		boolean isCheckMerchantSecertKey = false;
-		boolean isCheckMerchantKeyId = false;
-		boolean isGetKeyAlias = false;
-		boolean isCheckKeyPassword = false;
-		boolean isCheckKeyFile = false;
-		boolean isCheckJsonPath;
-		boolean isCheckLogMaxSize = true;
-		boolean isCheckRunEnvironment;
-		boolean isMerchantDetailStatus = false;
-
-		checkAuthenticationType();
-		isMerchantId = checkMerchantId();
-
-		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			isCheckMerchantSecertKey = checkMerchantSecertKey();
-			isCheckMerchantKeyId = checkMerchantKeyId();
-		} else if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWT)
-				|| authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWE)) {
-			isGetKeyAlias = checkKeyAlias();
-			isCheckKeyPassword = checkKeyPassword();
-			isCheckKeyFile = checkKeyFile();
-		}
-
-		isCheckJsonPath = checkJsonPath(getRequestJsonPath());
-		isCheckLogMaxSize = checkLogMaxSizeAndFolder();
-		isCheckRunEnvironment = checkRunEvironment();
-
-		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			isMerchantDetailStatus = isMerchantId && isCheckMerchantSecertKey && isCheckMerchantKeyId && isCheckJsonPath
-					&& isCheckLogMaxSize && isCheckRunEnvironment && isRequestType && isSetMerchantDetails;
-		} else if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			isMerchantDetailStatus = isMerchantId && isGetKeyAlias && isCheckKeyPassword && isCheckKeyFile
-					&& isCheckJsonPath && isCheckLogMaxSize && isCheckRunEnvironment && isRequestType
-					&& isSetMerchantDetails;
-		}
-		return isMerchantDetailStatus;
-	}
-
-	/**
-	 * @return true if valid request type else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkRequestType() throws ConfigException {
-		if (this.requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)
-				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.GET)
-				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
-				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)
-				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
-			return true;
-		} else {
-			Utility.log(log, GlobalLabelParameters.INVALID_REQUEST_TYPE, this.requestType, Level.ERROR);
-			throw new ConfigException(GlobalLabelParameters.INVALID_REQUEST_TYPE);
-
-		}
-	}
-
-	/**
-	 * @return true if valid password else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkKeyPassword() throws ConfigException {
-		if (this.keyPass == null || this.keyPass.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.KEY_PASSWORD_EMPTY_NULL, "", Level.ERROR);
-			throw new ConfigException(GlobalLabelParameters.KEY_PASSWORD_EMPTY_NULL);
-
-		}
-		return true;
-	}
-
-	/**
-	 * @return true if valid run environment else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkRunEvironment() throws ConfigException {
-		boolean runEnvironment = false;
-		if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)) {
-			runEnvironment = true;
-		} else if (this.runEnvironment == null || this.runEnvironment.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.RUN_ENVIRONMENT_ERR, "", Level.ERROR);
-			throw new ConfigException(GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
-
-		} else {
-			runEnvironment = true;
-		}
-		return runEnvironment;
-	}
-
-	/**
-	 * @return true if merchant id is not null or empty else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkMerchantKeyId() throws ConfigException {
-		if (this.merchantKeyId == null || this.merchantKeyId.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.MERCHANT_KEYID_MISSING, "", Level.ERROR);
-			throw new ConfigException(GlobalLabelParameters.MERCHANT_KEYID_MISSING);
-		}
-		return true;
-	}
-
-	public void setMerchantKeyId(String merchantKeyId) {
-		this.merchantKeyId = merchantKeyId;
-	}
-
-	/**
-	 * @return true if secretKey is not null or empty else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkMerchantSecertKey() throws ConfigException {
-		if (this.merchantSecretKey == null || this.merchantSecretKey.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.MERCHANTSECERT_KEY_MISSING, "", Level.ERROR);
-			throw new ConfigException(GlobalLabelParameters.MERCHANTSECERT_KEY_MISSING);
-		}
-		return true;
-	}
-
-	public void setMerchantSecretKey(String merchantsecretKey) {
-		this.merchantSecretKey = merchantsecretKey;
-	}
-
-	/**
-	 * @return true if log size is valid else return false,
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkLogMaxSizeAndFolder() throws ConfigException {
-
-		if (this.logDirectory == null || this.logDirectory.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.NO_LOG_DIRECTORY, "", Level.ERROR);
-			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
-			throw new ConfigException(GlobalLabelParameters.NO_LOG_DIRECTORY);
-
-		}
-		return getLogFile();
-	}
-
-	/**
-	 * @param jsonPath
-	 *            -path for request json.
-	 * @return true if path is valid else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkJsonPath(String jsonPath) throws ConfigException {
-		File f = null;
-		boolean check = true;
-		if (isRequestType) {
-			/* Continue, No logic check */
-		} else {
-			return false;
-		}
-
-		if (this.requestType.equalsIgnoreCase(GlobalLabelParameters.GET)
-				|| this.requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-			return check;
-		}
-		if (jsonPath.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)) {
-			return check;
-		}
-		if (jsonPath == null || jsonPath.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.REQUEST_JSON_MIS_NULL, "", Level.ERROR);
-			check = false;
-			throw new ConfigException(GlobalLabelParameters.REQUEST_JSON_MIS_NULL);
-
-		}
-		f = new File(jsonPath);
-		if (!f.exists()) {
-			Utility.log(log, GlobalLabelParameters.REQUEST_JSON_ERROR, f.getAbsolutePath(), Level.ERROR);
-			check = false;
-			throw new ConfigException(GlobalLabelParameters.REQUEST_JSON_ERROR);
-
-		}
-		if (!f.canRead()) {
-			Utility.log(log, GlobalLabelParameters.FILE_NOT_READ, f.getAbsolutePath(), Level.ERROR);
-			check = false;
-			throw new ConfigException(GlobalLabelParameters.FILE_NOT_READ);
-		}
-
-		isRequestJson = true;
-		return check;
-	}
-
-	/**
-	 * @return true if keyAlias is not null or empty else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkKeyAlias() throws ConfigException {
-		if (this.keyAlias == null || this.keyAlias.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY, this.merchantID, Level.ERROR);
-			this.keyAlias = merchantID;
-			throw new ConfigException(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
-
-		} else if (!this.keyAlias.equalsIgnoreCase(this.merchantID)) {
-			this.keyAlias = this.merchantID;
-			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_MISMATCH, "", Level.ERROR);
-			throw new ConfigException(GlobalLabelParameters.KEY_ALIAS_MISMATCH);
-		}
-		return true;
-	}
-
-	public void setMerchantDetails() {
-		this.authenticationType = this.getProperty(this.merchantID, "authenticationType").trim();
-
+	public void setMerchantDetails() throws ConfigException {
+		this.authenticationType = this.getProperty(this.merchantID, "authenticationType");
+		this.merchantID = this.getProperty(this.merchantID, "merchantID");
 		/* Logging Parameters */
 		this.logDirectory = this.getProperty(this.merchantID, "logDirectory").trim();
 		this.logFilename = this.getProperty(this.merchantID, "logFilename").trim();
 		this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize").trim();
 		/* JWT Parameters */
-		if(authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWT)){
+		if (authenticationType != null) {
+			if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 				this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory").trim();
 				this.keyAlias = this.getProperty(this.merchantID, "keyAlias").trim();
 				this.keyPass = this.getProperty(this.merchantID, "keyPass");
 				this.keyFilename = this.getProperty(this.merchantID, "keyFileName").trim();
+			}
 		}
 		this.enableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
 		/* Optional use [ TIME OUT ] */
@@ -643,13 +333,15 @@ public class MerchantConfig {
 		this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
 		this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
 		/* HTTP Parameters */
-		if(authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)){
-		this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId").trim();
-		this.merchantSecretKey = this.getProperty(this.merchantID, "merchantsecretKey").trim();
+		if (authenticationType != null) {
+			if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+				this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId").trim();
+				this.merchantSecretKey = this.getProperty(this.merchantID, "merchantsecretKey").trim();
+			}
 		}
 		/* Run Environment. */
 		this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment").trim();
-		
+
 		try {
 			if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)) {
 				this.requestHost = GlobalLabelParameters.SANDBOX_URL;
@@ -668,111 +360,6 @@ public class MerchantConfig {
 	}
 
 	/**
-	 * @return true if authentication type is valid else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	private boolean checkAuthenticationType() throws ConfigException {
-		/* Authentication Type. */
-		boolean check = true;
-		if (this.authenticationType == null || this.authenticationType.isEmpty()) {
-			this.log = Log4j.getInstance(this);
-			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
-			Utility.log(this.log, GlobalLabelParameters.AUTH_NULL_EMPTY, "", Level.ERROR);
-			check = false;
-			throw new ConfigException(GlobalLabelParameters.AUTH_NULL_EMPTY);
-		}
-		return check;
-	}
-
-	/**
-	 * @return true if merchant id or not null or return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkMerchantId() throws ConfigException {
-		boolean check = true;
-		if (this.merchantID == null || this.merchantID.isEmpty()) {
-			this.log = Log4j.getInstance(this);
-			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
-			Utility.log(this.log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, "", Level.ERROR);
-			check = false;
-			throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
-		}
-		return check;
-
-	}
-
-	public void setLogDirectory(String logDirectory) {
-		this.logDirectory = logDirectory;
-	}
-
-	/**
-	 * @return keyFile as per merchant.
-	 */
-	public File getKeyFile() {
-		return keyFile;
-	}
-
-	/**
-	 * @return true if key file is available else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public boolean checkKeyFile() throws ConfigException {
-		keyFile = null;
-
-		if (this.keyFilename == null || this.keyFilename.isEmpty()) {
-			Utility.log(log, GlobalLabelParameters.KEY_FILE_EMPTY, this.merchantID, Level.ERROR);
-			if (this.merchantID != null) {
-				this.keyFilename = this.merchantID;
-			}
-			throw new ConfigException(GlobalLabelParameters.KEY_FILE_EMPTY);
-
-		}
-		if (this.keysDirectory.isEmpty() || this.keysDirectory == null) {
-			Utility.log(log, GlobalLabelParameters.KEY_DIRECTORY_EMPTY, "", Level.ERROR);
-			this.keysDirectory = GlobalLabelParameters.DEF_KEY_DIRECTORY_PATH;
-			throw new ConfigException(GlobalLabelParameters.KEY_DIRECTORY_EMPTY);
-		}
-
-		keyFile = new File(this.keysDirectory);
-
-		if (!keyFile.isDirectory()) {
-			Utility.log(log, GlobalLabelParameters.KEY_FILE_DIRECTORY_NOT_FOUND, this.keysDirectory, Level.ERROR);
-			keyFile = null;
-			return false;
-		}
-		try {
-			keyFile = new File(this.keysDirectory, this.keyFilename.concat(GlobalLabelParameters.P12_EXTENSION));
-			if (!keyFile.exists()) {
-				Utility.log(log, GlobalLabelParameters.KEY_FILE_NOT_FOUND,
-						this.keysDirectory.concat("/").concat(this.keyFilename) + GlobalLabelParameters.P12_EXTENSION,
-						Level.ERROR);
-				keyFile = null;
-				return false;
-			}
-			Utility.log(log, GlobalLabelParameters.KEY_FILE,
-					this.keysDirectory.concat("/").concat(this.keyFilename) + GlobalLabelParameters.P12_EXTENSION,
-					Level.INFO);
-		} catch (Exception e) {
-			keyFile = null;
-			return false;
-		}
-		boolean isRead = keyFile.canRead();
-
-		if (isRead) {
-			/* Do Nothing. */
-			return true;
-		} else {
-			Utility.log(log, GlobalLabelParameters.FILE_NOT_READ, this.keysDirectory.concat(this.keyFilename),
-					Level.ERROR);
-			keyFile = null;
-			return false;
-		}
-	}
-
-	/**
 	 * @return true if log file is correct else return false.
 	 * @throws ConfigException
 	 *             - if some value is missing or wrong for merchant.
@@ -782,7 +369,6 @@ public class MerchantConfig {
 		if (!dir.isDirectory()) {
 			Utility.log(log, GlobalLabelParameters.INVALID_LOG_DIRECTORY, "", Level.ERROR);
 			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
-			throw new ConfigException(GlobalLabelParameters.INVALID_LOG_DIRECTORY);
 		}
 		return getLogFileNameStatus();
 	}
@@ -798,7 +384,6 @@ public class MerchantConfig {
 		if (this.logFilename == null || this.logFilename.isEmpty()) {
 			Utility.log(log, GlobalLabelParameters.NO_LOG_FILENAME, "", Level.ERROR);
 			this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME.concat(GlobalLabelParameters.LOG_EXTENSION);
-			throw new ConfigException(GlobalLabelParameters.NO_LOG_FILENAME);
 		}
 
 		return status;
@@ -887,8 +472,9 @@ public class MerchantConfig {
 	 * @param defaultVal
 	 *            - default value for property
 	 * @return integer value as per property.
-	  */
-	public int getIntegerProperty(String merchantID, String prop, int defaultVal) {
+	 * @throws ConfigException
+	 */
+	public int getIntegerProperty(String merchantID, String prop, int defaultVal) throws ConfigException {
 		String strValue = this.getProperty(merchantID, prop);
 		if (strValue == null) {
 			return defaultVal;
@@ -897,18 +483,11 @@ public class MerchantConfig {
 				return Integer.parseInt(strValue);
 			} catch (NumberFormatException var6) {
 				Utility.log(log, GlobalLabelParameters.PROP_INVALID, "", Level.ERROR);
+				throw new ConfigException(prop + " has an invalid value.");
 
 			}
 		}
-		return defaultVal;
-	}
 
-	/**
-	 *
-	 * @return date as per time Zone.
-	 */
-	private String date() {
-		return date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
 	}
 
 	/**

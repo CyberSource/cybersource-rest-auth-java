@@ -19,9 +19,13 @@ import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
 
+/**
+ * This class will be used to generate JWT token.
+ *
+ */
 public class JwtSignatureToken implements TokenGenerator {
 	private MerchantConfig merchantConfig;
-	private String requestBody, jwtMethod;
+	private String requestBody;
 	private Logger logger;
 	private Cache cache;
 	private RSAPrivateKey rsaPrivateKey = null;
@@ -31,24 +35,24 @@ public class JwtSignatureToken implements TokenGenerator {
 	/**
 	 * @param merchantConfig
 	 *            - list of parameters required for JWT token.
-	 * @param requestBody
-	 *            -user information to be sent.
+	 * @param requestData
+	 *            -request data to be sent.
 	 */
-	public JwtSignatureToken(MerchantConfig merchantConfig, String requestBody) {
+	public JwtSignatureToken(MerchantConfig merchantConfig, String requestData) {
 
 		this.merchantConfig = merchantConfig;
-		this.requestBody = requestBody;
-		this.jwtMethod = merchantConfig.getRequestType();
+		this.requestBody = requestData;
 		this.logger = Log4j.getInstance(merchantConfig);
 		this.cache = new Cache(this.merchantConfig);
 	}
 
 	@Override
-	public String getToken() {
+	public String getToken() throws ConfigException {
 		try {
 			signature = generateSignature();
 		} catch (Exception e) {
 			signature = null;
+			throw new ConfigException(GlobalLabelParameters.JWT_SIG_FAILED);
 		}
 		return signature;
 	}
@@ -56,10 +60,12 @@ public class JwtSignatureToken implements TokenGenerator {
 	/**
 	 * 
 	 * @return the generated signature.
-	 * @throws Exception - 
-	 *             if some exception will occur.
+	 * @throws ConfigException
+	 *             - if some value is missing for merchant.
+	 * @throws Exception
+	 *             - if some exception will occur.
 	 */
-	public String generateSignature() throws Exception {
+	public String generateSignature() throws ConfigException {
 
 		try {
 			if (merchantConfig != null && merchantConfig.getKeyType() != null) {
@@ -95,7 +101,7 @@ public class JwtSignatureToken implements TokenGenerator {
 				}
 
 				String claimSet = null;
-				String method = jwtMethod;
+				String method = merchantConfig.getRequestType();
 				if (method.equalsIgnoreCase(GlobalLabelParameters.GET)
 						|| method.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
 					claimSet = "{\n            \"iat\":\"" + ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT)
@@ -118,7 +124,7 @@ public class JwtSignatureToken implements TokenGenerator {
 					customHeaders.put("v-c-partner-id", merchantConfig.getMerchantID());
 				}
 
-				String authType = merchantConfig.getAuthenticationType().trim();
+				String authType = merchantConfig.getAuthenticationType();
 				JWTCryptoProcessorImpl jwtCryptoProcessor = new JWTCryptoProcessorImpl();
 
 				if (GlobalLabelParameters.JWT.equalsIgnoreCase(authType)) {
@@ -139,8 +145,8 @@ public class JwtSignatureToken implements TokenGenerator {
 			}
 		} catch (Exception e) {
 			Utility.log(logger, GlobalLabelParameters.JWT_SIG_FAILED, "", Level.FATAL);
-			Utility.log(logger, e);
 			signature = null;
+			throw new ConfigException(GlobalLabelParameters.JWT_SIG_FAILED);
 		}
 		return signature;
 	}

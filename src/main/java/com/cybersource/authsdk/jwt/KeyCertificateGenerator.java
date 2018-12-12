@@ -27,20 +27,18 @@ public class KeyCertificateGenerator {
 	 *            -contains merchant information.
 	 * @return certificate which will be used to generate token.
 	 ** @throws CertificateException
-	 *              - if certificate is missing or wrong.
+	 *             - if certificate is missing or wrong.
 	 * @throws NoSuchAlgorithmException
-	 *              - if algorithm is not available.
+	 *             - if algorithm is not available.
 	 * @throws IOException
-	 *              - if file is not found.
+	 *             - if file is not found.
 	 * @throws KeyStoreException
-	 *              - if file is not available in key store or wrong.
+	 *             - if file is not available in key store or wrong.
 	 * @throws ConfigException
-	 *              - if some values is missing or wrong for merchant.
-	 * @throws Exception
-	 *              - if some other exception will happen.
+	 *             - if some values is missing or wrong for merchant.
 	 */
-	public static X509Certificate initializeCertificate(MerchantConfig merchantConfig) throws CertificateException,
-			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
+	public static X509Certificate initializeCertificate(MerchantConfig merchantConfig)
+			throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException {
 
 		if (merchantConfig != null && merchantConfig.getKeyAlias() != null && merchantConfig.getKeyFile() != null) {
 			KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
@@ -105,23 +103,20 @@ public class KeyCertificateGenerator {
 	 * @param merchantConfig
 	 *            -contains merchant information.
 	 * @return certificate which will be used to generate token.
-	 ** @throws CertificateException
-	 *              - if certificate is missing or wrong.
+	 * @throws CertificateException
+	 *             - if certificate is missing or wrong.
 	 * @throws NoSuchAlgorithmException
-	 *              - if algorithm is not available.
+	 *             - if algorithm is not available.
 	 * @throws IOException
-	 *              - if file is not found.
+	 *             - if file is not found.
 	 * @throws KeyStoreException
-	 *              - if file is not available in key store or wrong.
+	 *             - if file is not available in key store or wrong.
 	 * @throws ConfigException
-	 *              - if some values is missing or wrong for merchant.
-	 * @throws Exception
-	 *              - if some other exception will happen.
+	 *             - if some values is missing or wrong for merchant.
 	 */
 	/* Currently this method is not used in the logic */
 	public static X509Certificate initializeRecipientCertificate(MerchantConfig merchantConfig)
-			throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException,
-			Exception {
+			throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException {
 		if (merchantConfig != null && merchantConfig.getRecipientID() != null && merchantConfig.getKeyFile() != null) {
 
 			KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
@@ -159,21 +154,19 @@ public class KeyCertificateGenerator {
 	 * @param merchantConfig
 	 *            -contains merchant information.
 	 * @return certificate which will be used to generate token.
-	 ** @throws CertificateException
-	 *              - if certificate is missing or wrong.
+	 * @throws CertificateException
+	 *             - if certificate is missing or wrong.
 	 * @throws NoSuchAlgorithmException
-	 *              - if algorithm is not available.
+	 *             - if algorithm is not available.
 	 * @throws IOException
-	 *              - if file is not found.
+	 *             - if file is not found.
 	 * @throws KeyStoreException
-	 *              - if file is not available in key store or wrong.
+	 *             - if file is not available in key store or wrong.
 	 * @throws ConfigException
-	 *              - if some values is missing or wrong for merchant.
-	 * @throws Exception
-	 *              - if some other exception will happen.
-	 */
+	 *             - if some values is missing or wrong for merchant.
+	  */
 	public static RSAPrivateKey initializePrivateKey(MerchantConfig merchantConfig) throws CertificateException,
-			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
+			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException {
 		if (merchantConfig != null && merchantConfig.getKeyAlias() != null && merchantConfig.getKeyFile() != null) {
 			KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
 			merchantKeyStore.load(new FileInputStream(merchantConfig.getKeyFile()),

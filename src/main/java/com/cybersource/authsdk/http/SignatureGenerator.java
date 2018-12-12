@@ -1,5 +1,6 @@
 package com.cybersource.authsdk.http;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -7,27 +8,26 @@ import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 /* This method returns value for parameter Signature which is then passed to Signature header
- * paramter 'Signature' is calucated based on below key values and then signed with SECRET KEY -
- * host: Sandbox (apitest.cybersource.com) or Production (api.cybersource.com) hostname
+ * parameter 'Signature' is calculated based on below key values and then signed with SECRET KEY -
+ * host: SandBox (apitest.cybersource.com) or Production (api.cybersource.com) hostName
  * date: "HTTP-date" format as defined by RFC7231.
  * (request-target): Should be in format of httpMethod: path
                      Example: "post /pts/v2/payments"
  * Digest: Only needed for POST calls.
- * v-c-merchant-id: set value to Cybersource Merchant ID
+ * v-c-merchant-id: set value to CyberSource Merchant ID
                      This ID can be found on EBC portal */
 public class SignatureGenerator {
 
 	private MerchantConfig merchantConfig;
-	private String signatureParameterBase64Encoded;
-	private String httpMethod;
-	private String merchantSecertKey;
 	private String merchantId;
+	private String requestData;
 
 	/**
 	 * @param merchantConfig-contains
@@ -37,21 +37,27 @@ public class SignatureGenerator {
 	 * @throws NoSuchAlgorithmException
 	 *             - if algorithm is not available.
 	 */
-	public SignatureGenerator(MerchantConfig merchantConfig) throws InvalidKeyException, NoSuchAlgorithmException {
+	public SignatureGenerator(MerchantConfig merchantConfig, String requestData)
+			throws InvalidKeyException, NoSuchAlgorithmException {
 		this.merchantConfig = merchantConfig;
-		this.httpMethod = merchantConfig.getRequestType();
-		this.merchantSecertKey = merchantConfig.getMerchantSecretKey();
+		this.requestData = requestData;
 		this.merchantId = merchantConfig.getMerchantID();
 	}
 
 	/**
 	 * @return generated signature.
+	 * 
 	 * @throws NoSuchAlgorithmException
 	 *             - if algorithm is not available.
 	 * @throws InvalidKeyException
 	 *             - if key is not valid.
+	 * @throws ConfigException
+	 *             - if some value is missing for merchant.
+	 * @throws UnsupportedEncodingException
+	 *             - if encoding is not supported.
 	 */
-	public String signatureGeneration() throws NoSuchAlgorithmException, InvalidKeyException {
+	public String generateSignature()
+			throws NoSuchAlgorithmException, InvalidKeyException, ConfigException, UnsupportedEncodingException {
 
 		StringBuilder signatureString = new StringBuilder();
 		signatureString.append('\n');
@@ -67,6 +73,7 @@ public class SignatureGenerator {
 		signatureString.append(": ");
 
 		String requestTarget = null;
+		String httpMethod = merchantConfig.getRequestType();
 		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.GET)) {
 			requestTarget = getRequestTarget(GlobalLabelParameters.GET);
 		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST)) {
@@ -86,7 +93,7 @@ public class SignatureGenerator {
 				|| (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH))) {
 			signatureString.append(GlobalLabelParameters.DIGEST.toLowerCase());
 			signatureString.append(": ");
-			signatureString.append(new PayloadDigest(merchantConfig).getDigest());
+			signatureString.append(new PayloadDigest(merchantConfig, requestData).getDigest());
 			signatureString.append('\n');
 		}
 
@@ -102,12 +109,13 @@ public class SignatureGenerator {
 		 * decoded before signing
 		 */
 
-		SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(merchantSecertKey), "HmacSHA256");
+		SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(merchantConfig.getMerchantSecretKey()),
+				"HmacSHA256");
 		Mac aKeyId = Mac.getInstance("HmacSHA256");
 		aKeyId.init(secretKey);
 		aKeyId.update(signatureStr.getBytes());
 		byte[] aHeaders = aKeyId.doFinal();
-		signatureParameterBase64Encoded = Base64.getEncoder().encodeToString(aHeaders);
+		String signatureParameterBase64Encoded = Base64.getEncoder().encodeToString(aHeaders);
 		secretKey = null;
 		return signatureParameterBase64Encoded;
 	}

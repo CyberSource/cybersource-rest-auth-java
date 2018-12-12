@@ -8,6 +8,7 @@ import org.mockito.Mock;
 
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.http.SignatureGenerator;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class SignatureGeneratorTest {
@@ -16,6 +17,8 @@ public class SignatureGeneratorTest {
 	SignatureGenerator signatureGenerator;
 	@Mock
 	MerchantConfig merchantConfig;
+	@Mock
+	MerchantUtil merchantUtil;
 
 	private Properties merchantProp;
 
@@ -26,9 +29,10 @@ public class SignatureGeneratorTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setRequestType("GET");
-
-		String str = new SignatureGenerator(merchantConfig).signatureGeneration();
+		
+		String str = new SignatureGenerator(merchantConfig,null).generateSignature();
 
 		Assert.assertNotNull(str);
 
@@ -40,9 +44,11 @@ public class SignatureGeneratorTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-
-		String str = new SignatureGenerator(merchantConfig).signatureGeneration();
+		
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
+		
+		String str = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData()).generateSignature();
 		Assert.assertNotNull(str);
 
 	}
@@ -53,9 +59,11 @@ public class SignatureGeneratorTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("PUT");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		String str = new SignatureGenerator(merchantConfig).signatureGeneration();
+		String str = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData()).generateSignature();
 		Assert.assertNotNull(str);
 
 	}
@@ -66,9 +74,11 @@ public class SignatureGeneratorTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("option");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		signatureGenerator = new SignatureGenerator(merchantConfig);
+		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData());
 
 		String str = signatureGenerator.getRequestTarget(merchantConfig.getRequestType());
 		Assert.assertNull(str);

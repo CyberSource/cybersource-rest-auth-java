@@ -9,9 +9,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
+
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class MerchantConfigTest {
@@ -26,636 +26,6 @@ public class MerchantConfigTest {
 	public ExpectedException thrown = ExpectedException.none();
 
 	private Properties merchantProp;
-	private String requestJsonPath = "src/test/resources/request.json";
-	private String jsonPathforCheck = "src/test/resources/abc.json";
-	private String testJsonPath = "src/test/resources/test.json";
-
-	// Test case for KeyAlias Validation
-	@Test
-	public void getKeyAliasTestForEmpty() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		String keyAlias = merchantConfig.getKeyAlias();
-		Assert.assertNotNull(keyAlias);
-	}
-
-	@Test
-	public void getKeyAliasTestPass() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		String keyAlias = merchantConfig.getKeyAlias();
-		Assert.assertNotNull(keyAlias);
-	}
-
-	@Test
-	public void getRequestDataTestPass() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-
-		String requestData = merchantConfig.getRequestData();
-		Assert.assertNotNull(requestData);
-	}
-
-	// test cases for validate merchant detail
-	@Test
-	public void validateMerchantDetailsHttpTestforGet() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setAuthenticationType("Http_Signature");
-		merchantConfig.setRequestType("GET");
-		this.logger = Log4j.getInstance(merchantConfig);
-
-		boolean check = merchantConfig.validateMerchantDetails(logger);
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void validateMerchantDetailsHttpTestforPost() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setAuthenticationType("Http_Signature");
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		this.logger = Log4j.getInstance(merchantConfig);
-
-		boolean check = merchantConfig.validateMerchantDetails(logger);
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void validateMerchantDetailsHttpTestforPut() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setAuthenticationType("Http_Signature");
-		merchantConfig.setRequestType("PUT");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		this.logger = Log4j.getInstance(merchantConfig);
-
-		boolean check = merchantConfig.validateMerchantDetails(logger);
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void validateMerchantDetailsJwtTestForGet() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setAuthenticationType("jwt");
-		merchantConfig.setRequestType("GET");
-		this.logger = Log4j.getInstance(merchantConfig);
-
-		boolean check = merchantConfig.validateMerchantDetails(logger);
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void validateMerchantDetailsJwtTestForPost() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setAuthenticationType("jwt");
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		this.logger = Log4j.getInstance(merchantConfig);
-
-		boolean check = merchantConfig.validateMerchantDetails(logger);
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void validateMerchantDetailsJwtTestForPut() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setAuthenticationType("jwt");
-		merchantConfig.setRequestType("PUT");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		this.logger = Log4j.getInstance(merchantConfig);
-
-		boolean check = merchantConfig.validateMerchantDetails(logger);
-		Assert.assertEquals(true, check);
-
-	}
-
-	//// Test cases for keyPassword check
-
-	@Test
-	public void checkKeyPasswordTest() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		boolean check = merchantConfig.checkKeyPassword();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkKeyPasswordNullTest() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setKeyPass(null);
-
-		boolean check = merchantConfig.checkKeyPassword();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkKeyPasswordEmptyTest() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setKeyPass("");
-
-		boolean check = merchantConfig.checkKeyPassword();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkKeyPasswordNotEqualMerchantIdTest() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setKeyPass("test");
-
-		boolean check = merchantConfig.checkKeyPassword();
-		Assert.assertEquals(true, check);
-
-	}
-
-	// Test cases for run environment check
-
-	@Test
-	public void checkRunEvironmentTest() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.checkRunEvironment();
-		Assert.assertEquals(true, merchantConfig.checkRunEvironment());
-
-	}
-
-	@Test
-	public void checkRunEvironmentForNullTest() throws Exception {
-
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setRunEnvironment(null);
-		merchantConfig.checkRunEvironment();
-		Assert.assertEquals(false, merchantConfig.checkRunEvironment());
-
-	}
-
-	@Test
-	public void checkRunEvironmentForEmptyTest() throws IOException, ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setRunEnvironment("");
-
-		merchantConfig.checkRunEvironment();
-		Assert.assertEquals(false, merchantConfig.checkRunEvironment());
-
-	}
-
-	@Test
-	public void checkRunEvironmentForProductionTest() throws IOException, ConfigException {
-
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setRunEnvironment("CyberSource.Environment.PRODUCTION");
-
-		merchantConfig.checkRunEvironment();
-		Assert.assertEquals(true, merchantConfig.checkRunEvironment());
-
-	}
-
-	@Test
-	public void checkRunEvironmentTestFail() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRunEnvironment("test");
-
-		merchantConfig.checkRunEvironment();
-		Assert.assertEquals(true, merchantConfig.checkRunEvironment());
-
-	}
-
-	// Test cases for check merchant keyId
-
-	@Test
-	public void checkMerchantKeyIdTestForNull() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setMerchantKeyId(null);
-
-		merchantConfig.checkMerchantKeyId();
-		Assert.assertEquals(false, merchantConfig.checkMerchantKeyId());
-
-	}
-
-	@Test
-	public void checkMerchantKeyIdTestForEmpty() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setMerchantKeyId("");
-
-		merchantConfig.checkMerchantKeyId();
-		Assert.assertEquals(false, merchantConfig.checkMerchantKeyId());
-
-	}
-
-	// Test cases for check merchantSecretKey
-
-	@Test
-	public void checkMerchantSecertKeyTestForNull() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setMerchantSecretKey(null);
-
-		boolean check = merchantConfig.checkMerchantSecertKey();
-		Assert.assertEquals(false, check);
-
-	}
-
-	@Test
-	public void checkMerchantSecertKeyTestForEmpty() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setMerchantSecretKey("");
-
-		boolean check = merchantConfig.checkMerchantSecertKey();
-		Assert.assertEquals(false, check);
-
-	}
-
-	// Test cases for log max size and folder check
-
-	@Test
-	public void checkLogMaxSizeAndFolderTest() throws IOException, Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkLogMaxSizeAndFolderTestForNull() throws IOException, Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setLogDirectory(null);
-
-		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkLogMaxSizeTestForEmpty() throws IOException, Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setLogDirectory("");
-
-		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkLogMaxSizeTestFail() throws IOException, Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setLogDirectory(null);
-
-		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
-		Assert.assertEquals(true, check);
-
-	}
-
-	// Test cases for json path check
-
-	@Test
-	public void checkJsonPathTest() throws IOException, Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setIsRequestType(true);
-
-		boolean check = merchantConfig.checkJsonPath(requestJsonPath);
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkJsonPathTestWrongRequestType() throws IOException, Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("OPTION");
-		merchantConfig.setIsRequestType(true);
-
-		boolean check = merchantConfig.checkJsonPath(jsonPathforCheck);
-		Assert.assertEquals(false, check);
-
-	}
-
-	@Test
-	public void checkJsonPathNullTest() throws IOException, Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
-		merchantConfig.setIsRequestType(true);
-
-		boolean check = merchantConfig.checkJsonPath(null);
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkJsonPathEmptyTest() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
-		merchantConfig.setIsRequestType(true);
-
-		boolean check = merchantConfig.checkJsonPath("");
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkJsonPathTestFileNotExist() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setIsRequestType(true);
-
-		boolean check = merchantConfig.checkJsonPath(jsonPathforCheck);
-		Assert.assertEquals(false, check);
-
-	}
-
-	@Test
-	public void checkJsonPathTestIsrequestTypeFalse() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setIsRequestType(false);
-
-		boolean check = merchantConfig.checkJsonPath(jsonPathforCheck);
-		Assert.assertEquals(false, check);
-
-	}
-	// test cases for keyalias check
-
-	@Test
-	public void checkKeyAliasTest() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setKeyAlias("testrest");
-
-		boolean check = merchantConfig.checkKeyAlias();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkKeyAliasTestForNull() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setKeyAlias(null);
-
-		boolean check = merchantConfig.checkKeyAlias();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkKeyAliasTestForEmpty() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setKeyAlias("");
-
-		boolean check = merchantConfig.checkKeyAlias();
-		Assert.assertEquals(true, check);
-	}
-
-	@Test
-	public void checkKeyAliasTestForWrong() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setKeyAlias("test");
-
-		boolean check = merchantConfig.checkKeyAlias();
-		Assert.assertEquals(true, check);
-
-	}
-
-	// test case for merchantDetails
-
-	@Test
-	public void setMerchantDetailsTestForNull() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setMerchantID(null);
-
-		merchantConfig.setMerchantDetails();
-		Assert.assertEquals(false, MerchantConfig.isSetMerchantDetails);
-
-	}
-
-	@Test
-	public void setMerchantDetailsTestForEmpty() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setMerchantID("");
-
-		merchantConfig.setMerchantDetails();
-		Assert.assertEquals(false, MerchantConfig.isSetMerchantDetails);
-
-	}
-
-	@Test
-	public void setMerchantDetailsFail() throws NullPointerException, Exception {
-		merchantProp = null;
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		thrown.expect(NullPointerException.class);
-		merchantConfig.setMerchantDetails();
-
-	}
-
-	// test cases for check key file
-	@Test
-	public void CheckKeyFileTestForNull() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setKeyFilename(null);
-
-		boolean check = merchantConfig.checkKeyFile();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void CheckKeyFileTestForKeyFileNotExist() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setKeyFilename("test");
-
-		boolean check = merchantConfig.checkKeyFile();
-		Assert.assertEquals(false, check);
-
-	}
-
-	@Test
-	public void CheckKeyFileTestForFail() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setKeyFilename("test");
-		merchantConfig.setKeysDirectory(null);
-
-		boolean check = merchantConfig.checkKeyFile();
-		Assert.assertEquals(false, check);
-
-	}
-
-	// Test cases for request data
-
-	@Test
-	public void getRequestDataTestFail() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-
-		merchantConfig.setRequestJsonPath(testJsonPath);
-		String Data = merchantConfig.getRequestData();
-		Assert.assertNotNull(Data);
-
-	}
-
-	// Test cases for check request type
-
-	@Test
-	public void checkRequestTypeTestForGet() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
-
-		boolean check = merchantConfig.checkRequestType();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkRequestTypeTestForPost() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-
-		boolean check = merchantConfig.checkRequestType();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkRequestTypeTestForPut() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("PUT");
-
-		boolean check = merchantConfig.checkRequestType();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkRequestTypeTestForDelete() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("Delete");
-
-		boolean check = merchantConfig.checkRequestType();
-		Assert.assertEquals(true, check);
-
-	}
-
-	@Test
-	public void checkRequestTypeTestFail() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setRequestType("option");
-
-		boolean check = merchantConfig.checkRequestType();
-		Assert.assertEquals(false, check);
-	}
-
-	@Test
-	public void setProxyAddressTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setProxyAddress("userproxy.visa.com");
-		String str = merchantConfig.getProxyAddress();
-		Assert.assertNotNull(str);
-	}
-
-	@Test
-	public void isRequestJsonTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		boolean str = merchantConfig.isRequestJson();
-		Assert.assertNotNull(str);
-	}
-
-	@Test
-	public void setRequestDataTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setRequestData("requestData");
-		String str = merchantConfig.getRequestData();
-		Assert.assertNotNull(str);
-	}
-
-	@Test
-	public void setV_c_CorelationIDTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setVcCorelationID("test");
-		String str = merchantConfig.getVcCorelationID();
-		Assert.assertNotNull(str);
-	}
-
-	@Test
-	public void setResponseCodeTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setResponseCode("200");
-		String str = merchantConfig.getResponseCode();
-		Assert.assertNotNull(str);
-	}
-
-	@Test
-	public void setResponseMessageTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setResponseMessage("success");
-		String str = merchantConfig.getResponseMessage();
-		Assert.assertNotNull(str);
-	}
-
-	@Test
-	public void setUrlRequestHeaderTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setUrlRequestHeader("requestHeader");
-		String str = merchantConfig.getUrlRequestHeader();
-		Assert.assertNotNull(str);
-	}
 
 	@Test
 	public void setKeyAliasTest() throws ConfigException {
@@ -674,7 +44,7 @@ public class MerchantConfigTest {
 	}
 
 	@Test
-	public void setPropsTest() throws Exception {
+	public void setPropsTest() throws  IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setProps(merchantProp);
@@ -745,13 +115,6 @@ public class MerchantConfigTest {
 		Assert.assertNotNull(str);
 	}
 
-	@Test
-	public void setSendToProductionTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setSendToProduction(true);
-		boolean str = merchantConfig.getSendToProduction();
-		Assert.assertNotNull(str);
-	}
 
 	@Test
 	public void setKeyFilenameTest() throws ConfigException {
@@ -766,14 +129,6 @@ public class MerchantConfigTest {
 		merchantConfig = new MerchantConfig();
 		merchantConfig.setRequestTarget("/pts/v2/payments");
 		String str = merchantConfig.getRequestTarget();
-		Assert.assertNotNull(str);
-	}
-
-	@Test
-	public void setPasswordTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setPassword("testrest");
-		String str = merchantConfig.getPassword();
 		Assert.assertNotNull(str);
 	}
 
@@ -818,26 +173,10 @@ public class MerchantConfigTest {
 	}
 
 	@Test
-	public void setEffectivePasswordTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setEffectivePassword("testrest");
-		String str = merchantConfig.getEffectivePassword();
-		Assert.assertNotNull(str);
-	}
-
-	@Test
 	public void setRequestHostTest() throws ConfigException {
 		merchantConfig = new MerchantConfig();
 		merchantConfig.setRequestHost("apitest.cybersource,com");
 		String str = merchantConfig.getRequestHost();
-		Assert.assertNotNull(str);
-	}
-
-	@Test
-	public void setLogSignedDataTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setLogSignedData(true);
-		boolean str = merchantConfig.getLogSignedData();
 		Assert.assertNotNull(str);
 	}
 
@@ -872,41 +211,40 @@ public class MerchantConfigTest {
 		String str = merchantConfig.getLogDirectory();
 		Assert.assertNotNull(str);
 	}
+	
+	// test case for merchantDetails
+		@Test
+		public void setMerchantDetailsTestForNull() throws ConfigException, IOException {
+			merchantProp = PropertiesUtil.getMerchantProperties();
+			merchantConfig = new MerchantConfig(merchantProp);
+			merchantConfig.setRequestType("POST");
+			merchantConfig.setMerchantID(null);
+			
+			merchantConfig.setMerchantDetails();
+			Assert.assertEquals(true, MerchantConfig.isSetMerchantDetails);
+		}
 
 	@Test
-	public void setRequestJsonTest() throws ConfigException {
+	public void setMerchantDetailsFail() throws NullPointerException, Exception {
+		merchantProp = null;
+		merchantConfig = new MerchantConfig(merchantProp);
+
+		thrown.expect(NullPointerException.class);
+		merchantConfig.setMerchantDetails();
+	}
+
+	@Test
+	public void setProxyAddressTest() throws ConfigException {
 		merchantConfig = new MerchantConfig();
-		merchantConfig.setRequestJson(true);
-		boolean str = merchantConfig.getrequestJson();
+		merchantConfig.setProxyAddress("userproxy.visa.com");
+		String str = merchantConfig.getProxyAddress();
 		Assert.assertNotNull(str);
-	}
-
-	// Test cases for Log directory
-	@Test
-	public void getLogFileTest() throws ConfigException {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setRequestJson(true);
-		merchantConfig.setLogDirectory("log");
-
-		boolean check = merchantConfig.getLogFile();
-		Assert.assertEquals(true, check);
-	}
-
-	@Test
-	public void getLogFileTestFail() throws Exception {
-		merchantConfig = new MerchantConfig();
-		merchantConfig.setRequestJson(true);
-		merchantConfig.setLogDirectory("test");
-
-		boolean check = merchantConfig.getLogFile();
-		Assert.assertEquals(true, check);
-
 	}
 
 	// test cases for get Boolean property
 
 	@Test
-	public void getBooleanPropertyTest() throws Exception {
+	public void getBooleanPropertyTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 
@@ -915,13 +253,12 @@ public class MerchantConfigTest {
 		thrown.expectMessage(prop + " has an invalid value.");
 
 		merchantConfig.getBooleanProperty(merchantConfig.getMerchantID(), prop, true);
-
 	}
 
 	// test cases for get Integer property
 
 	@Test
-	public void getIntegerPropertyTest() throws Exception {
+	public void getIntegerPropertyTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 
@@ -930,6 +267,5 @@ public class MerchantConfigTest {
 		thrown.expectMessage(prop + " has an invalid value.");
 
 		merchantConfig.getIntegerProperty(merchantConfig.getMerchantID(), prop, 1);
-
 	}
 }

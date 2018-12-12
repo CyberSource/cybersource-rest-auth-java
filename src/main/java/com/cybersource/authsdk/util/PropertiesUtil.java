@@ -9,11 +9,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
-/**
- * 
- *
- *
- */
 public final class PropertiesUtil {
 	public static String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
 	private static String cybsPath;
@@ -65,5 +60,4 @@ public final class PropertiesUtil {
 		merchantProperties.load(merchantInput);
 		return merchantProperties;
 	}
-
 }

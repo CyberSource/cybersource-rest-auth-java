@@ -1,92 +1,79 @@
 package com.cybersource.authsdk.payloaddigest;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.Utility;
 
 /**
- *
+ * This class will generate Digest value which is SHA-256 hash of payLoad that
+ * is BASE64 encoded
  */
 public class PayloadDigest {
 
-	private String bluePrint = null, messageBody = null;
-	private MerchantConfig merchantConfig = null;
-	private Logger logger;
-	private String sha256 = GlobalLabelParameters.SHA_256;
+	private MerchantConfig merchantConfig;
+	private String requestData;
 
 	/**
 	 * @param merchantConfig-
 	 *            contains all information for merchant.
+	 * @param requestData
+	 *            - request data.
 	 */
-	public PayloadDigest(MerchantConfig merchantConfig) {
+	public PayloadDigest(MerchantConfig merchantConfig, String requestData) {
 		this.merchantConfig = merchantConfig;
+		this.requestData = requestData;
 	}
 
 	/**
 	 * @return generated digest from requestBody.
+	 * @throws ConfigException
+	 *             - if some value is missing for merchant.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm is not available.
+	 * @throws UnsupportedEncodingException
+	 *             - if encoding is not supported.
 	 */
-	private String digestGeneration() {
+	private String digestGeneration() throws NoSuchAlgorithmException, UnsupportedEncodingException, ConfigException {
 
 		/*
-		 * This method return Digest value which is SHA-256 hash of payload that
+		 * This method return Digest value which is SHA-256 hash of payLoad that
 		 * is BASE64 encoded
 		 */
-		String messageBody = payloadGeneration();
+		String messageBody = getPayLoad();
 		MessageDigest digestString;
 		byte[] digestBytes = null;
-		try {
-			digestString = MessageDigest.getInstance(sha256);
-			digestBytes = digestString.digest(messageBody.getBytes("UTF-8"));
-		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.DIGEST_GEN_FAILED, "", Level.FATAL);
-			Utility.log(logger, e);
-			return null;
-		}
-		bluePrint = Base64.getEncoder().encodeToString(digestBytes);
-		bluePrint = sha256 + "=" + bluePrint;
+		digestString = MessageDigest.getInstance(GlobalLabelParameters.SHA_256);
+		digestBytes = digestString.digest(messageBody.getBytes("UTF-8"));
+		String bluePrint = Base64.getEncoder().encodeToString(digestBytes);
+		bluePrint = GlobalLabelParameters.SHA_256 + "=" + bluePrint;
 		return bluePrint;
 	}
 
 	/**
-	 * Reads the Payload data present in the request json file, if present, else
-	 * reads form the merchant config object.
-	 * 
-	 * @return generated payLoad from request body.
-	 */
-	private String payloadGeneration() {
-		messageBody = merchantConfig.getRequestData();
-		return messageBody;
-	}
-
-	/**
 	 * @return payLoad generated.
+	 * @throws ConfigException
+	 *             - if some value is missing for merchant.
 	 */
-	public String getPayLoad() {
-
-		payloadGeneration();
-		return messageBody;
+	public String getPayLoad() throws ConfigException {
+		return requestData;
 	}
 
 	/**
 	 * 
 	 * @return Digest generated from payload.
+	 * @throws ConfigException
+	 *             - if some value is missing for merchant.
+	 * @throws UnsupportedEncodingException
+	 *             - if encoding is not supported.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm is not available.
 	 */
-	public String getDigest() {
-		digestGeneration();
-		return bluePrint;
+	public String getDigest() throws ConfigException, NoSuchAlgorithmException, UnsupportedEncodingException {
+		return digestGeneration();
 	}
-
-	/**
-	 * @return messageBody for request.
-	 */
-	public String getMessageBody() {
-		return messageBody;
-	}
-
 }
