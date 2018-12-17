@@ -11,6 +11,7 @@ import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.JwtSignatureToken;
 import com.cybersource.authsdk.log.Log4j;
+import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class JWTSignatureTokenTest {
@@ -33,15 +34,19 @@ public class JWTSignatureTokenTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("GET");
-		merchantConfig.setAuthenticationType("JWT");
-
+		
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
 		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
-		Assert.assertNotNull(token);
+		
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(token);
+		} else {
+			Assert.assertNotNull(token);
+		}
 
 	}
 
@@ -50,18 +55,21 @@ public class JWTSignatureTokenTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		;
+		
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setAuthenticationType("JWT");
-
+		
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
 		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
-		Assert.assertNotNull(token);
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(token);
+		} else {
+			Assert.assertNotNull(token);
+		}
 
 	}
 
@@ -72,15 +80,18 @@ public class JWTSignatureTokenTest {
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("PUT");
 		merchantConfig.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setAuthenticationType("JWT");
-
+		
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
 		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
-		Assert.assertNotNull(token);
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(token);
+		} else {
+			Assert.assertNotNull(token);
+		}
 
 	}
 
@@ -90,15 +101,18 @@ public class JWTSignatureTokenTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("DELETE");
-		merchantConfig.setAuthenticationType("JWT");
-
+		
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
 		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
-		Assert.assertNotNull(token);
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(token);
+		} else {
+			Assert.assertNotNull(token);
+		}
 
 	}
 
@@ -109,34 +123,18 @@ public class JWTSignatureTokenTest {
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("PUT");
 		merchantConfig.setRequestJsonPath(testJsonPath);
-		merchantConfig.setAuthenticationType("JWT");
-
+		
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
 		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 
 		String token = jwtSignatureToken.getToken();
-		Assert.assertNotNull(token);
-
-	}
-
-	@Test
-	public void getTokenTestForJwe() throws Exception {
-
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setAuthenticationType("jwe");
-
-		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
-
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
-
-		String token = jwtSignatureToken.getToken();
-		Assert.assertNull(token);
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(token);
+		} else {
+			Assert.assertNotNull(token);
+		}
 
 	}
 
@@ -166,8 +164,7 @@ public class JWTSignatureTokenTest {
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setAuthenticationType("jwt");
-
+		
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
 
@@ -175,7 +172,11 @@ public class JWTSignatureTokenTest {
 		jwtSignatureToken.generateSignature();
 		Cache.lastModifiedTime = 1528;
 		String token1 = jwtSignatureToken.generateSignature();
-		Assert.assertNotNull(token1);
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(token1);
+		} else {
+			Assert.assertNotNull(token1);
+		}
 
 	}
 }

@@ -28,6 +28,7 @@ public class GlobalLabelParameters {
 	public static final String DIGEST = "Digest";
 	public static final String REQUEST_TYPE = "Request Type";
 	public static final String REQUEST_TARGET = "/pts/v2/payments/";
+	public static final String URL_PREFIX = "https://";
 	public static final String SANDBOX_URL = "apitest.cybersource.com";
 	public static final String RUN_SANDBOX = "CyberSource.Environment.SANDBOX";
 	public static final String RUN_PRODUCTION = "CyberSource.Environment.PRODUCTION";
