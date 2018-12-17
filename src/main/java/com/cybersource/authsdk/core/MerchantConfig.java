@@ -660,7 +660,7 @@ public class MerchantConfig {
 				} else {
 					this.keyPass = this.getProperty(this.merchantID, "keyPass");
 				}
-				if (this.props.getProperty("keyFilename") == null) {
+				if (this.props.getProperty("keyFileName") == null) {
 					this.keyFilename = merchantID;
 
 				} else {
