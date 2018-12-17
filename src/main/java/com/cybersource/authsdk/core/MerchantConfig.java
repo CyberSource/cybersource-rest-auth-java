@@ -620,9 +620,24 @@ public class MerchantConfig {
 		this.authenticationType = this.getProperty(this.merchantID, "authenticationType");
         this.merchantID=this.getProperty(this.merchantID, "merchantID");
 		/* Logging Parameters */
-		this.logDirectory = this.getProperty(this.merchantID, "logDirectory").trim();
-		this.logFilename = this.getProperty(this.merchantID, "logFilename").trim();
+		if (this.props.getProperty("logDirectory") == null) {
+			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
+
+		} else {
+			this.logDirectory = this.getProperty(this.merchantID, "logDirectory").trim();
+		}
+		if (this.props.getProperty("logFilename") == null) {
+			this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME;
+
+		} else {
+			this.logFilename = this.getProperty(this.merchantID, "logFilename").trim();
+		}
+		if (this.props.getProperty("logMaximumSize") == null) {
+			this.logMaximumSize = GlobalLabelParameters.DEFAULT_LOG_SIZE;
+
+		} else {
 		this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize").trim();
+		}
 		/* JWT Parameters */
 		if (authenticationType != null) {
 			if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -633,6 +648,7 @@ public class MerchantConfig {
 				this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory").trim();
 				}
 				if (this.props.getProperty("keyAlias") == null) {
+					Utility.log(log, GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY, this.merchantID, Level.ERROR);
 					this.keyAlias = merchantID;
 
 				} else {
