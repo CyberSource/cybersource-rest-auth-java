@@ -49,7 +49,6 @@ public class KeyCertificateGeneratorTest {
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
-		//merchantConfig.checkKeyFile();
 
 		keyCertificateGenerator = new KeyCertificateGenerator();
 		X509Certificate certificate = keyCertificateGenerator.initializeCertificate(merchantConfig);
@@ -72,7 +71,6 @@ public class KeyCertificateGeneratorTest {
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
-		//merchantConfig.checkKeyFile();
 
 		keyCertificateGenerator = new KeyCertificateGenerator();
 		RSAPrivateKey privateKey = keyCertificateGenerator.initializePrivateKey(merchantConfig);
@@ -96,7 +94,6 @@ public class KeyCertificateGeneratorTest {
 
 		logger = Log4j.getInstance(merchantConfig);
 		merchantConfig.validateMerchantDetails(logger);
-		//merchantConfig.checkKeyFile();
 		
 		keyCertificateGenerator = new KeyCertificateGenerator();
 		

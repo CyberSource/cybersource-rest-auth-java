@@ -480,7 +480,8 @@ public class MerchantConfig {
 		if (this.keyPass == null || this.keyPass.isEmpty()) {
 			this.keyPass = merchantID;
 			Utility.log(log, GlobalLabelParameters.KEY_PASSWORD_EMPTY_NULL, "", Level.ERROR);
-		}return true;
+		}
+		return true;
 	}
 
 	/**
@@ -618,7 +619,7 @@ public class MerchantConfig {
 
 	public void setMerchantDetails() throws ConfigException {
 		this.authenticationType = this.getProperty(this.merchantID, "authenticationType");
-        this.merchantID=this.getProperty(this.merchantID, "merchantID");
+        this.merchantID = this.getProperty(this.merchantID, "merchantID");
 		/* Logging Parameters */
 		if (this.props.getProperty("logDirectory") == null) {
 			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
@@ -672,8 +673,6 @@ public class MerchantConfig {
 		/* Optional use [ TIME OUT ] */
 		this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
 		this.proxyPort = this.getIntegerProperty(this.merchantID, "proxyPort", 8080);
-		// this.proxyUser =
-		// this.getProperty(this.merchantID,"proxyUser").trim();
 		this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
 		this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
 		/* HTTP Parameters */
@@ -777,7 +776,7 @@ public class MerchantConfig {
 	 *             - if some value is missing or wrong for merchant.
 	 */
 	public boolean checkKeyFile() throws ConfigException {
-		boolean check=true;
+		boolean check = true;
 		keyFile = null;
 
 		if (this.keyFilename == null || this.keyFilename.isEmpty()) {
@@ -798,7 +797,7 @@ public class MerchantConfig {
 		if (!keyFile.isDirectory()) {
 			Utility.log(log, GlobalLabelParameters.KEY_FILE_DIRECTORY_NOT_FOUND, this.keysDirectory, Level.ERROR);
 			keyFile = null;
-			check=false;
+			check = false;
 			return check;
 		}
 		try {
@@ -808,7 +807,7 @@ public class MerchantConfig {
 						this.keysDirectory.concat("/").concat(this.keyFilename) + GlobalLabelParameters.P12_EXTENSION,
 						Level.ERROR);
 				keyFile = null;
-				check=false;
+				check = false;
 				return check;
 			}
 			Utility.log(log, GlobalLabelParameters.KEY_FILE,
@@ -816,7 +815,7 @@ public class MerchantConfig {
 					Level.INFO);
 		} catch (Exception e) {
 			keyFile = null;
-			check=false;
+			check = false;
 			return check;
 		}
 		boolean isRead = keyFile.canRead();
@@ -828,7 +827,7 @@ public class MerchantConfig {
 			Utility.log(log, GlobalLabelParameters.FILE_NOT_READ, this.keysDirectory.concat(this.keyFilename),
 					Level.ERROR);
 			keyFile = null;
-			check=false;
+			check = false;
 			return check;
 		}
 	}

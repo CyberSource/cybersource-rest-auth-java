@@ -80,7 +80,7 @@ public class HttpSignatureTokenTest {
 		
 		signatureToken = new HttpSignatureToken(merchantConfig);
 
-		String str=null;
+		String str = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
 		} else {
