@@ -80,37 +80,48 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
-	 * @throws NoSuchAlgorithmException 
 	 */
-	public Response getJwtConnection() throws ConfigException, ClientException, IOException {
-		if (merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
-			return executePatch(requestData);
-	   } else {
-			if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
-					|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-				requestBody = getId;
-			} else /* jwtMethod = POST */ {
-				requestBody = requestData;
-			}
-			if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
-					|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-	
-				responseObj = jwtConnection();
-				responseCode = connection.getResponseCode();
-			} else if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
-					|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
-				responseObj = postDocument(requestBody);
-				responseCode = connection.getResponseCode();
-			}
-			responseMessage = Masking.prepareMasking(responseObj.getResponseMessage(), logger);
-			responseObj.setResponseMessage(responseMessage);
-			responseObj.setResponseCode(String.valueOf(responseCode));
-			maskingPayload(responseMessage);
-			endConnection();
-			return responseObj;
-	   }	
+	public Response getJwtConnection() throws ConfigException, ClientException {
+		
+	  try {
+		  
+		  if (merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+				return executePatch(requestData);
+		   } else {
+				if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
+						|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
+					requestBody = getId;
+				} else /* jwtMethod = POST */ {
+					requestBody = requestData;
+				}
+				if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
+						|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
+		
+					responseObj = jwtConnection();
+					responseCode = connection.getResponseCode();
+				} else if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
+						|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+					responseObj = postDocument(requestBody);
+					responseCode = connection.getResponseCode();
+				}
+				responseMessage = Masking.prepareMasking(responseObj.getResponseMessage(), logger);
+				responseObj.setResponseMessage(responseMessage);
+				responseObj.setResponseCode(String.valueOf(responseCode));
+				maskingPayload(responseMessage);
+				endConnection();
+				return responseObj;
+		}
+	  } catch (IOException e) {
+		  Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.ERROR);
+    	  throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
+      } catch (ConfigException e) {
+    	  throw e;
+      } catch (ClientException e) {
+    	  throw e;
+      }	catch (Exception e) {
+    	  Utility.log(logger,e);
+    	  throw new ClientException("Exception in getJwtConnection method");
+	  }
 	}
 
 	/**
@@ -141,12 +152,10 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 */
 	public Response jwtConnection() throws ConfigException, ClientException {
       try {
-    	  /* Open Connection with API server. */
+    	/* Open Connection with API server. */
   		openConnection();
   		/* Set Json input Type in the connection object. */
   		setHeaderData();

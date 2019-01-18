@@ -49,7 +49,7 @@ public class PaymentRequestService {
 	 * @throws NoSuchAlgorithmException
 	 *             - if algorithm will be not there.
 	 */
-	public Response processPaymentRequest()	throws ConfigException, ClientException, IOException {
+	public Response processPaymentRequest()	throws ConfigException, ClientException {
        String authenticatonType = merchantConfig.getAuthenticationType();
        if (authenticatonType != null && authenticatonType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
    			 HttpAuthenticationStrategy connection = new HttpAuthenticationStrategy(merchantConfig, requestData, logger);

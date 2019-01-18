@@ -272,15 +272,19 @@ public class MerchantUtilTest {
 
 	@Test
 	public void checkRunEvironmentTestFail() throws ConfigException, IOException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRunEnvironment("test");
-		merchantUtil=new MerchantUtil(merchantConfig);
-
-		boolean check =MerchantUtil.checkRunEvironment();
-		Assert.assertEquals(false, check);
-
-	}
+		
+			merchantProp = PropertiesUtil.getMerchantProperties();
+			merchantConfig = new MerchantConfig(merchantProp);
+			merchantConfig.setRunEnvironment("test");
+			merchantUtil=new MerchantUtil(merchantConfig);
+			boolean check = false;
+			try {
+				check = MerchantUtil.checkRunEvironment();
+			} catch (ConfigException e) {
+				check = false;
+			}
+			Assert.assertEquals(false, check);
+		}
 
 	// Test cases for check merchant keyId
 

@@ -100,8 +100,6 @@ public class PostObjectMethod {
 			System.out.println(e.getMessage());
 		} catch (ClientException e) {
 			System.out.println(e.getMessage());
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}

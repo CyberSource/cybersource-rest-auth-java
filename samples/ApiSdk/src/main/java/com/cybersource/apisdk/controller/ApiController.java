@@ -1,14 +1,11 @@
 package com.cybersource.apisdk.controller;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.apisdk.model.Response;
-import com.cybersource.apisdk.service.PaymentRequestService;
 import com.cybersource.apisdk.service.ClientException;
+import com.cybersource.apisdk.service.PaymentRequestService;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.log.Log4j;
@@ -33,15 +30,10 @@ public class ApiController {
 	 *            - request payload.
 	 * @throws ConfigException
 	 *             - if some value is missing for merchant..
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm will be not there.
 	 */
-	public Response paymentGet(MerchantConfig merchantConfig, String requestData)
-			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+	public Response paymentGet(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestData);
 	}
 
@@ -53,15 +45,10 @@ public class ApiController {
 	 *            - request payload.
 	 * @throws ConfigException
 	 *             - contains information for merchant.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm will be not there.
 	 */
-	public Response paymentPost(MerchantConfig merchantConfig, String requestData)
-			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+	public Response paymentPost(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestData);
 	}
 
@@ -73,15 +60,10 @@ public class ApiController {
 	 *            - request payload.
 	 * @throws ConfigException
 	 *             - contains information for merchant.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm will be not there.
 	 */
-	public Response paymentPut(MerchantConfig merchantConfig, String requestData)
-			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+	public Response paymentPut(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestData);
 	}
 
@@ -93,15 +75,10 @@ public class ApiController {
 	 *            - request payload.
 	 * @throws ConfigException
 	 *             - contains information for merchant.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm will be not there.
 	 */
-	public Response paymentDelete(MerchantConfig merchantConfig, String requestData)
-			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+	public Response paymentDelete(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestData);
 	}
 	
@@ -113,15 +90,10 @@ public class ApiController {
 	 *            - request payload.
 	 * @throws ConfigException
 	 *             - contains information for merchant.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm will be not there.
 	 */
-	public Response paymentPatch(MerchantConfig merchantConfig, String requestData)
-			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+	public Response paymentPatch(MerchantConfig merchantConfig, String requestData)	throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestData);
 	}
 
@@ -133,15 +105,10 @@ public class ApiController {
 	 *            - request payload.
 	 * @throws ConfigException
 	 *             - contains information for merchant.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm will be not there.
 	 */
-	private Response processPayment(MerchantConfig merchantConfig, String requestData)
-			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+	private Response processPayment(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
 		Response responseObj = null;
 		commonApiControllerCheck(merchantConfig);
 		if (isAuthicationTypeValid) {

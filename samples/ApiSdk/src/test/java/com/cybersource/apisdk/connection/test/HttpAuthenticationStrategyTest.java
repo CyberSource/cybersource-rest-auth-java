@@ -1,7 +1,6 @@
 package com.cybersource.apisdk.connection.test;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
@@ -45,7 +44,7 @@ public class HttpAuthenticationStrategyTest {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void setHeaderDataTestForGet() throws ConfigException, IOException, NoSuchAlgorithmException, ClientException {
+	public void setHeaderDataTestForGet() throws ConfigException, IOException, ClientException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
@@ -72,7 +71,7 @@ public class HttpAuthenticationStrategyTest {
 	}
 	
 	@Test
-	public void setHeaderDataTestForPost() throws ConfigException, IOException, NoSuchAlgorithmException, ClientException {
+	public void setHeaderDataTestForPost() throws ConfigException, ClientException, IOException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
@@ -99,7 +98,7 @@ public class HttpAuthenticationStrategyTest {
 	}
 	
 	@Test
-	public void setHeaderDataTestForPatch() throws ConfigException, IOException, NoSuchAlgorithmException, ClientException {
+	public void setHeaderDataTestForPatch() throws ConfigException, IOException, ClientException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
@@ -127,7 +126,7 @@ public class HttpAuthenticationStrategyTest {
 	}
 	
 	@Test
-	public void setHeaderDataTestForWrongMerchantId() throws ConfigException, IOException, NoSuchAlgorithmException, ClientException {
+	public void setHeaderDataTestForWrongMerchantId() throws ConfigException, IOException, ClientException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
@@ -204,7 +203,7 @@ public class HttpAuthenticationStrategyTest {
 	}
 	
 	@Test
-	public void getTestForGet() throws Exception {
+	public void getTestForGet() throws ClientException, IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		
@@ -230,7 +229,7 @@ public class HttpAuthenticationStrategyTest {
 	}
 
 	@Test
-	public void getTestForPost() throws Exception {
+	public void getTestForPost() throws ClientException, IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		
@@ -255,7 +254,7 @@ public class HttpAuthenticationStrategyTest {
 	}
 
 	@Test
-	public void getTestForPut() throws IOException, ConfigException, ClientException, NoSuchAlgorithmException {
+	public void getTestForPut() throws IOException, ConfigException, ClientException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		
@@ -281,7 +280,7 @@ public class HttpAuthenticationStrategyTest {
 	}
 	
 	@Test
-	public void getTestForPatch() throws IOException, ConfigException, ClientException, NoSuchAlgorithmException {
+	public void getTestForPatch() throws IOException, ConfigException, ClientException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		

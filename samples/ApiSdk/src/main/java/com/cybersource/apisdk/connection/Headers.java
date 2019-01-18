@@ -1,8 +1,5 @@
 package com.cybersource.apisdk.connection;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 
@@ -20,11 +17,8 @@ public interface Headers {
 	 *             - if some value is missing for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception .
-	 * @throws UnsupportedEncodingException
-	 * @throws NoSuchAlgorithmException
 	 */
-	void setHeaderData()
-			throws ConfigException, ClientException, NoSuchAlgorithmException, UnsupportedEncodingException;
+	void setHeaderData() throws ConfigException, ClientException;
 
 	/**
 	 * The response message obtained form the server is sent for masking the

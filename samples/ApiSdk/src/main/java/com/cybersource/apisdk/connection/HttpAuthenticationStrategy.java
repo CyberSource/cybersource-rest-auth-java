@@ -27,8 +27,8 @@ import org.bouncycastle.util.encoders.Base64;
 
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.apisdk.model.Response;
-import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.apisdk.service.ClientException;
+import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
@@ -143,7 +143,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			Utility.log(logger, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.FATAL);
 			throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.HEADER_SET_EXCEPTION, "", Level.FATAL);
+			Utility.log(logger, GlobalLabelParameters.HEADER_SET_EXCEPTION, "", Level.ERROR);
 			Utility.log(logger,e);
 			throw new ClientException(GlobalLabelParameters.HEADER_SET_EXCEPTION);
 	    }
@@ -154,11 +154,9 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 * 
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 */
 	@Override
-	public void openConnection() throws ClientException, IOException {
+	public void openConnection() throws ClientException {
 		URL url = null;
 		try {
 			/**/
@@ -217,19 +215,18 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 
 	/**
 	 * 
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 * @throws ConfigException
 	 *             - if some value is missing for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm will be not there.
 	 */
-	public Response getHttpConnection() throws IOException, ConfigException, ClientException {
-		if (merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+	public Response getHttpConnection() throws ConfigException, ClientException {
+		
+	  try {
+		  
+		  if (merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 				return executePatch(requestData);
-		} else {
+		  } else {
 			/* Make a new connection using the URL. */
 			openConnection();
 			/* Add Request Request Type :: "Get or Post" */
@@ -289,11 +286,19 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			/* Set Response Message */
 			String resp = Masking.prepareMasking(response.toString(), logger);
 			responseObj.setResponseMessage(resp);
-
 			return responseObj;
-
-		}  
-	}
+		 }
+	  } catch (IOException e) {
+		    Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
+	    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
+	  } catch (Exception e) {
+		    Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.ERROR);
+		    Utility.log(logger, e);
+	    	throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION);
+	  } 
+    }
+		
+	
 
 	/**
 	 * Creates a HTTP Proxy request
@@ -332,12 +337,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 *             - throws exception if some configuration error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 *  @throws IOException
-	 *             - throws exception if some I/O error comes.
-	 *  @throws NoSuchAlgorithmException
-	 *             - throws exception if some NoSuchAlgorithmException comes.
 	 */
-	public Response executePatch(String requestData) throws ConfigException, ClientException, IOException {
+	public Response executePatch(String requestData) throws ConfigException, ClientException {
 		
 		/* For Disable the org.apache.log */
 		java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);

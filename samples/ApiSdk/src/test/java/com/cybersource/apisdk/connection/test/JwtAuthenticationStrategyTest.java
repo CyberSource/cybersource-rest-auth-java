@@ -46,7 +46,7 @@ public class JwtAuthenticationStrategyTest {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void getTestForGet() throws Exception {
+	public void getTestForGet() throws ClientException, IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("GET");
@@ -67,7 +67,7 @@ public class JwtAuthenticationStrategyTest {
 	}
 
 	@Test
-	public void getTestForPost() throws Exception {
+	public void getTestForPost() throws ClientException, IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("POST");
@@ -109,7 +109,7 @@ public class JwtAuthenticationStrategyTest {
 	}
 	
 	@Test
-	public void getTestForPatch() throws IOException, ConfigException, ClientException, NoSuchAlgorithmException {
+	public void getTestForPatch() throws IOException, ConfigException, ClientException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("PATCH");

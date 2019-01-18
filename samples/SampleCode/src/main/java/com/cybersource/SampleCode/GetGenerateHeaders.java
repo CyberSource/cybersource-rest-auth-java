@@ -85,14 +85,21 @@ public class GetGenerateHeaders {
 	 * @throws ConfigException
 	 */
 	public GetGenerateHeaders() throws IOException, ConfigException{
-		setGenerateHeaders();
-		
-		System.out.println(" Authentication Type : " +  merchantConfig.getAuthenticationType());
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantConfig = new MerchantConfig(merchantProp);
+		this.logger = Log4j.getInstance(merchantConfig);
+		merchantUtil=new MerchantUtil(merchantConfig);
 		Log4j.logEnable = false;
+		System.out.println(" Authentication Type : " +  merchantConfig.getAuthenticationType());
 		Utility.log(this.logger,
 				GlobalLabelParameters.BEGIN_TRANSCATION , " Generate GET Headers *******************", Level.INFO);
-		MerchantUtil.validateMerchantDetails();
-		generateGetHeaders();
+		merchantConfig.setRequestType(requestType);
+		merchantUtil.setRequestJsonPath("not required");
+		boolean isMerchant = MerchantUtil.validateMerchantDetails();
+		Log4j.logEnable = merchantConfig.getEnableLog();
+		if (isMerchant) {
+			generateGetHeaders();
+		}
 		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
 		Utility.log(this.logger, " ","", Level.OFF);
 	}
@@ -102,12 +109,15 @@ public class GetGenerateHeaders {
 	 * @throws ConfigException
 	 */
 	private void setGenerateHeaders() throws IOException, ConfigException{
+		
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
-		authenticationType = merchantConfig.getAuthenticationType();
+		/* Set Request Type into the merchant config object. */
 		merchantConfig.setRequestType(requestType);
+		/* Extract Authentication Type from cybs.properties */
+		authenticationType = merchantConfig.getAuthenticationType();
 		this.logger = Log4j.getInstance(merchantConfig);
 		Log4j.logEnable = false;
 		Authorization.getToken(merchantConfig, null);

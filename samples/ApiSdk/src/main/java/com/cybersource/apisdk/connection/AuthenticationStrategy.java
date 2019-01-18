@@ -18,7 +18,7 @@ public interface AuthenticationStrategy {
 	 * @throws IOException
 	 *             - throws exception if some I/O error comes.
 	 */
-	void openConnection() throws ClientException, IOException;
+	void openConnection() throws ClientException;
 
 	/**
 	 * After successfully operation, connection is nullified.

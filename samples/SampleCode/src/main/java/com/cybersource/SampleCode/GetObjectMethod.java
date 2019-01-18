@@ -1,6 +1,5 @@
 package com.cybersource.SampleCode;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -76,8 +75,6 @@ public class GetObjectMethod {
 		} catch (ConfigException e) {
 			System.out.println(e.getMessage());
 		} catch (ClientException e) {
-			System.out.println(e.getMessage());
-		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

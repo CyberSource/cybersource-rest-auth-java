@@ -66,12 +66,9 @@ public class PayloadDigestTest {
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(null);
 		
-		thrown.expect(ConfigException.class);
-		thrown.expectMessage(GlobalLabelParameters.FILE_NOT_FOUND);
-		
 		payloadDigest = new PayloadDigest(merchantConfig,merchantUtil.getRequestData());
-		payloadDigest.getPayLoad();
-		
+		String str = payloadDigest.getPayLoad();
+		Assert.assertNull(str);
 	}
 
 	@Test
