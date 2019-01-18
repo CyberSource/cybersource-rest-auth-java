@@ -76,6 +76,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 				Utility.log(logger, GlobalLabelParameters.GET_ID, requestId, Level.INFO);
 			}
 		} catch (NullPointerException e) {
+			Utility.log(logger, GlobalLabelParameters.GET_ID_IS_MISSING, "", Level.FATAL);
 			throw new ClientException(GlobalLabelParameters.GET_ID_IS_MISSING);
 		}
 
@@ -136,10 +137,14 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			}
 
 	   } catch (NoSuchAlgorithmException e) {
+		    Utility.log(logger, GlobalLabelParameters.No_SUCH_ALGORITHM, "", Level.FATAL);
 			throw new ConfigException(GlobalLabelParameters.No_SUCH_ALGORITHM);
 		} catch (UnsupportedEncodingException e) {
+			Utility.log(logger, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.FATAL);
 			throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
 		} catch (Exception e) {
+			Utility.log(logger, GlobalLabelParameters.HEADER_SET_EXCEPTION, "", Level.FATAL);
+			Utility.log(logger,e);
 			throw new ClientException(GlobalLabelParameters.HEADER_SET_EXCEPTION);
 	    }
   }
@@ -391,17 +396,21 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
             		throw new ClientException(GlobalLabelParameters.EMPTY_RESPONSE);
             	}
 		  } catch (UnsupportedEncodingException e) {
+			    Utility.log(logger, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.FATAL);
 				throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
 		  } catch (IOException e) {
+			    Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
 		    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
 		  } catch (Exception e) {
+			    Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.FATAL);
+			    Utility.log(logger, e);
 		    	throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION);
 		  } finally {
 			  if(response != null) {
 				try {
 					response.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Utility.log(logger, e);
 				}
 			 }
 	     }

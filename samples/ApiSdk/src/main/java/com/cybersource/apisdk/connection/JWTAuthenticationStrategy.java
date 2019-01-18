@@ -164,10 +164,13 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
   				: this.readInputStream(this.connection.getInputStream());
 
       } catch (IOException e) {
+    	  Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.ERROR);
     	  throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
       } catch (ConfigException e) {
+    	  Utility.log(logger, "Exception in jwtConnection method", "", Level.ERROR);
     	  throw e;
       } catch (ClientException e) {
+    	  Utility.log(logger, "Exception in jwtConnection method", "", Level.ERROR);
     	  throw e;
       }
    }
@@ -404,18 +407,22 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	           	responseObj.setResponseMessage(resp);
 	           	return responseObj;
 	        } else {
+	        	Utility.log(logger, GlobalLabelParameters.EMPTY_RESPONSE, "", Level.FATAL);
 	       		throw new ClientException(GlobalLabelParameters.EMPTY_RESPONSE);
 	      	}
 	    } catch (IOException e) {
+	    	Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
 	    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
 		} catch (Exception e) {
+			Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.FATAL);
+			Utility.log(logger,e);
 	    	throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION);
 		} finally {
 				if(response != null) {
 					try {
 						response.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						Utility.log(logger,e);
 					}
 				}
         }
