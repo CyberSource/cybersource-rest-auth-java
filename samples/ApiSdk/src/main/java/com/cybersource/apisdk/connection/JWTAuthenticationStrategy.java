@@ -414,7 +414,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	    	Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
 	    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.FATAL);
+			Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.ERROR);
 			Utility.log(logger,e);
 	    	throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION);
 		} finally {

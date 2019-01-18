@@ -393,6 +393,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
             		responseObj.setResponseMessage(resp);
             		return responseObj;
             	} else {
+            		Utility.log(logger, GlobalLabelParameters.EMPTY_RESPONSE, "", Level.FATAL);
             		throw new ClientException(GlobalLabelParameters.EMPTY_RESPONSE);
             	}
 		  } catch (UnsupportedEncodingException e) {
@@ -402,7 +403,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			    Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
 		    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
 		  } catch (Exception e) {
-			    Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.FATAL);
+			    Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.ERROR);
 			    Utility.log(logger, e);
 		    	throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION);
 		  } finally {
