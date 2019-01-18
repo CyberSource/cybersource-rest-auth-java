@@ -10,21 +10,19 @@ import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.Utility;
 
+
 /**
- * 
- * 
+ * class for caching X509Certificate, lastModified KeyFile time and private key.
  *
  */
 public class Cache {
 	public static boolean isCache = false;
-	private boolean isTimeStamp;
 	private MerchantConfig merchantConfig;
-	public static long lastModifiedTime;
+	public long lastModifiedTime;
 	private Identity identity = new Identity();
 	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
 	private X509Certificate x509Certificate;
 	private RSAPrivateKey rsaPrivateKey;
-	private String merchantID;
 	Logger logger;
 
 	public void setX509Certificate(X509Certificate x509Certificate) {
@@ -50,7 +48,6 @@ public class Cache {
 	public Cache(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
 		logger = Log4j.getInstance(this.merchantConfig);
-		this.merchantID = merchantConfig.getMerchantID();
 		if (cacheP12.isEmpty()) {
 			Cache.isCache = true;
 		} else {
@@ -67,7 +64,7 @@ public class Cache {
 		if (cacheP12.isEmpty()) {
 			setUpP12Cache();
 		} else {
-			isTimeStamp = isLastModifiedTimeP12();
+			 boolean isTimeStamp = isLastModifiedTimeP12();
 			if (isTimeStamp) {
 				retriveP12DataFromCache();
 			} else {
@@ -81,7 +78,7 @@ public class Cache {
 	 *             - if some value is missing or wrong for merchant.
 	 */
 	public void setUpP12Cache() throws ConfigException {
-		identity.setLastModifiedDate(getLastModifiedFileP12());
+		identity.setLastModifiedTime(getLastModifiedFileP12());
 		identity.setX509(x509Certificate);
 		identity.setRsaPrivateKey(rsaPrivateKey);
 		String tempMerchantID = merchantConfig.getMerchantID();
@@ -89,11 +86,8 @@ public class Cache {
 		lastModifiedTime = merchantConfig.getKeyFile().lastModified();
 	}
 
-	/**
-	 * 
-	 */
 	public void retriveP12DataFromCache() {
-		Identity tempIdentity = cacheP12.get(merchantID);
+		Identity tempIdentity = cacheP12.get(merchantConfig.getMerchantID());
 		x509Certificate = tempIdentity.getX509();
 		rsaPrivateKey = tempIdentity.getRsaPrivateKey();
 	}
@@ -102,8 +96,8 @@ public class Cache {
 	 * @return true if file is modified else return false.
 	 */
 	public boolean isLastModifiedTimeP12() {
-		Identity tempIdentity = cacheP12.get(merchantID);
-		long tempLastModifiedTime = tempIdentity.getLastModifiedDate();
+		Identity tempIdentity = cacheP12.get(merchantConfig.getMerchantID());
+		long tempLastModifiedTime = tempIdentity.getLastModifiedTime();
 		if (lastModifiedTime == tempLastModifiedTime) {
 			return true;
 		} else {

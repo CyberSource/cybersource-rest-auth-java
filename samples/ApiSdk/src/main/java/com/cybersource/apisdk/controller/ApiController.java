@@ -1,140 +1,203 @@
 package com.cybersource.apisdk.controller;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.PaymentRequestService;
+import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /**
- * 
- *
+ * This class will make call as per request type.
  */
 public class ApiController {
 
 	private Logger logger;
-	private boolean authType;
-	private String authenticationType;
-	private boolean isMerchantDetail;
-	private Response responseObj;
+	private boolean isAuthicationTypeValid;
+	private boolean isMerchantConfigValid;
 
 	/**
 	 * 
 	 * @param merchantConfig
-	 * @throws ConfigException 
+	 *            - contains information for merchant.
+	 * @param requestData
+	 *            - request payload.
+	 * @throws ConfigException
+	 *             - if some value is missing for merchant..
+	 * @throws IOException
+	 *             - throws exception if some I/O error comes.
+	 * @throws ClientException
+	 *             - throws custom client exception.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm will be not there.
 	 */
-	public Response paymentGet(MerchantConfig merchantConfig) throws ConfigException {
-		return processPayment(merchantConfig);
+	public Response paymentGet(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+		return processPayment(merchantConfig, requestData);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
-	 *            : This object contains all the details present in the
-	 *            cybs.properties.
-	 * @throws ConfigException 
+	 *            - contains information for merchant.
+	 * @param requestData
+	 *            - request payload.
+	 * @throws ConfigException
+	 *             - contains information for merchant.
+	 * @throws IOException
+	 *             - throws exception if some I/O error comes.
+	 * @throws ClientException
+	 *             - throws custom client exception.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm will be not there.
 	 */
-	public Response paymentPost(MerchantConfig merchantConfig) throws ConfigException {
-		return processPayment(merchantConfig);
+	public Response paymentPost(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+		return processPayment(merchantConfig, requestData);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
-	 *            : This object contains all the details present in the
-	 *            cybs.properties.
-	 * @throws ConfigException 
-	 * 
+	 *            - contains information for merchant.
+	 * @param requestData
+	 *            - request payload.
+	 * @throws ConfigException
+	 *             - contains information for merchant.
+	 * @throws IOException
+	 *             - throws exception if some I/O error comes.
+	 * @throws ClientException
+	 *             - throws custom client exception.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm will be not there.
 	 */
-	public Response paymentPut(MerchantConfig merchantConfig) throws ConfigException {
-		return processPayment(merchantConfig);
+	public Response paymentPut(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+		return processPayment(merchantConfig, requestData);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
-	 *            : This object contains all the details present in the
-	 *            cybs.properties.
-	 * @throws ConfigException 
-	 * 
+	 *            - contains information for merchant.
+	 * @param requestData
+	 *            - request payload.
+	 * @throws ConfigException
+	 *             - contains information for merchant.
+	 * @throws IOException
+	 *             - throws exception if some I/O error comes.
+	 * @throws ClientException
+	 *             - throws custom client exception.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm will be not there.
 	 */
-	public Response paymentDelete(MerchantConfig merchantConfig) throws ConfigException {
-		return processPayment(merchantConfig);
+	public Response paymentDelete(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+		return processPayment(merchantConfig, requestData);
+	}
+	
+	/**
+	 * 
+	 * @param merchantConfig
+	 *            - contains information for merchant.
+	 * @param requestData
+	 *            - request payload.
+	 * @throws ConfigException
+	 *             - contains information for merchant.
+	 * @throws IOException
+	 *             - throws exception if some I/O error comes.
+	 * @throws ClientException
+	 *             - throws custom client exception.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm will be not there.
+	 */
+	public Response paymentPatch(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+		return processPayment(merchantConfig, requestData);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
-	 * @throws ConfigException 
+	 *            - contains information for merchant.
+	 * @param requestData
+	 *            - request payload.
+	 * @throws ConfigException
+	 *             - contains information for merchant.
+	 * @throws IOException
+	 *             - throws exception if some I/O error comes.
+	 * @throws ClientException
+	 *             - throws custom client exception.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm will be not there.
 	 */
-	private Response processPayment(MerchantConfig merchantConfig) throws ConfigException {
+	private Response processPayment(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException, IOException, NoSuchAlgorithmException {
+		Response responseObj = null;
 		commonApiControllerCheck(merchantConfig);
-		if (authType) {
-			if (isMerchantDetail) {
-				Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE , authenticationType,
-						Level.INFO);
-				try {
-					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, logger);
-					responseObj =  paymentRequest.processPaymentRequest();
-					Utility.log(logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
-					Utility.log(logger, " ","", Level.OFF);
-					return responseObj;
-				} catch (Exception e) {
-					paymentEndException();
-				}
+		if (isAuthicationTypeValid) {
+			if (isMerchantConfigValid) {
+				Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(), Level.INFO);
+				PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestData, logger);
+				responseObj = paymentRequest.processPaymentRequest();
+				Utility.log(logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+				Utility.log(logger, " ", "", Level.OFF);
+				return responseObj;
 			} else {
-				paymentEndException();
+				Utility.log(logger, GlobalLabelParameters.MERCHANT_VALIDATION_ERROR, "", Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+				Utility.log(logger, " ", "", Level.OFF);
+				throw new ConfigException(GlobalLabelParameters.MERCHANT_VALIDATION_ERROR);
 			}
 		} else {
-			authenticationException();
+			authenticationException(merchantConfig.getAuthenticationType());
 		}
 		return responseObj;
 	}
 
 	/**
-	 * @param merchantConfig
-	 * @throws ConfigException 
 	 * 
+	 * @param merchantConfig
+	 *            - contains information for merchant.
+	 * @throws ConfigException
+	 *             - contains information for merchant.
 	 */
 	public void commonApiControllerCheck(MerchantConfig merchantConfig) throws ConfigException {
 		/* Retrieve authentication type for validating. */
-		authenticationType = merchantConfig.getAuthenticationType().trim();
-		authType = Utility.checkAuthenticationValidation(authenticationType);
-		if (MerchantConfig.isSetMerchantDetails) {
+		
+		String authenticationType = merchantConfig.getAuthenticationType();
+		isAuthicationTypeValid = Utility.checkAuthenticationValidation(authenticationType);
+		if (MerchantConfig.isSetMerchantDetails()) {
 			/* Initializing the logging object. */
 			logger = Log4j.getInstance(merchantConfig);
-			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSCATION,"", Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 			/* Validate Merchant Details. */
-			isMerchantDetail = merchantConfig.validateMerchantDetails(logger);
+			isMerchantConfigValid = MerchantUtil.validateMerchantDetails();
 		} else {
 			logger = Log4j.getInstance(merchantConfig);
 		}
 	}
 
 	/**
-	 * @throws ConfigException 
 	 * 
+	 * @throws ConfigException
+	 *             - contains information for merchant.
 	 */
-	private void authenticationException() throws ConfigException{
-		Utility.log(logger, GlobalLabelParameters.AUTH_ERROR , authenticationType, Level.FATAL);
+	private void authenticationException(String authenticationType) throws ConfigException {
+		Utility.log(logger, GlobalLabelParameters.AUTH_ERROR, authenticationType, Level.FATAL);
 		try {
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
-		} finally{
-		Utility.log(logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+		} finally {
+			Utility.log(logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
 		}
-		
-	}
-
-	/**
-	 * 
-	 */
-	private void paymentEndException() {
-		Utility.log(logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
-		Utility.log(logger, " ","", Level.OFF);
 	}
 }

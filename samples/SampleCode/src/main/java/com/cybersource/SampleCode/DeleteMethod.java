@@ -1,12 +1,16 @@
 package com.cybersource.SampleCode;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
+import com.cybersource.apisdk.service.ClientException;
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 /**
@@ -16,47 +20,45 @@ import com.cybersource.authsdk.util.PropertiesUtil;
 public class DeleteMethod {
 	private ApiController apiController;
 	private String authenticationType;
-	private String response;
-	private String responseCode;
+	private Response response;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private Response responseObj;
-	/* Request Type is always PUT */
 	private String requestType = "DELETE";
 	/* Give the url path to where the data needs to be authenticated. */
 	private String url;
 	/* Request Target. */
 	private String requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
-	/* Request json path */
-	private String requestJsonPath = "src/main/resources/TRRReport.json";
 
-	/* This method initiates or begins the process. */
-	public static void main(String[] args) throws Exception {
-		/**
-		 * 
-		 */
+	/**
+	 * @param args
+	 * This method initiates or begins the process.
+	 * @throws IOException
+	 * @throws ConfigException
+	 */
+	public static void main(String[] args) throws IOException, ConfigException {
 		new DeleteMethod(args);
 	}
 
 	/**
-	 * 
 	 * @param
 	 * @return
+	 * @throws IOException
+	 * @throws ConfigException
 	 * @throws Exception
 	 */
-	public DeleteMethod(String[] args) throws Exception {
+	public DeleteMethod(String[] args) throws IOException, ConfigException {
 		apiController = new ApiController();
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath("not required");
 		merchantConfig.setRequestType(requestType);
-		/* Extract Authentication Type from cybs.properties */
-		authenticationType = merchantConfig.getAuthenticationType().trim();
+		authenticationType = merchantConfig.getAuthenticationType();
 		/*
 		 * Set Json Path, request target, request data into merchant config
 		 * object.
 		 */
-		merchantConfig.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setRequestTarget(requestTarget);
 		/* Construct the URL with respect to PUTID. */
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
@@ -68,27 +70,30 @@ public class DeleteMethod {
 
 	/**
 	 * Calls the APISDK for processing the payment request.
-	 * 
-	 * @throws Exception
 	 */
-	private void process() throws Exception {
+	private void process() {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 
 		try {
 			/* Call payment method of Api Controller class */
-			responseObj = apiController.paymentGet(merchantConfig);
+			response = apiController.paymentDelete(merchantConfig, null);
 			/* Display Response Message from the server. */
-			responseCode=responseObj.getResponseCode();
-			if (!StringUtils.isBlank(responseCode)&& !StringUtils.isBlank(response)) {
+			if (StringUtils.isNotBlank(response.getResponseCode())
+					&& StringUtils.isNotBlank(response.getResponseMessage())) {
 				new DeleteGenerateHeaders(merchantConfig);
 				System.out.println(" URL                : " + url);
-				System.out.println(" Response Code      : " + merchantConfig.getResponseCode());
-				System.out.println(" V-C-Corealation ID : " + merchantConfig.getVcCorelationID());
-				System.out.println(" Response Message   : " + response);
+				System.out.println(" Response Code       : " + response.getResponseCode());
+				System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());
+				System.out.println(" Response Message    : " + response.getResponseMessage());
 			}
+		} catch (ConfigException e) {
+			System.out.println(e.getMessage());
+		} catch (ClientException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			// return;
 		}
 	}
 }

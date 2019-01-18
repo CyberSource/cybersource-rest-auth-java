@@ -7,12 +7,13 @@ import java.util.StringTokenizer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
+import com.cybersource.authsdk.log.Log4j;
+
 public class Utility {
 	private enum validationType {
 		HTTP_SIGNATURE, JWT
 	};
 
-	public static boolean logEnable = false;
 
 	/**
 	 * Checks whether the authentication type is rightly entered with no typo
@@ -47,7 +48,7 @@ public class Utility {
 	 */
 	public static void log(Logger logger, String exceptionMessage, Object obj, Level logLevel) {
 		try {
-			if (logEnable) {
+			if (Log4j.logEnable) {
 				exceptionMessage = exceptionMessage.concat("%s");
 				if (exceptionMessage != null && !exceptionMessage.isEmpty()) {
 					if (logLevel == Level.ERROR) {
@@ -70,6 +71,7 @@ public class Utility {
 			}
 		} catch (Exception e) {
 			log(logger, e);
+			
 		}
 	}
 
@@ -82,7 +84,7 @@ public class Utility {
 	 */
 	public static void log(Logger logger, Exception e) {
 
-		if (Utility.logEnable) {
+		if (Log4j.logEnable) {
 			String logMessage = getStackTrace(e);
 			logger.error(logMessage);
 		}
@@ -131,10 +133,9 @@ public class Utility {
 	 *            :Log4j object
 	 */
 	public static void logResponseCodeMessage(int responseCode, Logger logger) {
-		if (logEnable) {
+		if (Log4j.logEnable) {
 			String tempResponseCode = String.valueOf(responseCode);
 			String tempResponseCodeMessage = "Status Information :: ";
-			String unDefinedResponse = "Un-Indentified";
 			switch (tempResponseCode) {
 			case "200":
 				tempResponseCodeMessage = tempResponseCodeMessage + "Transaction Successful";
@@ -177,6 +178,7 @@ public class Utility {
 				logger.info(tempResponseCodeMessage);
 				break;
 			default:
+				String unDefinedResponse = "Un-Indentified";
 				logger.info(tempResponseCodeMessage + unDefinedResponse);
 			}
 		}

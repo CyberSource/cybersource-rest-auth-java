@@ -1,5 +1,6 @@
 package com.cybersource.SampleCode;
 
+import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,22 +10,23 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.core.Authorization;
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
 /**
  * This class generates the Headers that are present in the token was sent the server for transaction,
  * GET operations.
- *  *
  */
 public class GetGenerateHeaders {
 
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
+	private MerchantUtil merchantUtil;
 	private String authenticationType = null;
-	private Authorization auth;
 	private Logger logger;
 	private String tempSig;
 	/**
@@ -40,21 +42,21 @@ public class GetGenerateHeaders {
 	private String requestType = "GET";
 	/**
 	 * 
-	 * UNQUIE GetID
+	 * UNQUIE id
 	 * [Editable]
 	 */
-	private String getID = "5265502011846829204101";
+	private String id = "5265502011846829204101";
 	/**
 	 * 
-	 * @param getID
-	 *            : Unique getID
-	 * @throws Exception
-	 *             :
+	 * @param id
+	 *            : Unique id
+	 * @throws ConfigException 
+	 * @throws IOException 
 	 */
-	public GetGenerateHeaders(String requestTarget) throws Exception {
+	public GetGenerateHeaders(String requestTarget) throws IOException, ConfigException{
 		setGenerateHeaders();
-		Utility.logEnable = false;
-		this.getID = Utility.retrieveGetIDFromRequestTarget(requestTarget);
+		Log4j.logEnable = false;
+		this.id = Utility.retrieveGetIDFromRequestTarget(requestTarget);
 		generateGetHeaders();
 	}
 	
@@ -62,65 +64,78 @@ public class GetGenerateHeaders {
 	 * 
 	 * @param merchantConfig
 	 *            : this object contains all the cybs.properites details.
-	 * @throws Exception
+	 * @throws ConfigException 
 	 */
-	public GetGenerateHeaders(MerchantConfig merchantConfig) throws Exception {
+	public GetGenerateHeaders(MerchantConfig merchantConfig,String requestData) throws ConfigException{
 		this.merchantConfig = merchantConfig;
-		Utility.logEnable = false;
-		merchantConfig.setGetID(getID);
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath("not required");
+		Log4j.logEnable = false;
+		merchantConfig.setId(id);
 		merchantConfig.setRequestType(requestType);
 		this.logger = Log4j.getInstance(merchantConfig);
-		auth = new Authorization();
 		generateGetHeaders();
 		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
 		Utility.log(this.logger, " ","", Level.OFF);
 
 	}
 
-	public GetGenerateHeaders() throws Exception {
+	/**
+	 * @throws IOException
+	 * @throws ConfigException
+	 */
+	public GetGenerateHeaders() throws IOException, ConfigException{
 		setGenerateHeaders();
 		
-		System.out.println(" Authentication Type : " +  merchantConfig.getAuthenticationType().trim());
+		System.out.println(" Authentication Type : " +  merchantConfig.getAuthenticationType());
+		Log4j.logEnable = false;
 		Utility.log(this.logger,
 				GlobalLabelParameters.BEGIN_TRANSCATION , " Generate GET Headers *******************", Level.INFO);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 		generateGetHeaders();
 		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
 		Utility.log(this.logger, " ","", Level.OFF);
 	}
 
-	private void setGenerateHeaders() throws Exception {
+	/**
+	 * @throws IOException
+	 * @throws ConfigException
+	 */
+	private void setGenerateHeaders() throws IOException, ConfigException{
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		authenticationType = merchantConfig.getAuthenticationType().trim();
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath("not required");
+		authenticationType = merchantConfig.getAuthenticationType();
 		merchantConfig.setRequestType(requestType);
 		this.logger = Log4j.getInstance(merchantConfig);
-		auth = new Authorization();
+		Log4j.logEnable = false;
+		Authorization.getToken(merchantConfig, null);
 	}
 
 	/**
 	 * This method generates the detailed header detail of the transaction and
 	 * displays and log them.
 	 * 
-	 * @throws Exception
+	 * @throws ConfigException
 	 *             : Throws runtime exception.
 	 */
-	private void generateGetHeaders() throws Exception {
+	private void generateGetHeaders() throws ConfigException {
 
-		authenticationType = merchantConfig.getAuthenticationType().trim();
+		authenticationType = merchantConfig.getAuthenticationType();
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE , authenticationType, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : ") , requestType, Level.INFO);
 		Utility.log(logger,
-				GlobalLabelParameters.V_C_MERCHANTID .concat(" : ") , merchantConfig.getMerchantID().trim(), Level.INFO);
+				GlobalLabelParameters.V_C_MERCHANTID .concat(" : ") , merchantConfig.getMerchantID(), Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.DATE .concat(" : ") , date, Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.GET + "_ID" .concat(" : ") ,  this.getID, Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.GET + "_ID" .concat(" : ") ,  this.id, Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.HOST .concat(" : ") , merchantConfig.getRequestHost(),
 				Level.INFO);
 		
 		System.out.println(" Request Type        : " + requestType);
-		System.out.println(" ID                  : " + this.getID);
+		System.out.println(" ID                  : " + this.id);
 		System.out.println(" Date                : " + date);
-		System.out.println(" MerchantID          : " + merchantConfig.getMerchantID().trim());
+		System.out.println(" MerchantID          : " + merchantConfig.getMerchantID());
 		System.out.println(" HOST                : " + merchantConfig.getRequestHost());
 		
 		
@@ -131,15 +146,12 @@ public class GetGenerateHeaders {
 			Utility.log(logger,
 					GlobalLabelParameters.USERAGENT .concat(" : ") , GlobalLabelParameters.USER_AGENT_VALUE, Level.INFO);
 			/* Signature Header */
-			tempSig = auth.getToken(merchantConfig);
+			tempSig = Authorization.getToken(merchantConfig,merchantUtil.getRequestData());
 			System.out.println(" Signature           : " + tempSig.toString());
 			
 		} else {
 			/* JWT */
-			String jwtRequestBody = getID;
-			auth.setJWTRequestBody(jwtRequestBody);
-			auth.setLogger(this.logger);
-			tempSig = auth.getToken(merchantConfig);
+			tempSig = Authorization.getToken(merchantConfig,merchantUtil.getRequestData());
 			System.out.println(" Authorization, Bearer " + tempSig.toString());
 		}
 		System.out.println(
@@ -151,10 +163,11 @@ public class GetGenerateHeaders {
 	/**
 	 * 
 	 * @param args
-	 *            : Contains getId entry.
-	 * @throws Exception
+	 *            : Contains id entry.
+	 * @throws ConfigException 
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException, ConfigException {
 		new GetGenerateHeaders();
 	}
 }

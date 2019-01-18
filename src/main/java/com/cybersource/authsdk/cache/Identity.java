@@ -7,15 +7,14 @@ import java.security.interfaces.RSAPrivateKey;
 public class Identity {
 	private X509Certificate x509;
 	private RSAPrivateKey rsaPrivateKey;
-	private long lastModifiedDate;
+	private long lastModifiedTime;
 	
-	
-	public long getLastModifiedDate() {
-		return lastModifiedDate;
+	public long getLastModifiedTime() {
+		return lastModifiedTime;
 	}
 
-	public void setLastModifiedDate(long lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
+	public void setLastModifiedTime(long lastModifiedTime) {
+		this.lastModifiedTime = lastModifiedTime;
 	}
 	
 	public RSAPrivateKey getRsaPrivateKey() {

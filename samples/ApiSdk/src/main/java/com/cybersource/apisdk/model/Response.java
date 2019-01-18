@@ -4,14 +4,14 @@ public class Response {
 
 	public String responseMessage;
 	public String responseCode;
-	public String VcCorelationId;
+	public String vcCorelationId;
 
 	public String getVcCorelationId() {
-		return VcCorelationId;
+		return vcCorelationId;
 	}
 
 	public void setVcCorelationId(String resVcCorelationId) {
-		this.VcCorelationId = resVcCorelationId;
+		this.vcCorelationId = resVcCorelationId;
 	}
 
 	public String getResponseMessage() {

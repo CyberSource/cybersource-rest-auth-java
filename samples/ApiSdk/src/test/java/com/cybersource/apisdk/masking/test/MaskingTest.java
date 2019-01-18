@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.log.Log4j;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 import junit.framework.Assert;
@@ -19,6 +20,8 @@ public class MaskingTest {
 	
 	@Mock
 	MerchantConfig merchantConfig;
+	@Mock
+	MerchantUtil merchantUtil;
 
 	private String requestJsonPath = "src/test/resources/request.json";
 	private Properties merchantProp;
@@ -32,7 +35,8 @@ public class MaskingTest {
 	public void prepareMaskingTestFail() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		MerchantConfig merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 		
 		logger = Log4j.getInstance(merchantConfig);

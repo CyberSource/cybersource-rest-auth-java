@@ -1,12 +1,16 @@
 package com.cybersource.SampleCode;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
+import com.cybersource.apisdk.service.ClientException;
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 /**
@@ -19,7 +23,9 @@ public class PostMethod {
 	private String authenticationType;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
+	private MerchantUtil merchantUtil;
 	private Response responseObj;
+	private String requestData;
 	/**
 	 * REQUEST TARGET [Editable]
 	 */
@@ -34,31 +40,34 @@ public class PostMethod {
 	private String requestType = "POST";
 	private String url;
 
-	/* This method initiates or begins the process. */
-	public static void main(String[] args) throws Exception {
-		/**
-		 * 
-		 */
+	/**
+	 *  This method initiates or begins the process. 
+	 * @param args
+	 * @throws ConfigException 
+	 * @throws IOException 
+	 */
+	public static void main(String[] args) throws IOException, ConfigException {
 		new PostMethod();
 	}
 
 	/**
-	 * 
-	 * @param
-	 * @return
-	 * @throws Exception
+	 * @throws IOException
+	 * @throws ConfigException
 	 */
-	public PostMethod() throws Exception {
+	public PostMethod() throws IOException, ConfigException{
 		apiController = new ApiController();
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil=new MerchantUtil(merchantConfig);
 		/* Extract Authentication Type from cybs.properties */
-		authenticationType = merchantConfig.getAuthenticationType().trim();
+		authenticationType = merchantConfig.getAuthenticationType();
 		/* Set request Type. */
 		merchantConfig.setRequestType(requestType);
 		/* Set request data */
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		
+		merchantUtil.setRequestJsonPath(requestJsonPath);
+		requestData=merchantUtil.getRequestData();
 		/* Set request target */
 		merchantConfig.setRequestTarget(requestTarget);
 		/* Set URL path w.r.t Post operation. */
@@ -70,25 +79,28 @@ public class PostMethod {
 
 	/**
 	 * Calls the APISDK for processing the payment request.
-	 * 
-	 * @throws Exception
 	 */
-	private void process() throws Exception {
+	private void process(){
 		System.out.println(authenticationType.toUpperCase() + " Request");
 		try {
 			/* Call payment method of Api Controller class */
-			responseObj = apiController.paymentPost(merchantConfig);
+			responseObj = apiController.paymentPost(merchantConfig,requestData);
 			/* Display Response Message from the server and Headers. */
-			if (!StringUtils.isBlank(responseObj.getResponseCode())&& !StringUtils.isBlank(responseObj.getResponseMessage())) {
-				new PostGenerateHeaders(merchantConfig);
+			if (StringUtils.isNotBlank(responseObj.getResponseCode())&& StringUtils.isNotBlank(responseObj.getResponseMessage())) {
+				new PostGenerateHeaders(merchantConfig,requestData);
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + responseObj.getResponseCode());
 				System.out.println(" v-c-Co-relation ID  : " + responseObj.getVcCorelationId());
 				System.out.println(" Response Message    : " + responseObj.getResponseMessage());
 			}
+		} catch (ConfigException e) {
+			System.out.println(e.getMessage());
+		} catch (ClientException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			// return;
 		}
 	}
 }

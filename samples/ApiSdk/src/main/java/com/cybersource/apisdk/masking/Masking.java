@@ -19,8 +19,10 @@ public class Masking {
 
 	/**
 	 * @param json
+	 *            - data to mask.
 	 * @param logger
-	 * @return
+	 *            - logger to log all information in log file.
+	 * @return masked data.
 	 */
 	public static String prepareMasking(String json, Logger logger) {
 		/* Add the fields need to be masked in this list */
@@ -28,7 +30,6 @@ public class Masking {
 				"nameOnAccount", "currency" };
 		try {
 			JsonElement object = new JsonParser().parse(json);
-			// object.get
 			getChild(object, list);
 			return object.toString();
 		} catch (JsonSyntaxException e) {
@@ -39,27 +40,28 @@ public class Masking {
 	/**
 	 * 
 	 * @param json
+	 *            - data to mask.
 	 * @param list
+	 *            - list of values to mask.
 	 */
 	private static void getChild(JsonElement json, String[] list) {
-
 		if (json.isJsonObject()) {
 			JsonObject obj = (JsonObject) json;
 			mask(obj, list);
 			for (Entry<String, JsonElement> entry : obj.entrySet()) {
 				getChild(entry.getValue(), list);
 			}
-
 		}
-
 	}
 
 	/**
-	 * @param obj
+	 * 
+	 * @param json
+	 *            - data to mask.
 	 * @param list
+	 *            - list of values to mask.
 	 */
 	private static void mask(JsonObject obj, String[] list) {
-
 		for (String current : list) {
 			/* masking field. */
 			if (obj.has(current)) {
@@ -67,5 +69,4 @@ public class Masking {
 			}
 		}
 	}
-
 }

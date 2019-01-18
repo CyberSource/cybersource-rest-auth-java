@@ -1,54 +1,64 @@
 package com.cybersource.apisdk.service;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.apisdk.connection.HttpConnection;
-import com.cybersource.apisdk.connection.JwtConnection;
+import com.cybersource.apisdk.connection.HttpAuthenticationStrategy;
+import com.cybersource.apisdk.connection.JWTAuthenticationStrategy;
 import com.cybersource.apisdk.model.Response;
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 /**
  * Here the call is made to respective connection class (HTTPConnection or
  * JWTConnection) depending on the Authentication type.
- * 
- * 
- *
  */
 public class PaymentRequestService {
 
-	private String authenticatonType = null;
 	private MerchantConfig merchantConfig;
+	private String requestData;
 	private Logger logger;
 
-	
 	/**
 	 * 
 	 * @param merchantConfig
+	 *            - contains information for merchant.
+	 * @param requestData
+	 *            - request payload.
 	 * @param logger
+	 *            - logger to log all information in log file.
 	 */
-	public PaymentRequestService(MerchantConfig merchantConfig, Logger logger) {
+	public PaymentRequestService(MerchantConfig merchantConfig, String requestData, Logger logger) {
 
-		authenticatonType = merchantConfig.getAuthenticationType().trim();
 		this.merchantConfig = merchantConfig;
+		this.requestData = requestData;
 		this.logger = logger;
 	}
 
 	/**
-	 * @throws IOException 
+	 * 
+	 * @throws ConfigException
+	 *             - contains information for merchant.
+	 * @throws IOException
+	 *             - throws exception if some I/O error comes.
+	 * @throws ClientException
+	 *             - throws custom client exception.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm will be not there.
 	 */
-	public Response processPaymentRequest() throws IOException {
-
-		if (authenticatonType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			HttpConnection connection = new HttpConnection(merchantConfig, logger);
-			return connection.httpConnection();
-		} else if (authenticatonType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			JwtConnection jwtConnection=new JwtConnection(merchantConfig, logger);
-			return jwtConnection.getJwtConnection();
-		}
-		return null;
-		
+	public Response processPaymentRequest()	throws ConfigException, ClientException, IOException {
+       String authenticatonType = merchantConfig.getAuthenticationType();
+       if (authenticatonType != null && authenticatonType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+   			 HttpAuthenticationStrategy connection = new HttpAuthenticationStrategy(merchantConfig, requestData, logger);
+   			 return connection.getHttpConnection();
+   		} else if (authenticatonType != null && authenticatonType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+   			 JWTAuthenticationStrategy jwtConnection = new JWTAuthenticationStrategy(merchantConfig, requestData,logger);
+   			 return jwtConnection.getJwtConnection();
+   		} else {
+   			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
+   		}
 	}
 }

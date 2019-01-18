@@ -19,6 +19,7 @@ import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.KeyCertificateGenerator;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class KeyCertificateGeneratorTest {
@@ -32,6 +33,9 @@ public class KeyCertificateGeneratorTest {
 
 	@Mock
 	MerchantConfig merchantConfig;
+	
+	@Mock
+	MerchantUtil merchantUtil;
 
 	private Properties merchantProp;
 
@@ -45,16 +49,18 @@ public class KeyCertificateGeneratorTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 
-		keyCertificateGenerator = new KeyCertificateGenerator();
-		X509Certificate certificate = keyCertificateGenerator.initializeCertificate(merchantConfig);
+		X509Certificate certificate =null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(certificate);
 		} else {
+			MerchantUtil.checkKeyFile();
+			certificate = KeyCertificateGenerator.initializeCertificate(merchantConfig);
 			Assert.assertNotNull(certificate);
 		}
 
@@ -67,16 +73,18 @@ public class KeyCertificateGeneratorTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 
-		keyCertificateGenerator = new KeyCertificateGenerator();
-		RSAPrivateKey privateKey = keyCertificateGenerator.initializePrivateKey(merchantConfig);
+		RSAPrivateKey privateKey = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(privateKey);
 		} else {
+			MerchantUtil.checkKeyFile();
+			privateKey = KeyCertificateGenerator.initializePrivateKey(merchantConfig);
 			Assert.assertNotNull(privateKey);
 		}
 
@@ -90,19 +98,21 @@ public class KeyCertificateGeneratorTest {
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("POST");
 		merchantConfig.setRecipientID("test");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
+		
 		
 		keyCertificateGenerator = new KeyCertificateGenerator();
-		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			thrown.expect(ConfigException.class);
-			X509Certificate certificate = keyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
+			KeyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
 			thrown.expectMessage("merchant config fields missing: recipientId, key file");
 		} else {
-			X509Certificate certificate = keyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
+			MerchantUtil.checkKeyFile();
+			X509Certificate certificate= KeyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
 			Assert.assertNotNull(certificate);
 		}
 	}
@@ -118,7 +128,7 @@ public class KeyCertificateGeneratorTest {
 		thrown.expectMessage("merchant config fields missing: recipientId, key file");
 
 		keyCertificateGenerator = new KeyCertificateGenerator();
-		X509Certificate certificate = keyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
+		KeyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
 
 	}
 

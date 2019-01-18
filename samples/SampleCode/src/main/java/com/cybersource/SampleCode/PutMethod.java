@@ -1,5 +1,6 @@
 package com.cybersource.SampleCode;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -7,7 +8,10 @@ import org.apache.commons.lang.StringUtils;
 import com.cybersource.Data.PayloadData;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
+import com.cybersource.apisdk.service.ClientException;
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 /**
@@ -20,6 +24,7 @@ public class PutMethod {
 	private Response response;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
+	private MerchantUtil merchantUtil;
 	/**
 	 * REQUEST-TARGET [Editable]
 	 */
@@ -35,12 +40,13 @@ public class PutMethod {
 	private String url;
 	/* Request Data. */
 	private String requestData = PayloadData.readData();
-
-	/* This method initiates or begins the process. */
-	public static void main(String[] args) throws Exception {
-		/**
-		 * 
-		 */
+	/**
+	 * This method initiates or begins the process.
+	 * @param args
+	 * @throws IOException
+	 * @throws ConfigException
+	 */
+	public static void main(String[] args) throws IOException, ConfigException{
 		new PutMethod(args);
 	}
 
@@ -48,24 +54,26 @@ public class PutMethod {
 	 * 
 	 * @param
 	 * @return
-	 * @throws Exception
+	 * @throws IOException 
+	 * @throws ConfigException 
 	 */
-	public PutMethod(String[] args) throws Exception {
+	public PutMethod(String[] args) throws IOException, ConfigException{
 		apiController = new ApiController();
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil = new MerchantUtil(merchantConfig);
+
 		merchantConfig.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
-		authenticationType = merchantConfig.getAuthenticationType().trim();
+		authenticationType = merchantConfig.getAuthenticationType();
 		/*
 		 * Set Json Path, request target, request data into merchant config
 		 * object.
 		 */
-
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setRequestTarget(requestTarget);
-		merchantConfig.setRequestData(requestData);
-		// merchantConfig.validateMerchantDetails(logger)
+		requestData=merchantUtil.getRequestData();
+		merchantUtil.setRequestData(requestData);
 		/* Construct the URL with respect to PUTID. */
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		/* Set the URL. */
@@ -76,27 +84,29 @@ public class PutMethod {
 
 	/**
 	 * Calls the APISDK for processing the payment request.
-	 * 
-	 * @throws Exception
 	 */
-	private void process() throws Exception {
+	private void process() {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 		try {
 			/* Call payment method of Api Controller class */
-			response = apiController.paymentPut(merchantConfig);
+			response = apiController.paymentPut(merchantConfig, requestData);
 
 			if (!StringUtils.isBlank(response.getResponseCode())
 					&& !StringUtils.isBlank(response.getResponseMessage())) {
-				new PutGenerateHeaders(merchantConfig);
+				new PutGenerateHeaders(merchantConfig, requestData);
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + response.getResponseCode());
 				System.out.println(" v-c-Co-relation ID  : " + response.getVcCorelationId());
 				System.out.println(" Response Message    : " + response.getResponseMessage());
 			}
+		} catch (ConfigException e) {
+			System.out.println(e.getMessage());
+		} catch (ClientException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			// return;
 		}
-
 	}
 }

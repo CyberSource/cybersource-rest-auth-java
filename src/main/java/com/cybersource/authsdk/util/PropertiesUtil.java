@@ -1,5 +1,6 @@
 package com.cybersource.authsdk.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,14 +10,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
-/**
- * 
- *
- *
- */
 public final class PropertiesUtil {
 	public static String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
-	private static String cybsPath;
+	
 
 	private PropertiesUtil() {
 
@@ -59,11 +55,11 @@ public final class PropertiesUtil {
 	 *             - if some IO operation failed.
 	 */
 	public static Properties getMerchantProperties() throws IOException {
-		cybsPath = "src/main/resources/cybs.properties";
-		InputStream merchantInput = getPropertyFile(cybsPath);
+		ClassLoader classLoader = PropertiesUtil.class.getClassLoader();
+		File file = new File(classLoader.getResource("cybs.properties").getFile());
+		InputStream merchantInput = getPropertyFile(file.getAbsolutePath());
 		Properties merchantProperties = new Properties();
 		merchantProperties.load(merchantInput);
 		return merchantProperties;
 	}
-
 }

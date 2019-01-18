@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
@@ -15,21 +16,19 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.Utility;
 
 /**
  * Creation of logging object, using singleton design.
  *
  */
 public class Log4j {
-	private String standardSize;
 	private String filePath = null;
 	private static volatile Logger logger = null;
 	private String logDirectory;
 	private String logFileName;
 	private String logSize;
-	public static boolean logName = false;
-
+	public static boolean logEnable = false;
+	
 	/**
 	 * @param merchantConfig
 	 *            - contains all information for merchant.
@@ -38,10 +37,10 @@ public class Log4j {
 		logDirectory = merchantConfig.getLogDirectory();
 		logFileName = merchantConfig.getLogFilename();
 		logSize = merchantConfig.getLogMaximumSize();
-		checkLogMaxSizeAndFolder();
+		validateLogMaxSizeAndFolder();
 
 		filePath = logDirectory + "/" + logFileName + GlobalLabelParameters.LOG_EXTENSION;
-		standardSize = merchantConfig.getLogMaximumSize();
+
 	}
 
 	/**
@@ -53,7 +52,7 @@ public class Log4j {
 	public static Logger getInstance(MerchantConfig merchantConfig) {
 
 		if (logger == null) {
-			Utility.logEnable = merchantConfig.getEnableLog();
+			logEnable = merchantConfig.getEnableLog();
 			// To provide thread-safe implementation.
 			synchronized (Log4j.class) {
 				if (merchantConfig.getEnableLog()) {
@@ -81,8 +80,7 @@ public class Log4j {
 	 * @param vlevel
 	 *            - level for log file.
 	 */
-	public void addAppenderLogger(String filePath, Level vlevel) {
-
+	private LoggerContext addAppenderLogger(String filePath, Level vlevel) {
 		ConfigurationBuilder<BuiltConfiguration> builder;
 		LayoutComponentBuilder layoutBuilder;
 		AppenderComponentBuilder appenderBuilder;
@@ -98,7 +96,7 @@ public class Log4j {
 
 		/* Create rolling File Appender. */
 		ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
-				.addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", standardSize));
+				.addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", logSize));
 		appenderBuilder = builder.newAppender("rolling", "RollingFile").addAttribute("fileName", filePath)
 				.addAttribute("filePattern",
 						this.logDirectory + "/ " + this.logFileName + "_%d{yyyyMMddhhmmss}"
@@ -109,10 +107,10 @@ public class Log4j {
 		/* Create the new logger. */
 		builder.add(
 				builder.newRootLogger(vlevel).add(builder.newAppenderRef("rolling")).addAttribute("additivity", false));
-		Configurator.initialize(builder.build());
+		return Configurator.initialize(builder.build());
 	}
 
-	private void checkLogMaxSizeAndFolder() {
+	private void validateLogMaxSizeAndFolder() {
 		File dir;
 		try {
 			if (this.logDirectory == null || this.logDirectory.isEmpty()) {

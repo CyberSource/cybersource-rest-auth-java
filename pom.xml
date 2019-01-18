@@ -181,7 +181,7 @@
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.language>java</sonar.language>
 		<sonar.exclusions>
-			**/GlobalLabelParameters.java,**/MerchantConfigConstants.java,**/Utility.java</sonar.exclusions>
+			**/GlobalLabelParameters.java,**/MerchantConfig.java,**/Utility.java</sonar.exclusions>
 	</properties>
 
 	<profiles>

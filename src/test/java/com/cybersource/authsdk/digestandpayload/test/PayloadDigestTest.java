@@ -1,13 +1,19 @@
 package com.cybersource.authsdk.digestandpayload.test;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 import junit.framework.Assert;
@@ -18,76 +24,67 @@ public class PayloadDigestTest {
 	PayloadDigest payloadDigest;
 	@Mock
 	MerchantConfig merchantConfig;
+	
+	@Mock
+	MerchantUtil merchantUtil;
+	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	private Properties merchantProp;
-
-	private String requestJsonPath = "src/test/resources/request.json";
+    private String requestJsonPath = "src/test/resources/request.json";
 
 	@Test
-	public void testDigestGeneration() throws Exception {
+	public void digestGenerationTest() throws ConfigException, IOException, NoSuchAlgorithmException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		payloadDigest = new PayloadDigest(merchantConfig);
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
+		payloadDigest = new PayloadDigest(merchantConfig,merchantUtil.getRequestData());
 		String str = payloadDigest.getDigest();
 		Assert.assertNotNull(str);
 	}
 
 	@Test
-	public void testPayloadGeneration() throws Exception {
+	public void payloadGenerationTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-		payloadDigest = new PayloadDigest(merchantConfig);
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
+		payloadDigest = new PayloadDigest(merchantConfig,merchantUtil.getRequestData());
 		String str = payloadDigest.getPayLoad();
 		Assert.assertNotNull(str);
 	}
 
 	@Test
-	public void testPayloadGenerationJsonPathNull() throws Exception {
+	public void payloadGenerationJsonPathNullTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 
-		merchantConfig.setRequestJsonPath(null);
-		payloadDigest = new PayloadDigest(merchantConfig);
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(null);
+		
+		thrown.expect(ConfigException.class);
+		thrown.expectMessage(GlobalLabelParameters.FILE_NOT_FOUND);
+		
+		payloadDigest = new PayloadDigest(merchantConfig,merchantUtil.getRequestData());
+		payloadDigest.getPayLoad();
+		
+	}
+
+	@Test
+	public void payloadGenerationJsonPathEmptyTest() throws ConfigException, IOException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantConfig = new MerchantConfig(merchantProp);
+
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath("");
+		payloadDigest = new PayloadDigest(merchantConfig,merchantUtil.getRequestData());
 		String str = payloadDigest.getPayLoad();
 		Assert.assertNull(str);
 	}
 
-	@Test
-	public void testPayloadGenerationJsonPathEmpty() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setRequestJsonPath("");
-		payloadDigest = new PayloadDigest(merchantConfig);
-		String str = payloadDigest.getPayLoad();
-		Assert.assertNull(str);
-	}
-
-	@Test
-	public void testPayloadGenerationFail() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setRequestJsonPath("");
-		GlobalLabelParameters.SHA_256 = "sh";
-		payloadDigest = new PayloadDigest(merchantConfig);
-		String str = payloadDigest.getDigest();
-		Assert.assertNull(str);
-	}
-
-	@Test
-	public void getMessageBodyTest() throws Exception {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestJsonPath(requestJsonPath);
-
-		payloadDigest = new PayloadDigest(merchantConfig);
-		String str = payloadDigest.getMessageBody();
-		Assert.assertNull(str);
-	}
 
 }

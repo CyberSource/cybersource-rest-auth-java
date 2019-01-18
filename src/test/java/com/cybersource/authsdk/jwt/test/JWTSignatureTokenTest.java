@@ -4,22 +4,31 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
 import com.cybersource.authsdk.cache.Cache;
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.jwt.JwtSignatureToken;
+import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class JWTSignatureTokenTest {
 
 	@Mock
-	JwtSignatureToken jwtSignatureToken;
+	JwtSignatureTokenGenerator jwtSignatureToken;
 	@Mock
 	MerchantConfig merchantConfig;
+	@Mock
+	MerchantUtil merchantUtil;
+	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	private String requestJsonPath = "src/test/resources/request.json";
 	private String testJsonPath = "src/test/resources/test.json";
@@ -33,18 +42,19 @@ public class JWTSignatureTokenTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setRequestType("GET");
 		
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig,null);
 
-		String token = jwtSignatureToken.getToken();
-		
+		String token =null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token);
 		} else {
+			token = jwtSignatureToken.getToken();
 			Assert.assertNotNull(token);
 		}
 
@@ -54,20 +64,22 @@ public class JWTSignatureTokenTest {
 	public void getTokenTestForPost() throws Exception {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = new MerchantConfig(merchantProp);		
+		merchantUtil=new MerchantUtil(merchantConfig);
 		
 		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
 
-		String token = jwtSignatureToken.getToken();
+		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token);
 		} else {
+			token = jwtSignatureToken.getToken();
 			Assert.assertNotNull(token);
 		}
 
@@ -78,18 +90,21 @@ public class JWTSignatureTokenTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil=new MerchantUtil(merchantConfig);
+
 		merchantConfig.setRequestType("PUT");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
 
-		String token = jwtSignatureToken.getToken();
+		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token);
 		} else {
+			token = jwtSignatureToken.getToken();
 			Assert.assertNotNull(token);
 		}
 
@@ -100,17 +115,19 @@ public class JWTSignatureTokenTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setRequestType("DELETE");
 		
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, null);
 
-		String token = jwtSignatureToken.getToken();
+		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token);
 		} else {
+			token = jwtSignatureToken.getToken();
 			Assert.assertNotNull(token);
 		}
 
@@ -122,17 +139,20 @@ public class JWTSignatureTokenTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("PUT");
-		merchantConfig.setRequestJsonPath(testJsonPath);
+
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(testJsonPath);
 		
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
 
-		String token = jwtSignatureToken.getToken();
+		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token);
 		} else {
+			token = jwtSignatureToken.getToken();
 			Assert.assertNotNull(token);
 		}
 
@@ -143,17 +163,19 @@ public class JWTSignatureTokenTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setAuthenticationType("abc");
-
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
-
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
-
-		String token = jwtSignatureToken.getToken();
-		Assert.assertNull(token);
+		
+		thrown.expect(ConfigException.class);
+		thrown.expectMessage(GlobalLabelParameters.AUTH_ERROR);
+		
+		MerchantUtil.validateMerchantDetails();
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
+        jwtSignatureToken.getToken();
 
 	}
 
@@ -163,18 +185,22 @@ public class JWTSignatureTokenTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
-		jwtSignatureToken.generateSignature();
-		Cache.lastModifiedTime = 1528;
-		String token1 = jwtSignatureToken.generateSignature();
+		String token1 =null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token1);
 		} else {
+			jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
+			jwtSignatureToken.generateSignature();
+			Cache cache=new Cache(merchantConfig);
+			cache.lastModifiedTime = 1528;
+			token1 = jwtSignatureToken.generateSignature();
 			Assert.assertNotNull(token1);
 		}
 

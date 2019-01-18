@@ -1,5 +1,6 @@
 package com.cybersource.authsdk.http.test;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
@@ -7,18 +8,22 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.http.HttpSignatureToken;
+import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class HttpSignatureTokenTest {
 
 	@Mock
-	HttpSignatureToken signatureToken;
+	HttpSignatureTokenGenerator signatureToken;
 	@Mock
 	MerchantConfig merchantConfig;
+	@Mock
+	MerchantUtil merchantUtil;
 	@Mock
 	Logger logger;
 	
@@ -27,16 +32,20 @@ public class HttpSignatureTokenTest {
 	private String requestJsonPath = "src/test/resources/request.json";
 
 	@Test
-	public void getTokenTestForGet() throws Exception {
+	public void getTokenTestForGet() throws ConfigException, IOException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantConfig.setRequestType("GET");
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.getRequestData();
+		merchantConfig.setMerchantDetails();
 		
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 		
-		signatureToken = new HttpSignatureToken(merchantConfig);
+		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,null);
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
@@ -48,18 +57,19 @@ public class HttpSignatureTokenTest {
 	}
 
 	@Test
-	public void getTokenTestForPost() throws Exception {
+	public void getTokenTestForPost() throws ConfigException, IOException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setRequestType("POST");
 		
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
+		MerchantUtil.validateMerchantDetails();
 
-		signatureToken = new HttpSignatureToken(merchantConfig);
+		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData());
 
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -71,16 +81,18 @@ public class HttpSignatureTokenTest {
 	}
 
 	@Test
-	public void getTokenTestForPut() throws Exception {
+	public void getTokenTestForPut() throws ConfigException, IOException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setRequestType("PUT");
 		
-		signatureToken = new HttpSignatureToken(merchantConfig);
+		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData());
 
-		String str = null;
+		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
 		} else {
@@ -90,14 +102,16 @@ public class HttpSignatureTokenTest {
 	}
 
 	@Test
-	public void getTokenTestForDelete() throws Exception {
+	public void getTokenTestForDelete() throws ConfigException, IOException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		
+		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setRequestType("DELETE");
 		
-		signatureToken = new HttpSignatureToken(merchantConfig);
+		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData());
 
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {

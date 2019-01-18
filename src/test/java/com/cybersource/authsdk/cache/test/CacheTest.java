@@ -13,12 +13,15 @@ import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.cache.Identity;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.log.Log4j;
+import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 import junit.framework.Assert;
 
 public class CacheTest {
-
+    
+	
 	private Properties merchantProp;
 	private String requestJsonPath = "src/test/resources/request.json";
 	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
@@ -31,63 +34,74 @@ public class CacheTest {
 
 	@Mock
 	Cache cache;
+	
 	@Mock
 	MerchantConfig merchantConfig;
+	
+	@Mock
+	MerchantUtil merchantUtil;
 
 	@Test
 	public void setP12FileDetailsInCacheEmptyTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
-		merchantConfig.checkKeyFile();
-
-		cache = new Cache(merchantConfig);
-		cache.setP12FileDetailsInCache();
+		MerchantUtil.validateMerchantDetails();
+		
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+			MerchantUtil.checkKeyFile();
+			cache = new Cache(merchantConfig);
+			cache.setP12FileDetailsInCache();
+		}
 		Assert.assertNotNull(cacheP12);
-
 	}
 
 	@Test
 	public void setP12FileDetailsInCacheNotEmptyTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
 
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
-		merchantConfig.checkKeyFile();
-
-		cache = new Cache(merchantConfig);
-		cache.setUpP12Cache();
-		cache.setP12FileDetailsInCache();
+		MerchantUtil.validateMerchantDetails();
+		
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+			MerchantUtil.checkKeyFile();
+			cache = new Cache(merchantConfig);
+			cache.setUpP12Cache();
+			cache.setP12FileDetailsInCache();
+		}
 		Assert.assertNotNull(cacheP12);
-
 	}
 
 	@Test
 	public void setP12FileDetailsInCacheTimeStampTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestJsonPath(requestJsonPath);
+		
 
 		logger = Log4j.getInstance(merchantConfig);
-		merchantConfig.validateMerchantDetails(logger);
-		merchantConfig.checkKeyFile();
-
-		cache = new Cache(merchantConfig);
-		cache.setUpP12Cache();
-		Cache.lastModifiedTime = 1528;
-		cache.setP12FileDetailsInCache();
+		MerchantUtil.validateMerchantDetails();
+		
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+			MerchantUtil.checkKeyFile();
+			cache = new Cache(merchantConfig);
+			cache.setUpP12Cache();
+			cache.lastModifiedTime = 1528;
+			cache.setP12FileDetailsInCache();
+		}
 		Assert.assertNotNull(cacheP12);
-
 	}
-
+	
 	@Test
 	public void getLastModifiedFileP12Test() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
@@ -99,5 +113,4 @@ public class CacheTest {
 		cache = new Cache(merchantConfig);
 		cache.getLastModifiedFileP12();
 	}
-
 }
