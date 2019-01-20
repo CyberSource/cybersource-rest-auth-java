@@ -18,7 +18,8 @@ jdk:
   - oraclejdk8
   - oraclejdk9
 os :
-  # - linux
+  - linux
+  - osx
 # before_install:
   # ensure gradlew has proper permission
   # - chmod a+x ./gradlew
