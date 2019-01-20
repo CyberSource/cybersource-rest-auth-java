@@ -20,6 +20,7 @@ jdk:
 os :
   - linux
   - osx
+osx_image: xcode9.3
 # before_install:
   # ensure gradlew has proper permission
   # - chmod a+x ./gradlew
