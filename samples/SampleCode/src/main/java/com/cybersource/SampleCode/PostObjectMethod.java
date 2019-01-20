@@ -5,7 +5,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cybersource.Data.Configuration;
 import com.cybersource.Data.PayloadData;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
@@ -13,6 +12,7 @@ import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.MerchantUtil;
+import com.cybersource.authsdk.util.PropertiesUtil;
 
 /**
  * Depending on the authentication type HTTP or JWT , this class performs the
@@ -42,8 +42,9 @@ public class PostObjectMethod {
 	 * This method initiates or begins the process. *
 	 * @param args
 	 * @throws ConfigException
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws ConfigException{
+	public static void main(String[] args) throws ConfigException, IOException{
 		new PostObjectMethod();
 	}
 
@@ -52,12 +53,13 @@ public class PostObjectMethod {
 	 * @param
 	 * @return
 	 * @throws ConfigException 
+	 * @throws IOException 
 	 * @throws Exception
 	 */
-	public PostObjectMethod() throws ConfigException{
+	public PostObjectMethod() throws ConfigException, IOException{
 		apiController = new ApiController();
 		/* Read Merchant details. */
-		merchantProp = Configuration.getMerchantDetails();
+		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		

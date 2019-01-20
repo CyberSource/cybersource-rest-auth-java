@@ -1,16 +1,17 @@
 package com.cybersource.SampleCode;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cybersource.Data.Configuration;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.MerchantUtil;
+import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class GetObjectMethod {
 	private ApiController apiController;
@@ -28,17 +29,18 @@ public class GetObjectMethod {
 	private String url;
 
 	/* This method initiates or begins the process. */
-	public static void main(String[] args) throws ConfigException {
+	public static void main(String[] args) throws ConfigException, IOException {
 		new GetObjectMethod();
 	}
 
 	/**
 	 * @throws ConfigException 
+	 * @throws IOException 
 	 */
-	public GetObjectMethod() throws ConfigException{
+	public GetObjectMethod() throws ConfigException, IOException {
 		apiController = new ApiController();
 		/* Read Merchant details. */
-		merchantProp = Configuration.getMerchantDetails();
+		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		MerchantUtil merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");

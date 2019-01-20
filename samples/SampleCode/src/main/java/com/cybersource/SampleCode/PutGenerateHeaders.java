@@ -89,8 +89,7 @@ public class PutGenerateHeaders {
 		Utility.log(logger, GlobalLabelParameters.DATE .concat(" : "), date, Level.INFO);
 		Utility.log(logger,
 				GlobalLabelParameters.V_C_MERCHANTID .concat(" : "), merchantConfig.getMerchantID(), Level.INFO);
-		Utility.log(logger,
-				GlobalLabelParameters.CONTENT_TYPE.concat(":") , GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
+		Utility.log(logger,	GlobalLabelParameters.CONTENT_TYPE.concat(":") , GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.HOST .concat(" : "), merchantConfig.getRequestHost(),
 				Level.INFO);
 		
@@ -100,7 +99,7 @@ public class PutGenerateHeaders {
 		System.out.println(" Request Type        : " + requestType);
 		System.out.println(" HOST                : " + merchantConfig.getRequestHost());
 		System.out.println(
-				" " + GlobalLabelParameters.CONTENT_TYPE + "           : " + GlobalLabelParameters.APPLICATION_JSON);
+				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
 		
 		
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
