@@ -64,7 +64,7 @@ public class PatchMethod {
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Set request Type. */
-		merchantConfig.setRequestType(requestType);
+		merchantUtil.setRequestType(requestType);
 		/* Set request data */
 		
 		merchantUtil.setRequestJsonPath(requestJsonPath);
@@ -88,7 +88,7 @@ public class PatchMethod {
 			responseObj = apiController.paymentPatch(merchantConfig,requestData);
 			/* Display Response Message from the server and Headers. */
 			if (StringUtils.isNotBlank(responseObj.getResponseCode())&& StringUtils.isNotBlank(responseObj.getResponseMessage())) {
-				new PatchGenerateHeaders(merchantConfig,requestData);
+				//new PatchGenerateHeaders(merchantConfig,requestData);
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + responseObj.getResponseCode());
 				System.out.println(" v-c-Co-relation ID  : " + responseObj.getVcCorelationId());

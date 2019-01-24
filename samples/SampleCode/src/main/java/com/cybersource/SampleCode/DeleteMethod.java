@@ -53,7 +53,7 @@ public class DeleteMethod {
 		merchantConfig = new MerchantConfig(merchantProp);
 		MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
-		merchantConfig.setRequestType(requestType);
+		merchantUtil.setRequestType(requestType);
 		authenticationType = merchantConfig.getAuthenticationType();
 		/*
 		 * Set Json Path, request target, request data into merchant config
@@ -80,7 +80,7 @@ public class DeleteMethod {
 			/* Display Response Message from the server. */
 			if (StringUtils.isNotBlank(response.getResponseCode())
 					&& StringUtils.isNotBlank(response.getResponseMessage())) {
-				new DeleteGenerateHeaders(merchantConfig);
+				//new DeleteGenerateHeaders(merchantConfig);
 				System.out.println(" URL                : " + url);
 				System.out.println(" Response Code       : " + response.getResponseCode());
 				System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());
@@ -89,8 +89,6 @@ public class DeleteMethod {
 		} catch (ConfigException e) {
 			System.out.println(e.getMessage());
 		} catch (ClientException e) {
-			System.out.println(e.getMessage());
-		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

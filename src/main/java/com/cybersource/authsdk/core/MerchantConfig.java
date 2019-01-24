@@ -3,6 +3,7 @@ package com.cybersource.authsdk.core;
 import java.io.File;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -38,8 +39,7 @@ public class MerchantConfig {
 	private String authenticationType;
 	private String id;
 	private String requestHost;
-	private String requestType;
-	private static boolean isSetMerchantDetails = true;
+	private boolean isSetMerchantDetails = true;
 
 	/* Logging Parameters. */
 	private Logger log;
@@ -73,14 +73,6 @@ public class MerchantConfig {
 
 	public void setRunEnvironment(String runEnvironment) {
 		this.runEnvironment = runEnvironment;
-	}
-
-	public String getRequestType() {
-		return requestType;
-	}
-
-	public void setRequestType(String requestType) {
-		this.requestType = requestType;
 	}
 
 	public String getProxyAddress() {
@@ -232,12 +224,12 @@ public class MerchantConfig {
 		this.requestHost = requestHost;
 	}
 
-	public static boolean isSetMerchantDetails() {
+	public boolean isSetMerchantDetails() {
 		return isSetMerchantDetails;
 	}
 
-	public static void setSetMerchantDetails(boolean isSetMerchantDetails) {
-		MerchantConfig.isSetMerchantDetails = isSetMerchantDetails;
+	public void setSetMerchantDetails(boolean isSetMerchantDetails) {
+		this.isSetMerchantDetails = isSetMerchantDetails;
 	}
 
 	public void setLogMaximumSize(String logMaximumSize) {
@@ -296,56 +288,64 @@ public class MerchantConfig {
 		return keyFile;
 	}
 
-	public void setMerchantDetails() throws ConfigException {
-		this.authenticationType = this.getProperty(this.merchantID, "authenticationType");
-		this.merchantID = this.getProperty(this.merchantID, "merchantID");
-		/* Logging Parameters */
-		this.logDirectory = this.getProperty(this.merchantID, "logDirectory");
-		this.logFilename = this.getProperty(this.merchantID, "logFilename");
-		this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize");
-		/* JWT Parameters */
-		if (authenticationType != null) {
+	public void setPeopertiesByAuthType() throws ConfigException {
+		switch(authenticationType){
+	      case(GlobalLabelParameters.JWT) :
 			/* JWT Parameters */
-			if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-				this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory");
-				this.keyAlias = this.getProperty(this.merchantID, "keyAlias");
-				this.keyPass = this.getProperty(this.merchantID, "keyPass");
-				this.keyFilename = this.getProperty(this.merchantID, "keyFileName");
-			}
+	    	this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory");
+			this.keyAlias = this.getProperty(this.merchantID, "keyAlias");
+			this.keyPass = this.getProperty(this.merchantID, "keyPass");
+			this.keyFilename = this.getProperty(this.merchantID, "keyFileName");
+			break;
+		  case(GlobalLabelParameters.HTTP) :
 			/* HTTP Parameters */
-			if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-				this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId");
-				this.merchantSecretKey = this.getProperty(this.merchantID, "merchantsecretKey");
-			}
-
-		} else {
+			this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId");
+			this.merchantSecretKey = this.getProperty(this.merchantID, "merchantsecretKey");
+			break;
+		  default:
 			throw new ConfigException(GlobalLabelParameters.AUTH_NULL_EMPTY);
-		}
-		this.enableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
-		/* Optional use [ TIME OUT ] */
-		this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
-		this.proxyPort = this.getIntegerProperty(this.merchantID, "proxyPort", 8080);
-		// this.proxyUser =
-		// this.getProperty(this.merchantID,"proxyUser").trim();
-		this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
-		this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
-		/* Run Environment. */
-		this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment");
-
+	   }
+	}
+	
+	public void setMerchantDetails() throws ConfigException {
 		try {
-			if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)) {
-				this.requestHost = GlobalLabelParameters.SANDBOX_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)) {
-				this.requestHost = GlobalLabelParameters.PRODUCTION_URL;
-			} else {
-				this.requestHost = this.runEnvironment;
-			}
-		} catch (Exception e) {
+			this.authenticationType = this.getProperty(this.merchantID, "authenticationType");
+			this.merchantID = this.getProperty(this.merchantID, "merchantID");
+			/* Logging Parameters */
+			this.logDirectory = this.getProperty(this.merchantID, "logDirectory");
+			this.logFilename = this.getProperty(this.merchantID, "logFilename");
+			this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize");
+			
+			this.enableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
+			/* Optional use [ TIME OUT ] */
+			this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
+			this.proxyPort = this.getIntegerProperty(this.merchantID, "proxyPort", 8080);
+			// this.proxyUser =
+			// this.getProperty(this.merchantID,"proxyUser").trim();
+			this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
+			this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
+			/* Run Environment. */
+			this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment");
+			/*Initialize log */
 			this.log = Log4j.getInstance(this);
-			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
-			Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, "", Level.ERROR);
-			isSetMerchantDetails = false;
+			try {
+				if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)) {
+					this.requestHost = GlobalLabelParameters.SANDBOX_URL;
+				} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)) {
+					this.requestHost = GlobalLabelParameters.PRODUCTION_URL;
+				} else {
+					this.requestHost = this.runEnvironment;
+				}
+			} catch (Exception e) {
+				Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, "", Level.ERROR);
+				isSetMerchantDetails = false;
+			}
+			/* set the Auth type */
+			setPeopertiesByAuthType();
+		} catch (ConfigException e) {
+			Utility.log(log, e.getMessage(), "", Level.ERROR);
 		}
+ 		
 
 	}
 
@@ -371,9 +371,13 @@ public class MerchantConfig {
 	private boolean getLogFileNameStatus() throws ConfigException {
 		boolean status = true;
 
-		if (this.logFilename == null || this.logFilename.isEmpty()) {
+		if (StringUtils.isBlank(this.logFilename)) {
 			Utility.log(log, GlobalLabelParameters.NO_LOG_FILENAME, "", Level.ERROR);
 			this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME.concat(GlobalLabelParameters.LOG_EXTENSION);
+		}
+		
+		if (StringUtils.isBlank(this.logMaximumSize)) {
+			this.logMaximumSize = GlobalLabelParameters.DEFAULT_LOG_SIZE;
 		}
 
 		return status;
@@ -495,7 +499,7 @@ public class MerchantConfig {
 
 		String logBoolean = this.getProperty(merchantID, prop);
 		try {
-			if (logBoolean == null || logBoolean.isEmpty()) {
+			if (StringUtils.isBlank(logBoolean)) {
 				return true;
 			} else if (logBoolean.equalsIgnoreCase("1")) {
 				return true;
@@ -511,4 +515,10 @@ public class MerchantConfig {
 		}
 	}
 
+	public String toString() {
+		return "{ authenticationType : "+ authenticationType + ", runEnvironment : " 
+			   + runEnvironment	+ ", keyFileName : " 
+			   + keyFilename + ", enableLog : " +  enableLog + ", logDirectory : " + logDirectory + ", logMaximumSize : "
+			   + logMaximumSize + ", logFilename : " + logFilename + " }";
+	}
 }

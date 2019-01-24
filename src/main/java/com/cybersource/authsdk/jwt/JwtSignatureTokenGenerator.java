@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+
 import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
@@ -26,6 +27,7 @@ import com.cybersource.authsdk.util.Utility;
 public class JwtSignatureTokenGenerator implements TokenGenerator {
 	private MerchantConfig merchantConfig;
 	private String requestBody;
+	private String requestType;
 	private Logger logger;
 	private Cache cache;
 	private RSAPrivateKey rsaPrivateKey = null;
@@ -37,11 +39,14 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 	 *            - list of parameters required for JWT token.
 	 * @param requestData
 	 *            -request data to be sent.
+	 * @param requestType
+	 *            -request type to be sent. 
 	 */
-	public JwtSignatureTokenGenerator(MerchantConfig merchantConfig, String requestData) {
+	public JwtSignatureTokenGenerator(MerchantConfig merchantConfig, String requestData, String requestType) {
 
 		this.merchantConfig = merchantConfig;
 		this.requestBody = requestData;
+		this.requestType = requestType;
 		this.logger = Log4j.getInstance(merchantConfig);
 		this.cache = new Cache(this.merchantConfig);
 	}
@@ -73,18 +78,15 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 				if (Cache.isCache) {
 					rsaPrivateKey = KeyCertificateGenerator.initializePrivateKey(merchantConfig);
 					x509Certificate = KeyCertificateGenerator.initializeCertificate(merchantConfig);
-					Utility.log(logger, GlobalLabelParameters.CACHE_BEGIN, "", Level.INFO);
 					setUpCache();
 					Cache.isCache = false;
 				} else {
 					boolean lastModified = cache.isLastModifiedTimeP12();
 					if (lastModified) {
-						Utility.log(logger, GlobalLabelParameters.CACHE_EXTRACT, "", Level.INFO);
 						cache.retriveP12DataFromCache();
 						rsaPrivateKey = cache.getRsaPrivateKey();
 						x509Certificate = cache.getX509Certificate();
 					} else { 
-						Utility.log(logger, GlobalLabelParameters.CACHE_EXTEND, "", Level.INFO);
 						rsaPrivateKey = KeyCertificateGenerator.initializePrivateKey(merchantConfig);
 						x509Certificate = KeyCertificateGenerator.initializeCertificate(merchantConfig);
 						setUpCache();
@@ -101,14 +103,13 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 				}
 
 				String claimSet = null;
-				String method = merchantConfig.getRequestType();
-				if (method.equalsIgnoreCase(GlobalLabelParameters.GET)
-						|| method.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
+				if (requestType.equalsIgnoreCase(GlobalLabelParameters.GET)
+						|| requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
 					claimSet = "{\n            \"iat\":\"" + ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT)
 							+ "\"\n} \n\n";
-				} else if (method.equalsIgnoreCase(GlobalLabelParameters.POST)
-						|| method.equalsIgnoreCase(GlobalLabelParameters.PUT)
-						|| method.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+				} else if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
+						|| requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)
+						|| requestType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 					claimSet = "{\n            \"digest\":\"" + encryptedSigMessage
 							+ "\",\n            \"digestAlgorithm\":\"SHA-256\",\n            \"iat\":\""
 							+ ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT) + "\"\n} \n\n";

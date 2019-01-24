@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
-import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
@@ -41,7 +40,7 @@ public class PayloadDigestTest {
 
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		payloadDigest = new PayloadDigest(merchantConfig,merchantUtil.getRequestData());
+		payloadDigest = new PayloadDigest(merchantUtil.getRequestData());
 		String str = payloadDigest.getDigest();
 		Assert.assertNotNull(str);
 	}
@@ -53,7 +52,7 @@ public class PayloadDigestTest {
 
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		payloadDigest = new PayloadDigest(merchantConfig,merchantUtil.getRequestData());
+		payloadDigest = new PayloadDigest(merchantUtil.getRequestData());
 		String str = payloadDigest.getPayLoad();
 		Assert.assertNotNull(str);
 	}
@@ -66,7 +65,7 @@ public class PayloadDigestTest {
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(null);
 		
-		payloadDigest = new PayloadDigest(merchantConfig,merchantUtil.getRequestData());
+		payloadDigest = new PayloadDigest(merchantUtil.getRequestData());
 		String str = payloadDigest.getPayLoad();
 		Assert.assertNull(str);
 	}
@@ -78,7 +77,7 @@ public class PayloadDigestTest {
 
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("");
-		payloadDigest = new PayloadDigest(merchantConfig,merchantUtil.getRequestData());
+		payloadDigest = new PayloadDigest(merchantUtil.getRequestData());
 		String str = payloadDigest.getPayLoad();
 		Assert.assertNull(str);
 	}

@@ -31,18 +31,21 @@ public class SignatureGenerator {
 	private String httpMethod;
 
 	/**
+	 * @param requestType
+	 *           - request method type 
 	 * @param merchantConfig-contains
-	 *            all information of merchant.
+	 *           -all information of merchant.
 	 * @throws InvalidKeyException
-	 *             - if key is not valid.
+	 *           - if key is not valid.
 	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm is not available.
+	 *           - if algorithm is not available.
 	 */
-	public SignatureGenerator(MerchantConfig merchantConfig, String requestData)
+	public SignatureGenerator(MerchantConfig merchantConfig, String requestData, String requestType)
 			throws InvalidKeyException, NoSuchAlgorithmException {
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
-		this.httpMethod=merchantConfig.getRequestType();
+		//this.httpMethod=merchantConfig.getRequestType();
+		this.httpMethod=requestType;
 		this.merchantId = merchantConfig.getMerchantID();
 	}
 
@@ -83,7 +86,7 @@ public class SignatureGenerator {
 				|| (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH))) {
 			signatureString.append(GlobalLabelParameters.DIGEST.toLowerCase());
 			signatureString.append(": ");
-			signatureString.append(new PayloadDigest(merchantConfig, requestData).getDigest());
+			signatureString.append(new PayloadDigest(requestData).getDigest());
 			signatureString.append('\n');
 		}
 

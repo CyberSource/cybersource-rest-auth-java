@@ -46,7 +46,7 @@ public class CacheTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantConfig.setRequestType("POST");
+		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
 		logger = Log4j.getInstance(merchantConfig);
@@ -65,7 +65,7 @@ public class CacheTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantConfig.setRequestType("POST");
+		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
 		logger = Log4j.getInstance(merchantConfig);
@@ -85,7 +85,7 @@ public class CacheTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantConfig.setRequestType("POST");
+		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 

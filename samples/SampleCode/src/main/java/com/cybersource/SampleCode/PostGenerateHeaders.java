@@ -3,6 +3,9 @@ package com.cybersource.SampleCode;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
@@ -38,56 +41,57 @@ public class PostGenerateHeaders {
 	 */
 	private String requestType = "POST";
 	/**
-	 * JSON PATH
-	 * [Editable]
+	 * JSON PATH [Editable]
 	 */
 
 	private String requestJsonPath = "src/main/resources/request.json";
 
+	private String requestTarget = "/pts/v2/payments/";
+
+	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
+
 	/**
 	 * 
-	 * @throws IOException 
-	 * @throws ConfigException 
-	 * @throws NoSuchAlgorithmException 
+	 * @throws IOException
+	 * @throws ConfigException
+	 * @throws NoSuchAlgorithmException
 	 */
-	public PostGenerateHeaders() throws IOException, ConfigException, NoSuchAlgorithmException {
+	public PostGenerateHeaders() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		this.logger = Log4j.getInstance(merchantConfig);
-		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil = new MerchantUtil(merchantConfig);
+
 		Log4j.logEnable = false;
-		System.out.println(" Authentication Type : " +  merchantConfig.getAuthenticationType());
-		Utility.log(this.logger,
-				GlobalLabelParameters.BEGIN_TRANSCATION , " Generate POST Headers *******************", Level.INFO);
-		merchantConfig.setRequestType(requestType);
+		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
+		merchantUtil.setRequestType(requestType);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		requestData=merchantUtil.getRequestData();
-		digest = new PayloadDigest(this.merchantConfig,requestData);
-		boolean isMerchant = MerchantUtil.validateMerchantDetails();
+		merchantConfig.setRequestTarget(requestTarget);
+		requestData = merchantUtil.getRequestData();
 		Log4j.logEnable = merchantConfig.getEnableLog();
-		digest = new PayloadDigest(merchantConfig,requestData);
-		if (isMerchant) {
+		digest = new PayloadDigest(requestData);
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, " Generate POST Headers *******************",
+				Level.INFO);
+		if (MerchantUtil.validateMerchantDetails()) {
 			generatePostHeaders();
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
-		Utility.log(this.logger, " ","", Level.OFF);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
 	 *            : this object contains all the cybs.properites details.
-	 * @throws ConfigException 
-	 * @throws UnsupportedEncodingException 
-	 * @throws NoSuchAlgorithmException 
+	 * @throws ConfigException
 	 */
-	public PostGenerateHeaders(MerchantConfig merchantConfig,String requestData) throws ConfigException, NoSuchAlgorithmException, UnsupportedEncodingException{
+	public PostGenerateHeaders(MerchantConfig merchantConfig, String requestData) throws ConfigException {
 		this.merchantConfig = merchantConfig;
-		this.requestData=requestData;
+		this.requestData = requestData;
 		Log4j.logEnable = false;
-		Authorization.getToken(merchantConfig, requestData);
+		Authorization.getToken(merchantConfig, requestData, requestType);
 		logger = Log4j.getInstance(merchantConfig);
-		digest = new PayloadDigest(this.merchantConfig,requestData);
+		digest = new PayloadDigest(requestData);
 		generatePostHeaders();
 
 	}
@@ -95,56 +99,54 @@ public class PostGenerateHeaders {
 	/**
 	 * This method generates, displays and log the detailed header truncation
 	 * for POST operation.
-	 * @throws ConfigException 
-	 * @throws UnsupportedEncodingException 
-	 * @throws NoSuchAlgorithmException 
+	 * 
+	 * @throws ConfigException
 	 */
-	private void generatePostHeaders() throws ConfigException, NoSuchAlgorithmException, UnsupportedEncodingException  {
+	private void generatePostHeaders() throws ConfigException {
+		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, merchantConfig.getRequestTarget(),
+				Level.INFO);
 		authenticationType = merchantConfig.getAuthenticationType();
-
-		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE , authenticationType, Level.INFO);
-		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE .concat(" : ") , requestType, Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.DATE .concat(" : ") , PropertiesUtil.date, Level.INFO);
-		Utility.log(logger,
-				GlobalLabelParameters.V_C_MERCHANTID .concat(" : ") , merchantConfig.getMerchantID(), Level.INFO);
-		Utility.log(logger,
-				GlobalLabelParameters.CONTENT_TYPE .concat(" : "), GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), requestType, Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.MERCH_CONF_LABEL, merchantConfig.toString(), Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE.concat(" : "), GlobalLabelParameters.APPLICATION_JSON,
+				Level.INFO);
+		System.out.println(" Request Type        : " + requestType);
 		System.out.println(
 				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
-		Utility.log(logger, GlobalLabelParameters.HOST .concat(" : ") , merchantConfig.getRequestHost(),
-				Level.INFO);
-		
-		System.out.println(" MerchantID          : " + merchantConfig.getMerchantID());
-		System.out.println(" Date                : " + PropertiesUtil.date);
-		System.out.println(" Request Type        : " + merchantConfig.getRequestType());
-		System.out.println(" HOST                : " + merchantConfig.getRequestHost());
-		
-		tempSig = Authorization.getToken(merchantConfig,requestData);
-		
+
+		/* Signature Header */
+		tempSig = Authorization.getToken(merchantConfig, requestData, requestType);
+
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),
+					Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "), date, Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "), merchantConfig.getRequestHost(), Level.INFO);
 			System.out.println(
 					" " + GlobalLabelParameters.USERAGENT + "          : " + GlobalLabelParameters.USER_AGENT_VALUE);
-			Utility.log(logger,
-					GlobalLabelParameters.USERAGENT .concat(" : ") , GlobalLabelParameters.USER_AGENT_VALUE, Level.INFO);
-			digest = new PayloadDigest(this.merchantConfig,requestData);
+			System.out.println(" MerchantID          : " + merchantConfig.getMerchantID());
+			System.out.println(" Date                : " + date);
+			digest = new PayloadDigest(requestData);
 			System.out.println(" Digest              : " + digest.getDigest());
-			/* Signature Header */
-			
-			System.out.println(" Signature           : " + tempSig.toString());
-			
+			Utility.log(logger, GlobalLabelParameters.DIGEST.concat(" : "), digest.getDigest(), Level.INFO);
+			System.out.println(" Signature Header    : " + tempSig.toString());
+			Utility.log(logger, GlobalLabelParameters.SIGNATURE.concat(" : "), tempSig, Level.INFO);
+			System.out.println(" HOST                : " + merchantConfig.getRequestHost());
+
 		} else {
 			/* JWT */
-			System.out.println(" Authorization, Bearer " + tempSig.toString());
+			System.out.println(" " + GlobalLabelParameters.AUTHORIZARION_BEARER + tempSig.toString());
+			Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, tempSig.toString(), Level.INFO);
 		}
 	}
 
 	/**
 	 * @param args
-	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
 	 * @throws ConfigException
 	 */
-	public static void main(String[] args) throws NoSuchAlgorithmException, IOException, ConfigException{
+	public static void main(String[] args) throws IOException, ConfigException {
 		new PostGenerateHeaders();
 	}
 }

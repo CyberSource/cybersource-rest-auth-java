@@ -45,7 +45,7 @@ public class GetObjectMethod {
 		MerchantUtil merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
 		/* Set Request Type */
-		merchantConfig.setRequestType(requestType);
+		merchantUtil.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
 		merchantConfig.setRequestTarget(requestTarget);
@@ -68,7 +68,7 @@ public class GetObjectMethod {
 			response = apiController.paymentGet(merchantConfig,null);
 			/* Display response message and Headers in console. */
 			if (StringUtils.isNotBlank(response.getResponseCode()) && StringUtils.isNotBlank(response.getResponseMessage())) {
-				new GetGenerateHeaders(merchantConfig,null);
+				//new GetGenerateHeaders(merchantConfig,null);
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + response.getResponseCode());
 				System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());

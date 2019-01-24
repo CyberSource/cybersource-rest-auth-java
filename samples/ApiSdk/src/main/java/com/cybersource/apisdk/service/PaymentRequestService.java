@@ -1,8 +1,5 @@
 package com.cybersource.apisdk.service;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.apisdk.connection.HttpAuthenticationStrategy;
@@ -42,12 +39,8 @@ public class PaymentRequestService {
 	 * 
 	 * @throws ConfigException
 	 *             - contains information for merchant.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm will be not there.
 	 */
 	public Response processPaymentRequest()	throws ConfigException, ClientException {
        String authenticatonType = merchantConfig.getAuthenticationType();

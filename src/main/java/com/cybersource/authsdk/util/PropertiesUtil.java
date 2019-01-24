@@ -27,7 +27,7 @@ public final class PropertiesUtil {
 	 *             - if some IO operation failed.
 	 */
 	public static String getJsonInput(String fileName) throws IOException {
-		if (fileName.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)) {
+		if (fileName.equalsIgnoreCase(GlobalLabelParameters.REQUEST_JSON_PATH_NOT_REQUIRED)) {
 			return null;
 		}
 		InputStream jsonIn = getPropertyFile(fileName);

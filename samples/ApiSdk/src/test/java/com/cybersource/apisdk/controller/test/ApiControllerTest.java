@@ -34,8 +34,6 @@ public class ApiControllerTest {
 	public ExpectedException thrown = ExpectedException.none();
 
 	private Properties merchantProp;
-	// private String requestType = "Http_Signature";
-	private String getID = "5281957982016993203523";
 	private String requestJsonPath = "src/test/resources/request.json";
 	private String url = "https://";
 	private String requestTarget = GlobalLabelParameters.REQUEST_TARGET;
@@ -52,16 +50,16 @@ public class ApiControllerTest {
 	public void PaymentTestForGet() throws IOException, ConfigException, ClientException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		requestTarget = requestTarget + getID;
+		String requestTarget = "/pts/v2/payments/5383909529456080803003";
 		merchantConfig.setRequestTarget(requestTarget);
-		merchantConfig.setMerchantDetails();
-
-		logger = Log4j.getInstance(merchantConfig);
-
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setRequestType("GET");
 		merchantConfig.setUrl(url);
-		merchantUtil=new MerchantUtil(merchantConfig);
+		this.logger = Log4j.getInstance(merchantConfig);
+		merchantUtil = new MerchantUtil(merchantConfig);
+		Log4j.logEnable = true;
+		merchantUtil.setRequestType("GET");
+		merchantUtil.setRequestJsonPath("not required");
+		
 		if(MerchantUtil.validateMerchantDetails()) {
 			response = apiController.paymentGet(merchantConfig,null);
 		    Assert.assertNotNull(response.getResponseCode());
@@ -69,7 +67,15 @@ public class ApiControllerTest {
 		    thrown.expect(ConfigException.class);
 			thrown.expectMessage(GlobalLabelParameters.MERCHANT_VALIDATION_ERROR );
 		}
-
+		
+		if(MerchantUtil.validateMerchantDetails()) {
+			response = apiController.paymentGet(merchantConfig, null);
+			Assert.assertNotNull(response.getResponseCode());
+		} else {
+			thrown.expect(ConfigException.class);
+			thrown.expectMessage(GlobalLabelParameters.MERCHANT_VALIDATION_ERROR );
+		}
+		
 	}
 
 	@Test
@@ -82,10 +88,10 @@ public class ApiControllerTest {
 		logger = Log4j.getInstance(merchantConfig);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setRequestType("POST");
 		merchantConfig.setUrl(url);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("POST");
 		
 		if(MerchantUtil.validateMerchantDetails()) {
 			response = apiController.paymentPost(merchantConfig, merchantUtil.getRequestData());
@@ -104,14 +110,15 @@ public class ApiControllerTest {
 		requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
 		merchantConfig.setRequestTarget(requestTarget);
 		
+		logger = Log4j.getInstance(merchantConfig);
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setRequestType("PUT");
 		merchantConfig.setUrl(url);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		requestJsonPath = "src/test/resources/TRRReport.json";
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("PUT");
 		
-		logger = Log4j.getInstance(merchantConfig);
+		
 		if(MerchantUtil.validateMerchantDetails()) {
 			response = apiController.paymentPut(merchantConfig, merchantUtil.getRequestData());
 			Assert.assertNotNull(response.getResponseCode());
@@ -133,10 +140,10 @@ public class ApiControllerTest {
 		logger = Log4j.getInstance(merchantConfig);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setRequestType("DELETE");
 		merchantConfig.setUrl(url);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
+		merchantUtil.setRequestType("DELETE");
 		
 		if(MerchantUtil.validateMerchantDetails()) {
 			response = apiController.paymentDelete(merchantConfig, null);
@@ -162,7 +169,7 @@ public class ApiControllerTest {
 		logger = Log4j.getInstance(merchantConfig);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setRequestType("POST");
+		merchantUtil.setRequestType("POST");
 		merchantConfig.setAuthenticationType("test");
 		merchantConfig.setUrl(url);
 		
@@ -188,11 +195,11 @@ public class ApiControllerTest {
 			logger = Log4j.getInstance(merchantConfig);;
 
 			url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-			merchantConfig.setRequestType("POST");
 			merchantConfig.setUrl(url);
 			merchantConfig.setRunEnvironment("test");
 			merchantUtil=new MerchantUtil(merchantConfig);
 			merchantUtil.setRequestJsonPath(requestJsonPath);
+			merchantUtil.setRequestType("POST");
 			apiController.paymentPost(merchantConfig,merchantUtil.getRequestData());
 			thrown.expect(ConfigException.class);
 		} catch (ConfigException e) {
@@ -219,16 +226,16 @@ public class ApiControllerTest {
 		logger = Log4j.getInstance(merchantConfig);
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setRequestType("GET");
 		merchantConfig.setAuthenticationType("JWT");
 		merchantConfig.setUrl(url);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		MerchantConfig.setSetMerchantDetails(false);
+		merchantUtil.setRequestType("GET");
+		//merchantUtil.isSetMerchantDetails = false;
 
 		apiController.commonApiControllerCheck(merchantConfig);
 		Assert.assertNotNull(logger);
-		MerchantConfig.setSetMerchantDetails(true);
+		merchantConfig.setSetMerchantDetails(true);
 
 	}
 }

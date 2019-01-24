@@ -132,7 +132,7 @@ public class Utility {
 	 * @param logger
 	 *            :Log4j object
 	 */
-	public static void logResponseCodeMessage(int responseCode, Logger logger) {
+	public static void logResponseCodeMessage(Integer responseCode, Logger logger) {
 		if (Log4j.logEnable) {
 			String tempResponseCode = String.valueOf(responseCode);
 			String tempResponseCodeMessage = "Status Information :: ";
@@ -178,7 +178,7 @@ public class Utility {
 				logger.info(tempResponseCodeMessage);
 				break;
 			default:
-				String unDefinedResponse = "Un-Indentified";
+				String unDefinedResponse = "Un-Identified";
 				logger.info(tempResponseCodeMessage + unDefinedResponse);
 			}
 		}

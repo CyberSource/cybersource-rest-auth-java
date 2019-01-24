@@ -43,12 +43,12 @@ public class JWTSignatureTokenTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantConfig.setRequestType("GET");
+		merchantUtil.setRequestType(GlobalLabelParameters.GET);
 		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig,null);
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig,null, GlobalLabelParameters.GET);
 
 		String token =null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -66,14 +66,13 @@ public class JWTSignatureTokenTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);		
 		merchantUtil=new MerchantUtil(merchantConfig);
-		
-		merchantConfig.setRequestType("POST");
+		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData(),GlobalLabelParameters.POST);
 
 		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -91,14 +90,13 @@ public class JWTSignatureTokenTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
-
-		merchantConfig.setRequestType("PUT");
+		merchantUtil.setRequestType(GlobalLabelParameters.PUT);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData(),GlobalLabelParameters.PUT);
 
 		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -116,12 +114,12 @@ public class JWTSignatureTokenTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantConfig.setRequestType("DELETE");
+		merchantUtil.setRequestType(GlobalLabelParameters.DELETE);
 		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, null);
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, null, GlobalLabelParameters.DELETE);
 
 		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -138,15 +136,14 @@ public class JWTSignatureTokenTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("PUT");
-
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(testJsonPath);
+		merchantUtil.setRequestType(GlobalLabelParameters.PUT);
 		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData(), GlobalLabelParameters.PUT);
 
 		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -164,8 +161,7 @@ public class JWTSignatureTokenTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantConfig.setRequestType("POST");
-		
+		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setAuthenticationType("abc");
 		logger = Log4j.getInstance(merchantConfig);
@@ -174,7 +170,7 @@ public class JWTSignatureTokenTest {
 		thrown.expectMessage(GlobalLabelParameters.AUTH_ERROR);
 		
 		MerchantUtil.validateMerchantDetails();
-		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
+		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData(), GlobalLabelParameters.POST);
         jwtSignatureToken.getToken();
 
 	}
@@ -184,10 +180,9 @@ public class JWTSignatureTokenTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
@@ -196,7 +191,7 @@ public class JWTSignatureTokenTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token1);
 		} else {
-			jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
+			jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData(), GlobalLabelParameters.POST);
 			jwtSignatureToken.generateSignature();
 			Cache cache=new Cache(merchantConfig);
 			cache.lastModifiedTime = 1528;

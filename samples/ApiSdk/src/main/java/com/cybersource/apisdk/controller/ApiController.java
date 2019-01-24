@@ -113,7 +113,10 @@ public class ApiController {
 		commonApiControllerCheck(merchantConfig);
 		if (isAuthicationTypeValid) {
 			if (isMerchantConfigValid) {
+				Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, merchantConfig.getRequestTarget(), Level.INFO);
 				Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(), Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : " + MerchantUtil.getRequestType(), Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " " + merchantConfig.toString(), Level.INFO);
 				PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestData, logger);
 				responseObj = paymentRequest.processPaymentRequest();
 				Utility.log(logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
@@ -143,7 +146,7 @@ public class ApiController {
 		
 		String authenticationType = merchantConfig.getAuthenticationType();
 		isAuthicationTypeValid = Utility.checkAuthenticationValidation(authenticationType);
-		if (MerchantConfig.isSetMerchantDetails()) {
+		if (MerchantUtil.isSetMerchantDetails()) {
 			/* Initializing the logging object. */
 			logger = Log4j.getInstance(merchantConfig);
 			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);

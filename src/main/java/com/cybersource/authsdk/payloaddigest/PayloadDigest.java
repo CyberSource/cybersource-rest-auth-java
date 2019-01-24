@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 import com.cybersource.authsdk.core.ConfigException;
-import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 /**
@@ -15,7 +14,6 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
  */
 public class PayloadDigest {
 
-	private MerchantConfig merchantConfig;
 	private String requestData;
 
 	/**
@@ -24,8 +22,7 @@ public class PayloadDigest {
 	 * @param requestData
 	 *            - request data.
 	 */
-	public PayloadDigest(MerchantConfig merchantConfig, String requestData) {
-		this.merchantConfig = merchantConfig;
+	public PayloadDigest(String requestData) {
 		this.requestData = requestData;
 	}
 
@@ -33,21 +30,16 @@ public class PayloadDigest {
 	 * @return generated digest from requestBody.
 	 * @throws ConfigException
 	 *             - if some value is missing for merchant.
-	  */
+	 */
 	private String digestGeneration() throws ConfigException {
 		/*
 		 * This method return Digest value which is SHA-256 hash of payLoad that
 		 * is BASE64 encoded
 		 */
 		try {
-			String messageBody = getPayLoad();
-			MessageDigest digestString;
-			byte[] digestBytes = null;
-			digestString = MessageDigest.getInstance(GlobalLabelParameters.SHA_256);
-			digestBytes = digestString.digest(messageBody.getBytes("UTF-8"));
-			String bluePrint = Base64.getEncoder().encodeToString(digestBytes);
-			bluePrint = GlobalLabelParameters.SHA_256 + "=" + bluePrint;
-			return bluePrint;
+			byte[] digestBytes = MessageDigest.getInstance(GlobalLabelParameters.SHA_256)
+					.digest(getPayLoad().getBytes("UTF-8"));
+			return GlobalLabelParameters.SHA_256 + "=" + Base64.getEncoder().encodeToString(digestBytes);
 		} catch (NoSuchAlgorithmException e) {
 			throw new ConfigException(GlobalLabelParameters.No_SUCH_ALGORITHM);
 		} catch (UnsupportedEncodingException e) {
@@ -69,12 +61,8 @@ public class PayloadDigest {
 	 * @return Digest generated from payload.
 	 * @throws ConfigException
 	 *             - if some value is missing for merchant.
-	 * @throws UnsupportedEncodingException
-	 *             - if encoding is not supported.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm is not available.
 	 */
-	public String getDigest() throws ConfigException, NoSuchAlgorithmException, UnsupportedEncodingException {
+	public String getDigest() throws ConfigException {
 		return digestGeneration();
 	}
 }

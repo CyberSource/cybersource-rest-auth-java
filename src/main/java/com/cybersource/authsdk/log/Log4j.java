@@ -5,7 +5,6 @@ import java.io.File;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
@@ -37,10 +36,7 @@ public class Log4j {
 		logDirectory = merchantConfig.getLogDirectory();
 		logFileName = merchantConfig.getLogFilename();
 		logSize = merchantConfig.getLogMaximumSize();
-		validateLogMaxSizeAndFolder();
-
 		filePath = logDirectory + "/" + logFileName + GlobalLabelParameters.LOG_EXTENSION;
-
 	}
 
 	/**
@@ -66,21 +62,20 @@ public class Log4j {
 		return logger;
 	}
 
-	private Logger getLogger() {
-		Logger logger;
-		addAppenderLogger(filePath, Level.ALL);
-		logger = LogManager.getRootLogger();
-		return logger;
-	}
 
-	/**
+	private Logger getLogger() {
+			addAppenderLogger(filePath, Level.ALL);
+			return LogManager.getRootLogger();
+	}
+	
+   	/**
 	 * 
 	 * @param filePath
 	 *            - path for log file.
 	 * @param vlevel
 	 *            - level for log file.
 	 */
-	private LoggerContext addAppenderLogger(String filePath, Level vlevel) {
+	private void addAppenderLogger(String filePath, Level vlevel) {
 		ConfigurationBuilder<BuiltConfiguration> builder;
 		LayoutComponentBuilder layoutBuilder;
 		AppenderComponentBuilder appenderBuilder;
@@ -107,7 +102,7 @@ public class Log4j {
 		/* Create the new logger. */
 		builder.add(
 				builder.newRootLogger(vlevel).add(builder.newAppenderRef("rolling")).addAttribute("additivity", false));
-		return Configurator.initialize(builder.build());
+		Configurator.initialize(builder.build());
 	}
 
 	private void validateLogMaxSizeAndFolder() {

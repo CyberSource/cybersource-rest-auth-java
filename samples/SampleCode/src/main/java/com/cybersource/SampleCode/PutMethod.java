@@ -63,7 +63,7 @@ public class PutMethod {
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil = new MerchantUtil(merchantConfig);
 
-		merchantConfig.setRequestType(requestType);
+		merchantUtil.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
 		/*
@@ -93,7 +93,6 @@ public class PutMethod {
 
 			if (!StringUtils.isBlank(response.getResponseCode())
 					&& !StringUtils.isBlank(response.getResponseMessage())) {
-				new PutGenerateHeaders(merchantConfig, requestData);
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + response.getResponseCode());
 				System.out.println(" v-c-Co-relation ID  : " + response.getVcCorelationId());

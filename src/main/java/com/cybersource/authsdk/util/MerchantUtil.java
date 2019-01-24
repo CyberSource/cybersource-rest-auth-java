@@ -15,16 +15,28 @@ public class MerchantUtil {
 	private String requestData;
 	private static String requestJsonPath;
 	private static MerchantConfig merchantConfig;
-	public static boolean isSetMerchantDetails = true;
+	private static boolean isSetMerchantDetails = true;
 	private static boolean isRequestJson = true;
+	private static String requestType;
 
+	/* Others. */
+	private static Logger log;
+	
 	public MerchantUtil(MerchantConfig merchantConfig) {
 		MerchantUtil.merchantConfig = merchantConfig;
 		log = Log4j.getInstance(merchantConfig);
 	}
 
-	/* Others. */
-	private static Logger log;
+	
+	public static String getRequestType() {
+		return requestType;
+	}
+
+
+	public void setRequestType(String requestType) {
+		MerchantUtil.requestType = requestType;
+	}
+
 
 	public static String getRequestJsonPath() {
 		return requestJsonPath;
@@ -41,6 +53,10 @@ public class MerchantUtil {
 	public boolean isRequestJson() {
 		return isRequestJson;
 	}
+	
+	public static boolean isSetMerchantDetails() {
+		return isSetMerchantDetails;
+	}
 
 	/**
 	 * @return request data according to availability of request Json.
@@ -50,11 +66,7 @@ public class MerchantUtil {
 	public String getRequestData() throws ConfigException {
 
 		try {
-			if (requestJsonPath !=null && requestJsonPath.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)) {
-				return requestData;
-			}
-
-			else if (StringUtils.isNotBlank(requestJsonPath)) {
+			if(StringUtils.isNotBlank(requestJsonPath) && !requestJsonPath.equalsIgnoreCase(GlobalLabelParameters.REQUEST_JSON_PATH_NOT_REQUIRED) ){
 				requestData = PropertiesUtil.getJsonInput(requestJsonPath);
 			}
 		} catch (Exception e) {
@@ -70,14 +82,12 @@ public class MerchantUtil {
 	}
 
 	/**
-	 * @param logger
-	 *            -logger to log all information in log file.
 	 * @return true or false as per validation
 	 * @throws ConfigException
 	 *             - if some value is missing for merchant.
 	 */
 	public static boolean validateMerchantDetails() throws ConfigException {
-		boolean isRequestType = checkRequestType();
+		boolean isRequestType = isRequestTypeMethodValid();
 
 		boolean isMerchantId = true;
 		boolean isCheckMerchantSecertKey = false;
@@ -90,7 +100,7 @@ public class MerchantUtil {
 		boolean isCheckLogMaxSize = true;
 		boolean isCheckRunEnvironment;
 		boolean isMerchantDetailStatus = false;
-
+		isSetMerchantDetails = merchantConfig.isSetMerchantDetails();
 		checkAuthenticationType();
 		isMerchantId = checkMerchantId();
 
@@ -153,7 +163,21 @@ public class MerchantUtil {
 	 */
 	public static boolean checkMerchantId() throws ConfigException {
 		boolean check = true;
-		if (merchantConfig.getMerchantID() == null || merchantConfig.getMerchantID().isEmpty()) {
+//		if (merchantConfig.getMerchantID() == null || merchantConfig.getMerchantID().isEmpty()) {
+//			log = Log4j.getInstance(merchantConfig);
+//			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
+//			Utility.log(log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, "", Level.ERROR);
+//			check = false;
+//			throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
+//		}
+//		if (StringUtils.isBlank(merchantConfig.getMerchantID())) {
+//			log = Log4j.getInstance(merchantConfig);
+//			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
+//			Utility.log(log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, "", Level.ERROR);
+//			check = false;
+//			throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
+//		}
+		if (StringUtils.isBlank(merchantConfig.getMerchantID())) {
 			log = Log4j.getInstance(merchantConfig);
 			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 			Utility.log(log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, "", Level.ERROR);
@@ -169,15 +193,15 @@ public class MerchantUtil {
 	 * @throws ConfigException
 	 *             - if some value is missing or wrong for merchant.
 	 */
-	public static boolean checkRequestType() throws ConfigException {
-		if (merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.PUT)
-				|| merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.GET)
-				|| merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.POST)
-				|| merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.DELETE)
-				|| merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+	public static boolean isRequestTypeMethodValid() throws ConfigException {
+		if (requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)
+				|| requestType.equalsIgnoreCase(GlobalLabelParameters.GET)
+				|| requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
+				|| requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)
+				|| requestType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 			return true;
 		} else {
-			Utility.log(log, GlobalLabelParameters.INVALID_REQUEST_TYPE, merchantConfig.getRequestType(), Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.INVALID_REQUEST_TYPE, requestType, Level.ERROR);
 			throw new ConfigException(GlobalLabelParameters.INVALID_REQUEST_TYPE);
 
 		}
@@ -268,25 +292,26 @@ public class MerchantUtil {
 	public static boolean checkJsonPath(String jsonPath) throws ConfigException {
 		File f = null;
 		boolean check = true;
-		if (checkRequestType()) {
-			/* Continue, No logic check */
-		} else {
+		
+		if (!isRequestTypeMethodValid()) {
 			return false;
 		}
 
-		if (merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.GET)
-				|| merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
+		if (requestType.equalsIgnoreCase(GlobalLabelParameters.GET)
+				|| requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
 			return check;
 		}
-		if (jsonPath.equalsIgnoreCase(GlobalLabelParameters.POST_OBJECT_METHOD_REQUEST_PATH)) {
-			return check;
-		}
-		if (jsonPath == null || jsonPath.isEmpty()) {
+		
+		if (StringUtils.isBlank(jsonPath) ) {
 			Utility.log(log, GlobalLabelParameters.REQUEST_JSON_MIS_NULL, "", Level.ERROR);
 			check = false;
 			throw new ConfigException(GlobalLabelParameters.REQUEST_JSON_MIS_NULL);
-
 		}
+		
+		if (StringUtils.isNotBlank(jsonPath) && jsonPath.equalsIgnoreCase(GlobalLabelParameters.REQUEST_JSON_PATH_NOT_REQUIRED)) {
+			return check;
+		}
+
 		f = new File(jsonPath);
 		if (!f.exists()) {
 			Utility.log(log, GlobalLabelParameters.REQUEST_JSON_ERROR, f.getAbsolutePath(), Level.ERROR);
@@ -364,27 +389,20 @@ public class MerchantUtil {
 				check = false;
 				return check;
 			}
-			Utility.log(log, GlobalLabelParameters.KEY_FILE,
-					merchantConfig.getKeysDirectory().concat("/").concat(merchantConfig.getKeyFilename())
-							+ GlobalLabelParameters.P12_EXTENSION,
-					Level.INFO);
 		} catch (Exception e) {
 			merchantConfig.setKeyFile(null);
 			check = false;
 			return check;
 		}
-		boolean isRead = merchantConfig.getKeyFile().canRead();
-
-		if (isRead) {
-			/* Do Nothing. */
-			return check;
-		} else {
+	  
+		if (!merchantConfig.getKeyFile().canRead()) {
 			Utility.log(log, GlobalLabelParameters.FILE_NOT_READ,
 					merchantConfig.getKeysDirectory().concat(merchantConfig.getKeyFilename()), Level.ERROR);
 			merchantConfig.setKeyFile(null);
 			check = false;
 			return check;
 		}
+		return check;
 	}
 
 }

@@ -13,7 +13,6 @@ import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.security.NoSuchAlgorithmException;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -34,6 +33,7 @@ import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /**
@@ -48,7 +48,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	private MerchantConfig merchantConfig = null;
 	private String requestData = null;
 	private Logger logger = null;
-	private int responseCode;
+	private Integer responseCode;
 	private String responseMessage;
 	private String jwtMethodType = null;
 	private String getId = null;
@@ -67,7 +67,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
 		this.logger = logger;
-		this.jwtMethodType = merchantConfig.getRequestType();
+		this.jwtMethodType = MerchantUtil.getRequestType();
 		this.getId = Utility.retrieveGetIDFromRequestTarget(merchantConfig.getRequestTarget());
 
 	}
@@ -85,7 +85,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		
 	  try {
 		  
-		  if (merchantConfig.getRequestType().equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+		  if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 				return executePatch(requestData);
 		   } else {
 				if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
@@ -104,10 +104,9 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 					responseObj = postDocument(requestBody);
 					responseCode = connection.getResponseCode();
 				}
-				responseMessage = Masking.prepareMasking(responseObj.getResponseMessage(), logger);
+				responseMessage = Masking.prepareMasking(responseObj.getResponseMessage());
 				responseObj.setResponseMessage(responseMessage);
-				responseObj.setResponseCode(String.valueOf(responseCode));
-				maskingPayload(responseMessage);
+				maskingPayload(responseMessage, GlobalLabelParameters.RESPONSE_MSG_LABEL);
 				endConnection();
 				return responseObj;
 		}
@@ -115,8 +114,10 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		  Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.ERROR);
     	  throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
       } catch (ConfigException e) {
+    	  Utility.log(logger, "Exception in getJwtConnection method", "", Level.ERROR);
     	  throw e;
       } catch (ClientException e) {
+    	  Utility.log(logger, "Exception in getJwtConnection method", "", Level.ERROR);
     	  throw e;
       }	catch (Exception e) {
     	  Utility.log(logger,e);
@@ -138,12 +139,13 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		this.connection.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 
 		/* Add Request Header :: "Signature" */
-		String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData);
+		String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData, jwtMethodType);
 		if (encryptedJWTSignature == null || encryptedJWTSignature.isEmpty()) {
 			isSignatureAlert = true;
 			return;
 		}
 		this.connection.setRequestProperty("Authorization", "Bearer " + encryptedJWTSignature);
+		Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, encryptedJWTSignature, Level.INFO);
 	}
 
 	/**
@@ -157,13 +159,12 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
       try {
     	/* Open Connection with API server. */
   		openConnection();
-  		/* Set Json input Type in the connection object. */
   		setHeaderData();
-  		/* Set Request Type ( GET or POST ) */
   		setRequestMethod(jwtMethodType);
   		/*
   		 * Set encrypted signature in the connection object. setSignature();
-  		 */if (isSignatureAlert) {
+  		 */
+  		if (isSignatureAlert) {
   			responseObj.setResponseMessage("No Response");
   			return responseObj;
   		}
@@ -200,14 +201,14 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		openConnection();
 		setHeaderData();
 		setRequestMethod(jwtMethodType);
-		Utility.log(logger, "ClaimSet", " : " + Masking.prepareMasking(requestData, logger), Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, Masking.prepareMasking(requestData), Level.INFO);
 		if (isSignatureAlert) {
 			responseObj.setResponseMessage("No Response");
 			return responseObj;
 		}
 
 		this.connection.setDoOutput(true);
-
+		
 		OutputStream out1 = this.connection.getOutputStream();
 		byte[] requestBytes1 = request.getBytes(Charset.forName("UTF-8"));
 		out1.write(requestBytes1);
@@ -261,6 +262,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		try {
 			Proxy proxy = createProxy(merchantConfig);
 			String getUrl = merchantConfig.getUrl();
+			Utility.log(logger, "URL : ", " " + getUrl, Level.INFO);
 			url = new URL(getUrl);
 			this.connection = (HttpURLConnection) url.openConnection(proxy);
 			if (proxy != Proxy.NO_PROXY) {
@@ -283,8 +285,8 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 * Mask the Response.
 	 */
 	@Override
-	public void maskingPayload(String serverResponse) {
-		Utility.log(logger, "Response Message : ", Masking.prepareMasking(serverResponse, this.logger), Level.INFO);
+	public void maskingPayload(String serverResponse, String title) {
+		Utility.log(logger, title, Masking.prepareMasking(serverResponse), Level.INFO);
 	}
 
 	/**
@@ -296,7 +298,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	@Override
 	public void setRequestMethod(String method) throws ClientException {
 		try {
-			Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), method, Level.INFO);
+			//Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), method, Level.INFO);
 			this.connection.setRequestMethod(method);
 			if (method.equalsIgnoreCase(GlobalLabelParameters.GET))
 				logger.info("GETID" + " : " + this.getId);
@@ -369,7 +371,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		/* For Disable the org.apache.log */
 		CloseableHttpResponse response = null;
 		try {
-			Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, ": ".concat(GlobalLabelParameters.PATCH), Level.INFO);
+			Utility.log(logger, "URL : ", merchantConfig.getUrl() , Level.INFO);
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPatch httpPatch = new HttpPatch(merchantConfig.getUrl());
 			httpPatch = setPatchHeader(httpPatch); 
@@ -381,7 +383,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			
 			
 			if (null != requestData) {
-				Utility.log(logger, "ClaimSet", " : " + Masking.prepareMasking(requestData, logger), Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, " " + Masking.prepareMasking(requestData), Level.INFO);
 				HttpEntity httpEntity;
 				try {
 					httpEntity = new ByteArrayEntity(requestData.getBytes("UTF-8"));
@@ -390,7 +392,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 					throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
 				}
 			} else {
-				Utility.log(logger, "ClaimSet", " : NULL", Level.ERROR);
+				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, "  NULL", Level.ERROR);
 				throw new ConfigException(GlobalLabelParameters.REQUEST_EMPTY);
 			}
 			
@@ -398,7 +400,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			response = httpClient.execute(httpPatch);
 	        if(response != null) {
 	        	responseString = EntityUtils.toString(response.getEntity());
-	            int responseCode = response.getStatusLine().getStatusCode();
+	            Integer responseCode = response.getStatusLine().getStatusCode();
 	            Response responseObj = new Response();
 	            responseObj.setResponseCode(String.valueOf(responseCode));
 	            Utility.logResponseCodeMessage(responseCode, logger);
@@ -410,9 +412,9 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	           	
 	           	StringBuilder responseBuilder = new StringBuilder();
 	           	responseBuilder.append(responseString);
-	           	maskingPayload(responseBuilder.toString());
+	           	maskingPayload(responseBuilder.toString(), GlobalLabelParameters.RESPONSE_MSG_LABEL);
 	           	/* Set Response Message */
-	           	String resp = Masking.prepareMasking(responseString, logger);
+	           	String resp = Masking.prepareMasking(responseString);
 	           	responseObj.setResponseMessage(resp);
 	           	return responseObj;
 	        } else {
@@ -422,7 +424,10 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	    } catch (IOException e) {
 	    	Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
 	    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
-		} catch (Exception e) {
+		} catch (ConfigException e) {
+		    Utility.log(logger, e.getLocalizedMessage(), "", Level.FATAL);
+	    	throw e;
+	    } catch (Exception e) {
 			Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.ERROR);
 			Utility.log(logger,e);
 	    	throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION);
@@ -457,17 +462,18 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			httpPatch.setHeader(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 
 			/* Add Request Header :: "Signature" */
-			String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData);
+			String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData, jwtMethodType);
 			if (encryptedJWTSignature == null || encryptedJWTSignature.isEmpty()) {
 				isSignatureAlert = true;
 			}
 			httpPatch.setHeader("Authorization", "Bearer " + encryptedJWTSignature);
+			Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, encryptedJWTSignature, Level.INFO);
 			
 			/*
 			 * Add Request Header :: "profile-id"
 			 */
-			httpPatch.setHeader("profile-id", "93B32398-AD51-4CC2-A682-EA3E93614EB1");
-			
+			httpPatch.setHeader(GlobalLabelParameters.PROFILE_ID, GlobalLabelParameters.PROFILE_ID_VAL);
+			Utility.log(logger, GlobalLabelParameters.PROFILE_ID,  " : " + GlobalLabelParameters.PROFILE_ID_VAL, Level.INFO);
 			return httpPatch;
 		} catch (Exception e) {
 			Utility.log(logger, GlobalLabelParameters.MERCHANTID_NOT_SET, "", Level.FATAL);

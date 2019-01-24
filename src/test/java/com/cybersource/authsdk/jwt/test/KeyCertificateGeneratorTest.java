@@ -48,9 +48,9 @@ public class KeyCertificateGeneratorTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("POST");
 
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
@@ -72,9 +72,9 @@ public class KeyCertificateGeneratorTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("POST");
 
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
@@ -96,10 +96,10 @@ public class KeyCertificateGeneratorTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
 		merchantConfig.setRecipientID("test");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("POST");
 
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();

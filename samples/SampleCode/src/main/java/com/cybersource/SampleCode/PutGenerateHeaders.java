@@ -1,14 +1,14 @@
 package com.cybersource.SampleCode;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
@@ -30,108 +30,106 @@ public class PutGenerateHeaders {
 	private static MerchantUtil merchantUtil;
 	private String authenticationType = null;
 	private String requestData;
-	private Authorization auth;
 	private String requestType = "PUT";
 	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
 	private PayloadDigest digest;
 	private Logger logger;
 
-	private String TempSig;
+	private String tempSig;
 
+	private static String requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
+	
 	/**
 	 * @param merchantConfig
 	 * @param requestData
-	 * @throws NoSuchAlgorithmException
-	 * @throws UnsupportedEncodingException
 	 * @throws ConfigException
 	 */
-	public PutGenerateHeaders(MerchantConfig merchantConfig,String requestData) throws NoSuchAlgorithmException, UnsupportedEncodingException, ConfigException  {
-		this.requestData=requestData;
-		auth = new Authorization();
+	public PutGenerateHeaders(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException {
+		this.requestData = requestData;
 		logger = Log4j.getInstance(merchantConfig);
-		digest = new PayloadDigest(merchantConfig,requestData);
+		digest = new PayloadDigest(requestData);
 		Log4j.logEnable = false;
 		PutMethodHeaders(merchantConfig);
 	}
-	
+
 	/**
 	 * @throws ConfigException
-	 * @throws NoSuchAlgorithmException
-	 * @throws UnsupportedEncodingException
+	 * @throws IOException 
 	 */
-	public PutGenerateHeaders() throws ConfigException, NoSuchAlgorithmException, UnsupportedEncodingException{
-		auth = new Authorization();
+	public PutGenerateHeaders() throws ConfigException, IOException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantConfig = new MerchantConfig(merchantProp);
+		merchantUtil = new MerchantUtil(merchantConfig);
+		merchantConfig.setRequestTarget(requestTarget);
+		merchantUtil.setRequestType("PUT");
+		merchantUtil.setRequestJsonPath("src/main/resources/TRRReport.json");
 		logger = Log4j.getInstance(merchantConfig);
 		this.requestData = merchantUtil.getRequestData();
-		digest = new PayloadDigest(merchantConfig,requestData);
-		logger = Log4j.getInstance(merchantConfig);
-		Log4j.logEnable = merchantConfig.getEnableLog();
-		Utility.log(this.logger,
-				GlobalLabelParameters.BEGIN_TRANSCATION , " Generate PUT Headers *******************", Level.INFO);
+		digest = new PayloadDigest(requestData);
+		
+		System.out.println(" Authentication Type : " +  merchantConfig.getAuthenticationType());
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, " Generate PUT Headers *******************",
+				Level.INFO);
 		boolean isMerchant = MerchantUtil.validateMerchantDetails();
-		if(isMerchant){
-		PutMethodHeaders(merchantConfig);
+		if (isMerchant) {
+			PutMethodHeaders(merchantConfig);
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
-		Utility.log(this.logger, " ","", Level.OFF);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
 	/**
 	 * @param merchantConfig
-	 * @throws NoSuchAlgorithmException
-	 * @throws UnsupportedEncodingException
 	 * @throws ConfigException
 	 */
-	private void PutMethodHeaders(MerchantConfig merchantConfig) throws NoSuchAlgorithmException, UnsupportedEncodingException, ConfigException  {
-		authenticationType = merchantConfig.getAuthenticationType();
-		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE , authenticationType, Level.INFO);
-		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), requestType, Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.DATE .concat(" : "), date, Level.INFO);
-		Utility.log(logger,
-				GlobalLabelParameters.V_C_MERCHANTID .concat(" : "), merchantConfig.getMerchantID(), Level.INFO);
-		Utility.log(logger,	GlobalLabelParameters.CONTENT_TYPE.concat(":") , GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.HOST .concat(" : "), merchantConfig.getRequestHost(),
+	private void PutMethodHeaders(MerchantConfig merchantConfig) throws ConfigException {
+		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestTarget, 
 				Level.INFO);
-		
-		
-		System.out.println(" MerchantID          : " + merchantConfig.getMerchantID());
-		System.out.println(" Date                : " + date);
+		authenticationType = merchantConfig.getAuthenticationType();
+		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), requestType, Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.MERCH_CONF_LABEL, merchantConfig.toString(), Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE.concat(" : "), GlobalLabelParameters.APPLICATION_JSON,
+				Level.INFO);
 		System.out.println(" Request Type        : " + requestType);
-		System.out.println(" HOST                : " + merchantConfig.getRequestHost());
 		System.out.println(
 				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
 		
+		/* Signature Header */
+		tempSig = Authorization.getToken(merchantConfig, requestData, requestType);
 		
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),
+					Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "), date, Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "), merchantConfig.getRequestHost(), Level.INFO);
 			System.out.println(
 					" " + GlobalLabelParameters.USERAGENT + "          : " + GlobalLabelParameters.USER_AGENT_VALUE);
-           digest=new PayloadDigest(merchantConfig, requestData);
+			System.out.println(" MerchantID          : " + merchantConfig.getMerchantID());
+			System.out.println(" Date                : " + date);
+			digest = new PayloadDigest(requestData);
 			System.out.println(" Digest              : " + digest.getDigest());
-			/* Signature Header */
-			TempSig = auth.getToken(merchantConfig,requestData);
-			System.out.println(" Signature           : " + TempSig.toString());
-			
+			Utility.log(logger, GlobalLabelParameters.DIGEST.concat(" : "), digest.getDigest(), Level.INFO);
+			System.out.println(" Signature Header    : " + tempSig.toString());
+			Utility.log(logger, GlobalLabelParameters.SIGNATURE.concat(" : "), tempSig, Level.INFO);
+			System.out.println(" HOST                : " + merchantConfig.getRequestHost());
+
 		} else {
 			/* JWT */
-			TempSig = auth.getToken(merchantConfig,requestData);
-			System.out.println(" Authorization, Bearer " + TempSig.toString());
+			System.out.println(" " + GlobalLabelParameters.AUTHORIZARION_BEARER + tempSig.toString());
+			Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, tempSig.toString(), Level.INFO);
 		}
 	}
 
 	/**
 	 * This method initiate the PUT Header program.
+	 * 
 	 * @param args
 	 * @throws IOException
 	 * @throws ConfigException
-	 * @throws NoSuchAlgorithmException
 	 */
-	public static void main(String[] args) throws IOException, ConfigException, NoSuchAlgorithmException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantConfig.setEnableLog(true);
-		merchantConfig.setRequestType("PUT");
-		merchantUtil.setRequestJsonPath("src/main/resources/TRRReport.json");
+	public static void main(String[] args) throws  ConfigException, IOException {
 		new PutGenerateHeaders();
 	}
 }

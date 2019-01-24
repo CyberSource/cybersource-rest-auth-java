@@ -40,11 +40,20 @@ public class GlobalLabelParameters {
 	public static final String DEF_KEY_DIRECTORY_PATH = "src/main/resources";
 	public static final String GET_ID_IS_MISSING= "Get Id is missing";
 	public static final String GET_ID= "GET_ID : ";
+	public static final String USING_REQUEST_TARGET = "Using Request Target : ";
+	public static final String AUTHORIZARION_BEARER = "Authorization : Bearer ";
+	public static final String PROFILE_ID = "profile-id";
+	public static final String PROFILE_ID_VAL = "93B32398-AD51-4CC2-A682-EA3E93614EB1";
+	
+	
 	
 	/* Digest Constants */
 	public static final String SHA_256 = "SHA-256";
 	/* Logging Labels */
 	public static final String RESPONSE_CODE = "Response Code";
+	public static final String REQUEST_BODY_LABEL = "Request Body :";
+	public static final String RESPONSE_MSG_LABEL = "Response Message :";
+	public static final String MERCH_CONF_LABEL = "MERCHCFG : ";
 	public static final String DEFAULT_LOG_SIZE = "5K";
 	/* Logging Messages. */
 	public static final String BEGIN_TRANSCATION = "********* START *********";
@@ -70,7 +79,8 @@ public class GlobalLabelParameters {
 	public static final String REQUEST_SET_ERROR = "Unable to set Request type :: ";
 	public static final String PROXY_HOST_PORT_ERR = "Unable to set Proxy Host/Port";
 	public static final String No_SUCH_ALGORITHM="No Such algoritm found to generate digest.";
-	public static final String UNSUPPORTED_ENCODING = "Encoding is not supported.";
+	//public static final String UNSUPPORTED_ENCODING = "Encoding is not supported.";
+	public static final String UNSUPPORTED_ENCODING = "Encoding is not supported. Please check the Merchant Configuration";
 	public static final String INVALID_KEY = "Key is not valid";
 	public static final String DIGEST_GEN_FAILED = "Digest generation failed";
 	public static final String MERCHANTID_NOT_SET = "Unable to set merchantID";
@@ -87,7 +97,7 @@ public class GlobalLabelParameters {
 			+ DEFAULT_LOG_NAME + LOG_EXTENSION;
 	public static final String MERCHANT_NULL_EMPTY = "MerchantID mandatory : NO MerchantID entered. ";
 	public static final String RUN_ENV_NULL_EMPTY = "Run Environment mandatory : NO Run Environment entered. ";
-	public static final String POST_OBJECT_METHOD_REQUEST_PATH="not required";
+	public static final String REQUEST_JSON_PATH_NOT_REQUIRED="not required";
 	public static final String PROP_INVALID="Prop has an invalid Value";
 	public static final String PATCH_CLIENT_EXCEPTION = "Exception occured while creating Patch Client :: ";
 	public static final String EMPTY_RESPONSE = "Response is null or empty :: ";

@@ -1,7 +1,6 @@
 package com.cybersource.apisdk.connection.test;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
@@ -49,11 +48,11 @@ public class JwtAuthenticationStrategyTest {
 	public void getTestForGet() throws ClientException, IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
 		requestTarget = requestTarget + id;
 		merchantConfig.setRequestTarget(requestTarget);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("GET");
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setUrl(url);
@@ -70,10 +69,10 @@ public class JwtAuthenticationStrategyTest {
 	public void getTestForPost() throws ClientException, IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
 		merchantConfig.setRequestTarget(requestTarget);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("POST");
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setUrl(url);
@@ -90,10 +89,10 @@ public class JwtAuthenticationStrategyTest {
 	public void getTestForPut() throws IOException, ConfigException, ClientException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("PUT");
 		merchantConfig.setRequestTarget(requestTarget);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("PUT");
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setUrl(url);
@@ -112,10 +111,10 @@ public class JwtAuthenticationStrategyTest {
 	public void getTestForPatch() throws IOException, ConfigException, ClientException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("PATCH");
 		merchantConfig.setRequestTarget(requestTarget);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("PATCH");
 
 		url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		merchantConfig.setUrl(url);
@@ -134,14 +133,13 @@ public class JwtAuthenticationStrategyTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
 		requestTarget = requestTarget + id;
 		merchantConfig.setRequestTarget(requestTarget);
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 		 /*Set the URL.*/ 
 		merchantConfig.setUrl(url);
 		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestType("GET");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
 		logger = Log4j.getInstance(merchantConfig);
@@ -150,7 +148,7 @@ public class JwtAuthenticationStrategyTest {
 		jwtUrlConnection = new JWTAuthenticationStrategy(merchantConfig,merchantUtil.getRequestData(), logger);
 		jwtUrlConnection.openConnection();
 		jwtUrlConnection.setRequestMethod("GET");
-		Assert.assertNotNull(merchantConfig.getRequestType());
+		Assert.assertNotNull(merchantUtil.getRequestType());
 
 	}
 
@@ -159,13 +157,13 @@ public class JwtAuthenticationStrategyTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
 		requestTarget = requestTarget + id;
 		merchantConfig.setRequestTarget(requestTarget);
+		merchantConfig.setUrl("");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setUrl("");
-
+		merchantUtil.setRequestType("GET");
+		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 		

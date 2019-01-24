@@ -24,7 +24,7 @@ public interface Headers {
 	 * The response message obtained form the server is sent for masking the
 	 * important fields.
 	 */
-	void maskingPayload(String serverResponse);
+	void maskingPayload(String serverResponse, String title);
 
 	/**
 	 * Sets the request type ( GET/POST )

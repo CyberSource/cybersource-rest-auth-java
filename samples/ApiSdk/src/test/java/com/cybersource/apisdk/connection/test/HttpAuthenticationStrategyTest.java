@@ -48,20 +48,19 @@ public class HttpAuthenticationStrategyTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		
 		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
 			merchantConfig.setMerchantID("testrest");
-	        merchantConfig.setRequestType("GET");
 	        requestTarget = requestTarget + id;
 			merchantConfig.setRequestTarget(requestTarget);
 			url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 			/* Set the URL. */
 			merchantConfig.setUrl(url);
+			merchantUtil.setRequestType("GET");
+			merchantUtil.setRequestJsonPath(requestJsonPath);
 			logger = Log4j.getInstance(merchantConfig);
 			httpConnection = new HttpAuthenticationStrategy(merchantConfig,null, logger);
 			httpConnection.openConnection();
@@ -80,13 +79,14 @@ public class HttpAuthenticationStrategyTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
-			merchantUtil.setRequestJsonPath(requestJsonPath);
+			
 			merchantConfig.setMerchantID("testrest");
-	        merchantConfig.setRequestType("POST");
 	        merchantConfig.setRequestTarget(requestTarget);
 			url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 			/* Set the URL. */
 			merchantConfig.setUrl(url);
+			merchantUtil.setRequestJsonPath(requestJsonPath);
+			merchantUtil.setRequestType("POST");
 			logger = Log4j.getInstance(merchantConfig);
 			
 	
@@ -107,13 +107,13 @@ public class HttpAuthenticationStrategyTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
-			merchantUtil.setRequestJsonPath(requestJsonPath);
 			merchantConfig.setMerchantID("testrest");
-	        merchantConfig.setRequestType("PATCH");
 	        merchantConfig.setRequestTarget(requestTarget);
 			url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 			/* Set the URL. */
 			merchantConfig.setUrl(url);
+			merchantUtil.setRequestJsonPath(requestJsonPath);
+     		merchantUtil.setRequestType("PATCH");
 			logger = Log4j.getInstance(merchantConfig);
 			
 	
@@ -132,12 +132,12 @@ public class HttpAuthenticationStrategyTest {
 		merchantConfig = new MerchantConfig(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("GET");
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
-			merchantConfig.setRequestType("GET");
-	        requestTarget = requestTarget + id;
+			requestTarget = requestTarget + id;
 			merchantConfig.setRequestTarget(requestTarget);
 			logger = Log4j.getInstance(merchantConfig);
 			
@@ -159,11 +159,11 @@ public class HttpAuthenticationStrategyTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
-			merchantConfig.setRequestType("GET");
 			requestTarget = requestTarget + id;
 			merchantConfig.setRequestTarget(requestTarget);
 			merchantConfig.setUrl("abc");
 			merchantUtil.setRequestJsonPath(requestJsonPath);
+			merchantUtil.setRequestType("GET");
 			logger = Log4j.getInstance(merchantConfig);
 			
 			thrown.expect(ClientException.class);
@@ -175,6 +175,7 @@ public class HttpAuthenticationStrategyTest {
 	}
 
 
+	@SuppressWarnings("static-access")
 	@Test
 	public void setRequestMethodTest() throws ClientException, IOException, ConfigException {
 
@@ -184,7 +185,6 @@ public class HttpAuthenticationStrategyTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
-			merchantConfig.setRequestType("GET");
 			requestTarget = requestTarget + id;
 			merchantConfig.setRequestTarget(requestTarget);
 			url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
@@ -192,13 +192,14 @@ public class HttpAuthenticationStrategyTest {
 			merchantConfig.setUrl(url);
 			merchantUtil=new MerchantUtil(merchantConfig);
 			merchantUtil.setRequestJsonPath(requestJsonPath);
+			merchantUtil.setRequestType("GET");
 			logger = Log4j.getInstance(merchantConfig);
 			MerchantUtil.validateMerchantDetails();
 	
 			httpConnection = new HttpAuthenticationStrategy(merchantConfig,merchantUtil.getRequestData(), logger);
 			httpConnection.openConnection();
-			httpConnection.setRequestMethod(merchantConfig.getRequestType());
-			Assert.assertNotNull(merchantConfig.getRequestType());
+			httpConnection.setRequestMethod(merchantUtil.getRequestType());
+			Assert.assertNotNull(merchantUtil.getRequestType());
 		}
 	}
 	
@@ -210,11 +211,11 @@ public class HttpAuthenticationStrategyTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
-			merchantConfig.setRequestType("GET");
 			requestTarget = requestTarget + id;
 			merchantConfig.setRequestTarget(requestTarget);
 			merchantUtil=new MerchantUtil(merchantConfig);
 			merchantUtil.setRequestJsonPath(requestJsonPath);
+			merchantUtil.setRequestType("GET");
 	
 			url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 			merchantConfig.setUrl(url);
@@ -236,10 +237,10 @@ public class HttpAuthenticationStrategyTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
-			merchantConfig.setRequestType("POST");
 			merchantConfig.setRequestTarget(requestTarget);
 			merchantUtil=new MerchantUtil(merchantConfig);
 			merchantUtil.setRequestJsonPath(requestJsonPath);
+			merchantUtil.setRequestType("POST");
 	
 			url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 			merchantConfig.setUrl(url);
@@ -261,10 +262,10 @@ public class HttpAuthenticationStrategyTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
-			merchantConfig.setRequestType("PUT");
 			merchantConfig.setRequestTarget(requestTarget);
 			merchantUtil=new MerchantUtil(merchantConfig);
 			merchantUtil.setRequestJsonPath(requestJsonPath);
+			merchantUtil.setRequestType("PUT");
 	
 			url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 			merchantConfig.setUrl(url);
@@ -287,10 +288,10 @@ public class HttpAuthenticationStrategyTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(null);
 		} else {
-			merchantConfig.setRequestType("PATCH");
 			merchantConfig.setRequestTarget(requestTarget);
 			merchantUtil=new MerchantUtil(merchantConfig);
 			merchantUtil.setRequestJsonPath(requestJsonPath);
+			merchantUtil.setRequestType("PATCH");
 	
 			url = url + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 			merchantConfig.setUrl(url);

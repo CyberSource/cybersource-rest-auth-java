@@ -34,12 +34,14 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 	 *            -contains information for merchant.
 	 * @param requestData
 	 *            - request data.
+	 * @param requestType          
+	 *            - request type 
 	 */
-	public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, String requestData) {
+	public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, String requestData, String requestType) {
 
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
-		this.httpMethod = merchantConfig.getRequestType();
+		this.httpMethod = requestType;
 		this.log = Log4j.getInstance(merchantConfig);
 	}
 
@@ -67,6 +69,9 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 			Utility.log(log, GlobalLabelParameters.No_SUCH_ALGORITHM, "", Level.INFO);
 			throw new ConfigException(GlobalLabelParameters.No_SUCH_ALGORITHM);
 
+		} catch (IllegalArgumentException e) {
+			Utility.log(log, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.INFO);
+			throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
 		} catch (Exception e) {
 			Utility.log(log, GlobalLabelParameters.DIGEST_GEN_FAILED, "", Level.INFO);
 			throw new ConfigException(GlobalLabelParameters.DIGEST_GEN_FAILED);
@@ -110,7 +115,7 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 		/*
 		 * Get Value for paramter 'Signature' to be passed to Signature Header
 		 */
-		String signatureValue = new SignatureGenerator(merchantConfig, requestData).generateSignature();
+		String signatureValue = new SignatureGenerator(merchantConfig, requestData, httpMethod).generateSignature();
 		signatureHeader.append(", signature=\"" + signatureValue + "\"");
 		return signatureHeader.toString();
 	}

@@ -34,8 +34,8 @@ public class SignatureGeneratorTest {
 		
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
 		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestType(GlobalLabelParameters.GET);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.getRequestData();
 		merchantConfig.setMerchantDetails();
@@ -43,7 +43,7 @@ public class SignatureGeneratorTest {
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 		
-		signatureGenerator = new SignatureGenerator(merchantConfig,null);
+		signatureGenerator = new SignatureGenerator(merchantConfig,null, GlobalLabelParameters.GET);
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
@@ -59,15 +59,15 @@ public class SignatureGeneratorTest {
 		
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
 		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setMerchantDetails();
 		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 		
-		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData());
+		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.POST);
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
@@ -83,15 +83,15 @@ public class SignatureGeneratorTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("PATCH");
 		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestType(GlobalLabelParameters.PATCH);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setMerchantDetails();
 		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 		
-		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData());
+		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.PATCH);
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
@@ -107,15 +107,15 @@ public class SignatureGeneratorTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("PUT");
 		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestType(GlobalLabelParameters.PUT);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setMerchantDetails();
 		
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 		
-		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData());
+		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(),GlobalLabelParameters.PUT);
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
@@ -131,14 +131,13 @@ public class SignatureGeneratorTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("option");
-		
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
+		merchantUtil.setRequestType("option");
 
-		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData());
+		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(),GlobalLabelParameters.GET);
 
-		String str = signatureGenerator.getRequestTarget(merchantConfig.getRequestType());
+		String str = signatureGenerator.getRequestTarget(MerchantUtil.getRequestType());
 		Assert.assertNull(str);
 
 	}

@@ -2,8 +2,6 @@ package com.cybersource.apisdk.masking;
 
 import java.util.Map.Entry;
 
-import org.apache.logging.log4j.Logger;
-
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,11 +18,9 @@ public class Masking {
 	/**
 	 * @param json
 	 *            - data to mask.
-	 * @param logger
-	 *            - logger to log all information in log file.
 	 * @return masked data.
 	 */
-	public static String prepareMasking(String json, Logger logger) {
+	public static String prepareMasking(String json) {
 		/* Add the fields need to be masked in this list */
 		String[] list = { "email", "cardNumber", "expirationDate", "expirationMonth", "cardType", "cardCode",
 				"nameOnAccount", "currency" };
