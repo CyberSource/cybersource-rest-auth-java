@@ -38,14 +38,13 @@ public class PutGenerateHeaders {
 	private String tempSig;
 
 	private static String requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
-	
+
 	/**
 	 * @param merchantConfig
 	 * @param requestData
 	 * @throws ConfigException
 	 */
-	public PutGenerateHeaders(MerchantConfig merchantConfig, String requestData)
-			throws ConfigException {
+	public PutGenerateHeaders(MerchantConfig merchantConfig, String requestData) throws ConfigException {
 		this.requestData = requestData;
 		logger = Log4j.getInstance(merchantConfig);
 		digest = new PayloadDigest(requestData);
@@ -55,7 +54,7 @@ public class PutGenerateHeaders {
 
 	/**
 	 * @throws ConfigException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public PutGenerateHeaders() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
@@ -67,8 +66,8 @@ public class PutGenerateHeaders {
 		logger = Log4j.getInstance(merchantConfig);
 		this.requestData = merchantUtil.getRequestData();
 		digest = new PayloadDigest(requestData);
-		
-		System.out.println(" Authentication Type : " +  merchantConfig.getAuthenticationType());
+
+		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, " Generate PUT Headers *******************",
 				Level.INFO);
 		boolean isMerchant = MerchantUtil.validateMerchantDetails();
@@ -84,8 +83,7 @@ public class PutGenerateHeaders {
 	 * @throws ConfigException
 	 */
 	private void PutMethodHeaders(MerchantConfig merchantConfig) throws ConfigException {
-		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestTarget, 
-				Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestTarget, Level.INFO);
 		authenticationType = merchantConfig.getAuthenticationType();
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), requestType, Level.INFO);
@@ -95,10 +93,10 @@ public class PutGenerateHeaders {
 		System.out.println(" Request Type        : " + requestType);
 		System.out.println(
 				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
-		
+
 		/* Signature Header */
 		tempSig = Authorization.getToken(merchantConfig, requestData, requestType);
-		
+
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),
 					Level.INFO);
@@ -129,7 +127,7 @@ public class PutGenerateHeaders {
 	 * @throws IOException
 	 * @throws ConfigException
 	 */
-	public static void main(String[] args) throws  ConfigException, IOException {
+	public static void main(String[] args) throws ConfigException, IOException {
 		new PutGenerateHeaders();
 	}
 }

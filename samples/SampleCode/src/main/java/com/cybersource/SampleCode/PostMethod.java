@@ -41,10 +41,11 @@ public class PostMethod {
 	private String url;
 
 	/**
-	 *  This method initiates or begins the process. 
+	 * This method initiates or begins the process.
+	 * 
 	 * @param args
-	 * @throws ConfigException 
-	 * @throws IOException 
+	 * @throws ConfigException
+	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException, ConfigException {
 		new PostMethod();
@@ -54,20 +55,20 @@ public class PostMethod {
 	 * @throws IOException
 	 * @throws ConfigException
 	 */
-	public PostMethod() throws IOException, ConfigException{
+	public PostMethod() throws IOException, ConfigException {
 		apiController = new ApiController();
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantUtil=new MerchantUtil(merchantConfig);
+		merchantUtil = new MerchantUtil(merchantConfig);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Set request Type. */
 		merchantUtil.setRequestType(requestType);
 		/* Set request data */
-		
+
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		requestData=merchantUtil.getRequestData();
+		requestData = merchantUtil.getRequestData();
 		/* Set request target */
 		merchantConfig.setRequestTarget(requestTarget);
 		/* Set URL path w.r.t Post operation. */
@@ -80,13 +81,14 @@ public class PostMethod {
 	/**
 	 * Calls the APISDK for processing the payment request.
 	 */
-	private void process(){
+	private void process() {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 		try {
 			/* Call payment method of Api Controller class */
-			responseObj = apiController.paymentPost(merchantConfig,requestData);
+			responseObj = apiController.paymentPost(merchantConfig, requestData);
 			/* Display Response Message from the server and Headers. */
-			if (StringUtils.isNotBlank(responseObj.getResponseCode())&& StringUtils.isNotBlank(responseObj.getResponseMessage())) {
+			if (StringUtils.isNotBlank(responseObj.getResponseCode())
+					&& StringUtils.isNotBlank(responseObj.getResponseMessage())) {
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + responseObj.getResponseCode());
 				System.out.println(" v-c-Co-relation ID  : " + responseObj.getVcCorelationId());

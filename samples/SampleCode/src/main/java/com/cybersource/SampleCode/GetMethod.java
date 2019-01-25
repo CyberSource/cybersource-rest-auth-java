@@ -31,6 +31,7 @@ public class GetMethod {
 
 	/**
 	 * This method initiates or begins the process.
+	 * 
 	 * @param args
 	 * @throws IOException
 	 * @throws ConfigException
@@ -41,15 +42,15 @@ public class GetMethod {
 
 	/**
 	 * 
-	 * @throws IOException 
-	 * @throws ConfigException 
+	 * @throws IOException
+	 * @throws ConfigException
 	 */
 	public GetMethod() throws IOException, ConfigException {
 		apiController = new ApiController();
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		MerchantUtil merchantUtil=new MerchantUtil(merchantConfig);
+		MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
 		/* Set Request Type into the merchant config object. */
 		merchantUtil.setRequestType(requestType);
@@ -65,7 +66,7 @@ public class GetMethod {
 	}
 
 	/**
-	 * @throws Exception 
+	 * @throws Exception
 	 * 
 	 */
 	private void process() {
@@ -73,10 +74,10 @@ public class GetMethod {
 
 		try {
 			/* Calling APISDK, com.cybersouce.api.controller. */
-			response = apiController.paymentGet(merchantConfig,null);
+			response = apiController.paymentGet(merchantConfig, null);
 			/* Display response message and Headers in console. */
-			if (StringUtils.isNotBlank(response.getResponseCode())&& StringUtils.isNotBlank(response.getResponseMessage())) {
-				//new GetGenerateHeaders(merchantConfig , null);
+			if (StringUtils.isNotBlank(response.getResponseCode())
+					&& StringUtils.isNotBlank(response.getResponseMessage())) {
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + response.getResponseCode());
 				System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());

@@ -31,7 +31,7 @@ public class DeleteMethod {
 
 	/**
 	 * @param args
-	 * This method initiates or begins the process.
+	 *            This method initiates or begins the process.
 	 * @throws IOException
 	 * @throws ConfigException
 	 */
@@ -80,7 +80,6 @@ public class DeleteMethod {
 			/* Display Response Message from the server. */
 			if (StringUtils.isNotBlank(response.getResponseCode())
 					&& StringUtils.isNotBlank(response.getResponseMessage())) {
-				//new DeleteGenerateHeaders(merchantConfig);
 				System.out.println(" URL                : " + url);
 				System.out.println(" Response Code       : " + response.getResponseCode());
 				System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());

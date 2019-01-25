@@ -73,8 +73,8 @@ public class PatchGenerateHeaders {
 		requestData = merchantUtil.getRequestData();
 		Log4j.logEnable = merchantConfig.getEnableLog();
 		digest = new PayloadDigest(requestData);
-		Utility.log(this.logger,
-				GlobalLabelParameters.BEGIN_TRANSCATION , " Generate PATCH Headers *******************", Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, " Generate PATCH Headers *******************",
+				Level.INFO);
 		if (MerchantUtil.validateMerchantDetails()) {
 			generatePatchHeaders();
 		}

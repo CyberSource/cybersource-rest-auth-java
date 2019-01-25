@@ -40,13 +40,15 @@ public class PutMethod {
 	private String url;
 	/* Request Data. */
 	private String requestData = PayloadData.readData();
+
 	/**
 	 * This method initiates or begins the process.
+	 * 
 	 * @param args
 	 * @throws IOException
 	 * @throws ConfigException
 	 */
-	public static void main(String[] args) throws IOException, ConfigException{
+	public static void main(String[] args) throws IOException, ConfigException {
 		new PutMethod(args);
 	}
 
@@ -54,10 +56,10 @@ public class PutMethod {
 	 * 
 	 * @param
 	 * @return
-	 * @throws IOException 
-	 * @throws ConfigException 
+	 * @throws IOException
+	 * @throws ConfigException
 	 */
-	public PutMethod(String[] args) throws IOException, ConfigException{
+	public PutMethod(String[] args) throws IOException, ConfigException {
 		apiController = new ApiController();
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
@@ -72,7 +74,7 @@ public class PutMethod {
 		 */
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setRequestTarget(requestTarget);
-		requestData=merchantUtil.getRequestData();
+		requestData = merchantUtil.getRequestData();
 		merchantUtil.setRequestData(requestData);
 		/* Construct the URL with respect to PUTID. */
 		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();

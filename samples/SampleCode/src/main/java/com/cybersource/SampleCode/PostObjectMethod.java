@@ -40,11 +40,12 @@ public class PostObjectMethod {
 
 	/**
 	 * This method initiates or begins the process. *
+	 * 
 	 * @param args
 	 * @throws ConfigException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public static void main(String[] args) throws ConfigException, IOException{
+	public static void main(String[] args) throws ConfigException, IOException {
 		new PostObjectMethod();
 	}
 
@@ -52,17 +53,17 @@ public class PostObjectMethod {
 	 * 
 	 * @param
 	 * @return
-	 * @throws ConfigException 
-	 * @throws IOException 
+	 * @throws ConfigException
+	 * @throws IOException
 	 * @throws Exception
 	 */
-	public PostObjectMethod() throws ConfigException, IOException{
+	public PostObjectMethod() throws ConfigException, IOException {
 		apiController = new ApiController();
 		/* Read Merchant details. */
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantUtil=new MerchantUtil(merchantConfig);
-		
+		merchantUtil = new MerchantUtil(merchantConfig);
+
 		merchantUtil.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
@@ -85,13 +86,14 @@ public class PostObjectMethod {
 	 * 
 	 * @throws Exception
 	 */
-	private void process(){
+	private void process() {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 		try {
 			/* Call payment method of Api Controller class */
-			response = apiController.paymentPost(merchantConfig,requestData);
+			response = apiController.paymentPost(merchantConfig, requestData);
 			/* Display Response Message from the server and Headers. */
-			if (!StringUtils.isBlank(response.getResponseCode()) && !StringUtils.isBlank(response.getResponseMessage())) {
+			if (!StringUtils.isBlank(response.getResponseCode())
+					&& !StringUtils.isBlank(response.getResponseMessage())) {
 				System.out.println(" URL                 : " + url);
 				System.out.println(" Response Code       : " + response.getResponseCode());
 				System.out.println(" v-c-Co-relation ID  : " + response.getVcCorelationId());

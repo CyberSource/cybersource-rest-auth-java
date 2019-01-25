@@ -93,7 +93,6 @@ public class DeleteGenerateHeaders {
 				Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "), date, Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "), merchantConfig.getRequestHost(), Level.INFO);
-		
 
 		System.out.println(" Request Type        : " + requestType);
 		System.out.println(" Date                : " + date);
