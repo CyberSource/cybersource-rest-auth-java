@@ -56,8 +56,8 @@ public class GlobalLabelParameters {
 	public static final String MERCH_CONF_LABEL = "MERCHCFG : ";
 	public static final String DEFAULT_LOG_SIZE = "5K";
 	/* Logging Messages. */
-	public static final String BEGIN_TRANSCATION = "********* START *********";
-	public static final String END_TRANSCATION = "********* END   *********";
+	public static final String BEGIN_TRANSACTION = "********* START *********";
+	public static final String END_TRANSACTION = "********* END   *********";
 	/* Exceptions */
 	public static final String FILE_NOT_FOUND = "Request File not found, Entered path/file name ";
 	public static final String KEY_FILE_NOT_FOUND = "KeyFile not found, Entered path/file name :: ";

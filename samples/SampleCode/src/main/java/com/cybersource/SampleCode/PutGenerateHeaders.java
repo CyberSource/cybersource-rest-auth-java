@@ -68,13 +68,13 @@ public class PutGenerateHeaders {
 		digest = new PayloadDigest(requestData);
 
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, " Generate PUT Headers *******************",
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PUT Headers *******************",
 				Level.INFO);
 		boolean isMerchant = MerchantUtil.validateMerchantDetails();
 		if (isMerchant) {
 			PutMethodHeaders(merchantConfig);
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 

@@ -76,7 +76,7 @@ public class GetGenerateHeaders {
 		merchantUtil.setRequestType(requestType);
 		this.logger = Log4j.getInstance(merchantConfig);
 		generateGetHeaders();
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 		Utility.log(this.logger, " ", "", Level.OFF);
 
 	}
@@ -95,12 +95,12 @@ public class GetGenerateHeaders {
 		merchantUtil.setRequestType(requestType);
 		merchantUtil.setRequestJsonPath("not required");
 		Log4j.logEnable = merchantConfig.getEnableLog();
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, " Generate GET Headers *******************",
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate GET Headers *******************",
 				Level.INFO);
 		if (MerchantUtil.validateMerchantDetails()) {
 			generateGetHeaders();
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 

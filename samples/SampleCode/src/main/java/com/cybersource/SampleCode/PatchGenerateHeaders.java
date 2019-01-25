@@ -66,19 +66,19 @@ public class PatchGenerateHeaders {
 		merchantUtil = new MerchantUtil(merchantConfig);
 		Log4j.logEnable = false;
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, " Generate PATCH Headers *******************",
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PATCH Headers *******************",
 				Level.INFO);
 		merchantUtil.setRequestType(requestType);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		requestData = merchantUtil.getRequestData();
 		Log4j.logEnable = merchantConfig.getEnableLog();
 		digest = new PayloadDigest(requestData);
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, " Generate PATCH Headers *******************",
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PATCH Headers *******************",
 				Level.INFO);
 		if (MerchantUtil.validateMerchantDetails()) {
 			generatePatchHeaders();
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 

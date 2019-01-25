@@ -1,7 +1,6 @@
 package com.cybersource.SampleCode;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -70,12 +69,12 @@ public class PostGenerateHeaders {
 		requestData = merchantUtil.getRequestData();
 		Log4j.logEnable = merchantConfig.getEnableLog();
 		digest = new PayloadDigest(requestData);
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION, " Generate POST Headers *******************",
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate POST Headers *******************",
 				Level.INFO);
 		if (MerchantUtil.validateMerchantDetails()) {
 			generatePostHeaders();
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 

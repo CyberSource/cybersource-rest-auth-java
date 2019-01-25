@@ -112,7 +112,7 @@ public class ApiController {
 		Response responseObj = null;
 		try {
 			logger = Log4j.getInstance(merchantConfig);
-			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSACTION, "", Level.INFO);
 			commonApiControllerCheck(merchantConfig);
 			if (isAuthicationTypeValid) {
 				if (isMerchantConfigValid) {
@@ -133,7 +133,7 @@ public class ApiController {
 			return responseObj;
 
 		} finally {
-			Utility.log(logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			Utility.log(logger, " ", "", Level.OFF);
 		}
     }

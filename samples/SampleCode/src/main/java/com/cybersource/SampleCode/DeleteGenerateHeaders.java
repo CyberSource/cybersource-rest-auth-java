@@ -48,12 +48,12 @@ public class DeleteGenerateHeaders {
 		Log4j.logEnable = false;
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 		Log4j.logEnable = merchantConfig.getEnableLog();
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION,
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
 				" Generate DELETE Headers *******************", Level.INFO);
 		if (MerchantUtil.validateMerchantDetails()) {
 			generateDeleteHeaders();
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
@@ -62,11 +62,11 @@ public class DeleteGenerateHeaders {
 		setGenerateHeaders(merchantConfig);
 		Log4j.logEnable = false;
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSCATION,
+		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
 				" Generate DELETE Headers *******************", Level.INFO);
 		MerchantUtil.validateMerchantDetails();
 		generateDeleteHeaders();
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
