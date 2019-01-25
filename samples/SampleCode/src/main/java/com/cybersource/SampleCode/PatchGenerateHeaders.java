@@ -144,9 +144,9 @@ public class PatchGenerateHeaders {
 		} else {
 			/* JWT */
 			System.out.println(" " + GlobalLabelParameters.AUTHORIZARION_BEARER + tempSig);
-			System.out.println(" " + GlobalLabelParameters.PROFILE_ID + " : " + GlobalLabelParameters.PROFILE_ID_VAL);
+			System.out.println(" " + GlobalLabelParameters.PROFILE_ID.concat(" : ") + GlobalLabelParameters.PROFILE_ID_VAL);
 			Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, tempSig, Level.INFO);
-			Utility.log(logger, GlobalLabelParameters.PROFILE_ID, GlobalLabelParameters.PROFILE_ID_VAL, Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.PROFILE_ID.concat(" : "), GlobalLabelParameters.PROFILE_ID_VAL, Level.INFO);
 		}
 	}
 
