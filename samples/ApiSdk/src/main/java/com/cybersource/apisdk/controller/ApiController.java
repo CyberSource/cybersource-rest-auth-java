@@ -110,29 +110,33 @@ public class ApiController {
 	 */
 	private Response processPayment(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
 		Response responseObj = null;
-		commonApiControllerCheck(merchantConfig);
-		if (isAuthicationTypeValid) {
-			if (isMerchantConfigValid) {
-				Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, merchantConfig.getRequestTarget(), Level.INFO);
-				Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(), Level.INFO);
-				Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : " + MerchantUtil.getRequestType(), Level.INFO);
-				Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " " + merchantConfig.toString(), Level.INFO);
-				PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestData, logger);
-				responseObj = paymentRequest.processPaymentRequest();
-				Utility.log(logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
-				Utility.log(logger, " ", "", Level.OFF);
-				return responseObj;
+		try {
+			logger = Log4j.getInstance(merchantConfig);
+			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
+			commonApiControllerCheck(merchantConfig);
+			if (isAuthicationTypeValid) {
+				if (isMerchantConfigValid) {
+					Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, merchantConfig.getRequestTarget(), Level.INFO);
+					Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(), Level.INFO);
+					Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : " + MerchantUtil.getRequestType(), Level.INFO);
+					Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " " + merchantConfig.toString(), Level.INFO);
+					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestData, logger);
+					responseObj = paymentRequest.processPaymentRequest();
+					return responseObj;
+				} else {
+					Utility.log(logger, GlobalLabelParameters.MERCHANT_VALIDATION_ERROR, "", Level.INFO);
+					throw new ConfigException(GlobalLabelParameters.MERCHANT_VALIDATION_ERROR);
+				}
 			} else {
-				Utility.log(logger, GlobalLabelParameters.MERCHANT_VALIDATION_ERROR, "", Level.INFO);
-				Utility.log(logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
-				Utility.log(logger, " ", "", Level.OFF);
-				throw new ConfigException(GlobalLabelParameters.MERCHANT_VALIDATION_ERROR);
+				authenticationException(merchantConfig.getAuthenticationType());
 			}
-		} else {
-			authenticationException(merchantConfig.getAuthenticationType());
+			return responseObj;
+
+		} finally {
+			Utility.log(logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
+			Utility.log(logger, " ", "", Level.OFF);
 		}
-		return responseObj;
-	}
+    }
 
 	/**
 	 * 
@@ -143,13 +147,9 @@ public class ApiController {
 	 */
 	public void commonApiControllerCheck(MerchantConfig merchantConfig) throws ConfigException {
 		/* Retrieve authentication type for validating. */
-		
 		String authenticationType = merchantConfig.getAuthenticationType();
 		isAuthicationTypeValid = Utility.checkAuthenticationValidation(authenticationType);
 		if (MerchantUtil.isSetMerchantDetails()) {
-			/* Initializing the logging object. */
-			logger = Log4j.getInstance(merchantConfig);
-			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 			/* Validate Merchant Details. */
 			isMerchantConfigValid = MerchantUtil.validateMerchantDetails();
 		} else {
@@ -164,10 +164,6 @@ public class ApiController {
 	 */
 	private void authenticationException(String authenticationType) throws ConfigException {
 		Utility.log(logger, GlobalLabelParameters.AUTH_ERROR, authenticationType, Level.FATAL);
-		try {
-			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
-		} finally {
-			Utility.log(logger, GlobalLabelParameters.END_TRANSCATION, "", Level.INFO);
-		}
+		throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 	}
 }

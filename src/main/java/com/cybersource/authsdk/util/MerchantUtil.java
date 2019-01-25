@@ -139,8 +139,6 @@ public class MerchantUtil {
 		boolean check = true;
 		if (merchantConfig.getAuthenticationType() == null || merchantConfig.getAuthenticationType().isEmpty()) {
 			log = Log4j.getInstance(merchantConfig);
-			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
-			Utility.log(log, GlobalLabelParameters.AUTH_NULL_EMPTY, "", Level.ERROR);
 			check = false;
 			throw new ConfigException(GlobalLabelParameters.AUTH_NULL_EMPTY);
 		}
@@ -148,7 +146,6 @@ public class MerchantUtil {
 				|| merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)
 				|| merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWE))) {
 			log = Log4j.getInstance(merchantConfig);
-			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 			Utility.log(log, GlobalLabelParameters.AUTH_ERROR, "", Level.ERROR);
 			check = false;
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
@@ -163,23 +160,8 @@ public class MerchantUtil {
 	 */
 	public static boolean checkMerchantId() throws ConfigException {
 		boolean check = true;
-//		if (merchantConfig.getMerchantID() == null || merchantConfig.getMerchantID().isEmpty()) {
-//			log = Log4j.getInstance(merchantConfig);
-//			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
-//			Utility.log(log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, "", Level.ERROR);
-//			check = false;
-//			throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
-//		}
-//		if (StringUtils.isBlank(merchantConfig.getMerchantID())) {
-//			log = Log4j.getInstance(merchantConfig);
-//			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
-//			Utility.log(log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, "", Level.ERROR);
-//			check = false;
-//			throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
-//		}
 		if (StringUtils.isBlank(merchantConfig.getMerchantID())) {
 			log = Log4j.getInstance(merchantConfig);
-			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 			Utility.log(log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, "", Level.ERROR);
 			check = false;
 			throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);

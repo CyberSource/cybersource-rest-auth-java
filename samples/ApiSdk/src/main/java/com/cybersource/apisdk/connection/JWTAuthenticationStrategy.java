@@ -114,10 +114,10 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		  Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.ERROR);
     	  throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
       } catch (ConfigException e) {
-    	  Utility.log(logger, "Exception in getJwtConnection method", "", Level.ERROR);
+    	  Utility.log(logger, e.getMessage(), "", Level.ERROR);
     	  throw e;
       } catch (ClientException e) {
-    	  Utility.log(logger, "Exception in getJwtConnection method", "", Level.ERROR);
+    	  Utility.log(logger, e.getMessage(), "", Level.ERROR);
     	  throw e;
       }	catch (Exception e) {
     	  Utility.log(logger,e);
