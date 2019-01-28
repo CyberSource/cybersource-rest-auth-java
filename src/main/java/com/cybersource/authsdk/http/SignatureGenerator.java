@@ -12,7 +12,7 @@ import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.PropertiesUtil;
+import com.cybersource.authsdk.util.MerchantUtil;
 
 /* This method returns value for parameter Signature which is then passed to Signature header
  * parameter 'Signature' is calculated based on below key values and then signed with SECRET KEY -
@@ -72,7 +72,7 @@ public class SignatureGenerator {
 		signatureString.append('\n');
 		signatureString.append(GlobalLabelParameters.DATE.toLowerCase());
 		signatureString.append(": ");
-		signatureString.append(PropertiesUtil.date);
+		signatureString.append(MerchantUtil.date);
 		signatureString.append('\n');
 		signatureString.append("(request-target)");
 		signatureString.append(": ");

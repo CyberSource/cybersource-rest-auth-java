@@ -1,7 +1,5 @@
 package com.cybersource.authsdk.core;
 
-import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
 import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -18,20 +16,18 @@ public class TokenGeneratorFactory {
 	 *            contains information of merchant.
 	 * @param requestBody-
 	 *            request data.
-	 * @param requestBody-
-	 *            request type.
 	 * @return token as per http_signature and JWT.
 	 * @throws ConfigException
 	 *             - if some value is missing or wrong for merchant.
 	 */
-	public static TokenGenerator getAuthTokenGenerator(MerchantConfig merchantConfig, String requestBody, String requestType)
+	public static TokenGenerator getAuthTokenGenerator(MerchantConfig merchantConfig, String requestBody)
 			throws ConfigException {
 		String authType = merchantConfig.getAuthenticationType();
 
 		if (authType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			return new HttpSignatureTokenGenerator(merchantConfig, requestBody, requestType);
+			return new HttpSignatureTokenGenerator(merchantConfig, requestBody);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			return new JwtSignatureTokenGenerator(merchantConfig, requestBody, requestType);
+			return new JwtSignatureTokenGenerator(merchantConfig, requestBody);
 		} else {
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 		}

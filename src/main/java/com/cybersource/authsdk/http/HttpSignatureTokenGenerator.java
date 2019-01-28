@@ -12,6 +12,7 @@ import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /* HttpSigToken return SignatureHeader Value that contains following parameters
@@ -34,14 +35,12 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 	 *            -contains information for merchant.
 	 * @param requestData
 	 *            - request data.
-	 * @param requestType          
-	 *            - request type 
 	 */
-	public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, String requestData, String requestType) {
+	public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, String requestData) {
 
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
-		this.httpMethod = requestType;
+		this.httpMethod = MerchantUtil.getRequestType();
 		this.log = Log4j.getInstance(merchantConfig);
 	}
 

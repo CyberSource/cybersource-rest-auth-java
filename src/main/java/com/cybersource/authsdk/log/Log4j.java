@@ -72,10 +72,10 @@ public class Log4j {
 	 * 
 	 * @param filePath
 	 *            - path for log file.
-	 * @param vlevel
+	 * @param level
 	 *            - level for log file.
 	 */
-	private void addAppenderLogger(String filePath, Level vlevel) {
+	private void addAppenderLogger(String filePath, Level level) {
 		ConfigurationBuilder<BuiltConfiguration> builder;
 		LayoutComponentBuilder layoutBuilder;
 		AppenderComponentBuilder appenderBuilder;
@@ -101,7 +101,7 @@ public class Log4j {
 
 		/* Create the new logger. */
 		builder.add(
-				builder.newRootLogger(vlevel).add(builder.newAppenderRef("rolling")).addAttribute("additivity", false));
+				builder.newRootLogger(level).add(builder.newAppenderRef("rolling")).addAttribute("additivity", false));
 		Configurator.initialize(builder.build());
 	}
 

@@ -95,7 +95,7 @@ public class PutGenerateHeaders {
 				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
 
 		/* Signature Header */
-		tempSig = Authorization.getToken(merchantConfig, requestData, requestType);
+		tempSig = Authorization.getToken(merchantConfig, requestData);
 
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),

@@ -120,7 +120,7 @@ public class GetGenerateHeaders {
 		authenticationType = merchantConfig.getAuthenticationType();
 		this.logger = Log4j.getInstance(merchantConfig);
 		Log4j.logEnable = false;
-		Authorization.getToken(merchantConfig, null, requestType);
+		Authorization.getToken(merchantConfig, null);
 	}
 
 	/**
@@ -153,13 +153,13 @@ public class GetGenerateHeaders {
 			Utility.log(logger, GlobalLabelParameters.USERAGENT.concat(" : "), GlobalLabelParameters.USER_AGENT_VALUE,
 					Level.INFO);
 			/* Signature Header */
-			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData(), requestType);
+			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData());
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE.concat(" : "), tempSig, Level.INFO);
 			System.out.println(" Signature           : " + tempSig);
 
 		} else {
 			/* JWT */
-			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData(), requestType);
+			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData());
 			System.out.println(" Authorization :  Bearer " + tempSig.toString());
 			Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, tempSig, Level.INFO);
 		}

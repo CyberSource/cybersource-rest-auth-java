@@ -51,7 +51,6 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	private Integer responseCode;
 	private String responseMessage;
 	private String jwtMethodType = null;
-	private String getId = null;
 	private String requestBody = null;
 
 	/**
@@ -62,14 +61,13 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *            - request Payload .
 	 * @param logger
 	 *            - logger to log all information in log file.
+	 * @throws ClientException 
 	 */
-	public JWTAuthenticationStrategy(MerchantConfig merchantConfig, String requestData, Logger logger) {
+	public JWTAuthenticationStrategy(MerchantConfig merchantConfig, String requestData, Logger logger) throws ClientException {
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
 		this.logger = logger;
 		this.jwtMethodType = MerchantUtil.getRequestType();
-		this.getId = Utility.retrieveGetIDFromRequestTarget(merchantConfig.getRequestTarget());
-
 	}
 
 	Response responseObj;
@@ -90,17 +88,12 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		   } else {
 				if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
 						|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-					requestBody = getId;
-				} else /* jwtMethod = POST */ {
-					requestBody = requestData;
-				}
-				if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
-						|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
 		
 					responseObj = jwtConnection();
 					responseCode = connection.getResponseCode();
 				} else if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
 						|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+					requestBody = requestData;
 					responseObj = postDocument(requestBody);
 					responseCode = connection.getResponseCode();
 				}
@@ -139,7 +132,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		this.connection.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 
 		/* Add Request Header :: "Signature" */
-		String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData, jwtMethodType);
+		String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData);
 		if (encryptedJWTSignature == null || encryptedJWTSignature.isEmpty()) {
 			isSignatureAlert = true;
 			return;
@@ -298,10 +291,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	@Override
 	public void setRequestMethod(String method) throws ClientException {
 		try {
-			//Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), method, Level.INFO);
 			this.connection.setRequestMethod(method);
-			if (method.equalsIgnoreCase(GlobalLabelParameters.GET))
-				logger.info("GETID" + " : " + this.getId);
 		} catch (ProtocolException e) {
 			Utility.log(logger, GlobalLabelParameters.REQUEST_SET_ERROR.concat(" : "), method, Level.FATAL);
 			throw new ClientException(GlobalLabelParameters.REQUEST_SET_ERROR.concat(method));
@@ -462,7 +452,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			httpPatch.setHeader(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 
 			/* Add Request Header :: "Signature" */
-			String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData, jwtMethodType);
+			String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData);
 			if (encryptedJWTSignature == null || encryptedJWTSignature.isEmpty()) {
 				isSignatureAlert = true;
 			}

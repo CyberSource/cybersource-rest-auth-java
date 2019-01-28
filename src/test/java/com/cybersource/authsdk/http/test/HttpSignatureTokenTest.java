@@ -45,7 +45,7 @@ public class HttpSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 		
-		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,null,GlobalLabelParameters.GET);
+		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,null);
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
@@ -69,7 +69,7 @@ public class HttpSignatureTokenTest {
 		logger = Log4j.getInstance(merchantConfig);
 		MerchantUtil.validateMerchantDetails();
 
-		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.POST);
+		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData());
 
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -90,7 +90,7 @@ public class HttpSignatureTokenTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType(GlobalLabelParameters.PUT);
 		
-		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.PUT);
+		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData());
 
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -111,7 +111,7 @@ public class HttpSignatureTokenTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType("DELETE");
 		
-		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.DELETE);
+		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData());
 
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {

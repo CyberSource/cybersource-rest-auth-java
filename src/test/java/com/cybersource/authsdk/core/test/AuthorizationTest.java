@@ -47,7 +47,7 @@ public class AuthorizationTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(token);
 		} else {
-			token = Authorization.getToken(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.GET);
+			token = Authorization.getToken(merchantConfig,merchantUtil.getRequestData());
 			Assert.assertNotNull(token);
 		}
 	}
@@ -68,7 +68,7 @@ public class AuthorizationTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token);
 		} else {
-			token = Authorization.getToken(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.POST);
+			token = Authorization.getToken(merchantConfig,merchantUtil.getRequestData());
 			Assert.assertNotNull(token);
 		}
 	}
@@ -87,7 +87,7 @@ public class AuthorizationTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)
 				|| merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			MerchantUtil.validateMerchantDetails();
-			token = Authorization.getToken(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.POST);
+			token = Authorization.getToken(merchantConfig,merchantUtil.getRequestData());
 		}
 		Assert.assertNull(token);
 	}

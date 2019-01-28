@@ -33,7 +33,6 @@ import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
-import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /**
@@ -71,16 +70,6 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 		this.digestPayLoad = new PayloadDigest(requestData);
 		this.requestType = MerchantUtil.getRequestType();
 		this.logger = logger;
-		try {
-			if (requestType.equalsIgnoreCase(GlobalLabelParameters.GET)) {
-				String requestId = Utility.retrieveGetIDFromRequestTarget(merchantConfig.getRequestTarget());
-				Utility.log(logger, GlobalLabelParameters.GET_ID, requestId, Level.INFO);
-			}
-		} catch (NullPointerException e) {
-			Utility.log(logger, GlobalLabelParameters.GET_ID_IS_MISSING, "", Level.FATAL);
-			throw new ClientException(GlobalLabelParameters.GET_ID_IS_MISSING);
-		}
-
 	}
 
 	@Override
@@ -114,8 +103,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			 * Add Request Header :: "Date" The date and time that the message was
 			 * originated from. "HTTP-date" format as defined by RFC7231.
 			 */
-			con.setRequestProperty(GlobalLabelParameters.DATE, PropertiesUtil.date);
-			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(PropertiesUtil.date), Level.INFO);
+			con.setRequestProperty(GlobalLabelParameters.DATE, MerchantUtil.date);
+			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(MerchantUtil.date), Level.INFO);
 			/*
 			 * Add Request Header :: "Host" Sandbox Host :: apitest.cybersource.com
 			 * Production Host :: api.cybersource.com
@@ -132,7 +121,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 				Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
 			}
 			/* Add Request Header :: "Signature" */
-			String signatureHeaderValue = Authorization.getToken(merchantConfig, requestData,requestType);
+			String signatureHeaderValue = Authorization.getToken(merchantConfig, requestData);
 			con.setRequestProperty(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE, " : ".concat(signatureHeaderValue), Level.INFO);
 
@@ -445,8 +434,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			 * Add Request Header :: "Date" The date and time that the message was
 			 * originated from. "HTTP-date" format as defined by RFC7231.
 			 */
-			httpPatch.setHeader(GlobalLabelParameters.DATE, PropertiesUtil.date);
-			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(PropertiesUtil.date), Level.INFO);
+			httpPatch.setHeader(GlobalLabelParameters.DATE, MerchantUtil.date);
+			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(MerchantUtil.date), Level.INFO);
 			/*
 			 * Add Request Header :: "Host" Sandbox Host :: apitest.cybersource.com
 			 * Production Host :: api.cybersource.com
@@ -469,7 +458,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
 			
 			/* Add Request Header :: "Signature" */
-			String signatureHeaderValue = Authorization.getToken(merchantConfig, requestData, requestType);
+			String signatureHeaderValue = Authorization.getToken(merchantConfig, requestData);
 			httpPatch.setHeader(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE, " : ".concat(signatureHeaderValue), Level.INFO);
 

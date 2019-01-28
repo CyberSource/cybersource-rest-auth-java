@@ -16,7 +16,7 @@ public class Authorization {
 	 * @throws ConfigException
 	 *             - if some value will be wrong or missing for merchant.
 	 */
-	public static String getToken(MerchantConfig merchantConfig, String requestBody, String requestType) throws ConfigException {
-		return TokenGeneratorFactory.getAuthTokenGenerator(merchantConfig, requestBody, requestType).getToken();
+	public static String getToken(MerchantConfig merchantConfig, String requestBody) throws ConfigException {
+		return TokenGeneratorFactory.getAuthTokenGenerator(merchantConfig, requestBody).getToken();
 	}
 }

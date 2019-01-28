@@ -105,13 +105,13 @@ public class DeleteGenerateHeaders {
 			Utility.log(logger, GlobalLabelParameters.USERAGENT.concat(" : "), GlobalLabelParameters.USER_AGENT_VALUE,
 					Level.INFO);
 			/* Signature Header */
-			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData(), requestType);
+			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData());
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE.concat(" : "), tempSig, Level.INFO);
 			System.out.println(" Signature           : " + tempSig.toString());
 
 		} else {
 			/* JWT */
-			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData(), requestType);
+			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData());
 			Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, tempSig, Level.INFO);
 			System.out.println(" Authorization, Bearer " + tempSig.toString());
 		}

@@ -1,6 +1,9 @@
 package com.cybersource.authsdk.util;
 
 import java.io.File;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -21,6 +24,8 @@ public class MerchantUtil {
 
 	/* Others. */
 	private static Logger log;
+	
+	public static String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
 	
 	public MerchantUtil(MerchantConfig merchantConfig) {
 		MerchantUtil.merchantConfig = merchantConfig;

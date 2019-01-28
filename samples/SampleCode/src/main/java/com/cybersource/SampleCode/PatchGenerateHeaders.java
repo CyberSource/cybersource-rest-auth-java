@@ -95,7 +95,7 @@ public class PatchGenerateHeaders {
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
 		Log4j.logEnable = false;
-		Authorization.getToken(merchantConfig, requestData, requestType);
+		Authorization.getToken(merchantConfig, requestData);
 		logger = Log4j.getInstance(merchantConfig);
 		digest = new PayloadDigest(requestData);
 		generatePatchHeaders();
@@ -123,7 +123,7 @@ public class PatchGenerateHeaders {
 				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
 
 		/* Signature Header */
-		tempSig = Authorization.getToken(merchantConfig, requestData, requestType);
+		tempSig = Authorization.getToken(merchantConfig, requestData);
 
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),
