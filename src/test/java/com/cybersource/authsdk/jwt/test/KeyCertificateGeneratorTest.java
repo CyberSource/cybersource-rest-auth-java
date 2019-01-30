@@ -7,7 +7,6 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,9 +37,6 @@ public class KeyCertificateGeneratorTest {
 
 	private Properties merchantProp;
 
-	@Mock
-	Logger logger;
-
 	@Test
 	public void initializeCertificateTestPass()
 			throws CertificateException, NoSuchAlgorithmException, KeyStoreException, Exception {
@@ -52,7 +48,6 @@ public class KeyCertificateGeneratorTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType("POST");
 
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		X509Certificate certificate =null;
@@ -77,7 +72,6 @@ public class KeyCertificateGeneratorTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType("POST");
 
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		RSAPrivateKey privateKey = null;
@@ -103,9 +97,7 @@ public class KeyCertificateGeneratorTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType("POST");
 
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
-		
 		
 		keyCertificateGenerator = new KeyCertificateGenerator();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {

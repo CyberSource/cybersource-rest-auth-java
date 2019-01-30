@@ -2,14 +2,12 @@ package com.cybersource.authsdk.http.test;
 
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
 
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.http.SignatureGenerator;
-import com.cybersource.authsdk.log.AuthLog4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -18,13 +16,13 @@ public class SignatureGeneratorTest {
 
 	@Mock
 	SignatureGenerator signatureGenerator;
+	
 	@Mock
 	MerchantConfig merchantConfig;
+	
 	@Mock
 	MerchantUtil merchantUtil;
-	@Mock
-	Logger logger;
-
+	
 	private Properties merchantProp;
 
 	private String requestJsonPath = "src/test/resources/request.json";
@@ -40,7 +38,6 @@ public class SignatureGeneratorTest {
 		merchantUtil.getRequestData();
 		merchantConfig.setMerchantDetails();
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureGenerator = new SignatureGenerator(merchantConfig,null, GlobalLabelParameters.GET);
@@ -64,7 +61,6 @@ public class SignatureGeneratorTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setMerchantDetails();
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.POST);
@@ -88,7 +84,6 @@ public class SignatureGeneratorTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setMerchantDetails();
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.PATCH);
@@ -112,7 +107,6 @@ public class SignatureGeneratorTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setMerchantDetails();
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(),GlobalLabelParameters.PUT);

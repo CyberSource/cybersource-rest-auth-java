@@ -64,7 +64,7 @@ public class PutMethod {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil = new MerchantUtil(merchantConfig);
-
+		
 		merchantUtil.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();

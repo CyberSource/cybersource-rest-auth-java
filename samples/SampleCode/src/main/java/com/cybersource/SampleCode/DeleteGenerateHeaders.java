@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.AuthLog4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -44,7 +43,11 @@ public class DeleteGenerateHeaders {
 	public DeleteGenerateHeaders() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		setGenerateHeaders(merchantConfig);
+		merchantUtil = new MerchantUtil(merchantConfig);
+		merchantUtil.setRequestJsonPath("not required");
+		authenticationType = merchantConfig.getAuthenticationType();
+		merchantUtil.setRequestType(requestType);
+		this.logger = merchantConfig.getLogger();
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
 				" Generate DELETE Headers *******************", Level.INFO);
@@ -55,26 +58,6 @@ public class DeleteGenerateHeaders {
 		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
-	public DeleteGenerateHeaders(MerchantConfig merchantConf) throws ConfigException, IOException {
-		merchantConfig = merchantConf;
-		setGenerateHeaders(merchantConfig);
-		AuthLog4j.logEnable = false;
-		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
-				" Generate DELETE Headers *******************", Level.INFO);
-		MerchantUtil.validateMerchantDetails();
-		generateDeleteHeaders();
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
-		Utility.log(this.logger, " ", "", Level.OFF);
-	}
-
-	private void setGenerateHeaders(MerchantConfig merchantConfig) throws IOException, ConfigException {
-		merchantUtil = new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestJsonPath("not required");
-		authenticationType = merchantConfig.getAuthenticationType();
-		merchantUtil.setRequestType(requestType);
-		this.logger = merchantConfig.getLogger();
-	}
 
 	/**
 	 * This method generates the detailed header detail of the transaction and

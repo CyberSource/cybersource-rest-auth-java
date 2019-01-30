@@ -34,6 +34,7 @@ public class AuthLog4j {
 		logDirectory = merchantConfig.getLogDirectory();
 		logFileName = merchantConfig.getLogFilename();
 		logSize = merchantConfig.getLogMaximumSize();
+		logEnable = merchantConfig.getEnableLog();
 		filePath = logDirectory + "/" + logFileName + GlobalLabelParameters.LOG_EXTENSION;
 	}
 

@@ -78,25 +78,6 @@ public class PatchGenerateHeaders {
 	}
 
 	/**
-	 * 
-	 * @param merchantConfig
-	 *            : this object contains all the cybs.properites details.
-	 * @throws ConfigException
-	 * @throws UnsupportedEncodingException
-	 * @throws NoSuchAlgorithmException
-	 */
-	public PatchGenerateHeaders(MerchantConfig merchantConfig, String requestData)
-			throws ConfigException, NoSuchAlgorithmException, UnsupportedEncodingException {
-		this.merchantConfig = merchantConfig;
-		this.requestData = requestData;
-		Authorization.getToken(merchantConfig, requestData);
-		logger = merchantConfig.getLogger();
-		digest = new PayloadDigest(requestData);
-		generatePatchHeaders();
-
-	}
-
-	/**
 	 * This method generates, displays and log the detailed header truncation
 	 * for PATCH operation.
 	 * 

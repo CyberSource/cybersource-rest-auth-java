@@ -3,7 +3,6 @@ package com.cybersource.authsdk.util.test;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,9 +22,6 @@ public class MerchantUtilTest {
 	
 	@Mock
 	MerchantUtil merchantUtil;
-
-	@Mock
-	Logger logger;
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();

@@ -48,7 +48,7 @@ public class Utility {
 	 */
 	public static void log(Logger logger, String exceptionMessage, Object obj, Level logLevel) {
 		try {
-			if (AuthLog4j.logEnable) {
+			if (logger != null && AuthLog4j.logEnable) {
 				exceptionMessage = exceptionMessage.concat("%s");
 				if (exceptionMessage != null && !exceptionMessage.isEmpty()) {
 					if (logLevel == Level.ERROR) {
@@ -84,7 +84,7 @@ public class Utility {
 	 */
 	public static void log(Logger logger, Exception e) {
 
-		if (AuthLog4j.logEnable) {
+		if (logger != null && AuthLog4j.logEnable) {
 			String logMessage = getStackTrace(e);
 			logger.error(logMessage);
 		}
@@ -133,7 +133,7 @@ public class Utility {
 	 *            :Log4j object
 	 */
 	public static void logResponseCodeMessage(Integer responseCode, Logger logger) {
-		if (AuthLog4j.logEnable) {
+		if (logger != null && AuthLog4j.logEnable) {
 			String tempResponseCode = String.valueOf(responseCode);
 			String tempResponseCodeMessage = "Status Information :: ";
 			switch (tempResponseCode) {

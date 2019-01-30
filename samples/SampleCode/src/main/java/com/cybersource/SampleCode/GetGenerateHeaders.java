@@ -48,8 +48,8 @@ public class GetGenerateHeaders {
 
 	/**
 	 * 
-	 * @param id
-	 *            : Unique id
+	 * @param requestTarget
+	 *            : requestTarget
 	 * @throws ConfigException
 	 * @throws IOException
 	 */
@@ -57,25 +57,6 @@ public class GetGenerateHeaders {
 		setGenerateHeaders();
 		this.id = Utility.retrieveGetIDFromRequestTarget(requestTarget);
 		generateGetHeaders();
-	}
-
-	/**
-	 * 
-	 * @param merchantConfig
-	 *            : this object contains all the cybs.properites details.
-	 * @throws ConfigException
-	 */
-	public GetGenerateHeaders(MerchantConfig merchantConfig, String requestData) throws ConfigException {
-		this.merchantConfig = merchantConfig;
-		merchantUtil = new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestJsonPath("not required");
-		merchantConfig.setId(id);
-		merchantUtil.setRequestType(requestType);
-		this.logger = merchantConfig.getLogger();
-		generateGetHeaders();
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
-		Utility.log(this.logger, " ", "", Level.OFF);
-
 	}
 
 	/**

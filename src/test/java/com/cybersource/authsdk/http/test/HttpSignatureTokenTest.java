@@ -3,7 +3,6 @@ package com.cybersource.authsdk.http.test;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,12 +18,12 @@ public class HttpSignatureTokenTest {
 
 	@Mock
 	HttpSignatureTokenGenerator signatureToken;
+	
 	@Mock
 	MerchantConfig merchantConfig;
+	
 	@Mock
 	MerchantUtil merchantUtil;
-	@Mock
-	Logger logger;
 	
 	private Properties merchantProp;
 
@@ -41,7 +40,6 @@ public class HttpSignatureTokenTest {
 		merchantUtil.getRequestData();
 		merchantConfig.setMerchantDetails();
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,null);
@@ -65,7 +63,6 @@ public class HttpSignatureTokenTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData());

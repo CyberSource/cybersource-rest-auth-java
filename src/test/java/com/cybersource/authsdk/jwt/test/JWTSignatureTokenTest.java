@@ -2,7 +2,6 @@ package com.cybersource.authsdk.jwt.test;
 
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,8 +20,10 @@ public class JWTSignatureTokenTest {
 
 	@Mock
 	JwtSignatureTokenGenerator jwtSignatureToken;
+	
 	@Mock
 	MerchantConfig merchantConfig;
+	
 	@Mock
 	MerchantUtil merchantUtil;
 	
@@ -33,9 +34,6 @@ public class JWTSignatureTokenTest {
 	private String testJsonPath = "src/test/resources/test.json";
 	private Properties merchantProp;
 
-	@Mock
-	Logger logger;
-
 	@Test
 	public void getTokenTestForGet() throws Exception {
 
@@ -45,9 +43,7 @@ public class JWTSignatureTokenTest {
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType(GlobalLabelParameters.GET);
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
-
 		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig,null);
 
 		String token =null;
@@ -70,9 +66,7 @@ public class JWTSignatureTokenTest {
 		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
-
 		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
 
 		String token = null;
@@ -95,9 +89,7 @@ public class JWTSignatureTokenTest {
 		merchantUtil.setRequestType(GlobalLabelParameters.PUT);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
-
 		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
 
 		String token = null;
@@ -119,9 +111,7 @@ public class JWTSignatureTokenTest {
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType(GlobalLabelParameters.DELETE);
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
-
 		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, null);
 
 		String token = null;
@@ -145,9 +135,7 @@ public class JWTSignatureTokenTest {
 		merchantUtil.setRequestJsonPath(testJsonPath);
 		merchantUtil.setRequestType(GlobalLabelParameters.PUT);
 		
-		logger = merchantConfig.getLogger();
 		merchantUtil.validateMerchantDetails();
-
 		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, merchantUtil.getRequestData());
 
 		String token = null;
@@ -170,7 +158,6 @@ public class JWTSignatureTokenTest {
 		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setAuthenticationType("abc");
-		logger = merchantConfig.getLogger();
 		
 		thrown.expect(ConfigException.class);
 		thrown.expectMessage(GlobalLabelParameters.AUTH_ERROR);
@@ -191,9 +178,7 @@ public class JWTSignatureTokenTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
-
 		String token1 =null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token1);

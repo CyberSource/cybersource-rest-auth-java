@@ -18,6 +18,7 @@ public class MaskingTest {
 	
 	@Mock
 	MerchantConfig merchantConfig;
+	
 	@Mock
 	MerchantUtil merchantUtil;
 

@@ -3,7 +3,6 @@ package com.cybersource.authsdk.cache.test;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.logging.log4j.Logger;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,9 +23,6 @@ public class CacheTest {
 	private Properties merchantProp;
 	private String requestJsonPath = "src/test/resources/request.json";
 	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
-
-	@Mock
-	Logger logger;
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -49,7 +45,6 @@ public class CacheTest {
 		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -69,7 +64,6 @@ public class CacheTest {
 		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -91,7 +85,6 @@ public class CacheTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {

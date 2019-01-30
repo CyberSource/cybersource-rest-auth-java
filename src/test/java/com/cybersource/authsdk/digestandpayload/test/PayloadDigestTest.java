@@ -21,6 +21,7 @@ public class PayloadDigestTest {
 
 	@Mock
 	PayloadDigest payloadDigest;
+	
 	@Mock
 	MerchantConfig merchantConfig;
 	

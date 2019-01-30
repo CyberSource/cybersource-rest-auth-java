@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.AuthLog4j;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
@@ -76,22 +75,7 @@ public class PostGenerateHeaders {
 		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
-	/**
-	 * 
-	 * @param merchantConfig
-	 *            : this object contains all the cybs.properites details.
-	 * @throws ConfigException
-	 */
-	public PostGenerateHeaders(MerchantConfig merchantConfig, String requestData) throws ConfigException {
-		this.merchantConfig = merchantConfig;
-		this.requestData = requestData;
-		Authorization.getToken(merchantConfig, requestData);
-		logger = merchantConfig.getLogger();
-		digest = new PayloadDigest(requestData);
-		generatePostHeaders();
-
-	}
-
+	
 	/**
 	 * This method generates, displays and log the detailed header truncation
 	 * for POST operation.

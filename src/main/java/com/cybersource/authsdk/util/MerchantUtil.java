@@ -31,7 +31,6 @@ public class MerchantUtil {
 	
 	public MerchantUtil(MerchantConfig merchantConfig) {
 		MerchantUtil.merchantConfig = merchantConfig;
-		log = merchantConfig.getLogger();
 	}
 
 	

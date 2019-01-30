@@ -3,7 +3,6 @@ package com.cybersource.authsdk.core.test;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,9 +23,6 @@ public class AuthorizationTest {
 	@Mock
 	MerchantUtil merchantUtil;
 	
-	@Mock
-	Logger logger;
-
 	private String requestJsonPath = "src/test/resources/request.json";
 	private Properties merchantProp;
 
@@ -39,7 +35,6 @@ public class AuthorizationTest {
 		merchantUtil.setRequestType(GlobalLabelParameters.GET);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		String token = null;
@@ -60,7 +55,6 @@ public class AuthorizationTest {
 		merchantConfig.setMerchantDetails();
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		String token = null;
@@ -81,7 +75,6 @@ public class AuthorizationTest {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setAuthenticationType("JWE");
 
-		logger = merchantConfig.getLogger();
 		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)
 				|| merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {

@@ -47,6 +47,7 @@ public class JwtAuthenticationStrategyTest {
 	public void getTestForGet() throws ClientException, IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		requestTarget = requestTarget + id;
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestTarget(requestTarget);
@@ -72,6 +73,7 @@ public class JwtAuthenticationStrategyTest {
 	public void getTestForPost() throws ClientException, IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestTarget(requestTarget);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
@@ -96,6 +98,7 @@ public class JwtAuthenticationStrategyTest {
 	public void getTestForPut() throws IOException, ConfigException, ClientException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestTarget(requestTarget);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
@@ -121,6 +124,7 @@ public class JwtAuthenticationStrategyTest {
 	public void getTestForPatch() throws IOException, ConfigException, ClientException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestTarget(requestTarget);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
@@ -147,6 +151,7 @@ public class JwtAuthenticationStrategyTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		requestTarget = requestTarget + id;
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestTarget(requestTarget);
@@ -175,6 +180,7 @@ public class JwtAuthenticationStrategyTest {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		requestTarget = requestTarget + id;
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestTarget(requestTarget);

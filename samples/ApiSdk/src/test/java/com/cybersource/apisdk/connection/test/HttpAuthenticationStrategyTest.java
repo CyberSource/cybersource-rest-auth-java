@@ -26,8 +26,12 @@ public class HttpAuthenticationStrategyTest {
 	
 	@Mock
 	MerchantConfig merchantConfig;
+	
 	@Mock
 	MerchantUtil merchantUtil;
+	
+	@Mock
+	Logger logger;
 
 	private Properties merchantProp;
 	private String id = "5281957982016993203523";
@@ -36,9 +40,6 @@ public class HttpAuthenticationStrategyTest {
 	private String url = "https://";
 	private Response response;
 	
-	@Mock
-	Logger logger;
-
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
@@ -60,7 +61,6 @@ public class HttpAuthenticationStrategyTest {
 			merchantUtil.setUrl(url);
 			merchantUtil.setRequestType("GET");
 			merchantUtil.setRequestJsonPath(requestJsonPath);
-			logger = merchantConfig.getLogger();
 			httpConnection = new HttpAuthenticationStrategy(merchantConfig,null, logger);
 			httpConnection.openConnection();
 	        httpConnection.setHeaderData();
@@ -86,9 +86,7 @@ public class HttpAuthenticationStrategyTest {
 			merchantUtil.setUrl(url);
 			merchantUtil.setRequestJsonPath(requestJsonPath);
 			merchantUtil.setRequestType("POST");
-			logger = merchantConfig.getLogger();
 			
-	
 			httpConnection = new HttpAuthenticationStrategy(merchantConfig,merchantUtil.getRequestData(), logger);
 			httpConnection.openConnection();
 	        httpConnection.setHeaderData();
