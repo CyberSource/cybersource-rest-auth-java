@@ -25,7 +25,7 @@ public class AuthLog4j {
 	private String logFileName;
 	private String logSize;
 	public static boolean logEnable = false;
-	
+
 	/**
 	 * @param merchantConfig
 	 *            - contains all information for merchant.
@@ -51,17 +51,16 @@ public class AuthLog4j {
 					logger = new AuthLog4j(merchantConfig).getLogger();
 				}
 			}
-
 		}
 		return logger;
 	}
 
 	private Logger getLogger() {
-			addAppenderLogger(filePath, Level.ALL);
-			return LogManager.getRootLogger();
+		addAppenderLogger(filePath, Level.ALL);
+		return LogManager.getRootLogger();
 	}
-	
-   	/**
+
+	/**
 	 * 
 	 * @param filePath
 	 *            - path for log file.
@@ -98,6 +97,5 @@ public class AuthLog4j {
 				builder.newRootLogger(level).add(builder.newAppenderRef("rolling")).addAttribute("additivity", false));
 		Configurator.initialize(builder.build());
 	}
-
 
 }
