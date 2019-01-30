@@ -122,23 +122,23 @@ public class SignatureGenerator {
 		switch (requestType) {
 		case GlobalLabelParameters.POST:
 			requestTarget = GlobalLabelParameters.POST.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ MerchantUtil.getRequestTarget();
 			break;
 		case GlobalLabelParameters.GET:
 			requestTarget = GlobalLabelParameters.GET.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ MerchantUtil.getRequestTarget();
 			break;
 		case GlobalLabelParameters.PUT:
 			requestTarget = GlobalLabelParameters.PUT.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ MerchantUtil.getRequestTarget();
 			break;
 		case GlobalLabelParameters.DELETE:
 			requestTarget = GlobalLabelParameters.DELETE.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ MerchantUtil.getRequestTarget();
 			break;
 		case GlobalLabelParameters.PATCH:
 			requestTarget = GlobalLabelParameters.PATCH.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ MerchantUtil.getRequestTarget();
 			break;
 		default:
 			requestTarget = null;

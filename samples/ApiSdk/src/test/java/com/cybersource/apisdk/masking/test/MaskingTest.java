@@ -31,7 +31,7 @@ public class MaskingTest {
 	@Test
 	public void prepareMaskingTestFail() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		MerchantConfig merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		

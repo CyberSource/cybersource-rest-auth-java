@@ -5,13 +5,13 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cybersource.Data.Configuration;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.MerchantUtil;
-import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class GetObjectMethod {
 	private ApiController apiController;
@@ -40,19 +40,19 @@ public class GetObjectMethod {
 	public GetObjectMethod() throws ConfigException, IOException {
 		apiController = new ApiController();
 		/* Read Merchant details. */
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantProp = Configuration.getMerchantDetails();
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
 		/* Set Request Type */
 		merchantUtil.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
-		merchantConfig.setRequestTarget(requestTarget);
+		merchantUtil.setRequestTarget(requestTarget);
 		/* Construct the URL with respect to GETID. */
-		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
+		url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
 		/* Set the URL. */
-		merchantConfig.setUrl(url);
+		merchantUtil.setUrl(url);
 		/* Begin the Get process. */
 		process();
 	}

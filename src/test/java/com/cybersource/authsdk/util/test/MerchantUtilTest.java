@@ -12,7 +12,6 @@ import org.mockito.Mock;
 
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -41,7 +40,8 @@ public class MerchantUtilTest {
 	@Test
 	public void getRequestDataTestPass() throws ConfigException, IOException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil = new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
@@ -52,7 +52,8 @@ public class MerchantUtilTest {
 	@Test
 	public void getRequestDataTestFail() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil = new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(testJsonPath);
@@ -65,12 +66,13 @@ public class MerchantUtilTest {
 	@Test
 	public void validateMerchantDetailsHttpTestforGet() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setAuthenticationType("Http_Signature");
 		merchantUtil.setRequestType("GET");
 		merchantConfig.setMerchantDetails();
-		this.logger = Log4j.getInstance(merchantConfig);
+		merchantConfig.getLogger();
 		
 		boolean check = false;
 		
@@ -85,23 +87,28 @@ public class MerchantUtilTest {
 	@Test
 	public void validateMerchantDetailsHttpTestforPost() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setAuthenticationType("Http_Signature");
 		merchantUtil.setRequestType("POST");
 		merchantConfig.setMerchantDetails();
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		this.logger = Log4j.getInstance(merchantConfig);
-
-		boolean check = MerchantUtil.validateMerchantDetails();
-		Assert.assertEquals(true, check);
-
+		merchantConfig.getLogger();
+        
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+			Assert.assertNull(null);
+		} else {
+			boolean check = MerchantUtil.validateMerchantDetails();
+			Assert.assertEquals(true, check);
+		}
 	}
 
 	@Test
 	public void validateMerchantDetailsHttpTestforPut() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		
 		merchantConfig.setAuthenticationType("Http_Signature");
 		merchantConfig.setMerchantDetails();
@@ -109,61 +116,77 @@ public class MerchantUtilTest {
 		merchantUtil.setRequestType("PUT");
 		
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		this.logger = Log4j.getInstance(merchantConfig);
+		merchantConfig.getLogger();
 
-		boolean check = MerchantUtil.validateMerchantDetails();
-		Assert.assertEquals(true, check);
-
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+			Assert.assertNull(null);
+		} else {
+			boolean check = MerchantUtil.validateMerchantDetails();
+			Assert.assertEquals(true, check);
+		}
 	}
 
 	@Test
 	public void validateMerchantDetailsJwtTestForGet() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setAuthenticationType("jwt");
 		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("GET");
 
-		this.logger = Log4j.getInstance(merchantConfig);
+		merchantConfig.getLogger();
 
-		boolean check = MerchantUtil.validateMerchantDetails();
-		Assert.assertEquals(true, check);
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(null);
+		} else {
+			boolean check = MerchantUtil.validateMerchantDetails();
+			Assert.assertEquals(true, check);
+		}	
 
 	}
 
 	@Test
 	public void validateMerchantDetailsJwtTestForPost() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setAuthenticationType("jwt");
 		merchantConfig.setMerchantDetails();
 		
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		this.logger = Log4j.getInstance(merchantConfig);
-
-		boolean check = MerchantUtil.validateMerchantDetails();
-		Assert.assertEquals(true, check);
+		merchantConfig.getLogger();
+        
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(null);
+		} else {
+			boolean check = MerchantUtil.validateMerchantDetails();
+			Assert.assertEquals(true, check);
+		}		
 
 	}
 
 	@Test
 	public void validateMerchantDetailsJwtTestForPut() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantConfig.setAuthenticationType("jwt");
 		merchantConfig.setMerchantDetails();
 		
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("PUT");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		this.logger = Log4j.getInstance(merchantConfig);
-
-		boolean check =  MerchantUtil.validateMerchantDetails();
-		Assert.assertEquals(true, check);
-
+		merchantConfig.getLogger();
+		
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(null);
+		} else {
+			boolean check =  MerchantUtil.validateMerchantDetails();
+			Assert.assertEquals(true, check);
+		}
 	}
 
 	//// Test cases for keyPassword check
@@ -171,7 +194,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkKeyPasswordTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		
 		boolean check = MerchantUtil.checkKeyPassword();
@@ -182,7 +206,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkKeyPasswordNullTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setKeyPass(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 
@@ -194,7 +219,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkKeyPasswordEmptyTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setKeyPass("");
 		merchantUtil=new MerchantUtil(merchantConfig);
 
@@ -206,7 +232,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkKeyPasswordNotEqualMerchantIdTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setKeyPass("test");
 		merchantUtil=new MerchantUtil(merchantConfig);
 
@@ -220,7 +247,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkRunEvironmentTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		
 		boolean check =MerchantUtil.checkRunEvironment();
@@ -231,7 +259,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkRunEvironmentForNullTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setRunEnvironment(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		
@@ -246,7 +275,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkRunEvironmentForEmptyTest() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setRunEnvironment("");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		
@@ -261,7 +291,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkRunEvironmentForProductionTest() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setRunEnvironment("CyberSource.Environment.PRODUCTION");
 		merchantUtil=new MerchantUtil(merchantConfig);
 
@@ -274,7 +305,8 @@ public class MerchantUtilTest {
 	public void checkRunEvironmentTestFail() throws ConfigException, IOException {
 		
 			merchantProp = PropertiesUtil.getMerchantProperties();
-			merchantConfig = new MerchantConfig(merchantProp);
+			merchantConfig = MerchantConfig.getInstance(merchantProp);
+			merchantConfig.setMerchantDetails();
 			merchantConfig.setRunEnvironment("test");
 			merchantUtil=new MerchantUtil(merchantConfig);
 			boolean check = false;
@@ -291,7 +323,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkMerchantKeyIdTestForNull() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setMerchantKeyId(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		
@@ -305,7 +338,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkMerchantKeyIdTestForEmpty() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setMerchantKeyId("");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		
@@ -320,7 +354,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkMerchantSecertKeyTestForNull() throws ConfigException, IOException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setMerchantSecretKey(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		
@@ -334,7 +369,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkMerchantSecertKeyTestForEmpty() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setMerchantSecretKey("");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		
@@ -350,7 +386,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkLogMaxSizeAndFolderTest() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 
 		boolean check = MerchantUtil.checkLogMaxSizeAndFolder();
@@ -361,7 +398,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkLogMaxSizeAndFolderTestForNull() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setLogDirectory(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 
@@ -373,7 +411,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkLogMaxSizeTestForEmpty() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setLogDirectory("");
 		merchantUtil=new MerchantUtil(merchantConfig);
 
@@ -385,7 +424,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkLogMaxSizeTestFail() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setLogDirectory(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 
@@ -399,7 +439,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkJsonPathTest() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
 		
@@ -411,7 +452,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkJsonPathTestWrongRequestType() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("OPTION");
 		
@@ -426,7 +468,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkJsonPathNullTest() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("GET");
 		
@@ -438,7 +481,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkJsonPathEmptyTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("GET");
 		
@@ -450,7 +494,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkJsonPathTestFileNotExist() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
 		
@@ -464,7 +509,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkJsonPathTestIsrequestTypeFalse() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
 		
@@ -480,7 +526,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkKeyAliasTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setKeyAlias("testrest");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
@@ -493,7 +540,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkKeyAliasTestForNull() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setKeyAlias(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
@@ -506,7 +554,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkKeyAliasTestForEmpty() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setKeyAlias("");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
@@ -518,7 +567,8 @@ public class MerchantUtilTest {
 	@Test
 	public void checkKeyAliasTestForWrong() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setKeyAlias("test");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
@@ -530,16 +580,21 @@ public class MerchantUtilTest {
 
 	
 	@Test
-	public void setMerchantDetailsTestForEmpty() throws ConfigException, IOException {
+	public void setMerchantDetailsTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setMerchantID("");
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
-
-		merchantConfig.setMerchantDetails();
-		Assert.assertEquals(true, MerchantUtil.isSetMerchantDetails());
-
+		merchantConfig.setRunEnvironment(null);
+       
+		Boolean check = true;
+		try {
+			merchantConfig.setMerchantDetails();
+		} catch (ConfigException e) {
+			check = false;
+		}
+		Assert.assertEquals(true, check);
 	}
 
 	
@@ -547,7 +602,8 @@ public class MerchantUtilTest {
 	@Test
 	public void CheckKeyFileTestForNull() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setKeyFilename(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
@@ -564,7 +620,8 @@ public class MerchantUtilTest {
 	@Test
 	public void CheckKeyFileTestForKeyFileNotExist() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setKeyFilename("test");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
@@ -585,7 +642,8 @@ public class MerchantUtilTest {
 	@Test
 	public void isRequestTypeMethodValidTestForGet() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("GET");
 
@@ -597,7 +655,8 @@ public class MerchantUtilTest {
 	@Test
 	public void isRequestTypeMethodValidTestForPost() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
 
@@ -609,7 +668,8 @@ public class MerchantUtilTest {
 	@Test
 	public void isRequestTypeMethodValidTestForPut() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("PUT");
 
@@ -621,7 +681,8 @@ public class MerchantUtilTest {
 	@Test
 	public void isRequestTypeMethodValidTestForDelete() throws ConfigException, IOException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("Delete");
 
@@ -633,7 +694,8 @@ public class MerchantUtilTest {
 	@Test
 	public void isRequestTypeMethodValidTestFail() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("option");
 
@@ -647,7 +709,8 @@ public class MerchantUtilTest {
 	@Test
 	public void isRequestJsonTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		
 		boolean str = merchantUtil.isRequestJson();

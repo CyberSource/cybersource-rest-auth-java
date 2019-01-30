@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -34,13 +33,13 @@ public class AuthorizationTest {
 	@Test
 	public void getTokenTestForHttp() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantConfig.setMerchantDetails();
 		merchantUtil.setRequestType(GlobalLabelParameters.GET);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		String token = null;
@@ -55,13 +54,13 @@ public class AuthorizationTest {
 	@Test
 	public void getTokenTestForJwt() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		merchantConfig.setMerchantDetails();
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		this.logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		String token = null;
@@ -76,13 +75,13 @@ public class AuthorizationTest {
 	@Test
 	public void getTokenTestFail() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setAuthenticationType("JWE");
 
-		this.logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		String token = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)
 				|| merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {

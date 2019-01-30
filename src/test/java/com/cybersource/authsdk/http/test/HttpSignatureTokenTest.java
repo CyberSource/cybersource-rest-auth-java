@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -35,14 +34,14 @@ public class HttpSignatureTokenTest {
 	public void getTokenTestForGet() throws ConfigException, IOException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType(GlobalLabelParameters.GET);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.getRequestData();
 		merchantConfig.setMerchantDetails();
 		
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,null);
@@ -60,13 +59,13 @@ public class HttpSignatureTokenTest {
 	public void getTokenTestForPost() throws ConfigException, IOException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		signatureToken = new HttpSignatureTokenGenerator(merchantConfig,merchantUtil.getRequestData());
@@ -84,7 +83,7 @@ public class HttpSignatureTokenTest {
 	public void getTokenTestForPut() throws ConfigException, IOException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
@@ -105,7 +104,7 @@ public class HttpSignatureTokenTest {
 	public void getTokenTestForDelete() throws ConfigException, IOException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);

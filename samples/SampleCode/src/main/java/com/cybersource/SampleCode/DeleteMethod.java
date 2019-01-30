@@ -50,7 +50,7 @@ public class DeleteMethod {
 		apiController = new ApiController();
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
 		merchantUtil.setRequestType(requestType);
@@ -59,11 +59,11 @@ public class DeleteMethod {
 		 * Set Json Path, request target, request data into merchant config
 		 * object.
 		 */
-		merchantConfig.setRequestTarget(requestTarget);
+		merchantUtil.setRequestTarget(requestTarget);
 		/* Construct the URL with respect to PUTID. */
-		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
+		url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
 		/* Set the URL. */
-		merchantConfig.setUrl(url);
+		merchantUtil.setUrl(url);
 		/* Begin PUT process. */
 		process();
 	}

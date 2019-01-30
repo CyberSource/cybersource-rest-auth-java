@@ -11,16 +11,18 @@ import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
+
 
 public class MerchantUtil {
 
 	private String requestData;
 	private static String requestJsonPath;
 	private static MerchantConfig merchantConfig;
-	private static boolean isSetMerchantDetails = true;
 	private static boolean isRequestJson = true;
 	private static String requestType;
+	private static String requestTarget;
+	private static String url;
+	
 
 	/* Others. */
 	private static Logger log;
@@ -29,7 +31,7 @@ public class MerchantUtil {
 	
 	public MerchantUtil(MerchantConfig merchantConfig) {
 		MerchantUtil.merchantConfig = merchantConfig;
-		log = Log4j.getInstance(merchantConfig);
+		log = merchantConfig.getLogger();
 	}
 
 	
@@ -40,6 +42,26 @@ public class MerchantUtil {
 
 	public void setRequestType(String requestType) {
 		MerchantUtil.requestType = requestType;
+	}
+	
+	
+	public static String getRequestTarget() {
+		return requestTarget;
+	}
+
+
+	public void setRequestTarget(String requestTarget) {
+		MerchantUtil.requestTarget = requestTarget;
+	}
+
+
+	public static String getUrl() {
+		return url;
+	}
+
+
+	public void setUrl(String url) {
+		MerchantUtil.url = url;
 	}
 
 
@@ -59,9 +81,6 @@ public class MerchantUtil {
 		return isRequestJson;
 	}
 	
-	public static boolean isSetMerchantDetails() {
-		return isSetMerchantDetails;
-	}
 
 	/**
 	 * @return request data according to availability of request Json.
@@ -105,7 +124,6 @@ public class MerchantUtil {
 		boolean isCheckLogMaxSize = true;
 		boolean isCheckRunEnvironment;
 		boolean isMerchantDetailStatus = false;
-		isSetMerchantDetails = merchantConfig.isSetMerchantDetails();
 		checkAuthenticationType();
 		isMerchantId = checkMerchantId();
 
@@ -125,11 +143,10 @@ public class MerchantUtil {
 
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			isMerchantDetailStatus = isMerchantId && isCheckMerchantSecertKey && isCheckMerchantKeyId && isCheckJsonPath
-					&& isCheckLogMaxSize && isCheckRunEnvironment && isRequestType && isSetMerchantDetails;
+					&& isCheckLogMaxSize && isCheckRunEnvironment && isRequestType;
 		} else if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			isMerchantDetailStatus = isMerchantId && isGetKeyAlias && isCheckKeyPassword && isCheckKeyFile
-					&& isCheckJsonPath && isCheckLogMaxSize && isCheckRunEnvironment && isRequestType
-					&& isSetMerchantDetails;
+					&& isCheckJsonPath && isCheckLogMaxSize && isCheckRunEnvironment && isRequestType;
 		}
 		return isMerchantDetailStatus;
 	}
@@ -143,14 +160,14 @@ public class MerchantUtil {
 		/* Authentication Type. */
 		boolean check = true;
 		if (merchantConfig.getAuthenticationType() == null || merchantConfig.getAuthenticationType().isEmpty()) {
-			log = Log4j.getInstance(merchantConfig);
+			log = merchantConfig.getLogger();
 			check = false;
 			throw new ConfigException(GlobalLabelParameters.AUTH_NULL_EMPTY);
 		}
 		if (!(merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)
 				|| merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)
 				|| merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWE))) {
-			log = Log4j.getInstance(merchantConfig);
+			log = merchantConfig.getLogger();
 			Utility.log(log, GlobalLabelParameters.AUTH_ERROR, "", Level.ERROR);
 			check = false;
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
@@ -166,7 +183,7 @@ public class MerchantUtil {
 	public static boolean checkMerchantId() throws ConfigException {
 		boolean check = true;
 		if (StringUtils.isBlank(merchantConfig.getMerchantID())) {
-			log = Log4j.getInstance(merchantConfig);
+			log = merchantConfig.getLogger();
 			Utility.log(log, GlobalLabelParameters.MERCHANT_NULL_EMPTY, "", Level.ERROR);
 			check = false;
 			throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);

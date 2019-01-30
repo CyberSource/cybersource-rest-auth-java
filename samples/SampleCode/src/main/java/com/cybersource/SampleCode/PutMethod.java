@@ -62,7 +62,7 @@ public class PutMethod {
 	public PutMethod(String[] args) throws IOException, ConfigException {
 		apiController = new ApiController();
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil = new MerchantUtil(merchantConfig);
 
 		merchantUtil.setRequestType(requestType);
@@ -73,13 +73,16 @@ public class PutMethod {
 		 * object.
 		 */
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setRequestTarget(requestTarget);
+		/* Set request target */
+		merchantUtil.setRequestTarget(requestTarget);
+		/* Set request Data */
 		requestData = merchantUtil.getRequestData();
 		merchantUtil.setRequestData(requestData);
+		
 		/* Construct the URL with respect to PUTID. */
-		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
+		url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
 		/* Set the URL. */
-		merchantConfig.setUrl(url);
+		merchantUtil.setUrl(url);
 		/* Begin PUT process. */
 		process();
 	}

@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
+import com.cybersource.authsdk.log.AuthLog4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -43,11 +43,9 @@ public class DeleteGenerateHeaders {
 	 */
 	public DeleteGenerateHeaders() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		setGenerateHeaders(merchantConfig);
-		Log4j.logEnable = false;
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		Log4j.logEnable = merchantConfig.getEnableLog();
 		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
 				" Generate DELETE Headers *******************", Level.INFO);
 		if (MerchantUtil.validateMerchantDetails()) {
@@ -60,7 +58,7 @@ public class DeleteGenerateHeaders {
 	public DeleteGenerateHeaders(MerchantConfig merchantConf) throws ConfigException, IOException {
 		merchantConfig = merchantConf;
 		setGenerateHeaders(merchantConfig);
-		Log4j.logEnable = false;
+		AuthLog4j.logEnable = false;
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
 				" Generate DELETE Headers *******************", Level.INFO);
@@ -75,7 +73,7 @@ public class DeleteGenerateHeaders {
 		merchantUtil.setRequestJsonPath("not required");
 		authenticationType = merchantConfig.getAuthenticationType();
 		merchantUtil.setRequestType(requestType);
-		this.logger = Log4j.getInstance(merchantConfig);
+		this.logger = merchantConfig.getLogger();
 	}
 
 	/**

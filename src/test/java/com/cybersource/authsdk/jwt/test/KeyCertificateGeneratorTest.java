@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.KeyCertificateGenerator;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -47,12 +46,13 @@ public class KeyCertificateGeneratorTest {
 			throws CertificateException, NoSuchAlgorithmException, KeyStoreException, Exception {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType("POST");
 
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		X509Certificate certificate =null;
@@ -71,12 +71,13 @@ public class KeyCertificateGeneratorTest {
 			throws CertificateException, NoSuchAlgorithmException, KeyStoreException, Exception {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType("POST");
 
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 
 		RSAPrivateKey privateKey = null;
@@ -95,13 +96,14 @@ public class KeyCertificateGeneratorTest {
 			throws CertificateException, NoSuchAlgorithmException, KeyStoreException, Exception {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantConfig.setRecipientID("test");
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType("POST");
 
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		
@@ -122,7 +124,9 @@ public class KeyCertificateGeneratorTest {
 			throws CertificateException, NoSuchAlgorithmException, KeyStoreException, Exception {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
+		merchantConfig.setRecipientID(null);;
 
 		thrown.expect(ConfigException.class);
 		thrown.expectMessage("merchant config fields missing: recipientId, key file");

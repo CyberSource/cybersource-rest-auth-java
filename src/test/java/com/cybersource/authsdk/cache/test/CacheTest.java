@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.cache.Identity;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -44,12 +43,13 @@ public class CacheTest {
 	@Test
 	public void setP12FileDetailsInCacheEmptyTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -63,12 +63,13 @@ public class CacheTest {
 	@Test
 	public void setP12FileDetailsInCacheNotEmptyTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -83,13 +84,14 @@ public class CacheTest {
 	@Test
 	public void setP12FileDetailsInCacheTimeStampTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType("POST");
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		
 
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -105,12 +107,12 @@ public class CacheTest {
 	@Test
 	public void getLastModifiedFileP12Test() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setKeyFilename(null);
-
-		thrown.expect(Exception.class);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
+		merchantConfig.setKeyFile(null);
 
 		cache = new Cache(merchantConfig);
-		cache.getLastModifiedFileP12();
+		Long result  = cache.getLastModifiedFileP12();
+		Assert.assertNull(result);
 	}
 }

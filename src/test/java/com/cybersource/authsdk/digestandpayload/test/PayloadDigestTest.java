@@ -36,7 +36,7 @@ public class PayloadDigestTest {
 	@Test
 	public void digestGenerationTest() throws ConfigException, IOException, NoSuchAlgorithmException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
@@ -48,7 +48,7 @@ public class PayloadDigestTest {
 	@Test
 	public void payloadGenerationTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
@@ -60,7 +60,7 @@ public class PayloadDigestTest {
 	@Test
 	public void payloadGenerationJsonPathNullTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(null);
@@ -73,7 +73,7 @@ public class PayloadDigestTest {
 	@Test
 	public void payloadGenerationJsonPathEmptyTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("");

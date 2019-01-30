@@ -17,8 +17,6 @@ public class PayloadDigest {
 	private String requestData;
 
 	/**
-	 * @param merchantConfig-
-	 *            contains all information for merchant.
 	 * @param requestData
 	 *            - request data.
 	 */

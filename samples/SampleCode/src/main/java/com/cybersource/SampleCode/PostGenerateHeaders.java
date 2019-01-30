@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
+import com.cybersource.authsdk.log.AuthLog4j;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
@@ -57,17 +57,15 @@ public class PostGenerateHeaders {
 	 */
 	public PostGenerateHeaders() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		this.logger = Log4j.getInstance(merchantConfig);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		this.logger = merchantConfig.getLogger();
 		merchantUtil = new MerchantUtil(merchantConfig);
 
-		Log4j.logEnable = false;
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 		merchantUtil.setRequestType(requestType);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
-		merchantConfig.setRequestTarget(requestTarget);
+		merchantUtil.setRequestTarget(requestTarget);
 		requestData = merchantUtil.getRequestData();
-		Log4j.logEnable = merchantConfig.getEnableLog();
 		digest = new PayloadDigest(requestData);
 		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate POST Headers *******************",
 				Level.INFO);
@@ -87,9 +85,8 @@ public class PostGenerateHeaders {
 	public PostGenerateHeaders(MerchantConfig merchantConfig, String requestData) throws ConfigException {
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
-		Log4j.logEnable = false;
 		Authorization.getToken(merchantConfig, requestData);
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		digest = new PayloadDigest(requestData);
 		generatePostHeaders();
 
@@ -102,7 +99,7 @@ public class PostGenerateHeaders {
 	 * @throws ConfigException
 	 */
 	private void generatePostHeaders() throws ConfigException {
-		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, merchantConfig.getRequestTarget(),
+		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, MerchantUtil.getRequestTarget(),
 				Level.INFO);
 		authenticationType = merchantConfig.getAuthenticationType();
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);

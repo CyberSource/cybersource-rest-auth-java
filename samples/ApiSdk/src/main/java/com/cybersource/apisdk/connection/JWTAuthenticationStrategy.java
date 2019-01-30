@@ -254,7 +254,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		URL url = null;
 		try {
 			Proxy proxy = createProxy(merchantConfig);
-			String getUrl = merchantConfig.getUrl();
+			String getUrl = MerchantUtil.getUrl();
 			Utility.log(logger, "URL : ", " " + getUrl, Level.INFO);
 			url = new URL(getUrl);
 			this.connection = (HttpURLConnection) url.openConnection(proxy);
@@ -361,9 +361,9 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		/* For Disable the org.apache.log */
 		CloseableHttpResponse response = null;
 		try {
-			Utility.log(logger, "URL : ", merchantConfig.getUrl() , Level.INFO);
+			Utility.log(logger, "URL : ", MerchantUtil.getUrl() , Level.INFO);
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPatch httpPatch = new HttpPatch(merchantConfig.getUrl());
+			HttpPatch httpPatch = new HttpPatch(MerchantUtil.getUrl());
 			httpPatch = setPatchHeader(httpPatch); 
 			
 			if (isSignatureAlert) {

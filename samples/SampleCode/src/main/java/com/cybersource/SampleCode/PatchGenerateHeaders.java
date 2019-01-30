@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
@@ -61,20 +60,16 @@ public class PatchGenerateHeaders {
 	 */
 	public PatchGenerateHeaders() throws IOException, ConfigException, NoSuchAlgorithmException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		this.logger = Log4j.getInstance(merchantConfig);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		this.logger = merchantConfig.getLogger();
 		merchantUtil = new MerchantUtil(merchantConfig);
-		Log4j.logEnable = false;
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PATCH Headers *******************",
 				Level.INFO);
 		merchantUtil.setRequestType(requestType);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		requestData = merchantUtil.getRequestData();
-		Log4j.logEnable = merchantConfig.getEnableLog();
 		digest = new PayloadDigest(requestData);
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PATCH Headers *******************",
-				Level.INFO);
 		if (MerchantUtil.validateMerchantDetails()) {
 			generatePatchHeaders();
 		}
@@ -94,9 +89,8 @@ public class PatchGenerateHeaders {
 			throws ConfigException, NoSuchAlgorithmException, UnsupportedEncodingException {
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
-		Log4j.logEnable = false;
 		Authorization.getToken(merchantConfig, requestData);
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		digest = new PayloadDigest(requestData);
 		generatePatchHeaders();
 

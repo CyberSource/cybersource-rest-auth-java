@@ -4,10 +4,11 @@ import java.io.File;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.logging.log4j.Logger;
+
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.Utility;
 
 
@@ -47,7 +48,7 @@ public class Cache {
 	 */
 	public Cache(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
-		logger = Log4j.getInstance(this.merchantConfig);
+		logger = merchantConfig.getLogger();
 		if (cacheP12.isEmpty()) {
 			Cache.isCache = true;
 		} else {
@@ -108,14 +109,14 @@ public class Cache {
 	/**
 	 * @return value for last modified.
 	 */
-	public long getLastModifiedFileP12() {
+	public Long getLastModifiedFileP12() {
 		File f;
 		try {
 			f = new File(merchantConfig.getKeyFile().getAbsolutePath());
 			return f.lastModified();
 		} catch (Exception e) {
 			Utility.log(logger, e);
-			return (Long) null;
+			return null;
 		}
 	}
 }

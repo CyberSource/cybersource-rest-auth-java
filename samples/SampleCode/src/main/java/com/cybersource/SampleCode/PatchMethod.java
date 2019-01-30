@@ -60,7 +60,7 @@ public class PatchMethod {
 		apiController = new ApiController();
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil = new MerchantUtil(merchantConfig);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
@@ -71,10 +71,10 @@ public class PatchMethod {
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		requestData = merchantUtil.getRequestData();
 		/* Set request target */
-		merchantConfig.setRequestTarget(requestTarget);
+		merchantUtil.setRequestTarget(requestTarget);
 		/* Set URL path w.r.t Post operation. */
-		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setUrl(url);
+		url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
+		merchantUtil.setUrl(url);
 		/* Begin Post process. */
 		process();
 	}

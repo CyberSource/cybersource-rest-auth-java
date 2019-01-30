@@ -9,7 +9,7 @@ import org.mockito.Mock;
 
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.http.SignatureGenerator;
-import com.cybersource.authsdk.log.Log4j;
+import com.cybersource.authsdk.log.AuthLog4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -33,14 +33,14 @@ public class SignatureGeneratorTest {
 	public void getSignatureParamTestForGet() throws Exception {
 		
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType(GlobalLabelParameters.GET);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.getRequestData();
 		merchantConfig.setMerchantDetails();
 		
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureGenerator = new SignatureGenerator(merchantConfig,null, GlobalLabelParameters.GET);
@@ -58,13 +58,13 @@ public class SignatureGeneratorTest {
 	public void getSignatureParamTestForPost() throws Exception {
 		
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType(GlobalLabelParameters.POST);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setMerchantDetails();
 		
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.POST);
@@ -82,13 +82,13 @@ public class SignatureGeneratorTest {
 	public void getSignatureParamTestForPatch() throws Exception {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType(GlobalLabelParameters.PATCH);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setMerchantDetails();
 		
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(), GlobalLabelParameters.PATCH);
@@ -106,13 +106,13 @@ public class SignatureGeneratorTest {
 	public void getSignatureParamTestForPut() throws Exception {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestType(GlobalLabelParameters.PUT);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantConfig.setMerchantDetails();
 		
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		MerchantUtil.validateMerchantDetails();
 		
 		signatureGenerator = new SignatureGenerator(merchantConfig,merchantUtil.getRequestData(),GlobalLabelParameters.PUT);
@@ -130,7 +130,7 @@ public class SignatureGeneratorTest {
 	public void getRequestTargetForNUllTest() throws Exception {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil=new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath(requestJsonPath);
 		merchantUtil.setRequestType("option");

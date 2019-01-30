@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -56,7 +55,6 @@ public class GetGenerateHeaders {
 	 */
 	public GetGenerateHeaders(String requestTarget) throws IOException, ConfigException {
 		setGenerateHeaders();
-		Log4j.logEnable = false;
 		this.id = Utility.retrieveGetIDFromRequestTarget(requestTarget);
 		generateGetHeaders();
 	}
@@ -71,10 +69,9 @@ public class GetGenerateHeaders {
 		this.merchantConfig = merchantConfig;
 		merchantUtil = new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
-		Log4j.logEnable = false;
 		merchantConfig.setId(id);
 		merchantUtil.setRequestType(requestType);
-		this.logger = Log4j.getInstance(merchantConfig);
+		this.logger = merchantConfig.getLogger();
 		generateGetHeaders();
 		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 		Utility.log(this.logger, " ", "", Level.OFF);
@@ -87,14 +84,12 @@ public class GetGenerateHeaders {
 	 */
 	public GetGenerateHeaders() throws IOException, ConfigException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		this.logger = Log4j.getInstance(merchantConfig);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		this.logger = merchantConfig.getLogger();
 		merchantUtil = new MerchantUtil(merchantConfig);
-		Log4j.logEnable = false;
 		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 		merchantUtil.setRequestType(requestType);
 		merchantUtil.setRequestJsonPath("not required");
-		Log4j.logEnable = merchantConfig.getEnableLog();
 		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate GET Headers *******************",
 				Level.INFO);
 		if (MerchantUtil.validateMerchantDetails()) {
@@ -111,15 +106,14 @@ public class GetGenerateHeaders {
 	private void setGenerateHeaders() throws IOException, ConfigException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil = new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
 		/* Set Request Type into the merchant config object. */
 		merchantUtil.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
-		this.logger = Log4j.getInstance(merchantConfig);
-		Log4j.logEnable = false;
+		this.logger = merchantConfig.getLogger();
 		Authorization.getToken(merchantConfig, null);
 	}
 

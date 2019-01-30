@@ -130,8 +130,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			Utility.log(logger, GlobalLabelParameters.USERAGENT, " : ".concat(GlobalLabelParameters.USER_AGENT_VALUE),
 					Level.INFO);
 	   } catch (ConfigException e) {
-			Utility.log(logger, e.getLocalizedMessage(), "", Level.FATAL);
-			throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
+			Utility.log(logger, e.getMessage(), "", Level.FATAL);
+			throw e;
 		} catch (Exception e) {
 			Utility.log(logger, e.getLocalizedMessage(), "", Level.ERROR);
 			Utility.log(logger,e);
@@ -151,7 +151,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 		try {
 			/**/
 			Proxy proxy = createProxy(merchantConfig);
-			String getUrl = merchantConfig.getUrl();
+			String getUrl = MerchantUtil.getUrl();
 			Utility.log(logger, "URL : ", " " + getUrl, Level.INFO);
 			url = new URL(getUrl);
 			con = (HttpURLConnection) url.openConnection(proxy);
@@ -340,13 +340,12 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "ERROR");
 		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.headers", "ERROR");
 		/* For Disable the org.apache.log */
-		
 		CloseableHttpResponse response = null;
 		try {
-			Utility.log(logger, "URL : ", merchantConfig.getUrl() , Level.INFO);
+			Utility.log(logger, "URL : ", MerchantUtil.getUrl() , Level.INFO);
 		
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPatch httpPatch = new HttpPatch(merchantConfig.getUrl());
+			HttpPatch httpPatch = new HttpPatch(MerchantUtil.getUrl());
 			httpPatch = setPatchHeader(httpPatch); 
 	
 			if (null != requestData) {

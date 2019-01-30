@@ -49,18 +49,18 @@ public class GetMethod {
 		apiController = new ApiController();
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
 		merchantUtil.setRequestJsonPath("not required");
 		/* Set Request Type into the merchant config object. */
 		merchantUtil.setRequestType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
-		merchantConfig.setRequestTarget(requestTarget);
+		merchantUtil.setRequestTarget(requestTarget);
 		/* Construct the URL. */
-		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
+		url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
 		/* Set the URL. */
-		merchantConfig.setUrl(url);
+		merchantUtil.setUrl(url);
 		/* Begin the Get process. */
 		process();
 	}

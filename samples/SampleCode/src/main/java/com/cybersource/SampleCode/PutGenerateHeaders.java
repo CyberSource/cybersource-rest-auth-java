@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
@@ -46,9 +45,8 @@ public class PutGenerateHeaders {
 	 */
 	public PutGenerateHeaders(MerchantConfig merchantConfig, String requestData) throws ConfigException {
 		this.requestData = requestData;
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		digest = new PayloadDigest(requestData);
-		Log4j.logEnable = false;
 		PutMethodHeaders(merchantConfig);
 	}
 
@@ -58,12 +56,12 @@ public class PutGenerateHeaders {
 	 */
 	public PutGenerateHeaders() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil = new MerchantUtil(merchantConfig);
-		merchantConfig.setRequestTarget(requestTarget);
+		merchantUtil.setRequestTarget(requestTarget);
 		merchantUtil.setRequestType("PUT");
 		merchantUtil.setRequestJsonPath("src/main/resources/TRRReport.json");
-		logger = Log4j.getInstance(merchantConfig);
+		logger = merchantConfig.getLogger();
 		this.requestData = merchantUtil.getRequestData();
 		digest = new PayloadDigest(requestData);
 

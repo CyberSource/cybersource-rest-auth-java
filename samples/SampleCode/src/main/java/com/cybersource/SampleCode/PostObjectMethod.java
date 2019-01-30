@@ -61,7 +61,7 @@ public class PostObjectMethod {
 		apiController = new ApiController();
 		/* Read Merchant details. */
 		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantUtil = new MerchantUtil(merchantConfig);
 
 		merchantUtil.setRequestType(requestType);
@@ -71,11 +71,11 @@ public class PostObjectMethod {
 		merchantUtil.setRequestJsonPath("not required");
 		requestData = PayloadData.readData();
 		/* Set request target */
-		merchantConfig.setRequestTarget(requestTarget);
+		merchantUtil.setRequestTarget(requestTarget);
 		/* Set URL path w.r.t Post operation. */
 
-		url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
-		merchantConfig.setUrl(url);
+		url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
+		merchantUtil.setUrl(url);
 
 		/* Begin Post process. */
 		process();

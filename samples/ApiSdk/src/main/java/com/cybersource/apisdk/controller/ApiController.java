@@ -8,7 +8,6 @@ import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.apisdk.service.PaymentRequestService;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
@@ -111,12 +110,12 @@ public class ApiController {
 	private Response processPayment(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
 		Response responseObj = null;
 		try {
-			logger = Log4j.getInstance(merchantConfig);
+			logger = merchantConfig.getLogger();
 			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSACTION, "", Level.INFO);
 			commonApiControllerCheck(merchantConfig);
 			if (isAuthicationTypeValid) {
 				if (isMerchantConfigValid) {
-					Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, merchantConfig.getRequestTarget(), Level.INFO);
+					Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, MerchantUtil.getRequestTarget(), Level.INFO);
 					Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(), Level.INFO);
 					Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : " + MerchantUtil.getRequestType(), Level.INFO);
 					Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " " + merchantConfig.toString(), Level.INFO);
@@ -149,12 +148,9 @@ public class ApiController {
 		/* Retrieve authentication type for validating. */
 		String authenticationType = merchantConfig.getAuthenticationType();
 		isAuthicationTypeValid = Utility.checkAuthenticationValidation(authenticationType);
-		if (MerchantUtil.isSetMerchantDetails()) {
-			/* Validate Merchant Details. */
-			isMerchantConfigValid = MerchantUtil.validateMerchantDetails();
-		} else {
-			logger = Log4j.getInstance(merchantConfig);
-		}
+		/* Validate Merchant Details. */
+		isMerchantConfigValid = MerchantUtil.validateMerchantDetails();
+		
 	}
 
 	/**

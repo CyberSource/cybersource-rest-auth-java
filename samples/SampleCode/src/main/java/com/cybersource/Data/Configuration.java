@@ -7,7 +7,7 @@ public class Configuration {
 		Properties props = new Properties();
 
 		// HTTP_Signature and JWT
-		props.setProperty("authenticationType", "http_signature");
+		props.setProperty("authenticationType", "HTTP_Signature"); 
 		props.setProperty("merchantID", "testrest");
 		props.setProperty("runEnvironment", "CyberSource.Environment.SANDBOX");
 		props.setProperty("requestJsonPath", "src/main/resources/request.json");

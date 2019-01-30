@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
@@ -41,7 +40,7 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
 		this.httpMethod = MerchantUtil.getRequestType();
-		this.log = Log4j.getInstance(merchantConfig);
+		this.log = merchantConfig.getLogger();
 	}
 
 	/**

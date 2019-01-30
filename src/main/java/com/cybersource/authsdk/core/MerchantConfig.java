@@ -1,13 +1,14 @@
 package com.cybersource.authsdk.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.log.Log4j;
+import com.cybersource.authsdk.log.AuthLog4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
 
@@ -34,13 +35,10 @@ public class MerchantConfig {
 
 	/* Common parameters for HTTP and JWT. */
 	private String merchantID;
-	private String url;
-	private String requestTarget;
 	private String authenticationType;
 	private String id;
 	private String requestHost;
-	private boolean isSetMerchantDetails = true;
-
+	
 	/* Logging Parameters. */
 	private Logger log;
 	private boolean enableLog;
@@ -56,8 +54,10 @@ public class MerchantConfig {
 	private String runEnvironment;
 	private String proxyAddress;
 	private int proxyPort;
-
-	public MerchantConfig(Properties props) throws ConfigException {
+	
+	private static MerchantConfig instance;
+	
+	private MerchantConfig(Properties props) throws ConfigException {
 		if (props != null) {
 			this.props = props;
 			this.merchantID = this.props.getProperty("merchantID");
@@ -67,6 +67,13 @@ public class MerchantConfig {
 		}
 	}
 
+	public static synchronized MerchantConfig getInstance(Properties properties) throws IOException, ConfigException{
+        if(instance == null){
+          instance = new MerchantConfig(properties);
+        }
+        return instance;
+    }
+	
 	public String getRunEnvironment() {
 		return runEnvironment;
 	}
@@ -168,22 +175,6 @@ public class MerchantConfig {
 		return this.keyFilename;
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public String getRequestTarget() {
-		return requestTarget;
-	}
-
-	public void setRequestTarget(String requestTarget) {
-		this.requestTarget = requestTarget;
-	}
-
 	public boolean getEnableLog() {
 		return this.enableLog;
 	}
@@ -222,14 +213,6 @@ public class MerchantConfig {
 
 	public void setRequestHost(String requestHost) {
 		this.requestHost = requestHost;
-	}
-
-	public boolean isSetMerchantDetails() {
-		return isSetMerchantDetails;
-	}
-
-	public void setSetMerchantDetails(boolean isSetMerchantDetails) {
-		this.isSetMerchantDetails = isSetMerchantDetails;
 	}
 
 	public void setLogMaximumSize(String logMaximumSize) {
@@ -289,7 +272,7 @@ public class MerchantConfig {
 	}
 
 	public void setPeopertiesByAuthType() throws ConfigException {
-		switch(authenticationType){
+		switch(this.authenticationType){
 	      case(GlobalLabelParameters.JWT) :
 			/* JWT Parameters */
 	    	this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory");
@@ -312,11 +295,14 @@ public class MerchantConfig {
 			this.authenticationType = this.getProperty(this.merchantID, "authenticationType");
 			this.merchantID = this.getProperty(this.merchantID, "merchantID");
 			/* Logging Parameters */
-			this.logDirectory = this.getProperty(this.merchantID, "logDirectory");
-			this.logFilename = this.getProperty(this.merchantID, "logFilename");
-			this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize");
-			
 			this.enableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
+			if(enableLog) {
+				this.logDirectory = this.getProperty(this.merchantID, "logDirectory");
+				this.logFilename = this.getProperty(this.merchantID, "logFilename");
+				this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize");
+				/*Initialize log */
+				this.log = AuthLog4j.getInstance(this);
+			}
 			/* Optional use [ TIME OUT ] */
 			this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
 			this.proxyPort = this.getIntegerProperty(this.merchantID, "proxyPort", 8080);
@@ -326,8 +312,7 @@ public class MerchantConfig {
 			this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
 			/* Run Environment. */
 			this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment");
-			/*Initialize log */
-			this.log = Log4j.getInstance(this);
+			
 			try {
 				if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)) {
 					this.requestHost = GlobalLabelParameters.SANDBOX_URL;
@@ -338,12 +323,17 @@ public class MerchantConfig {
 				}
 			} catch (Exception e) {
 				Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, "", Level.ERROR);
-				isSetMerchantDetails = false;
+				throw new ConfigException(GlobalLabelParameters.RUN_ENV_NULL_EMPTY);
+				
 			}
 			/* set the Auth type */
 			setPeopertiesByAuthType();
 		} catch (ConfigException e) {
 			Utility.log(log, e.getMessage(), "", Level.ERROR);
+			throw e;
+		} catch (Exception e) {
+			Utility.log(log, e.getMessage(), "", Level.ERROR);
+			throw new ConfigException(e.getMessage());
 		}
  		
 
@@ -436,34 +426,6 @@ public class MerchantConfig {
 	/**
 	 *
 	 * @param merchantID
-	 *            - merchant id for merchant.
-	 * @param prop
-	 *            -prop from properties file.
-	 * @param defaultVal
-	 *            -default value for property.
-	 * @return true if valid else return false.
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	@SuppressWarnings("unused")
-	private boolean getBooleanProperty(String merchantID, String prop, boolean defaultVal) throws ConfigException {
-		String strValue = this.getProperty(merchantID, prop);
-		if (strValue == null) {
-			return defaultVal;
-		} else if (!"1".equals(strValue) && !"true".equalsIgnoreCase(strValue)) {
-			if (!"0".equals(strValue) && !"false".equalsIgnoreCase(strValue)) {
-				throw new ConfigException(prop + " has an invalid value.");
-			} else {
-				return false;
-			}
-		} else {
-			return true;
-		}
-	}
-
-	/**
-	 *
-	 * @param merchantID
 	 *            - id for merchant.
 	 * @param prop
 	 *            - prop from properties file.
@@ -514,7 +476,14 @@ public class MerchantConfig {
 			return true;
 		}
 	}
-
+	
+	public Logger getLogger() {
+		return log;
+	}
+	
+	
+    
+	
 	public String toString() {
 		return "{ authenticationType : "+ authenticationType + ", runEnvironment : " 
 			   + runEnvironment	+ ", keyFileName : " 

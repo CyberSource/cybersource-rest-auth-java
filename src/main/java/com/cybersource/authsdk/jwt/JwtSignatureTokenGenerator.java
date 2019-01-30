@@ -16,7 +16,6 @@ import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.jwtsecurity.JWTCryptoProcessorImpl;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
@@ -48,7 +47,7 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 		this.merchantConfig = merchantConfig;
 		this.requestBody = requestData;
 		this.requestType = MerchantUtil.getRequestType();
-		this.logger = Log4j.getInstance(merchantConfig);
+		this.logger = merchantConfig.getLogger();
 		this.cache = new Cache(this.merchantConfig);
 	}
 
