@@ -19,6 +19,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 public class KeyCertificateGenerator {
 
@@ -55,15 +56,17 @@ public class KeyCertificateGenerator {
 
 			}
 			merchantKeyAlias = keyAliasValidator(array, merchantConfig.getMerchantID());
-
-			try {
-				PrivateKeyEntry e = (PrivateKeyEntry) merchantKeyStore.getEntry(merchantKeyAlias,
-						new PasswordProtection(merchantConfig.getKey().toCharArray()));
-				return (X509Certificate) e.getCertificate();
-			} catch (UnrecoverableEntryException var5) {
-				return null;
-			}
-
+            if(merchantKeyAlias != null) {
+            	try {
+    				PrivateKeyEntry e = (PrivateKeyEntry) merchantKeyStore.getEntry(merchantKeyAlias,
+    						new PasswordProtection(merchantConfig.getKey().toCharArray()));
+    				return (X509Certificate) e.getCertificate();
+    			} catch (UnrecoverableEntryException var5) {
+    				return null;
+    			}
+            } else {
+            	throw new ConfigException(GlobalLabelParameters.MERCHANTID_NOT_SET);
+            }
 		} else {
 			return null;
 		}

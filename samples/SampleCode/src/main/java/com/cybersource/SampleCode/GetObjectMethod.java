@@ -29,7 +29,7 @@ public class GetObjectMethod {
 	private String url;
 
 	/* This method initiates or begins the process. */
-	public static void main(String[] args) throws ConfigException, IOException {
+	public static void main(String[] args) {
 		new GetObjectMethod();
 	}
 
@@ -37,49 +37,53 @@ public class GetObjectMethod {
 	 * @throws ConfigException
 	 * @throws IOException
 	 */
-	public GetObjectMethod() throws ConfigException, IOException {
-		apiController = new ApiController();
-		/* Read Merchant details. */
-		merchantProp = Configuration.getMerchantDetails();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestJsonPath("not required");
-		/* Set Request Type */
-		merchantUtil.setRequestType(requestType);
-		/* Extract Authentication Type from cybs.properties */
-		authenticationType = merchantConfig.getAuthenticationType();
-		merchantUtil.setRequestTarget(requestTarget);
-		/* Construct the URL with respect to GETID. */
-		url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
-		/* Set the URL. */
-		merchantUtil.setUrl(url);
-		/* Begin the Get process. */
-		process();
-	}
-
-	/**
-	 * Calls the APISDK for processing the payment request.
-	 */
-	private void process() {
-		System.out.println(authenticationType.toUpperCase() + " Request");
-
+	public GetObjectMethod() {
 		try {
-			/* Calling APISDK, com.cybersouce.api.controller. */
-			response = apiController.paymentGet(merchantConfig, null);
-			/* Display response message and Headers in console. */
-			if (StringUtils.isNotBlank(response.getResponseCode())
-					&& StringUtils.isNotBlank(response.getResponseMessage())) {
-				System.out.println(" URL                 : " + url);
-				System.out.println(" Response Code       : " + response.getResponseCode());
-				System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());
-				System.out.println(" Response Message    : " + response.getResponseMessage());
-			}
+			apiController = new ApiController();
+			/* Read Merchant details. */
+			merchantProp = Configuration.getMerchantDetails();
+			merchantConfig = MerchantConfig.getInstance(merchantProp);
+			MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
+			merchantUtil.setRequestJsonPath("not required");
+			/* Set Request Type */
+			merchantUtil.setRequestType(requestType);
+			/* Extract Authentication Type from cybs.properties */
+			authenticationType = merchantConfig.getAuthenticationType();
+			merchantUtil.setRequestTarget(requestTarget);
+			/* Construct the URL with respect to GETID. */
+			url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
+			/* Set the URL. */
+			merchantUtil.setUrl(url);
+			/* Begin the Get process. */
+			process();
+
 		} catch (ConfigException e) {
 			System.out.println(e.getMessage());
 		} catch (ClientException e) {
 			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+		}
+	}
+
+	/**
+	 * Calls the APISDK for processing the payment request.
+	 * 
+	 * @throws ClientException
+	 * @throws ConfigException
+	 */
+	private void process() throws ConfigException, ClientException {
+		System.out.println(authenticationType.toUpperCase() + " Request");
+
+		/* Calling APISDK, com.cybersouce.api.controller. */
+		response = apiController.paymentGet(merchantConfig, null);
+		/* Display response message and Headers in console. */
+		if (StringUtils.isNotBlank(response.getResponseCode())
+				&& StringUtils.isNotBlank(response.getResponseMessage())) {
+			System.out.println(" URL                 : " + url);
+			System.out.println(" Response Code       : " + response.getResponseCode());
+			System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());
+			System.out.println(" Response Message    : " + response.getResponseMessage());
 		}
 	}
 }

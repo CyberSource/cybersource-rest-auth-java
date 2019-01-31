@@ -303,7 +303,7 @@ public class MerchantUtilTest {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
 			merchantConfig.setMerchantDetails();
-			merchantConfig.setRunEnvironment("test");
+			merchantConfig.setRunEnvironment("");
 			merchantUtil=new MerchantUtil(merchantConfig);
 			boolean check = false;
 			try {
@@ -386,7 +386,7 @@ public class MerchantUtilTest {
 		merchantConfig.setMerchantDetails();
 		merchantUtil=new MerchantUtil(merchantConfig);
 
-		boolean check = MerchantUtil.checkLogMaxSizeAndFolder();
+		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
 		Assert.assertEquals(true, check);
 
 	}
@@ -399,7 +399,7 @@ public class MerchantUtilTest {
 		merchantConfig.setLogDirectory(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 
-		boolean check = MerchantUtil.checkLogMaxSizeAndFolder();
+		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
 		Assert.assertEquals(true, check);
 
 	}
@@ -412,7 +412,7 @@ public class MerchantUtilTest {
 		merchantConfig.setLogDirectory("");
 		merchantUtil=new MerchantUtil(merchantConfig);
 
-		boolean check = MerchantUtil.checkLogMaxSizeAndFolder();
+		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
 		Assert.assertEquals(true, check);
 
 	}
@@ -425,7 +425,7 @@ public class MerchantUtilTest {
 		merchantConfig.setLogDirectory(null);
 		merchantUtil=new MerchantUtil(merchantConfig);
 
-		boolean check = MerchantUtil.checkLogMaxSizeAndFolder();
+		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
 		Assert.assertEquals(true, check);
 
 	}

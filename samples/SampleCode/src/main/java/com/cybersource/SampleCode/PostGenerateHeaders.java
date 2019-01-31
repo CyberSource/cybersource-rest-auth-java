@@ -1,7 +1,5 @@
 package com.cybersource.SampleCode;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -48,31 +46,31 @@ public class PostGenerateHeaders {
 
 	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
 
-	/**
-	 * 
-	 * @throws IOException
-	 * @throws ConfigException
-	 * @throws NoSuchAlgorithmException
-	 */
-	public PostGenerateHeaders() throws IOException, ConfigException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		this.logger = merchantConfig.getLogger();
-		merchantUtil = new MerchantUtil(merchantConfig);
+	public PostGenerateHeaders() {
+		try {
+			merchantProp = PropertiesUtil.getMerchantProperties();
+			merchantConfig = MerchantConfig.getInstance(merchantProp);
+			this.logger = merchantConfig.getLogger();
+			merchantUtil = new MerchantUtil(merchantConfig);
 
-		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		merchantUtil.setRequestType(requestType);
-		merchantUtil.setRequestJsonPath(requestJsonPath);
-		merchantUtil.setRequestTarget(requestTarget);
-		requestData = merchantUtil.getRequestData();
-		digest = new PayloadDigest(requestData);
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate POST Headers *******************",
-				Level.INFO);
-		if (MerchantUtil.validateMerchantDetails()) {
-			generatePostHeaders();
+			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
+			merchantUtil.setRequestType(requestType);
+			merchantUtil.setRequestJsonPath(requestJsonPath);
+			merchantUtil.setRequestTarget(requestTarget);
+			requestData = merchantUtil.getRequestData();
+			digest = new PayloadDigest(requestData);
+			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
+					" Generate POST Headers *******************", Level.INFO);
+			if (MerchantUtil.validateMerchantDetails()) {
+				generatePostHeaders();
+			}
+			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
+			Utility.log(this.logger, " ", "", Level.OFF);
+		} catch (ConfigException e) {
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
-		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
 	/**
@@ -93,7 +91,7 @@ public class PostGenerateHeaders {
 		Utility.log(this.logger, GlobalLabelParameters.MERCH_CONF_LABEL, merchantConfig.toString(), Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE.concat(" : "), GlobalLabelParameters.APPLICATION_JSON,
 				Level.INFO);
-		
+
 		System.out.println(" Request Type        : " + requestType);
 		System.out.println(
 				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
@@ -126,10 +124,8 @@ public class PostGenerateHeaders {
 
 	/**
 	 * @param args
-	 * @throws IOException
-	 * @throws ConfigException
 	 */
-	public static void main(String[] args) throws IOException, ConfigException {
+	public static void main(String[] args) {
 		new PostGenerateHeaders();
 	}
 }

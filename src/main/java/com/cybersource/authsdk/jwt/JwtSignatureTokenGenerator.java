@@ -55,6 +55,9 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 	public String getToken() throws ConfigException {
 		try {
 			signature = generateSignature();
+		} catch (ConfigException e) {
+			signature = null;
+			throw e;
 		} catch (Exception e) {
 			signature = null;
 			throw new ConfigException(GlobalLabelParameters.JWT_SIG_FAILED);
@@ -144,6 +147,10 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 			} else {
 				throw new ConfigException("merchant config fields missing: keyType, key type");
 			}
+		} catch (ConfigException e) {
+			Utility.log(logger, e.getMessage(), "", Level.FATAL);
+			signature = null;
+			throw e;
 		} catch (Exception e) {
 			Utility.log(logger, GlobalLabelParameters.JWT_SIG_FAILED, "", Level.FATAL);
 			signature = null;

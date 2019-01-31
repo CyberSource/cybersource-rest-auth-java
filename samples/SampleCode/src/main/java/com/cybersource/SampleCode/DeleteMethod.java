@@ -1,6 +1,5 @@
 package com.cybersource.SampleCode;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,59 +31,36 @@ public class DeleteMethod {
 	/**
 	 * @param args
 	 *            This method initiates or begins the process.
-	 * @throws IOException
-	 * @throws ConfigException
 	 */
-	public static void main(String[] args) throws IOException, ConfigException {
+	public static void main(String[] args) {
 		new DeleteMethod(args);
 	}
 
 	/**
-	 * @param
-	 * @return
-	 * @throws IOException
-	 * @throws ConfigException
-	 * @throws Exception
+	 * @param args
 	 */
-	public DeleteMethod(String[] args) throws IOException, ConfigException {
-		apiController = new ApiController();
-
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestJsonPath("not required");
-		merchantUtil.setRequestType(requestType);
-		authenticationType = merchantConfig.getAuthenticationType();
-		/*
-		 * Set Json Path, request target, request data into merchant config
-		 * object.
-		 */
-		merchantUtil.setRequestTarget(requestTarget);
-		/* Construct the URL with respect to PUTID. */
-		url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
-		/* Set the URL. */
-		merchantUtil.setUrl(url);
-		/* Begin PUT process. */
-		process();
-	}
-
-	/**
-	 * Calls the APISDK for processing the payment request.
-	 */
-	private void process() {
-		System.out.println(authenticationType.toUpperCase() + " Request");
-
+	public DeleteMethod(String[] args) {
 		try {
-			/* Call payment method of Api Controller class */
-			response = apiController.paymentDelete(merchantConfig, null);
-			/* Display Response Message from the server. */
-			if (StringUtils.isNotBlank(response.getResponseCode())
-					&& StringUtils.isNotBlank(response.getResponseMessage())) {
-				System.out.println(" URL                : " + url);
-				System.out.println(" Response Code       : " + response.getResponseCode());
-				System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());
-				System.out.println(" Response Message    : " + response.getResponseMessage());
-			}
+			apiController = new ApiController();
+
+			merchantProp = PropertiesUtil.getMerchantProperties();
+			merchantConfig = MerchantConfig.getInstance(merchantProp);
+			MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
+			merchantUtil.setRequestJsonPath("not required");
+			merchantUtil.setRequestType(requestType);
+			authenticationType = merchantConfig.getAuthenticationType();
+			/*
+			 * Set Json Path, request target, request data into merchant config
+			 * object.
+			 */
+			merchantUtil.setRequestTarget(requestTarget);
+			/* Construct the URL with respect to PUTID. */
+			url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
+			/* Set the URL. */
+			merchantUtil.setUrl(url);
+			/* Begin PUT process. */
+			process();
+
 		} catch (ConfigException e) {
 			System.out.println(e.getMessage());
 		} catch (ClientException e) {
@@ -92,5 +68,27 @@ public class DeleteMethod {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
+	}
+
+	/**
+	 * Calls the APISDK for processing the payment request.
+	 * 
+	 * @throws ClientException
+	 * @throws ConfigException
+	 */
+	private void process() throws ConfigException, ClientException {
+
+		System.out.println(authenticationType.toUpperCase() + " Request");
+		/* Call payment method of Api Controller class */
+		response = apiController.paymentDelete(merchantConfig, null);
+		/* Display Response Message from the server. */
+		if (StringUtils.isNotBlank(response.getResponseCode())
+				&& StringUtils.isNotBlank(response.getResponseMessage())) {
+			System.out.println(" URL                : " + url);
+			System.out.println(" Response Code       : " + response.getResponseCode());
+			System.out.println(" V-C-Corealation ID  : " + response.getVcCorelationId());
+			System.out.println(" Response Message    : " + response.getResponseMessage());
+		}
+
 	}
 }

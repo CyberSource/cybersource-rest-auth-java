@@ -32,7 +32,8 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentGet(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
+	public Response paymentGet(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestData);
 	}
 
@@ -47,7 +48,8 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentPost(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
+	public Response paymentPost(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestData);
 	}
 
@@ -62,7 +64,8 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentPut(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
+	public Response paymentPut(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestData);
 	}
 
@@ -77,22 +80,8 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentDelete(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
-		return processPayment(merchantConfig, requestData);
-	}
-	
-	/**
-	 * 
-	 * @param merchantConfig
-	 *            - contains information for merchant.
-	 * @param requestData
-	 *            - request payload.
-	 * @throws ConfigException
-	 *             - contains information for merchant.
-	 * @throws ClientException
-	 *             - throws custom client exception.
-	 */
-	public Response paymentPatch(MerchantConfig merchantConfig, String requestData)	throws ConfigException, ClientException {
+	public Response paymentDelete(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestData);
 	}
 
@@ -107,7 +96,24 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	private Response processPayment(MerchantConfig merchantConfig, String requestData) throws ConfigException, ClientException {
+	public Response paymentPatch(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException {
+		return processPayment(merchantConfig, requestData);
+	}
+
+	/**
+	 * 
+	 * @param merchantConfig
+	 *            - contains information for merchant.
+	 * @param requestData
+	 *            - request payload.
+	 * @throws ConfigException
+	 *             - contains information for merchant.
+	 * @throws ClientException
+	 *             - throws custom client exception.
+	 */
+	private Response processPayment(MerchantConfig merchantConfig, String requestData)
+			throws ConfigException, ClientException {
 		Response responseObj = null;
 		try {
 			logger = merchantConfig.getLogger();
@@ -115,11 +121,16 @@ public class ApiController {
 			commonApiControllerCheck(merchantConfig);
 			if (isAuthicationTypeValid) {
 				if (isMerchantConfigValid) {
-					Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, MerchantUtil.getRequestTarget(), Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(), Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : " + MerchantUtil.getRequestType(), Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " " + merchantConfig.toString(), Level.INFO);
-					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestData, logger);
+					Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, MerchantUtil.getRequestTarget(),
+							Level.INFO);
+					Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE,
+							merchantConfig.getAuthenticationType(), Level.INFO);
+					Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : " + MerchantUtil.getRequestType(),
+							Level.INFO);
+					Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " " + merchantConfig.toString(),
+							Level.INFO);
+					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestData,
+							logger);
 					responseObj = paymentRequest.processPaymentRequest();
 					return responseObj;
 				} else {
@@ -135,7 +146,7 @@ public class ApiController {
 			Utility.log(logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			Utility.log(logger, " ", "", Level.OFF);
 		}
-    }
+	}
 
 	/**
 	 * 
@@ -150,7 +161,7 @@ public class ApiController {
 		isAuthicationTypeValid = Utility.checkAuthenticationValidation(authenticationType);
 		/* Validate Merchant Details. */
 		isMerchantConfigValid = MerchantUtil.validateMerchantDetails();
-		
+
 	}
 
 	/**

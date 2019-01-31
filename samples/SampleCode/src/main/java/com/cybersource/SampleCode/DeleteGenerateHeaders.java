@@ -1,6 +1,5 @@
 package com.cybersource.SampleCode;
 
-import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,29 +32,29 @@ public class DeleteGenerateHeaders {
 	private String tempSig;
 	private String requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
 
-	/**
-	 * 
-	 * @param getID
-	 *            : Unique getID
-	 * @throws ConfigException
-	 * @throws IOException
-	 */
-	public DeleteGenerateHeaders() throws IOException, ConfigException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantUtil = new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestJsonPath("not required");
-		authenticationType = merchantConfig.getAuthenticationType();
-		merchantUtil.setRequestType(requestType);
-		this.logger = merchantConfig.getLogger();
-		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
-				" Generate DELETE Headers *******************", Level.INFO);
-		if (MerchantUtil.validateMerchantDetails()) {
-			generateDeleteHeaders();
+	public DeleteGenerateHeaders() {
+		try {
+			merchantProp = PropertiesUtil.getMerchantProperties();
+			merchantConfig = MerchantConfig.getInstance(merchantProp);
+			merchantUtil = new MerchantUtil(merchantConfig);
+			merchantUtil.setRequestJsonPath("not required");
+			authenticationType = merchantConfig.getAuthenticationType();
+			merchantUtil.setRequestType(requestType);
+			this.logger = merchantConfig.getLogger();
+			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
+			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
+					" Generate DELETE Headers *******************", Level.INFO);
+			if (MerchantUtil.validateMerchantDetails()) {
+				generateDeleteHeaders();
+			}
+			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
+			Utility.log(this.logger, " ", "", Level.OFF);
+
+		} catch (ConfigException e) {
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
-		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
 	/**
@@ -105,11 +104,8 @@ public class DeleteGenerateHeaders {
 	/**
 	 * 
 	 * @param args
-	 *            : Contains getId entry.
-	 * @throws ConfigException
-	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException, ConfigException {
+	public static void main(String[] args) {
 		new DeleteGenerateHeaders();
 	}
 }

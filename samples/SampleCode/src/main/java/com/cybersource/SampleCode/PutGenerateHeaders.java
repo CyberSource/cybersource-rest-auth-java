@@ -50,30 +50,33 @@ public class PutGenerateHeaders {
 		PutMethodHeaders(merchantConfig);
 	}
 
-	/**
-	 * @throws ConfigException
-	 * @throws IOException
-	 */
-	public PutGenerateHeaders() throws ConfigException, IOException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantUtil = new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestTarget(requestTarget);
-		merchantUtil.setRequestType("PUT");
-		merchantUtil.setRequestJsonPath("src/main/resources/TRRReport.json");
-		logger = merchantConfig.getLogger();
-		this.requestData = merchantUtil.getRequestData();
-		digest = new PayloadDigest(requestData);
-
-		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PUT Headers *******************",
-				Level.INFO);
-		boolean isMerchant = MerchantUtil.validateMerchantDetails();
-		if (isMerchant) {
-			PutMethodHeaders(merchantConfig);
+	
+	public PutGenerateHeaders()  {
+		try {
+			merchantProp = PropertiesUtil.getMerchantProperties();
+			merchantConfig = MerchantConfig.getInstance(merchantProp);
+			merchantUtil = new MerchantUtil(merchantConfig);
+			merchantUtil.setRequestTarget(requestTarget);
+			merchantUtil.setRequestType("PUT");
+			merchantUtil.setRequestJsonPath("src/main/resources/TRRReport.json");
+			logger = merchantConfig.getLogger();
+			this.requestData = merchantUtil.getRequestData();
+			digest = new PayloadDigest(requestData);
+	
+			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
+			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PUT Headers *******************",
+					Level.INFO);
+			boolean isMerchant = MerchantUtil.validateMerchantDetails();
+			if (isMerchant) {
+				PutMethodHeaders(merchantConfig);
+			}
+			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
+			Utility.log(this.logger, " ", "", Level.OFF);
+		} catch (ConfigException e) {
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
-		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
 	/**
@@ -130,7 +133,7 @@ public class PutGenerateHeaders {
 	 * @throws IOException
 	 * @throws ConfigException
 	 */
-	public static void main(String[] args) throws ConfigException, IOException {
+	public static void main(String[] args)  {
 		new PutGenerateHeaders();
 	}
 }

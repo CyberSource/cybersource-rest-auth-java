@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 
-
 public class MerchantUtil {
 
 	private String requestData;
@@ -22,47 +21,40 @@ public class MerchantUtil {
 	private static String requestType;
 	private static String requestTarget;
 	private static String url;
-	
 
 	/* Others. */
 	private static Logger log;
-	
+
 	public static String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
-	
+
 	public MerchantUtil(MerchantConfig merchantConfig) {
 		MerchantUtil.merchantConfig = merchantConfig;
+		log = merchantConfig.getLogger();
 	}
 
-	
 	public static String getRequestType() {
 		return requestType;
 	}
 
-
 	public void setRequestType(String requestType) {
 		MerchantUtil.requestType = requestType;
 	}
-	
-	
+
 	public static String getRequestTarget() {
 		return requestTarget;
 	}
-
 
 	public void setRequestTarget(String requestTarget) {
 		MerchantUtil.requestTarget = requestTarget;
 	}
 
-
 	public static String getUrl() {
 		return url;
 	}
 
-
 	public void setUrl(String url) {
 		MerchantUtil.url = url;
 	}
-
 
 	public static String getRequestJsonPath() {
 		return requestJsonPath;
@@ -79,7 +71,6 @@ public class MerchantUtil {
 	public boolean isRequestJson() {
 		return isRequestJson;
 	}
-	
 
 	/**
 	 * @return request data according to availability of request Json.
@@ -89,7 +80,8 @@ public class MerchantUtil {
 	public String getRequestData() throws ConfigException {
 
 		try {
-			if(StringUtils.isNotBlank(requestJsonPath) && !requestJsonPath.equalsIgnoreCase(GlobalLabelParameters.REQUEST_JSON_PATH_NOT_REQUIRED) ){
+			if (StringUtils.isNotBlank(requestJsonPath)
+					&& !requestJsonPath.equalsIgnoreCase(GlobalLabelParameters.REQUEST_JSON_PATH_NOT_REQUIRED)) {
 				requestData = PropertiesUtil.getJsonInput(requestJsonPath);
 			}
 		} catch (Exception e) {
@@ -120,7 +112,6 @@ public class MerchantUtil {
 		boolean isCheckKeyFile = false;
 		// change true to false
 		boolean isCheckJsonPath = false;
-		boolean isCheckLogMaxSize = true;
 		boolean isCheckRunEnvironment;
 		boolean isMerchantDetailStatus = false;
 		checkAuthenticationType();
@@ -137,15 +128,14 @@ public class MerchantUtil {
 		}
 
 		isCheckJsonPath = checkJsonPath(requestJsonPath);
-		isCheckLogMaxSize = checkLogMaxSizeAndFolder();
 		isCheckRunEnvironment = checkRunEvironment();
 
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			isMerchantDetailStatus = isMerchantId && isCheckMerchantSecertKey && isCheckMerchantKeyId && isCheckJsonPath
-					&& isCheckLogMaxSize && isCheckRunEnvironment && isRequestType;
+					&& isCheckRunEnvironment && isRequestType;
 		} else if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			isMerchantDetailStatus = isMerchantId && isGetKeyAlias && isCheckKeyPassword && isCheckKeyFile
-					&& isCheckJsonPath && isCheckLogMaxSize && isCheckRunEnvironment && isRequestType;
+					&& isCheckJsonPath && isCheckRunEnvironment && isRequestType;
 		}
 		return isMerchantDetailStatus;
 	}
@@ -231,10 +221,8 @@ public class MerchantUtil {
 	public static boolean checkRunEvironment() throws ConfigException {
 		boolean check = false;
 
-		if (StringUtils.isNotBlank(merchantConfig.getRunEnvironment()) && 
-				((merchantConfig.getRunEnvironment().equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX))
-						|| (merchantConfig.getRunEnvironment().equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)))) {
-				check = true;
+		if (StringUtils.isNotBlank(merchantConfig.getRunEnvironment())) {
+			check = true;
 		} else {
 			Utility.log(log, GlobalLabelParameters.RUN_ENVIRONMENT_ERR, "", Level.ERROR);
 			throw new ConfigException(GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
@@ -271,21 +259,6 @@ public class MerchantUtil {
 	}
 
 	/**
-	 * @return true if log size is valid else return false,
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public static boolean checkLogMaxSizeAndFolder() throws ConfigException {
-
-		if (merchantConfig.getLogDirectory() == null || merchantConfig.getLogDirectory().isEmpty()) {
-			merchantConfig.setLogDirectory(GlobalLabelParameters.DEFAULT_LOG_PATH);
-			Utility.log(log, GlobalLabelParameters.NO_LOG_DIRECTORY, "", Level.ERROR);
-
-		}
-		return merchantConfig.getLogFile();
-	}
-
-	/**
 	 * @param jsonPath
 	 *            -path for request json.
 	 * @return true if path is valid else return false.
@@ -295,7 +268,7 @@ public class MerchantUtil {
 	public static boolean checkJsonPath(String jsonPath) throws ConfigException {
 		File f = null;
 		boolean check = true;
-		
+
 		if (!isRequestTypeMethodValid()) {
 			return false;
 		}
@@ -304,14 +277,15 @@ public class MerchantUtil {
 				|| requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
 			return check;
 		}
-		
-		if (StringUtils.isBlank(jsonPath) ) {
+
+		if (StringUtils.isBlank(jsonPath)) {
 			Utility.log(log, GlobalLabelParameters.REQUEST_JSON_MIS_NULL, "", Level.ERROR);
 			check = false;
 			throw new ConfigException(GlobalLabelParameters.REQUEST_JSON_MIS_NULL);
 		}
-		
-		if (StringUtils.isNotBlank(jsonPath) && jsonPath.equalsIgnoreCase(GlobalLabelParameters.REQUEST_JSON_PATH_NOT_REQUIRED)) {
+
+		if (StringUtils.isNotBlank(jsonPath)
+				&& jsonPath.equalsIgnoreCase(GlobalLabelParameters.REQUEST_JSON_PATH_NOT_REQUIRED)) {
 			return check;
 		}
 
@@ -358,14 +332,14 @@ public class MerchantUtil {
 		boolean check = true;
 		merchantConfig.setKeyFile(null);
 
-		if (merchantConfig.getKeyFilename() == null || merchantConfig.getKeyFilename().isEmpty()) {
+		if (StringUtils.isBlank(merchantConfig.getKeyFilename())) {
 			Utility.log(log, GlobalLabelParameters.KEY_FILE_EMPTY, merchantConfig.getMerchantID(), Level.ERROR);
 			if (merchantConfig.getMerchantID() != null) {
 				merchantConfig.setKeyFilename(merchantConfig.getMerchantID());
 			}
 
 		}
-		if (merchantConfig.getKeysDirectory().isEmpty() || merchantConfig.getKeysDirectory() == null) {
+		if (StringUtils.isBlank(merchantConfig.getKeysDirectory())) {
 			merchantConfig.setKeysDirectory(GlobalLabelParameters.DEF_KEY_DIRECTORY_PATH);
 			Utility.log(log, GlobalLabelParameters.KEY_DIRECTORY_EMPTY, "", Level.INFO);
 
@@ -397,7 +371,7 @@ public class MerchantUtil {
 			check = false;
 			return check;
 		}
-	  
+
 		if (!merchantConfig.getKeyFile().canRead()) {
 			Utility.log(log, GlobalLabelParameters.FILE_NOT_READ,
 					merchantConfig.getKeysDirectory().concat(merchantConfig.getKeyFilename()), Level.ERROR);

@@ -61,9 +61,10 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *            - request Payload .
 	 * @param logger
 	 *            - logger to log all information in log file.
-	 * @throws ClientException 
+	 * @throws ClientException
 	 */
-	public JWTAuthenticationStrategy(MerchantConfig merchantConfig, String requestData, Logger logger) throws ClientException {
+	public JWTAuthenticationStrategy(MerchantConfig merchantConfig, String requestData, Logger logger)
+			throws ClientException {
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
 		this.logger = logger;
@@ -80,15 +81,15 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - throws custom client exception.
 	 */
 	public Response getJwtConnection() throws ConfigException, ClientException {
-		
-	  try {
-		  
-		  if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+
+		try {
+
+			if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 				return executePatch(requestData);
-		   } else {
+			} else {
 				if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
 						|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-		
+
 					responseObj = jwtConnection();
 					responseCode = connection.getResponseCode();
 				} else if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
@@ -102,20 +103,21 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 				maskingPayload(responseMessage, GlobalLabelParameters.RESPONSE_MSG_LABEL);
 				endConnection();
 				return responseObj;
+			}
+		} catch (IOException e) {
+			Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, e.toString(), Level.FATAL);
+			throw new ClientException(GlobalLabelParameters.IO_EXCEPTION + e.toString());
+		} catch (ConfigException e) {
+			Utility.log(logger, e.getMessage(), "", Level.ERROR);
+			throw e;
+		} catch (ClientException e) {
+			Utility.log(logger, e.getMessage(), "", Level.ERROR);
+			throw e;
+		} catch (Exception e) {
+			Utility.log(logger, e.getMessage(), "", Level.ERROR);
+			Utility.log(logger, e);
+			throw new ClientException("Exception in getJwtConnection method : " + e.getMessage());
 		}
-	  } catch (IOException e) {
-		  Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.ERROR);
-    	  throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
-      } catch (ConfigException e) {
-    	  Utility.log(logger, e.getMessage(), "", Level.ERROR);
-    	  throw e;
-      } catch (ClientException e) {
-    	  Utility.log(logger, e.getMessage(), "", Level.ERROR);
-    	  throw e;
-      }	catch (Exception e) {
-    	  Utility.log(logger,e);
-    	  throw new ClientException("Exception in getJwtConnection method");
-	  }
 	}
 
 	/**
@@ -149,34 +151,31 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - throws custom client exception.
 	 */
 	public Response jwtConnection() throws ConfigException, ClientException {
-      try {
-    	/* Open Connection with API server. */
-  		openConnection();
-  		setHeaderData();
-  		setRequestMethod(jwtMethodType);
-  		/*
-  		 * Set encrypted signature in the connection object. setSignature();
-  		 */
-  		if (isSignatureAlert) {
-  			responseObj.setResponseMessage("No Response");
-  			return responseObj;
-  		}
-  		responseCode = connection.getResponseCode();
-  		Utility.logResponseCodeMessage(responseCode, logger);
-  		return this.connection.getErrorStream() != null ? this.readInputStream(this.connection.getErrorStream())
-  				: this.readInputStream(this.connection.getInputStream());
+		try {
+			/* Open Connection with API server. */
+			openConnection();
+			setHeaderData();
+			setRequestMethod(jwtMethodType);
+			/*
+			 * Set encrypted signature in the connection object. setSignature();
+			 */
+			if (isSignatureAlert) {
+				responseObj.setResponseMessage("No Response");
+				return responseObj;
+			}
+			responseCode = connection.getResponseCode();
+			Utility.logResponseCodeMessage(responseCode, logger);
+			return this.connection.getErrorStream() != null ? this.readInputStream(this.connection.getErrorStream())
+					: this.readInputStream(this.connection.getInputStream());
 
-      } catch (IOException e) {
-    	  Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.ERROR);
-    	  throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
-      } catch (ConfigException e) {
-    	  Utility.log(logger, "Exception in jwtConnection method", "", Level.ERROR);
-    	  throw e;
-      } catch (ClientException e) {
-    	  Utility.log(logger, "Exception in jwtConnection method", "", Level.ERROR);
-    	  throw e;
-      }
-   }
+		} catch (IOException e) {
+			throw new ClientException(e.toString());
+		} catch (ConfigException e) {
+			throw e;
+		} catch (ClientException e) {
+			throw e;
+		}
+	}
 
 	/**
 	 * 
@@ -201,7 +200,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		}
 
 		this.connection.setDoOutput(true);
-		
+
 		OutputStream out1 = this.connection.getOutputStream();
 		byte[] requestBytes1 = request.getBytes(Charset.forName("UTF-8"));
 		out1.write(requestBytes1);
@@ -259,18 +258,15 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			url = new URL(getUrl);
 			this.connection = (HttpURLConnection) url.openConnection(proxy);
 			if (proxy != Proxy.NO_PROXY) {
-	            addProxyCredentials(connection, merchantConfig);
-	        }
+				addProxyCredentials(connection, merchantConfig);
+			}
 			int timeoutInMS = merchantConfig.getTimeout() * 1000;
 			connection.setConnectTimeout(timeoutInMS);
 			connection.setReadTimeout(timeoutInMS);
 		} catch (MalformedURLException e) {
-			Utility.log(logger, GlobalLabelParameters.URL_NOT_SET, url, Level.ERROR);
 			throw new ClientException(GlobalLabelParameters.URL_NOT_SET);
-
 		} catch (IOException e) {
-			Utility.log(logger, GlobalLabelParameters.CONNECTION_ERROR, url, Level.ERROR);
-			throw new ClientException(GlobalLabelParameters.CONNECTION_ERROR);
+			throw new ClientException(GlobalLabelParameters.CONNECTION_ERROR.concat(" : " + url));
 		}
 	}
 
@@ -293,7 +289,6 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		try {
 			this.connection.setRequestMethod(method);
 		} catch (ProtocolException e) {
-			Utility.log(logger, GlobalLabelParameters.REQUEST_SET_ERROR.concat(" : "), method, Level.FATAL);
 			throw new ClientException(GlobalLabelParameters.REQUEST_SET_ERROR.concat(method));
 		}
 	}
@@ -306,48 +301,46 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		connection.disconnect();
 		connection = null;
 	}
-	
-	 /**
-     * Creates a HTTP Proxy request
-     * @param mc
-     * @return
-     */
-    private static Proxy createProxy(MerchantConfig mc) {
-        if (mc.getProxyAddress() == null) {
-            return Proxy.NO_PROXY;
-        }
 
-        InetSocketAddress addr
-                = new InetSocketAddress(
-                mc.getProxyAddress(), mc.getProxyPort());
+	/**
+	 * Creates a HTTP Proxy request
+	 * 
+	 * @param mc
+	 * @return
+	 */
+	private static Proxy createProxy(MerchantConfig mc) {
+		if (mc.getProxyAddress() == null) {
+			return Proxy.NO_PROXY;
+		}
 
-        return new Proxy(Proxy.Type.HTTP, addr);
-    }
-    
-    /**
-     * Add proxy credentails for creating a connection
-     * @param con
-     * @param mc
-     */
-    private static void addProxyCredentials(
-            HttpURLConnection con, MerchantConfig mc){
-        if (mc.getProxyUser() != null) {
-            con.setRequestProperty(
-                    "Proxy-Authorization",
-                    "Basic " +
-                            Base64.encode((mc.getProxyUser() + ":" + mc.getProxyPassword()).getBytes(Charset.forName("UTF-8"))));
-        }
-    }
-	
-	
-    /**
+		InetSocketAddress addr = new InetSocketAddress(mc.getProxyAddress(), mc.getProxyPort());
+
+		return new Proxy(Proxy.Type.HTTP, addr);
+	}
+
+	/**
+	 * Add proxy credentails for creating a connection
+	 * 
+	 * @param con
+	 * @param mc
+	 */
+	private static void addProxyCredentials(HttpURLConnection con, MerchantConfig mc) {
+		if (mc.getProxyUser() != null) {
+			con.setRequestProperty("Proxy-Authorization", "Basic " + Base64
+					.encode((mc.getProxyUser() + ":" + mc.getProxyPassword()).getBytes(Charset.forName("UTF-8"))));
+		}
+	}
+
+	/**
 	 * 
 	 * Execute Patch Call
+	 * 
 	 * @return response.
 	 * @throws ConfigException
 	 *             - throws exception if some configuration error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws IOException
 	 */
 	public Response executePatch(String requestData) throws ConfigException, ClientException {
 		/* For Disable the org.apache.log */
@@ -361,19 +354,19 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		/* For Disable the org.apache.log */
 		CloseableHttpResponse response = null;
 		try {
-			Utility.log(logger, "URL : ", MerchantUtil.getUrl() , Level.INFO);
+			Utility.log(logger, "URL : ", MerchantUtil.getUrl(), Level.INFO);
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPatch httpPatch = new HttpPatch(MerchantUtil.getUrl());
-			httpPatch = setPatchHeader(httpPatch); 
-			
+			httpPatch = setPatchHeader(httpPatch);
+
 			if (isSignatureAlert) {
 				responseObj.setResponseMessage("No Response");
 				return responseObj;
 			}
-			
-			
+
 			if (null != requestData) {
-				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, " " + Masking.prepareMasking(requestData), Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, " " + Masking.prepareMasking(requestData),
+						Level.INFO);
 				HttpEntity httpEntity;
 				try {
 					httpEntity = new ByteArrayEntity(requestData.getBytes("UTF-8"));
@@ -385,83 +378,80 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, "  NULL", Level.ERROR);
 				throw new ConfigException(GlobalLabelParameters.REQUEST_EMPTY);
 			}
-			
+
 			String responseString = "";
 			response = httpClient.execute(httpPatch);
-	        if(response != null) {
-	        	responseString = EntityUtils.toString(response.getEntity());
-	            Integer responseCode = response.getStatusLine().getStatusCode();
-	            Response responseObj = new Response();
-	            responseObj.setResponseCode(String.valueOf(responseCode));
-	            Utility.logResponseCodeMessage(responseCode, logger);
-	            Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE + " : ", responseObj.getResponseCode(), Level.INFO);
-	            
-	            Header header = response.getFirstHeader(GlobalLabelParameters.V_C_CORRELATION_ID);
-	           	responseObj.setVcCorelationId(header.getValue());
-	           	Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : ", responseObj.getVcCorelationId(), Level.INFO);
-	           	
-	           	StringBuilder responseBuilder = new StringBuilder();
-	           	responseBuilder.append(responseString);
-	           	maskingPayload(responseBuilder.toString(), GlobalLabelParameters.RESPONSE_MSG_LABEL);
-	           	/* Set Response Message */
-	           	String resp = Masking.prepareMasking(responseString);
-	           	responseObj.setResponseMessage(resp);
-	           	return responseObj;
-	        } else {
-	        	Utility.log(logger, GlobalLabelParameters.EMPTY_RESPONSE, "", Level.FATAL);
-	       		throw new ClientException(GlobalLabelParameters.EMPTY_RESPONSE);
-	      	}
-	    } catch (IOException e) {
-	    	Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
-	    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
+			if (response != null) {
+				responseString = EntityUtils.toString(response.getEntity());
+				Integer responseCode = response.getStatusLine().getStatusCode();
+				Response responseObj = new Response();
+				responseObj.setResponseCode(String.valueOf(responseCode));
+				Utility.logResponseCodeMessage(responseCode, logger);
+				Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE + " : ", responseObj.getResponseCode(),
+						Level.INFO);
+
+				Header header = response.getFirstHeader(GlobalLabelParameters.V_C_CORRELATION_ID);
+				responseObj.setVcCorelationId(header.getValue());
+				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : ", responseObj.getVcCorelationId(),
+						Level.INFO);
+
+				StringBuilder responseBuilder = new StringBuilder();
+				responseBuilder.append(responseString);
+				maskingPayload(responseBuilder.toString(), GlobalLabelParameters.RESPONSE_MSG_LABEL);
+				/* Set Response Message */
+				String resp = Masking.prepareMasking(responseString);
+				responseObj.setResponseMessage(resp);
+				return responseObj;
+			} else {
+				Utility.log(logger, GlobalLabelParameters.EMPTY_RESPONSE, "", Level.FATAL);
+				throw new ClientException(GlobalLabelParameters.EMPTY_RESPONSE);
+			}
+		} catch (IOException e) {
+			throw new ClientException(e.toString());
 		} catch (ConfigException e) {
-		    Utility.log(logger, e.getMessage(), "", Level.FATAL);
-	    	throw e;
-	    } catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.ERROR);
-			Utility.log(logger,e);
-	    	throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION);
+			throw e;
+		} catch (Exception e) {
+			throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION.concat(e.getMessage()));
 		} finally {
-				if(response != null) {
-					try {
-						response.close();
-					} catch (IOException e) {
-						Utility.log(logger,e);
-					}
+			if (response != null) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					Utility.log(logger, e);
 				}
-        }
-	 }	
-	
-	
-	
+			}
+		}
+	}
+
 	/**
 	 * setPatchHeader
-	 * @param httpPatch  
+	 * 
+	 * @param httpPatch
 	 * @throws ConfigException
 	 *             - if some configuration error comes.
-	 *  @return HttpPatch          
+	 * @return HttpPatch
 	 */
 	public HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException {
-			/*
-			 * Add Request Header :: "Content Type"
-			 */
-			Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE.concat(" : "), GlobalLabelParameters.APPLICATION_JSON,
-					Level.INFO);
-			httpPatch.setHeader(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
+		/*
+		 * Add Request Header :: "Content Type"
+		 */
+		Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE.concat(" : "), GlobalLabelParameters.APPLICATION_JSON,
+				Level.INFO);
+		httpPatch.setHeader(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 
-			/* Add Request Header :: "Signature" */
-			String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData);
-			if (encryptedJWTSignature == null || encryptedJWTSignature.isEmpty()) {
-				isSignatureAlert = true;
-			}
-			httpPatch.setHeader("Authorization", "Bearer " + encryptedJWTSignature);
-			Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, encryptedJWTSignature, Level.INFO);
-			
-			/*
-			 * Add Request Header :: "profile-id"
-			 */
-			httpPatch.setHeader(GlobalLabelParameters.PROFILE_ID, GlobalLabelParameters.PROFILE_ID_VAL);
-			Utility.log(logger, GlobalLabelParameters.PROFILE_ID,  " : " + GlobalLabelParameters.PROFILE_ID_VAL, Level.INFO);
-			return httpPatch;
+		/* Add Request Header :: "Signature" */
+		String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData);
+		if (encryptedJWTSignature == null || encryptedJWTSignature.isEmpty()) {
+			isSignatureAlert = true;
+		}
+		httpPatch.setHeader("Authorization", "Bearer " + encryptedJWTSignature);
+		Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, encryptedJWTSignature, Level.INFO);
+
+		/*
+		 * Add Request Header :: "profile-id"
+		 */
+		httpPatch.setHeader(GlobalLabelParameters.PROFILE_ID, GlobalLabelParameters.PROFILE_ID_VAL);
+		Utility.log(logger, GlobalLabelParameters.PROFILE_ID, " : " + GlobalLabelParameters.PROFILE_ID_VAL, Level.INFO);
+		return httpPatch;
 	}
 }

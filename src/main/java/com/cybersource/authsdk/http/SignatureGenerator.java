@@ -44,7 +44,6 @@ public class SignatureGenerator {
 			throws InvalidKeyException, NoSuchAlgorithmException {
 		this.merchantConfig = merchantConfig;
 		this.requestData = requestData;
-		//this.httpMethod=merchantConfig.getRequestType();
 		this.httpMethod=requestType;
 		this.merchantId = merchantConfig.getMerchantID();
 	}

@@ -59,25 +59,27 @@ public class GetGenerateHeaders {
 		generateGetHeaders();
 	}
 
-	/**
-	 * @throws IOException
-	 * @throws ConfigException
-	 */
-	public GetGenerateHeaders() throws IOException, ConfigException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		this.logger = merchantConfig.getLogger();
-		merchantUtil = new MerchantUtil(merchantConfig);
-		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		merchantUtil.setRequestType(requestType);
-		merchantUtil.setRequestJsonPath("not required");
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate GET Headers *******************",
-				Level.INFO);
-		if (MerchantUtil.validateMerchantDetails()) {
-			generateGetHeaders();
+	public GetGenerateHeaders() {
+		try {
+			merchantProp = PropertiesUtil.getMerchantProperties();
+			merchantConfig = MerchantConfig.getInstance(merchantProp);
+			this.logger = merchantConfig.getLogger();
+			merchantUtil = new MerchantUtil(merchantConfig);
+			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
+			merchantUtil.setRequestType(requestType);
+			merchantUtil.setRequestJsonPath("not required");
+			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
+					" Generate GET Headers *******************", Level.INFO);
+			if (MerchantUtil.validateMerchantDetails()) {
+				generateGetHeaders();
+			}
+			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
+			Utility.log(this.logger, " ", "", Level.OFF);
+		} catch (ConfigException e) {
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
-		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
 	/**
@@ -127,7 +129,7 @@ public class GetGenerateHeaders {
 			Utility.log(logger, GlobalLabelParameters.USERAGENT.concat(" : "), GlobalLabelParameters.USER_AGENT_VALUE,
 					Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE.concat(" : "), tempSig, Level.INFO);
-			
+
 			System.out.println(" MerchantID          : " + merchantConfig.getMerchantID());
 			System.out.println(" Date                : " + date);
 			System.out.println(" HOST                : " + merchantConfig.getRequestHost());
@@ -148,11 +150,8 @@ public class GetGenerateHeaders {
 	/**
 	 * 
 	 * @param args
-	 *            : Contains id entry.
-	 * @throws ConfigException
-	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException, ConfigException {
+	public static void main(String[] args) {
 		new GetGenerateHeaders();
 	}
 }

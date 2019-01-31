@@ -38,7 +38,7 @@ public class MerchantConfig {
 	private String authenticationType;
 	private String id;
 	private String requestHost;
-	
+
 	/* Logging Parameters. */
 	private Logger log;
 	private boolean enableLog;
@@ -54,26 +54,26 @@ public class MerchantConfig {
 	private String runEnvironment;
 	private String proxyAddress;
 	private int proxyPort;
-	
+
 	private static MerchantConfig instance;
-	
+
 	private MerchantConfig(Properties props) throws ConfigException {
 		if (props != null) {
 			this.props = props;
 			this.merchantID = this.props.getProperty("merchantID");
 			setMerchantDetails();
-		}else{
+		} else {
 			throw new ConfigException(GlobalLabelParameters.PROP_ERROR);
 		}
 	}
 
-	public static synchronized MerchantConfig getInstance(Properties properties) throws IOException, ConfigException{
-        if(instance == null){
-          instance = new MerchantConfig(properties);
-        }
-        return instance;
-    }
-	
+	public static synchronized MerchantConfig getInstance(Properties properties) throws IOException, ConfigException {
+		if (instance == null) {
+			instance = new MerchantConfig(properties);
+		}
+		return instance;
+	}
+
 	public String getRunEnvironment() {
 		return runEnvironment;
 	}
@@ -271,36 +271,38 @@ public class MerchantConfig {
 		return keyFile;
 	}
 
-	public void setPeopertiesByAuthType() throws ConfigException {
-		switch(this.authenticationType){
-	      case(GlobalLabelParameters.JWT) :
+	public void setPropertiesByAuthType() throws ConfigException {
+		switch (this.authenticationType) {
+		case (GlobalLabelParameters.JWT):
 			/* JWT Parameters */
-	    	this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory");
+			this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory");
 			this.keyAlias = this.getProperty(this.merchantID, "keyAlias");
 			this.keyPass = this.getProperty(this.merchantID, "keyPass");
 			this.keyFilename = this.getProperty(this.merchantID, "keyFileName");
 			break;
-		  case(GlobalLabelParameters.HTTP) :
+		case (GlobalLabelParameters.HTTP):
 			/* HTTP Parameters */
 			this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId");
 			this.merchantSecretKey = this.getProperty(this.merchantID, "merchantsecretKey");
 			break;
-		  default:
+		default:
 			throw new ConfigException(GlobalLabelParameters.AUTH_NULL_EMPTY);
-	   }
+		}
 	}
-	
+
 	public void setMerchantDetails() throws ConfigException {
 		try {
 			this.authenticationType = this.getProperty(this.merchantID, "authenticationType");
 			this.merchantID = this.getProperty(this.merchantID, "merchantID");
 			/* Logging Parameters */
 			this.enableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
-			if(enableLog) {
+			if (enableLog) {
 				this.logDirectory = this.getProperty(this.merchantID, "logDirectory");
 				this.logFilename = this.getProperty(this.merchantID, "logFilename");
 				this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize");
-				/*Initialize log */
+				/* Validate log props */
+				checkLogMaxSizeAndFolder();
+				/* Initialize log */
 				this.log = AuthLog4j.getInstance(this);
 			}
 			/* Optional use [ TIME OUT ] */
@@ -312,7 +314,7 @@ public class MerchantConfig {
 			this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
 			/* Run Environment. */
 			this.runEnvironment = this.getProperty(this.merchantID, "runEnvironment");
-			
+
 			try {
 				if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)) {
 					this.requestHost = GlobalLabelParameters.SANDBOX_URL;
@@ -322,21 +324,35 @@ public class MerchantConfig {
 					this.requestHost = this.runEnvironment;
 				}
 			} catch (Exception e) {
-				Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, "", Level.ERROR);
 				throw new ConfigException(GlobalLabelParameters.RUN_ENV_NULL_EMPTY);
-				
 			}
-			/* set the Auth type */
-			setPeopertiesByAuthType();
+			/* Set the Auth type Props */
+			setPropertiesByAuthType();
 		} catch (ConfigException e) {
+			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSACTION, "", Level.INFO);
 			Utility.log(log, e.getMessage(), "", Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			throw e;
 		} catch (Exception e) {
+			Utility.log(log, GlobalLabelParameters.BEGIN_TRANSACTION, "", Level.INFO);
 			Utility.log(log, e.getMessage(), "", Level.ERROR);
+			Utility.log(log, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			throw new ConfigException(e.getMessage());
 		}
- 		
+	}
 
+	/**
+	 * @return true if log size is valid else return false,
+	 * @throws ConfigException
+	 *             - if some value is missing or wrong for merchant.
+	 */
+	public boolean checkLogMaxSizeAndFolder() throws ConfigException {
+
+		if (StringUtils.isBlank(this.logDirectory)) {
+			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
+			Utility.log(log, GlobalLabelParameters.NO_LOG_DIRECTORY, "", Level.ERROR);
+		}
+		return getLogFile();
 	}
 
 	/**
@@ -363,9 +379,9 @@ public class MerchantConfig {
 
 		if (StringUtils.isBlank(this.logFilename)) {
 			Utility.log(log, GlobalLabelParameters.NO_LOG_FILENAME, "", Level.ERROR);
-			this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME.concat(GlobalLabelParameters.LOG_EXTENSION);
+			this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME;
 		}
-		
+
 		if (StringUtils.isBlank(this.logMaximumSize)) {
 			this.logMaximumSize = GlobalLabelParameters.DEFAULT_LOG_SIZE;
 		}
@@ -415,9 +431,8 @@ public class MerchantConfig {
 
 		if (val == null) {
 			val = defaultVal;
-		}
-		else {
-			val=val.trim();
+		} else {
+			val = val.trim();
 		}
 
 		return val;
@@ -476,18 +491,14 @@ public class MerchantConfig {
 			return true;
 		}
 	}
-	
+
 	public Logger getLogger() {
 		return log;
 	}
-	
-	
-    
-	
+
 	public String toString() {
-		return "{ authenticationType : "+ authenticationType + ", runEnvironment : " 
-			   + runEnvironment	+ ", keyFileName : " 
-			   + keyFilename + ", enableLog : " +  enableLog + ", logDirectory : " + logDirectory + ", logMaximumSize : "
-			   + logMaximumSize + ", logFilename : " + logFilename + " }";
+		return "{ authenticationType : " + authenticationType + ", runEnvironment : " + runEnvironment
+				+ ", keyFileName : " + keyFilename + ", enableLog : " + enableLog + ", logDirectory : " + logDirectory
+				+ ", logMaximumSize : " + logMaximumSize + ", logFilename : " + logFilename + " }";
 	}
 }

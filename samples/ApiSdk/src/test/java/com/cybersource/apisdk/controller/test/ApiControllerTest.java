@@ -174,7 +174,7 @@ public class ApiControllerTest {
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
 			merchantConfig.setMerchantDetails();
 			
-			merchantConfig.setRunEnvironment("test");
+			merchantConfig.setRunEnvironment("");
 			merchantUtil=new MerchantUtil(merchantConfig);
 			merchantUtil.setRequestJsonPath(requestJsonPath);
 			merchantUtil.setRequestType("POST");

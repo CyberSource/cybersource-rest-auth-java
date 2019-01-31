@@ -1,8 +1,5 @@
 package com.cybersource.SampleCode;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,29 +49,29 @@ public class PatchGenerateHeaders {
 
 	private String requestTarget = "/tms/v1/paymentinstruments/7DFB37D8E4FAFD1CE05341588E0A6B93";
 
-	/**
-	 * 
-	 * @throws IOException
-	 * @throws ConfigException
-	 * @throws NoSuchAlgorithmException
-	 */
-	public PatchGenerateHeaders() throws IOException, ConfigException, NoSuchAlgorithmException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		this.logger = merchantConfig.getLogger();
-		merchantUtil = new MerchantUtil(merchantConfig);
-		System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-		Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PATCH Headers *******************",
-				Level.INFO);
-		merchantUtil.setRequestType(requestType);
-		merchantUtil.setRequestJsonPath(requestJsonPath);
-		requestData = merchantUtil.getRequestData();
-		digest = new PayloadDigest(requestData);
-		if (MerchantUtil.validateMerchantDetails()) {
-			generatePatchHeaders();
+	public PatchGenerateHeaders() {
+		try {
+			merchantProp = PropertiesUtil.getMerchantProperties();
+			merchantConfig = MerchantConfig.getInstance(merchantProp);
+			this.logger = merchantConfig.getLogger();
+			merchantUtil = new MerchantUtil(merchantConfig);
+			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
+			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
+					" Generate PATCH Headers *******************", Level.INFO);
+			merchantUtil.setRequestType(requestType);
+			merchantUtil.setRequestJsonPath(requestJsonPath);
+			requestData = merchantUtil.getRequestData();
+			digest = new PayloadDigest(requestData);
+			if (MerchantUtil.validateMerchantDetails()) {
+				generatePatchHeaders();
+			}
+			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
+			Utility.log(this.logger, " ", "", Level.OFF);
+		} catch (ConfigException e) {
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
-		Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
-		Utility.log(this.logger, " ", "", Level.OFF);
 	}
 
 	/**
@@ -82,21 +79,19 @@ public class PatchGenerateHeaders {
 	 * for PATCH operation.
 	 * 
 	 * @throws ConfigException
-	 * @throws UnsupportedEncodingException
-	 * @throws NoSuchAlgorithmException
 	 */
-	private void generatePatchHeaders() throws ConfigException, NoSuchAlgorithmException, UnsupportedEncodingException {
+	private void generatePatchHeaders() throws ConfigException {
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Signature Header */
 		tempSig = Authorization.getToken(merchantConfig, requestData);
-		
+
 		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestTarget, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), requestType, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.MERCH_CONF_LABEL, merchantConfig.toString(), Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE.concat(" : "), GlobalLabelParameters.APPLICATION_JSON,
 				Level.INFO);
-		
+
 		System.out.println(" Request Type        : " + requestType);
 		System.out.println(
 				" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
@@ -109,36 +104,37 @@ public class PatchGenerateHeaders {
 			Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "), merchantConfig.getRequestHost(), Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.USERAGENT.concat(" : "), GlobalLabelParameters.USER_AGENT_VALUE,
 					Level.INFO);
-			Utility.log(logger, GlobalLabelParameters.PROFILE_ID.concat(" : "), GlobalLabelParameters.PROFILE_ID_VAL, Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.PROFILE_ID.concat(" : "), GlobalLabelParameters.PROFILE_ID_VAL,
+					Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.DIGEST.concat(" : "), digest.getDigest(), Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE.concat(" : "), tempSig, Level.INFO);
-			
+
 			System.out.println(" MerchantID          : " + merchantConfig.getMerchantID());
 			System.out.println(" Date                : " + date);
 			System.out.println(" HOST                : " + merchantConfig.getRequestHost());
 			System.out.println(
 					" " + GlobalLabelParameters.USERAGENT + "          : " + GlobalLabelParameters.USER_AGENT_VALUE);
-			System.out.println(" " + GlobalLabelParameters.PROFILE_ID.concat(" : ") + GlobalLabelParameters.PROFILE_ID_VAL);
+			System.out.println(
+					" " + GlobalLabelParameters.PROFILE_ID.concat(" : ") + GlobalLabelParameters.PROFILE_ID_VAL);
 			System.out.println(" Digest              : " + digest.getDigest());
 			System.out.println(" Signature Header    : " + tempSig.toString());
-			
+
 		} else {
 			/* JWT */
 			Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, tempSig, Level.INFO);
-			Utility.log(logger, GlobalLabelParameters.PROFILE_ID.concat(" : "), GlobalLabelParameters.PROFILE_ID_VAL, Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.PROFILE_ID.concat(" : "), GlobalLabelParameters.PROFILE_ID_VAL,
+					Level.INFO);
 			System.out.println(" " + GlobalLabelParameters.AUTHORIZARION_BEARER + tempSig);
-			System.out.println(" " + GlobalLabelParameters.PROFILE_ID.concat(" : ") + GlobalLabelParameters.PROFILE_ID_VAL);
-			
+			System.out.println(
+					" " + GlobalLabelParameters.PROFILE_ID.concat(" : ") + GlobalLabelParameters.PROFILE_ID_VAL);
+
 		}
 	}
 
 	/**
 	 * @param args
-	 * @throws NoSuchAlgorithmException
-	 * @throws IOException
-	 * @throws ConfigException
 	 */
-	public static void main(String[] args) throws NoSuchAlgorithmException, IOException, ConfigException {
+	public static void main(String[] args) {
 		new PatchGenerateHeaders();
 	}
 }

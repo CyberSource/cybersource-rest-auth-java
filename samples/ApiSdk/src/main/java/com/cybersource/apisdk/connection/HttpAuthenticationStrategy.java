@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.ProtocolException;
@@ -49,7 +48,6 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	private Logger logger;
 	private String digestMessageBody;
 	private String requestData;
-	
 
 	/**
 	 * 
@@ -73,10 +71,10 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	}
 
 	@Override
-	public void setHeaderData()	throws ConfigException, ClientException {
-	
+	public void setHeaderData() throws ConfigException, ClientException {
+
 		try {
-		   
+
 			/* Add Request Headers :: Content Type */
 			if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
 					|| requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
@@ -84,11 +82,12 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 						" : ".concat(GlobalLabelParameters.APPLICATION_JSON), Level.INFO);
 				con.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 			}
-			
+
 			try {
 				/*
-				 * Add Request Header :: "v-c-merchant-id" set value to Cybersource
-				 * Merchant ID or v-c-merchant-id This ID can be found on portal
+				 * Add Request Header :: "v-c-merchant-id" set value to
+				 * Cybersource Merchant ID or v-c-merchant-id This ID can be
+				 * found on portal
 				 */
 				Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID, " : ".concat(merchantConfig.getMerchantID()),
 						Level.INFO);
@@ -100,14 +99,14 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			}
 
 			/*
-			 * Add Request Header :: "Date" The date and time that the message was
-			 * originated from. "HTTP-date" format as defined by RFC7231.
+			 * Add Request Header :: "Date" The date and time that the message
+			 * was originated from. "HTTP-date" format as defined by RFC7231.
 			 */
 			con.setRequestProperty(GlobalLabelParameters.DATE, MerchantUtil.date);
 			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(MerchantUtil.date), Level.INFO);
 			/*
-			 * Add Request Header :: "Host" Sandbox Host :: apitest.cybersource.com
-			 * Production Host :: api.cybersource.com
+			 * Add Request Header :: "Host" Sandbox Host ::
+			 * apitest.cybersource.com Production Host :: api.cybersource.com
 			 */
 			con.setRequestProperty(GlobalLabelParameters.HOST, merchantConfig.getRequestHost());
 			Utility.log(logger, GlobalLabelParameters.HOST, " : ".concat(merchantConfig.getRequestHost()), Level.INFO);
@@ -129,15 +128,12 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			con.setRequestProperty(GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
 			Utility.log(logger, GlobalLabelParameters.USERAGENT, " : ".concat(GlobalLabelParameters.USER_AGENT_VALUE),
 					Level.INFO);
-	   } catch (ConfigException e) {
-			Utility.log(logger, e.getMessage(), "", Level.FATAL);
+		} catch (ConfigException e) {
 			throw e;
 		} catch (Exception e) {
-			Utility.log(logger, e.getLocalizedMessage(), "", Level.ERROR);
-			Utility.log(logger,e);
-			throw new ClientException(GlobalLabelParameters.HEADER_SET_EXCEPTION);
-	    }
-  }
+			throw new ClientException(GlobalLabelParameters.HEADER_SET_EXCEPTION + e.getMessage());
+		}
+	}
 
 	/**
 	 * open connection
@@ -164,8 +160,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			con.setConnectTimeout(timeoutInMS);
 			con.setReadTimeout(timeoutInMS);
 		} catch (IOException e) {
-			Utility.log(logger, GlobalLabelParameters.URL_NOT_SET, url, Level.ERROR);
-			throw new ClientException(GlobalLabelParameters.URL_NOT_SET);
+			throw new ClientException(GlobalLabelParameters.URL_NOT_SET + url);
 		}
 	}
 
@@ -174,7 +169,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 */
 	@Override
 	public void maskingPayload(String serverResponse, String title) {
-		Utility.log(logger, title , Masking.prepareMasking(serverResponse), Level.INFO);
+		Utility.log(logger, title, Masking.prepareMasking(serverResponse), Level.INFO);
 	}
 
 	/**
@@ -198,7 +193,6 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 		try {
 			con.setRequestMethod(method);
 		} catch (ProtocolException e) {
-			Utility.log(logger, GlobalLabelParameters.REQUEST_SET_ERROR, method, Level.FATAL);
 			throw new ClientException(GlobalLabelParameters.REQUEST_SET_ERROR.concat(method));
 		}
 	}
@@ -211,85 +205,86 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 *             - throws custom client exception.
 	 */
 	public Response getHttpConnection() throws ConfigException, ClientException {
-		
-	  try {
-		  
-		  if (requestType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+
+		try {
+
+			if (requestType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 				return executePatch(requestData);
-		  } else {
-			/* Make a new connection using the URL. */
-			openConnection();
-			/* Add Request Request Type :: "Get or Post" */
-			setRequestMethod(requestType);
-			/*
-			 * Add Request Header :: "v-c-merchant-id" set value to Cybersource
-			 * Merchant ID or v-c-merchant-id This ID can be found on EBC portal
-			 */
-			setHeaderData();
-
-			/* Send post request */
-
-			if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
-					|| requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
-				/* Masking Request Body */
-				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, Masking.prepareMasking(requestData), Level.INFO);
-				con.setDoOutput(true);
-				con.setDoInput(true);
-				DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-				wr.write(requestData.getBytes("UTF-8"));
-				wr.flush();
-				wr.close();
-			}
-			/* Establishing HTTP connection */
-			Integer responseCode = con.getResponseCode();
-			Response responseObj = new Response();
-			responseObj.setResponseCode(String.valueOf(responseCode));
-			responseObj.setVcCorelationId(con.getHeaderField(GlobalLabelParameters.V_C_CORRELATION_ID));
-			Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE + " : ", responseObj.getResponseCode(), Level.INFO);
-			Utility.logResponseCodeMessage(responseCode, logger);
-			Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : ", responseObj.getVcCorelationId(),
-					Level.INFO);
-
-			BufferedReader in = null;
-			/* Reading Response Message */
-			if (this.con.getErrorStream() != null) {
-				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
 			} else {
-				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			}
-			String inputLine;
-			StringBuilder response = new StringBuilder();
+				/* Make a new connection using the URL. */
+				openConnection();
+				/* Add Request Request Type :: "Get or Post" */
+				setRequestMethod(requestType);
+				/*
+				 * Add Request Header :: "v-c-merchant-id" set value to
+				 * Cybersource Merchant ID or v-c-merchant-id This ID can be
+				 * found on EBC portal
+				 */
+				setHeaderData();
 
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
+				/* Send post request */
+
+				if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
+						|| requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+					/* Masking Request Body */
+					Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, Masking.prepareMasking(requestData),
+							Level.INFO);
+					con.setDoOutput(true);
+					con.setDoInput(true);
+					DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+					wr.write(requestData.getBytes("UTF-8"));
+					wr.flush();
+					wr.close();
+				}
+				/* Establishing HTTP connection */
+				Integer responseCode = con.getResponseCode();
+				Response responseObj = new Response();
+				responseObj.setResponseCode(String.valueOf(responseCode));
+				responseObj.setVcCorelationId(con.getHeaderField(GlobalLabelParameters.V_C_CORRELATION_ID));
+				Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE + " : ", responseObj.getResponseCode(),
+						Level.INFO);
+				Utility.logResponseCodeMessage(responseCode, logger);
+				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : ", responseObj.getVcCorelationId(),
+						Level.INFO);
+
+				BufferedReader in = null;
+				/* Reading Response Message */
+				if (this.con.getErrorStream() != null) {
+					in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				} else {
+					in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				}
+				String inputLine;
+				StringBuilder response = new StringBuilder();
+
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+				/* Close HTTP Connection. */
+				endConnection();
+				/* Masking the response payload from the server. */
+				maskingPayload(response.toString(), GlobalLabelParameters.RESPONSE_MSG_LABEL);
+				/* Set Response Message */
+				String resp = Masking.prepareMasking(response.toString());
+				responseObj.setResponseMessage(resp);
+				return responseObj;
 			}
-			in.close();
-			/* Close HTTP Connection. */
-			endConnection();
-			/* Masking the response payload from the server. */
-			maskingPayload(response.toString(), GlobalLabelParameters.RESPONSE_MSG_LABEL);
-			/* Set Response Message */
-			String resp = Masking.prepareMasking(response.toString());
-			responseObj.setResponseMessage(resp);
-			return responseObj;
-		 }
-	  } catch (IOException e) {
-		    Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
-	    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
-	  } catch (ConfigException e) {
-		    Utility.log(logger, e.getLocalizedMessage(), "", Level.FATAL);
-	    	throw e;
-	  } catch (ClientException e) {
-		    Utility.log(logger, e.getLocalizedMessage(), "", Level.FATAL);
-	    	throw e;
-	  } catch (Exception e) {
-		    Utility.log(logger, e.getLocalizedMessage(), "", Level.ERROR);
-		    Utility.log(logger, e);
-	    	throw new ClientException(e.getLocalizedMessage());
-	  } 
-    }
-		
-	
+		} catch (IOException e) {
+			Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, e.toString(), Level.FATAL);
+			throw new ClientException(GlobalLabelParameters.IO_EXCEPTION + e.toString());
+		} catch (ConfigException e) {
+			Utility.log(logger, e.getMessage(), "", Level.FATAL);
+			throw e;
+		} catch (ClientException e) {
+			Utility.log(logger, e.getMessage(), "", Level.FATAL);
+			throw e;
+		} catch (Exception e) {
+			Utility.log(logger, e.getMessage(), "", Level.ERROR);
+			Utility.log(logger, e);
+			throw new ClientException("Exception in getHttpConnection method : " + e.getMessage());
+		}
+	}
 
 	/**
 	 * Creates a HTTP Proxy request
@@ -319,10 +314,11 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 					.encode((mc.getProxyUser() + ":" + mc.getProxyPassword()).getBytes(Charset.forName("UTF-8"))));
 		}
 	}
-	
+
 	/**
 	 * 
 	 * Execute Patch Call
+	 * 
 	 * @return response.
 	 * @throws ConfigException
 	 *             - throws exception if some configuration error comes.
@@ -330,7 +326,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 *             - throws custom client exception.
 	 */
 	public Response executePatch(String requestData) throws ConfigException, ClientException {
-		
+
 		/* For Disable the org.apache.log */
 		java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
 		java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.FINEST);
@@ -342,79 +338,75 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 		/* For Disable the org.apache.log */
 		CloseableHttpResponse response = null;
 		try {
-			Utility.log(logger, "URL : ", MerchantUtil.getUrl() , Level.INFO);
-		
+			Utility.log(logger, "URL : ", MerchantUtil.getUrl(), Level.INFO);
+
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPatch httpPatch = new HttpPatch(MerchantUtil.getUrl());
-			httpPatch = setPatchHeader(httpPatch); 
-	
+			httpPatch = setPatchHeader(httpPatch);
+
 			if (null != requestData) {
-				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, " " + Masking.prepareMasking(requestData), Level.INFO);
-				HttpEntity	httpEntity = new ByteArrayEntity(requestData.getBytes("UTF-8"));
+				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, " " + Masking.prepareMasking(requestData),
+						Level.INFO);
+				HttpEntity httpEntity = new ByteArrayEntity(requestData.getBytes("UTF-8"));
 				httpPatch.setEntity(httpEntity);
 			} else {
 				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, "  NULL", Level.ERROR);
 				throw new ConfigException(GlobalLabelParameters.REQUEST_EMPTY);
 			}
-		
+
 			String responseString = "";
-		
-            	response = httpClient.execute(httpPatch);
-            	if(response != null) {
-            		responseString = EntityUtils.toString(response.getEntity());
-                	Integer responseCode = response.getStatusLine().getStatusCode();
-            		Response responseObj = new Response();
-            		responseObj.setResponseCode(String.valueOf(responseCode));
-            		Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE + " : ", responseObj.getResponseCode(), Level.INFO);
-            		Utility.logResponseCodeMessage(responseCode, logger);
-            		
-            		Header header = response.getFirstHeader(GlobalLabelParameters.V_C_CORRELATION_ID);
-            		responseObj.setVcCorelationId(header.getValue());
-            		Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : ", responseObj.getVcCorelationId(), Level.INFO);
-            		
-            		StringBuilder responseBuilder = new StringBuilder();
-            		responseBuilder.append(responseString);
-            		maskingPayload(responseBuilder.toString() , GlobalLabelParameters.RESPONSE_MSG_LABEL);
-            		/* Set Response Message */
-            		String resp = Masking.prepareMasking(responseString);
-            		responseObj.setResponseMessage(resp);
-            		return responseObj;
-            	} else {
-            		Utility.log(logger, GlobalLabelParameters.EMPTY_RESPONSE, "", Level.FATAL);
-            		throw new ClientException(GlobalLabelParameters.EMPTY_RESPONSE);
-            	}
-		  } catch (UnsupportedEncodingException e) {
-			    Utility.log(logger, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.FATAL);
-				throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
-		  } catch (IOException e) {
-			    Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
-		    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
-		  } catch (ConfigException e) {
-			    Utility.log(logger, e.getLocalizedMessage(), "", Level.FATAL);
-		    	throw e;
-		  } catch (Exception e) {
-			    Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.ERROR);
-			    Utility.log(logger, e);
-		    	throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION);
-		  } finally {
-			  if(response != null) {
+
+			response = httpClient.execute(httpPatch);
+			if (response != null) {
+				responseString = EntityUtils.toString(response.getEntity());
+				Integer responseCode = response.getStatusLine().getStatusCode();
+				Response responseObj = new Response();
+				responseObj.setResponseCode(String.valueOf(responseCode));
+				Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE + " : ", responseObj.getResponseCode(),
+						Level.INFO);
+				Utility.logResponseCodeMessage(responseCode, logger);
+
+				Header header = response.getFirstHeader(GlobalLabelParameters.V_C_CORRELATION_ID);
+				responseObj.setVcCorelationId(header.getValue());
+				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : ", responseObj.getVcCorelationId(),
+						Level.INFO);
+
+				StringBuilder responseBuilder = new StringBuilder();
+				responseBuilder.append(responseString);
+				maskingPayload(responseBuilder.toString(), GlobalLabelParameters.RESPONSE_MSG_LABEL);
+				/* Set Response Message */
+				String resp = Masking.prepareMasking(responseString);
+				responseObj.setResponseMessage(resp);
+				return responseObj;
+			} else {
+				Utility.log(logger, GlobalLabelParameters.EMPTY_RESPONSE, "", Level.FATAL);
+				throw new ClientException(GlobalLabelParameters.EMPTY_RESPONSE);
+			}
+		} catch (IOException e) {
+			throw new ClientException(GlobalLabelParameters.IO_EXCEPTION.concat(e.getMessage()));
+		} catch (ConfigException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION.concat(e.getMessage()));
+		} finally {
+			if (response != null) {
 				try {
 					response.close();
 				} catch (IOException e) {
 					Utility.log(logger, e);
 				}
-			 }
-	     }
+			}
+		}
 	}
-	
-	
+
 	/**
 	 * setPatchHeader
-	 * @param httpPatch  
+	 * 
+	 * @param httpPatch
 	 * @throws ConfigException
 	 *             - if some configuration error comes.
-	 *  @return HttpPatch          
-	 * @throws ClientException 
+	 * @return HttpPatch
+	 * @throws ClientException
 	 */
 	public HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException, ClientException {
 		try {
@@ -430,14 +422,14 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID, " : ".concat(merchantConfig.getMerchantID()),
 					Level.INFO);
 			/*
-			 * Add Request Header :: "Date" The date and time that the message was
-			 * originated from. "HTTP-date" format as defined by RFC7231.
+			 * Add Request Header :: "Date" The date and time that the message
+			 * was originated from. "HTTP-date" format as defined by RFC7231.
 			 */
 			httpPatch.setHeader(GlobalLabelParameters.DATE, MerchantUtil.date);
 			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(MerchantUtil.date), Level.INFO);
 			/*
-			 * Add Request Header :: "Host" Sandbox Host :: apitest.cybersource.com
-			 * Production Host :: api.cybersource.com
+			 * Add Request Header :: "Host" Sandbox Host ::
+			 * apitest.cybersource.com Production Host :: api.cybersource.com
 			 */
 			httpPatch.setHeader(GlobalLabelParameters.HOST, merchantConfig.getRequestHost());
 			Utility.log(logger, GlobalLabelParameters.HOST, " : ".concat(merchantConfig.getRequestHost()), Level.INFO);
@@ -446,16 +438,17 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			 * Add Request Header :: "profile-id"
 			 */
 			httpPatch.setHeader(GlobalLabelParameters.PROFILE_ID, GlobalLabelParameters.PROFILE_ID_VAL);
-			Utility.log(logger, GlobalLabelParameters.PROFILE_ID, " : ".concat(GlobalLabelParameters.PROFILE_ID_VAL), Level.INFO);
-			
+			Utility.log(logger, GlobalLabelParameters.PROFILE_ID, " : ".concat(GlobalLabelParameters.PROFILE_ID_VAL),
+					Level.INFO);
+
 			/*
 			 * Add Request Header :: "Digest"
 			 */
-			
+
 			httpPatch.setHeader(GlobalLabelParameters.DIGEST, digestPayLoad.getDigest());
-				this.digestMessageBody = digestPayLoad.getDigest();
+			this.digestMessageBody = digestPayLoad.getDigest();
 			Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
-			
+
 			/* Add Request Header :: "Signature" */
 			String signatureHeaderValue = Authorization.getToken(merchantConfig, requestData);
 			httpPatch.setHeader(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
@@ -467,13 +460,10 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 					Level.INFO);
 			return httpPatch;
 		} catch (ConfigException e) {
-			Utility.log(logger, e.getLocalizedMessage(), "", Level.FATAL);
-			throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
+			throw e;
 		} catch (Exception e) {
-			Utility.log(logger, e.getLocalizedMessage(), "", Level.ERROR);
-			Utility.log(logger,e);
-			throw new ClientException(GlobalLabelParameters.HEADER_SET_EXCEPTION);
-	    }
+			throw new ClientException(GlobalLabelParameters.HEADER_SET_EXCEPTION.concat(e.getMessage()));
+		}
 	}
 
 }
