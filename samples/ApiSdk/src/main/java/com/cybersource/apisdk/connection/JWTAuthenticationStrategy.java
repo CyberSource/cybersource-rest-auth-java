@@ -415,7 +415,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	    	Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, "", Level.FATAL);
 	    	throw new ClientException(GlobalLabelParameters.IO_EXCEPTION);
 		} catch (ConfigException e) {
-		    Utility.log(logger, e.getLocalizedMessage(), "", Level.FATAL);
+		    Utility.log(logger, e.getMessage(), "", Level.FATAL);
 	    	throw e;
 	    } catch (Exception e) {
 			Utility.log(logger, GlobalLabelParameters.PATCH_CLIENT_EXCEPTION, "", Level.ERROR);
@@ -442,8 +442,6 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *  @return HttpPatch          
 	 */
 	public HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException {
-		try {
-			
 			/*
 			 * Add Request Header :: "Content Type"
 			 */
@@ -465,10 +463,5 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			httpPatch.setHeader(GlobalLabelParameters.PROFILE_ID, GlobalLabelParameters.PROFILE_ID_VAL);
 			Utility.log(logger, GlobalLabelParameters.PROFILE_ID,  " : " + GlobalLabelParameters.PROFILE_ID_VAL, Level.INFO);
 			return httpPatch;
-		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.MERCHANTID_NOT_SET, "", Level.FATAL);
-			Utility.log(logger, e);
-			throw new ConfigException(GlobalLabelParameters.MERCHANTID_NOT_SET);
-		}
 	}
 }

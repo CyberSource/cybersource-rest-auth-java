@@ -106,37 +106,42 @@ public class GetGenerateHeaders {
 	 *             : Throws runtime exception.
 	 */
 	private void generateGetHeaders() throws ConfigException {
-		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestTarget, Level.INFO);
 		authenticationType = merchantConfig.getAuthenticationType();
+		/* Signature Header */
+		tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData());
+
+		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestTarget, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), requestType, Level.INFO);
+		Utility.log(this.logger, GlobalLabelParameters.MERCH_CONF_LABEL, merchantConfig.toString(), Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.GET + "_ID".concat(" : "), this.id, Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),
-				Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "), date, Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "), merchantConfig.getRequestHost(), Level.INFO);
 
 		System.out.println(" Request Type        : " + requestType);
-		System.out.println(" ID                  : " + this.id);
-		System.out.println(" Date                : " + date);
-		System.out.println(" MerchantID          : " + merchantConfig.getMerchantID());
-		System.out.println(" HOST                : " + merchantConfig.getRequestHost());
+		System.out.println(" GET_ID                  : " + this.id);
 
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			System.out.println(
-					" " + GlobalLabelParameters.USERAGENT + "          : " + GlobalLabelParameters.USER_AGENT_VALUE);
+			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),
+					Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "), date, Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "), merchantConfig.getRequestHost(), Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.USERAGENT.concat(" : "), GlobalLabelParameters.USER_AGENT_VALUE,
 					Level.INFO);
-			/* Signature Header */
-			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData());
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE.concat(" : "), tempSig, Level.INFO);
+			
+			System.out.println(" MerchantID          : " + merchantConfig.getMerchantID());
+			System.out.println(" Date                : " + date);
+			System.out.println(" HOST                : " + merchantConfig.getRequestHost());
+			System.out.println(
+					" " + GlobalLabelParameters.USERAGENT + "          : " + GlobalLabelParameters.USER_AGENT_VALUE);
 			System.out.println(" Signature           : " + tempSig);
-
 		} else {
 			/* JWT */
-			tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData());
-			System.out.println(" Authorization :  Bearer " + tempSig.toString());
+			Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE.concat(" : "),
+					GlobalLabelParameters.APPLICATION_JSON, Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, tempSig, Level.INFO);
+			System.out.println(
+					" " + GlobalLabelParameters.CONTENT_TYPE + "        : " + GlobalLabelParameters.APPLICATION_JSON);
+			System.out.println(" " + GlobalLabelParameters.AUTHORIZARION_BEARER + tempSig.toString());
 		}
 	}
 
