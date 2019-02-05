@@ -8,10 +8,10 @@ import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.cybersource.authsdk.core.AuthenticationRequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
-import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 /* This method returns value for parameter Signature which is then passed to Signature header

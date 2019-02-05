@@ -26,11 +26,11 @@ import org.bouncycastle.util.encoders.Base64;
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
+import com.cybersource.authsdk.core.AuthenticationRequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
-import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
 
@@ -457,6 +457,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
 
 			/* Add Request Header :: "Signature" */
+			// Authorization.getToken(merchantConfig, requestContext);
 			String signatureHeaderValue = tokenGenerator.getToken();
 			httpPatch.setHeader(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE, " : ".concat(signatureHeaderValue), Level.INFO);

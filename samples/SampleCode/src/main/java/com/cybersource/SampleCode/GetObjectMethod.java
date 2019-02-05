@@ -9,9 +9,9 @@ import com.cybersource.Data.Configuration;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
+import com.cybersource.authsdk.core.AuthenticationRequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.util.AuthenticationRequestContext;
 
 public class GetObjectMethod {
 	private ApiController apiController;

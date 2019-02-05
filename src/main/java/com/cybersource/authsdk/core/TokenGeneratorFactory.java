@@ -2,7 +2,6 @@ package com.cybersource.authsdk.core;
 
 import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
 import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
-import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 /**

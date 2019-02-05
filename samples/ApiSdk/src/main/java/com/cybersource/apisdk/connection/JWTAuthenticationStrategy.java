@@ -30,10 +30,10 @@ import org.bouncycastle.util.encoders.Base64;
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
+import com.cybersource.authsdk.core.AuthenticationRequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
-import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
 
@@ -136,6 +136,8 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		this.connection.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 
 		/* Add Request Header :: "Signature" */
+		// String encryptedJWTSignature = Authorization.getToken(merchantConfig,
+		// requestContext);
 		String encryptedJWTSignature = tokenGenerator.getToken();
 		if (StringUtils.isBlank(encryptedJWTSignature)) {
 			isSignatureAlert = true;

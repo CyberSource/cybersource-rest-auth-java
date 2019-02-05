@@ -1,4 +1,4 @@
-package com.cybersource.authsdk.util;
+package com.cybersource.authsdk.core;
 
 import java.io.File;
 import java.time.ZoneId;
@@ -9,7 +9,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.core.ConfigException;
+import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.PropertiesUtil;
+import com.cybersource.authsdk.util.Utility;
 
 public class AuthenticationRequestContext {
 

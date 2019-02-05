@@ -1,7 +1,5 @@
 package com.cybersource.authsdk.core;
 
-import com.cybersource.authsdk.util.AuthenticationRequestContext;
-
 /**
  * This class calls for the generation of Signature message depending on the
  * authentication type.
