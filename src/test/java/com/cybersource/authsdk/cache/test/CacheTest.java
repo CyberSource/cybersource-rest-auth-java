@@ -10,9 +10,9 @@ import org.mockito.Mock;
 
 import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.cache.Identity;
+import com.cybersource.authsdk.core.AuthenticationRequestContext;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 import junit.framework.Assert;
@@ -34,21 +34,21 @@ public class CacheTest {
 	MerchantConfig merchantConfig;
 	
 	@Mock
-	MerchantUtil merchantUtil;
+	AuthenticationRequestContext authRequestContext;
 
 	@Test
 	public void setP12FileDetailsInCacheEmptyTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantConfig.setMerchantDetails();
-		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestType("POST");
-		merchantUtil.setRequestJsonPath(requestJsonPath);
+		authRequestContext=new AuthenticationRequestContext();
+		authRequestContext.setRequestMethodType("POST");
+		authRequestContext.setRequestJsonPath(requestJsonPath);
 
-		MerchantUtil.validateMerchantDetails();
+		//merchantConfig.validateMerchantDetails();
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			MerchantUtil.checkKeyFile();
+			merchantConfig.checkKeyFile();
 			cache = new Cache(merchantConfig);
 			cache.setP12FileDetailsInCache();
 		}
@@ -60,14 +60,14 @@ public class CacheTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantConfig.setMerchantDetails();
-		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestType("POST");
-		merchantUtil.setRequestJsonPath(requestJsonPath);
+		authRequestContext=new AuthenticationRequestContext();
+		authRequestContext.setRequestMethodType("POST");
+		authRequestContext.setRequestJsonPath(requestJsonPath);
 
-		MerchantUtil.validateMerchantDetails();
+		//merchantConfig.validateMerchantDetails();
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			MerchantUtil.checkKeyFile();
+			merchantConfig.checkKeyFile();
 			cache = new Cache(merchantConfig);
 			cache.setUpP12Cache();
 			cache.setP12FileDetailsInCache();
@@ -80,15 +80,15 @@ public class CacheTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantConfig.setMerchantDetails();
-		merchantUtil=new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestType("POST");
-		merchantUtil.setRequestJsonPath(requestJsonPath);
+		authRequestContext=new AuthenticationRequestContext();
+		authRequestContext.setRequestMethodType("POST");
+		authRequestContext.setRequestJsonPath(requestJsonPath);
 		
 
-		MerchantUtil.validateMerchantDetails();
+		//merchantConfig.validateMerchantDetails();
 		
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			MerchantUtil.checkKeyFile();
+			merchantConfig.checkKeyFile();
 			cache = new Cache(merchantConfig);
 			cache.setUpP12Cache();
 			cache.lastModifiedTime = 1528;
