@@ -18,23 +18,21 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
  * Creation of logging object, using singleton design.
  *
  */
-public class AuthLog4j {
+public class Log4jWrapper {
 	private String filePath = null;
 	private static volatile Logger logger = null;
 	private String logDirectory;
 	private String logFileName;
 	private String logSize;
-	public static boolean logEnable = false;
 
 	/**
 	 * @param merchantConfig
 	 *            - contains all information for merchant.
 	 */
-	private AuthLog4j(MerchantConfig merchantConfig) {
+	private Log4jWrapper(MerchantConfig merchantConfig) {
 		logDirectory = merchantConfig.getLogDirectory();
 		logFileName = merchantConfig.getLogFilename();
 		logSize = merchantConfig.getLogMaximumSize();
-		logEnable = merchantConfig.getEnableLog();
 		filePath = logDirectory + "/" + logFileName + GlobalLabelParameters.LOG_EXTENSION;
 	}
 
@@ -42,15 +40,13 @@ public class AuthLog4j {
 	 * 
 	 * @param merchantConfig
 	 *            - contains all information for merchant.
-	 * @return logger object of AuthLog4j
+	 * @return logger object of Log4jWrapper
 	 */
 	public static Logger getInstance(MerchantConfig merchantConfig) {
 		if (logger == null) {
 			// To provide thread-safe implementation.
-			synchronized (AuthLog4j.class) {
-				if (logger == null) {
-					logger = new AuthLog4j(merchantConfig).getLogger();
-				}
+			synchronized (Log4jWrapper.class) {
+				logger = new Log4jWrapper(merchantConfig).getLogger();
 			}
 		}
 		return logger;

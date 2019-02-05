@@ -9,7 +9,7 @@ import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.util.MerchantUtil;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 /**
@@ -27,6 +27,7 @@ public class DeleteMethod {
 	private String url;
 	/* Request Target. */
 	private String requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
+	private AuthenticationRequestContext requestContext;
 
 	/**
 	 * @param args
@@ -45,19 +46,19 @@ public class DeleteMethod {
 
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
-			merchantUtil.setRequestJsonPath("not required");
-			merchantUtil.setRequestType(requestType);
+			requestContext = new AuthenticationRequestContext();
+			requestContext.setRequestJsonPath("not required");
+			requestContext.setRequestMethodType(requestType);
 			authenticationType = merchantConfig.getAuthenticationType();
 			/*
 			 * Set Json Path, request target, request data into merchant config
 			 * object.
 			 */
-			merchantUtil.setRequestTarget(requestTarget);
+			requestContext.setRequestTarget(requestTarget);
 			/* Construct the URL with respect to PUTID. */
-			url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
+			url = "https://" + merchantConfig.getRequestHost() + requestContext.getRequestTarget();
 			/* Set the URL. */
-			merchantUtil.setUrl(url);
+			requestContext.setUrl(url);
 			/* Begin PUT process. */
 			process();
 
@@ -80,7 +81,7 @@ public class DeleteMethod {
 
 		System.out.println(authenticationType.toUpperCase() + " Request");
 		/* Call payment method of Api Controller class */
-		response = apiController.paymentDelete(merchantConfig, null);
+		response = apiController.paymentDelete(merchantConfig, requestContext);
 		/* Display Response Message from the server. */
 		if (StringUtils.isNotBlank(response.getResponseCode())
 				&& StringUtils.isNotBlank(response.getResponseMessage())) {

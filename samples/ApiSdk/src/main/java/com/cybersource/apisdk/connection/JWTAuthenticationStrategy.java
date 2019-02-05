@@ -14,6 +14,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -29,11 +30,11 @@ import org.bouncycastle.util.encoders.Base64;
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /**
@@ -46,29 +47,31 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	private boolean isSignatureAlert = false;
 	private HttpURLConnection connection = null;
 	private MerchantConfig merchantConfig = null;
-	private String requestData = null;
 	private Logger logger = null;
 	private Integer responseCode;
 	private String responseMessage;
 	private String jwtMethodType = null;
 	private String requestBody = null;
+	private AuthenticationRequestContext requestContext;
+	private JwtSignatureTokenGenerator tokenGenerator;
 
 	/**
 	 * 
 	 * @param merchantConfig
 	 *            - contains information for merchant.
-	 * @param requestData
-	 *            - request Payload .
-	 * @param logger
-	 *            - logger to log all information in log file.
+	 * @param requestContext
+	 *            - contains request details
 	 * @throws ClientException
+	 * @throws ConfigException
 	 */
-	public JWTAuthenticationStrategy(MerchantConfig merchantConfig, String requestData, Logger logger)
-			throws ClientException {
+	public JWTAuthenticationStrategy(MerchantConfig merchantConfig, AuthenticationRequestContext authRequestContext)
+			throws ClientException, ConfigException {
 		this.merchantConfig = merchantConfig;
-		this.requestData = requestData;
-		this.logger = logger;
-		this.jwtMethodType = MerchantUtil.getRequestType();
+		this.requestContext = authRequestContext;
+		this.logger = merchantConfig.getLogger();
+		this.requestBody = authRequestContext.getRequestBody();
+		this.jwtMethodType = authRequestContext.getRequestMethodType();
+		tokenGenerator = new JwtSignatureTokenGenerator(merchantConfig, requestContext);
 	}
 
 	Response responseObj;
@@ -85,7 +88,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		try {
 
 			if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
-				return executePatch(requestData);
+				return executePatch(requestBody);
 			} else {
 				if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
 						|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
@@ -94,7 +97,6 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 					responseCode = connection.getResponseCode();
 				} else if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
 						|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
-					requestBody = requestData;
 					responseObj = postDocument(requestBody);
 					responseCode = connection.getResponseCode();
 				}
@@ -134,8 +136,8 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		this.connection.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 
 		/* Add Request Header :: "Signature" */
-		String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData);
-		if (encryptedJWTSignature == null || encryptedJWTSignature.isEmpty()) {
+		String encryptedJWTSignature = tokenGenerator.getToken();
+		if (StringUtils.isBlank(encryptedJWTSignature)) {
 			isSignatureAlert = true;
 			return;
 		}
@@ -193,7 +195,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		openConnection();
 		setHeaderData();
 		setRequestMethod(jwtMethodType);
-		Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, Masking.prepareMasking(requestData), Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, Masking.prepareMasking(requestBody), Level.INFO);
 		if (isSignatureAlert) {
 			responseObj.setResponseMessage("No Response");
 			return responseObj;
@@ -253,7 +255,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		URL url = null;
 		try {
 			Proxy proxy = createProxy(merchantConfig);
-			String getUrl = MerchantUtil.getUrl();
+			String getUrl = requestContext.getUrl();
 			Utility.log(logger, "URL : ", " " + getUrl, Level.INFO);
 			url = new URL(getUrl);
 			this.connection = (HttpURLConnection) url.openConnection(proxy);
@@ -308,13 +310,11 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 * @param mc
 	 * @return
 	 */
-	private static Proxy createProxy(MerchantConfig mc) {
+	private Proxy createProxy(MerchantConfig mc) {
 		if (mc.getProxyAddress() == null) {
 			return Proxy.NO_PROXY;
 		}
-
 		InetSocketAddress addr = new InetSocketAddress(mc.getProxyAddress(), mc.getProxyPort());
-
 		return new Proxy(Proxy.Type.HTTP, addr);
 	}
 
@@ -324,7 +324,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 * @param con
 	 * @param mc
 	 */
-	private static void addProxyCredentials(HttpURLConnection con, MerchantConfig mc) {
+	private void addProxyCredentials(HttpURLConnection con, MerchantConfig mc) {
 		if (mc.getProxyUser() != null) {
 			con.setRequestProperty("Proxy-Authorization", "Basic " + Base64
 					.encode((mc.getProxyUser() + ":" + mc.getProxyPassword()).getBytes(Charset.forName("UTF-8"))));
@@ -342,7 +342,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - throws custom client exception.
 	 * @throws IOException
 	 */
-	public Response executePatch(String requestData) throws ConfigException, ClientException {
+	protected Response executePatch(String requestData) throws ConfigException, ClientException {
 		/* For Disable the org.apache.log */
 		java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
 		java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.FINEST);
@@ -354,9 +354,9 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		/* For Disable the org.apache.log */
 		CloseableHttpResponse response = null;
 		try {
-			Utility.log(logger, "URL : ", MerchantUtil.getUrl(), Level.INFO);
+			Utility.log(logger, "URL : ", requestContext.getUrl(), Level.INFO);
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPatch httpPatch = new HttpPatch(MerchantUtil.getUrl());
+			HttpPatch httpPatch = new HttpPatch(requestContext.getUrl());
 			httpPatch = setPatchHeader(httpPatch);
 
 			if (isSignatureAlert) {
@@ -431,7 +431,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - if some configuration error comes.
 	 * @return HttpPatch
 	 */
-	public HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException {
+	protected HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException {
 		/*
 		 * Add Request Header :: "Content Type"
 		 */
@@ -440,8 +440,10 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		httpPatch.setHeader(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 
 		/* Add Request Header :: "Signature" */
-		String encryptedJWTSignature = Authorization.getToken(merchantConfig, requestData);
-		if (encryptedJWTSignature == null || encryptedJWTSignature.isEmpty()) {
+		// String encryptedJWTSignature = Authorization.getToken(merchantConfig,
+		// requestContext);
+		String encryptedJWTSignature = tokenGenerator.getToken();
+		if (StringUtils.isBlank(encryptedJWTSignature)) {
 			isSignatureAlert = true;
 		}
 		httpPatch.setHeader("Authorization", "Bearer " + encryptedJWTSignature);

@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.HashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -16,8 +17,8 @@ import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.jwtsecurity.JWTCryptoProcessorImpl;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /**
@@ -26,8 +27,8 @@ import com.cybersource.authsdk.util.Utility;
  */
 public class JwtSignatureTokenGenerator implements TokenGenerator {
 	private MerchantConfig merchantConfig;
-	private String requestBody;
-	private String requestType;
+	private AuthenticationRequestContext authRequestContext;
+	private String jwtMethod;
 	private Logger logger;
 	private Cache cache;
 	private RSAPrivateKey rsaPrivateKey = null;
@@ -37,16 +38,14 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 	/**
 	 * @param merchantConfig
 	 *            - list of parameters required for JWT token.
-	 * @param requestData
-	 *            -request data to be sent.
-	 * @param requestType
-	 *            -request type to be sent. 
+	 * @param requestContext
+	 *            - contains request details
 	 */
-	public JwtSignatureTokenGenerator(MerchantConfig merchantConfig, String requestData) {
+	public JwtSignatureTokenGenerator(MerchantConfig merchantConfig, AuthenticationRequestContext authRequestContext) {
 
 		this.merchantConfig = merchantConfig;
-		this.requestBody = requestData;
-		this.requestType = MerchantUtil.getRequestType();
+		this.authRequestContext = authRequestContext;
+		this.jwtMethod = authRequestContext.getRequestMethodType();
 		this.logger = merchantConfig.getLogger();
 		this.cache = new Cache(this.merchantConfig);
 	}
@@ -98,33 +97,31 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 				/* Generating certificate. */
 
 				String encryptedSigMessage = "";
-
-				if (requestBody != null && !requestBody.isEmpty()) {
-					MessageDigest jwtBody = MessageDigest.getInstance(GlobalLabelParameters.SHA_256);
-					byte[] jwtClaimSetBody = jwtBody.digest(requestBody.getBytes());
-					encryptedSigMessage = Base64.getEncoder().encodeToString(jwtClaimSetBody);
-				}
-
 				String claimSet = null;
-				if (requestType.equalsIgnoreCase(GlobalLabelParameters.GET)
-						|| requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-					claimSet = "{\n            \"iat\":\"" + ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT)
-							+ "\"\n} \n\n";
-				} else if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
-						|| requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)
-						|| requestType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
-					claimSet = "{\n            \"digest\":\"" + encryptedSigMessage
-							+ "\",\n            \"digestAlgorithm\":\"SHA-256\",\n            \"iat\":\""
-							+ ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT) + "\"\n} \n\n";
 
+				if (StringUtils.isNotBlank(jwtMethod)) {
+					if (jwtMethod.equalsIgnoreCase(GlobalLabelParameters.GET)
+							|| jwtMethod.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
+						claimSet = "{\n            \"iat\":\"" + ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT)
+								+ "\"\n} \n\n";
+					} else if (jwtMethod.equalsIgnoreCase(GlobalLabelParameters.POST)
+							|| jwtMethod.equalsIgnoreCase(GlobalLabelParameters.PUT)
+							|| jwtMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+						
+						MessageDigest jwtBody = MessageDigest.getInstance(GlobalLabelParameters.SHA_256);
+						byte[] jwtClaimSetBody = jwtBody.digest(authRequestContext.getRequestBody().getBytes());
+						encryptedSigMessage = Base64.getEncoder().encodeToString(jwtClaimSetBody);
+						
+						claimSet = "{\n            \"digest\":\"" + encryptedSigMessage
+								+ "\",\n            \"digestAlgorithm\":\"SHA-256\",\n            \"iat\":\""
+								+ ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT) + "\"\n} \n\n";
+					}
 				}
+
 				/* Preparing the Signature Header. */
 				HashMap<String, Object> customHeaders = new HashMap<String, Object>();
 				if (merchantConfig.getMerchantID() != null) {
 					customHeaders.put(JWTCryptoProcessorImpl.MERCHANT_ID, merchantConfig.getMerchantID());
-				}
-
-				if (merchantConfig.getMerchantID() != null) {
 					customHeaders.put("v-c-partner-id", merchantConfig.getMerchantID());
 				}
 
@@ -135,10 +132,6 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 					signature = jwtCryptoProcessor.sign(claimSet, rsaPrivateKey, x509Certificate, customHeaders);
 
 				} else {
-					if (!GlobalLabelParameters.JWE.equalsIgnoreCase(authType)) {
-						throw new ConfigException("merchant config field is invalid: authType");
-					}
-
 					X509Certificate x509Cert = KeyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
 					signature = jwtCryptoProcessor.signAndEncrypt(claimSet, rsaPrivateKey, x509Certificate, x509Cert,
 							customHeaders);

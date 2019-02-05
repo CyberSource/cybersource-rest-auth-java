@@ -11,7 +11,7 @@ import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.util.MerchantUtil;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 /**
@@ -24,7 +24,7 @@ public class PostObjectMethod {
 	private String authenticationType;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private MerchantUtil merchantUtil;
+	private AuthenticationRequestContext requestContext;
 	private Response response;
 	/**
 	 * REQUEST-TYPE. [Non-Editable]
@@ -32,7 +32,7 @@ public class PostObjectMethod {
 	private String requestType = "POST";
 	/* Give the URL path to where the data needs to be authenticated. */
 	private String url;
-	private String requestData;
+
 	/**
 	 * REQUEST TARGET [Editable]
 	 */
@@ -62,20 +62,20 @@ public class PostObjectMethod {
 		/* Read Merchant details. */
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantUtil = new MerchantUtil(merchantConfig);
+		requestContext = new AuthenticationRequestContext();
 
-		merchantUtil.setRequestType(requestType);
+		requestContext.setRequestMethodType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Set request data */
-		merchantUtil.setRequestJsonPath("not required");
-		requestData = PayloadData.readData();
+		requestContext.setRequestJsonPath("not required");
 		/* Set request target */
-		merchantUtil.setRequestTarget(requestTarget);
+		requestContext.setRequestTarget(requestTarget);
+		/* Set Request Body */
+		requestContext.setRequestBody(PayloadData.readData());
 		/* Set URL path w.r.t Post operation. */
-
-		url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
-		merchantUtil.setUrl(url);
+		url = "https://" + merchantConfig.getRequestHost() + requestContext.getRequestTarget();
+		requestContext.setUrl(url);
 
 		/* Begin Post process. */
 		process();
@@ -90,7 +90,7 @@ public class PostObjectMethod {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 		try {
 			/* Call payment method of Api Controller class */
-			response = apiController.paymentPost(merchantConfig, requestData);
+			response = apiController.paymentPost(merchantConfig, requestContext);
 			/* Display Response Message from the server and Headers. */
 			if (!StringUtils.isBlank(response.getResponseCode())
 					&& !StringUtils.isBlank(response.getResponseMessage())) {

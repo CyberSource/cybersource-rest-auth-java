@@ -9,7 +9,7 @@ import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.util.MerchantUtil;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 /**
@@ -22,9 +22,8 @@ public class PostMethod {
 	private String authenticationType;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private MerchantUtil merchantUtil;
+	private AuthenticationRequestContext authRequestContext;
 	private Response responseObj;
-	private String requestData;
 	/**
 	 * REQUEST TARGET [Editable]
 	 */
@@ -49,20 +48,19 @@ public class PostMethod {
 
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			merchantUtil = new MerchantUtil(merchantConfig);
+			authRequestContext = new AuthenticationRequestContext();
 			/* Extract Authentication Type from cybs.properties */
 			authenticationType = merchantConfig.getAuthenticationType();
 			/* Set request Type. */
-			merchantUtil.setRequestType(requestType);
+			authRequestContext.setRequestMethodType(requestType);
 			/* Set request data */
 
-			merchantUtil.setRequestJsonPath(requestJsonPath);
-			requestData = merchantUtil.getRequestData();
+			authRequestContext.setRequestJsonPath(requestJsonPath);
 			/* Set request target */
-			merchantUtil.setRequestTarget(requestTarget);
+			authRequestContext.setRequestTarget(requestTarget);
 			/* Set URL path w.r.t Post operation. */
-			url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
-			merchantUtil.setUrl(url);
+			url = "https://" + merchantConfig.getRequestHost() + authRequestContext.getRequestTarget();
+			authRequestContext.setUrl(url);
 			/* Begin Post process. */
 			process();
 
@@ -85,7 +83,7 @@ public class PostMethod {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 
 		/* Call payment method of Api Controller class */
-		responseObj = apiController.paymentPost(merchantConfig, requestData);
+		responseObj = apiController.paymentPost(merchantConfig, authRequestContext);
 		/* Display Response Message from the server and Headers. */
 		if (StringUtils.isNotBlank(responseObj.getResponseCode())
 				&& StringUtils.isNotBlank(responseObj.getResponseMessage())) {

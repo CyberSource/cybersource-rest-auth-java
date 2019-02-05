@@ -11,8 +11,8 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
 
@@ -24,7 +24,7 @@ public class DeleteGenerateHeaders {
 
 	private Properties merchantProp;
 	private static MerchantConfig merchantConfig;
-	private MerchantUtil merchantUtil;
+	private AuthenticationRequestContext requestContext;
 	private String authenticationType = null;
 	private static String requestType = "DELETE";
 	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
@@ -36,17 +36,15 @@ public class DeleteGenerateHeaders {
 		try {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			merchantUtil = new MerchantUtil(merchantConfig);
-			merchantUtil.setRequestJsonPath("not required");
+			requestContext = new AuthenticationRequestContext();
+			requestContext.setRequestJsonPath("not required");
 			authenticationType = merchantConfig.getAuthenticationType();
-			merchantUtil.setRequestType(requestType);
+			requestContext.setRequestMethodType(requestType);
 			this.logger = merchantConfig.getLogger();
 			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
 					" Generate DELETE Headers *******************", Level.INFO);
-			if (MerchantUtil.validateMerchantDetails()) {
-				generateDeleteHeaders();
-			}
+			generateDeleteHeaders();
 			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			Utility.log(this.logger, " ", "", Level.OFF);
 
@@ -66,7 +64,7 @@ public class DeleteGenerateHeaders {
 	private void generateDeleteHeaders() throws ConfigException {
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Signature Header */
-		tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData());
+		tempSig = Authorization.getToken(merchantConfig, requestContext);
 
 		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestTarget, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);

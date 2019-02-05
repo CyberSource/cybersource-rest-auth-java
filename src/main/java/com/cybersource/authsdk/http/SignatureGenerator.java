@@ -11,8 +11,8 @@ import javax.crypto.spec.SecretKeySpec;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 
 /* This method returns value for parameter Signature which is then passed to Signature header
  * parameter 'Signature' is calculated based on below key values and then signed with SECRET KEY -
@@ -26,26 +26,24 @@ import com.cybersource.authsdk.util.MerchantUtil;
 public class SignatureGenerator {
 
 	private MerchantConfig merchantConfig;
-	private String merchantId;
-	private String requestData;
+	private AuthenticationRequestContext authRequestContext;
 	private String httpMethod;
 
 	/**
-	 * @param requestType
-	 *           - request method type 
 	 * @param merchantConfig-contains
 	 *           -all information of merchant.
+	 * @param requestContext
+	 *            - contains request details
 	 * @throws InvalidKeyException
 	 *           - if key is not valid.
 	 * @throws NoSuchAlgorithmException
 	 *           - if algorithm is not available.
 	 */
-	public SignatureGenerator(MerchantConfig merchantConfig, String requestData, String requestType)
+	public SignatureGenerator(MerchantConfig merchantConfig, AuthenticationRequestContext authRequestContext)
 			throws InvalidKeyException, NoSuchAlgorithmException {
 		this.merchantConfig = merchantConfig;
-		this.requestData = requestData;
-		this.httpMethod=requestType;
-		this.merchantId = merchantConfig.getMerchantID();
+		this.authRequestContext = authRequestContext;
+		this.httpMethod=authRequestContext.getRequestMethodType();
 	}
 
 	/**
@@ -71,7 +69,7 @@ public class SignatureGenerator {
 		signatureString.append('\n');
 		signatureString.append(GlobalLabelParameters.DATE.toLowerCase());
 		signatureString.append(": ");
-		signatureString.append(MerchantUtil.date);
+		signatureString.append(authRequestContext.date);
 		signatureString.append('\n');
 		signatureString.append("(request-target)");
 		signatureString.append(": ");
@@ -85,13 +83,13 @@ public class SignatureGenerator {
 				|| (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH))) {
 			signatureString.append(GlobalLabelParameters.DIGEST.toLowerCase());
 			signatureString.append(": ");
-			signatureString.append(new PayloadDigest(requestData).getDigest());
+			signatureString.append(new PayloadDigest(authRequestContext.getRequestBody()).getDigest());
 			signatureString.append('\n');
 		}
 
 		signatureString.append(GlobalLabelParameters.V_C_MERCHANTID);
 		signatureString.append(": ");
-		signatureString.append(merchantId);
+		signatureString.append(merchantConfig.getMerchantID());
 		signatureString.delete(0, 1);
 		String signatureStr = signatureString.toString();
 
@@ -121,23 +119,23 @@ public class SignatureGenerator {
 		switch (requestType) {
 		case GlobalLabelParameters.POST:
 			requestTarget = GlobalLabelParameters.POST.toLowerCase() + GlobalLabelParameters.SPACE
-					+ MerchantUtil.getRequestTarget();
+					+ authRequestContext.getRequestTarget();
 			break;
 		case GlobalLabelParameters.GET:
 			requestTarget = GlobalLabelParameters.GET.toLowerCase() + GlobalLabelParameters.SPACE
-					+ MerchantUtil.getRequestTarget();
+					+ authRequestContext.getRequestTarget();
 			break;
 		case GlobalLabelParameters.PUT:
 			requestTarget = GlobalLabelParameters.PUT.toLowerCase() + GlobalLabelParameters.SPACE
-					+ MerchantUtil.getRequestTarget();
+					+ authRequestContext.getRequestTarget();
 			break;
 		case GlobalLabelParameters.DELETE:
 			requestTarget = GlobalLabelParameters.DELETE.toLowerCase() + GlobalLabelParameters.SPACE
-					+ MerchantUtil.getRequestTarget();
+					+ authRequestContext.getRequestTarget();
 			break;
 		case GlobalLabelParameters.PATCH:
 			requestTarget = GlobalLabelParameters.PATCH.toLowerCase() + GlobalLabelParameters.SPACE
-					+ MerchantUtil.getRequestTarget();
+					+ authRequestContext.getRequestTarget();
 			break;
 		default:
 			requestTarget = null;

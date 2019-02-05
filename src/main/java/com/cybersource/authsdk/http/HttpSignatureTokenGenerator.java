@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /* HttpSigToken return SignatureHeader Value that contains following parameters
@@ -26,20 +26,20 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 
 	private MerchantConfig merchantConfig = null;
 	private String httpMethod = null;
-	private String requestData;
+	private AuthenticationRequestContext authRequestContext;
 	private Logger log;
 
 	/**
 	 * @param merchantConfig
 	 *            -contains information for merchant.
-	 * @param requestData
-	 *            - request data.
+	 * @param requestContext
+	 *            - contains request details
 	 */
-	public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, String requestData) {
+	public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, AuthenticationRequestContext authRequestContext) {
 
 		this.merchantConfig = merchantConfig;
-		this.requestData = requestData;
-		this.httpMethod = MerchantUtil.getRequestType();
+		this.authRequestContext = authRequestContext;
+		this.httpMethod = authRequestContext.getRequestMethodType();
 		this.log = merchantConfig.getLogger();
 	}
 
@@ -113,7 +113,7 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 		/*
 		 * Get Value for paramter 'Signature' to be passed to Signature Header
 		 */
-		String signatureValue = new SignatureGenerator(merchantConfig, requestData, httpMethod).generateSignature();
+		String signatureValue = new SignatureGenerator(merchantConfig, authRequestContext).generateSignature();
 		signatureHeader.append(", signature=\"" + signatureValue + "\"");
 		return signatureHeader.toString();
 	}

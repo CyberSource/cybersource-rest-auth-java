@@ -12,8 +12,8 @@ import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
 
@@ -26,7 +26,7 @@ public class PatchGenerateHeaders {
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
 	private String requestData;
-	private MerchantUtil merchantUtil;
+	private AuthenticationRequestContext requestContext;
 	private String authenticationType = null;
 	private PayloadDigest digest;
 	private Logger logger = null;
@@ -54,15 +54,15 @@ public class PatchGenerateHeaders {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
 			this.logger = merchantConfig.getLogger();
-			merchantUtil = new MerchantUtil(merchantConfig);
+			requestContext = new AuthenticationRequestContext();
 			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
 					" Generate PATCH Headers *******************", Level.INFO);
-			merchantUtil.setRequestType(requestType);
-			merchantUtil.setRequestJsonPath(requestJsonPath);
-			requestData = merchantUtil.getRequestData();
-			digest = new PayloadDigest(requestData);
-			if (MerchantUtil.validateMerchantDetails()) {
+			requestContext.setRequestMethodType(requestType);
+			requestContext.setRequestJsonPath(requestJsonPath);
+			if (requestContext.validateRequestDetails(requestJsonPath)) {
+				requestData = requestContext.getRequestBody();
+				digest = new PayloadDigest(requestData);
 				generatePatchHeaders();
 			}
 			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
@@ -83,7 +83,7 @@ public class PatchGenerateHeaders {
 	private void generatePatchHeaders() throws ConfigException {
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Signature Header */
-		tempSig = Authorization.getToken(merchantConfig, requestData);
+		tempSig = Authorization.getToken(merchantConfig, requestContext);
 
 		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestTarget, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);

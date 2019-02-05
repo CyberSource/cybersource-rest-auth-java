@@ -11,7 +11,7 @@ import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.util.MerchantUtil;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 
 public class GetObjectMethod {
 	private ApiController apiController;
@@ -27,6 +27,8 @@ public class GetObjectMethod {
 	private String requestType = "GET";
 	/* [Non Editable] */
 	private String url;
+	
+	private AuthenticationRequestContext requestContext;
 
 	/* This method initiates or begins the process. */
 	public static void main(String[] args) {
@@ -43,17 +45,17 @@ public class GetObjectMethod {
 			/* Read Merchant details. */
 			merchantProp = Configuration.getMerchantDetails();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
-			merchantUtil.setRequestJsonPath("not required");
+			requestContext = new AuthenticationRequestContext();
+			requestContext.setRequestJsonPath("not required");
 			/* Set Request Type */
-			merchantUtil.setRequestType(requestType);
+			requestContext.setRequestMethodType(requestType);
 			/* Extract Authentication Type from cybs.properties */
 			authenticationType = merchantConfig.getAuthenticationType();
-			merchantUtil.setRequestTarget(requestTarget);
-			/* Construct the URL with respect to GETID. */
-			url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
+			requestContext.setRequestTarget(requestTarget);
+			/* Construct the URL */
+			url = "https://" + merchantConfig.getRequestHost() + requestContext.getRequestTarget();
 			/* Set the URL. */
-			merchantUtil.setUrl(url);
+			requestContext.setUrl(url);
 			/* Begin the Get process. */
 			process();
 
@@ -76,7 +78,7 @@ public class GetObjectMethod {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 
 		/* Calling APISDK, com.cybersouce.api.controller. */
-		response = apiController.paymentGet(merchantConfig, null);
+		response = apiController.paymentGet(merchantConfig, requestContext);
 		/* Display response message and Headers in console. */
 		if (StringUtils.isNotBlank(response.getResponseCode())
 				&& StringUtils.isNotBlank(response.getResponseMessage())) {

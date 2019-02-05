@@ -9,7 +9,7 @@ import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.util.MerchantUtil;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 /**
@@ -22,9 +22,8 @@ public class PatchMethod {
 	private String authenticationType;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private MerchantUtil merchantUtil;
+	private AuthenticationRequestContext requestContext;
 	private Response responseObj;
-	private String requestData;
 	/**
 	 * REQUEST TARGET [Editable]
 	 */
@@ -56,21 +55,20 @@ public class PatchMethod {
 
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			merchantUtil = new MerchantUtil(merchantConfig);
+			requestContext = new AuthenticationRequestContext();
 			/* Extract Authentication Type from cybs.properties */
 			authenticationType = merchantConfig.getAuthenticationType();
 			/* Set request Type. */
-			merchantUtil.setRequestType(requestType);
+			requestContext.setRequestMethodType(requestType);
 			/* Set request data */
 
-			merchantUtil.setRequestJsonPath(requestJsonPath);
-			requestData = merchantUtil.getRequestData();
+			requestContext.setRequestJsonPath(requestJsonPath);
 			/* Set request target */
-			merchantUtil.setRequestTarget(requestTarget);
-			/* Set URL path w.r.t Post operation. */
-			url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
-			merchantUtil.setUrl(url);
-			/* Begin Post process. */
+			requestContext.setRequestTarget(requestTarget);
+			/* Set URL path w.r.t Patch operation. */
+			url = "https://" + merchantConfig.getRequestHost() + requestContext.getRequestTarget();
+			requestContext.setUrl(url);
+			/* Begin Patch process. */
 			process();
 
 		} catch (ConfigException e) {
@@ -91,7 +89,7 @@ public class PatchMethod {
 	private void process() throws ConfigException, ClientException {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 		/* Call payment method of Api Controller class */
-		responseObj = apiController.paymentPatch(merchantConfig, requestData);
+		responseObj = apiController.paymentPatch(merchantConfig, requestContext);
 		/* Display Response Message from the server and Headers. */
 		if (StringUtils.isNotBlank(responseObj.getResponseCode())
 				&& StringUtils.isNotBlank(responseObj.getResponseMessage())) {

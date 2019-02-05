@@ -10,7 +10,7 @@ import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.util.MerchantUtil;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 public class GetMethod {
@@ -28,6 +28,7 @@ public class GetMethod {
 	 */
 	private String requestType = "GET";
 	private String url;
+	private AuthenticationRequestContext requestContext;
 
 	/**
 	 * This method initiates or begins the process.
@@ -47,17 +48,17 @@ public class GetMethod {
 
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			MerchantUtil merchantUtil = new MerchantUtil(merchantConfig);
-			merchantUtil.setRequestJsonPath("not required");
+			requestContext = new AuthenticationRequestContext();
+			requestContext.setRequestJsonPath("not required");
 			/* Set Request Type into the merchant config object. */
-			merchantUtil.setRequestType(requestType);
+			requestContext.setRequestMethodType(requestType);
 			/* Extract Authentication Type from cybs.properties */
 			authenticationType = merchantConfig.getAuthenticationType();
-			merchantUtil.setRequestTarget(requestTarget);
+			requestContext.setRequestTarget(requestTarget);
 			/* Construct the URL. */
-			url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
+			url = "https://" + merchantConfig.getRequestHost() + requestContext.getRequestTarget();
 			/* Set the URL. */
-			merchantUtil.setUrl(url);
+			requestContext.setUrl(url);
 			/* Begin the Get process. */
 			process();
 
@@ -80,7 +81,7 @@ public class GetMethod {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 
 		/* Calling APISDK, com.cybersouce.api.controller. */
-		response = apiController.paymentGet(merchantConfig, null);
+		response = apiController.paymentGet(merchantConfig, requestContext);
 		/* Display response message and Headers in console. */
 		if (StringUtils.isNotBlank(response.getResponseCode())
 				&& StringUtils.isNotBlank(response.getResponseMessage())) {

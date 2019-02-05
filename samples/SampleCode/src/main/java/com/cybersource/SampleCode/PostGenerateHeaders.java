@@ -12,8 +12,8 @@ import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
 
@@ -26,7 +26,7 @@ public class PostGenerateHeaders {
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
 	private String requestData;
-	private MerchantUtil merchantUtil;
+	private AuthenticationRequestContext requestContext;
 	private String authenticationType = null;
 	private PayloadDigest digest;
 	private Logger logger = null;
@@ -51,17 +51,17 @@ public class PostGenerateHeaders {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
 			this.logger = merchantConfig.getLogger();
-			merchantUtil = new MerchantUtil(merchantConfig);
+			requestContext = new AuthenticationRequestContext();
 
 			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-			merchantUtil.setRequestType(requestType);
-			merchantUtil.setRequestJsonPath(requestJsonPath);
-			merchantUtil.setRequestTarget(requestTarget);
-			requestData = merchantUtil.getRequestData();
-			digest = new PayloadDigest(requestData);
+			requestContext.setRequestMethodType(requestType);
+			requestContext.setRequestJsonPath(requestJsonPath);
+			requestContext.setRequestTarget(requestTarget);
 			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
 					" Generate POST Headers *******************", Level.INFO);
-			if (MerchantUtil.validateMerchantDetails()) {
+			if (requestContext.validateRequestDetails(requestJsonPath)) {
+				requestData = requestContext.getRequestBody();
+				digest = new PayloadDigest(requestData);
 				generatePostHeaders();
 			}
 			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
@@ -82,9 +82,9 @@ public class PostGenerateHeaders {
 	private void generatePostHeaders() throws ConfigException {
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Signature Header */
-		tempSig = Authorization.getToken(merchantConfig, requestData);
+		tempSig = Authorization.getToken(merchantConfig, requestContext);
 
-		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, MerchantUtil.getRequestTarget(),
+		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestContext.getRequestTarget(),
 				Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), requestType, Level.INFO);

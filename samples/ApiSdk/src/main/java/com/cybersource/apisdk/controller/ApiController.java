@@ -8,8 +8,8 @@ import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.apisdk.service.PaymentRequestService;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /**
@@ -18,159 +18,123 @@ import com.cybersource.authsdk.util.Utility;
 public class ApiController {
 
 	private Logger logger;
-	private boolean isAuthicationTypeValid;
-	private boolean isMerchantConfigValid;
 
 	/**
 	 * 
 	 * @param merchantConfig
 	 *            - contains information for merchant.
-	 * @param requestData
-	 *            - request payload.
+	 * @param requestContext
+	 *            - contains request details
 	 * @throws ConfigException
-	 *             - if some value is missing for merchant..
+	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentGet(MerchantConfig merchantConfig, String requestData)
+	public Response paymentGet(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
 			throws ConfigException, ClientException {
-		return processPayment(merchantConfig, requestData);
+		return processPayment(merchantConfig, requestContext);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
 	 *            - contains information for merchant.
-	 * @param requestData
-	 *            - request payload.
+	 * @param requestContext
+	 *            - contains request details
 	 * @throws ConfigException
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentPost(MerchantConfig merchantConfig, String requestData)
+	public Response paymentPost(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
 			throws ConfigException, ClientException {
-		return processPayment(merchantConfig, requestData);
+		return processPayment(merchantConfig, requestContext);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
 	 *            - contains information for merchant.
-	 * @param requestData
-	 *            - request payload.
+	 * @param requestContext
+	 *            - contains request details
 	 * @throws ConfigException
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentPut(MerchantConfig merchantConfig, String requestData)
+	public Response paymentPut(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
 			throws ConfigException, ClientException {
-		return processPayment(merchantConfig, requestData);
+		return processPayment(merchantConfig, requestContext);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
 	 *            - contains information for merchant.
-	 * @param requestData
-	 *            - request payload.
+	 * @param requestContext
+	 *            - contains request details
 	 * @throws ConfigException
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentDelete(MerchantConfig merchantConfig, String requestData)
+	public Response paymentDelete(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
 			throws ConfigException, ClientException {
-		return processPayment(merchantConfig, requestData);
+		return processPayment(merchantConfig, requestContext);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
 	 *            - contains information for merchant.
-	 * @param requestData
-	 *            - request payload.
+	 * @param requestContext
+	 *            - contains request details
 	 * @throws ConfigException
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentPatch(MerchantConfig merchantConfig, String requestData)
+	public Response paymentPatch(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
 			throws ConfigException, ClientException {
-		return processPayment(merchantConfig, requestData);
+		return processPayment(merchantConfig, requestContext);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
 	 *            - contains information for merchant.
-	 * @param requestData
-	 *            - request payload.
+	 * @param requestContext
+	 *            - contains request details
 	 * @throws ConfigException
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	private Response processPayment(MerchantConfig merchantConfig, String requestData)
+	private Response processPayment(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
 			throws ConfigException, ClientException {
 		Response responseObj = null;
 		try {
 			logger = merchantConfig.getLogger();
 			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSACTION, "", Level.INFO);
-			commonApiControllerCheck(merchantConfig);
-			if (isAuthicationTypeValid) {
-				if (isMerchantConfigValid) {
-					Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, MerchantUtil.getRequestTarget(),
-							Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE,
-							merchantConfig.getAuthenticationType(), Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : " + MerchantUtil.getRequestType(),
-							Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " " + merchantConfig.toString(),
-							Level.INFO);
-					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestData,
-							logger);
-					responseObj = paymentRequest.processPaymentRequest();
-					return responseObj;
-				} else {
-					Utility.log(logger, GlobalLabelParameters.MERCHANT_VALIDATION_ERROR, "", Level.INFO);
-					throw new ConfigException(GlobalLabelParameters.MERCHANT_VALIDATION_ERROR);
-				}
+			if (requestContext.validateRequestDetails(requestContext.getRequestJsonPath())) {
+				Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestContext.getRequestTarget(),
+						Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(),
+						Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : " + requestContext.getRequestMethodType(),
+						Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " " + merchantConfig.toString(),
+						Level.INFO);
+				PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestContext);
+				responseObj = paymentRequest.processPaymentRequest();
+				return responseObj;
 			} else {
-				authenticationException(merchantConfig.getAuthenticationType());
+				Utility.log(logger, GlobalLabelParameters.REQUEST_VALIDATION_ERROR, "", Level.INFO);
+				throw new ConfigException(GlobalLabelParameters.REQUEST_VALIDATION_ERROR);
 			}
-			return responseObj;
-
 		} finally {
 			Utility.log(logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			Utility.log(logger, " ", "", Level.OFF);
 		}
-	}
-
-	/**
-	 * 
-	 * @param merchantConfig
-	 *            - contains information for merchant.
-	 * @throws ConfigException
-	 *             - contains information for merchant.
-	 */
-	public void commonApiControllerCheck(MerchantConfig merchantConfig) throws ConfigException {
-		/* Retrieve authentication type for validating. */
-		String authenticationType = merchantConfig.getAuthenticationType();
-		isAuthicationTypeValid = Utility.checkAuthenticationValidation(authenticationType);
-		/* Validate Merchant Details. */
-		isMerchantConfigValid = MerchantUtil.validateMerchantDetails();
-
-	}
-
-	/**
-	 * 
-	 * @throws ConfigException
-	 *             - contains information for merchant.
-	 */
-	private void authenticationException(String authenticationType) throws ConfigException {
-		Utility.log(logger, GlobalLabelParameters.AUTH_ERROR, authenticationType, Level.FATAL);
-		throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 	}
 }

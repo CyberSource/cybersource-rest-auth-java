@@ -15,7 +15,6 @@ public class GlobalLabelParameters {
 	public static final String AUTENTICATION_TYPE = "Authentication Type : ";
 	public static final String HTTP = "HTTP_Signature";
 	public static final String JWT = "JWT";
-	public static final String JWE = "JWE";
 	public static final String V_C_MERCHANTID = "v-c-merchant-id";
 	public static final String DATE = "Date";
 	public static final String HOST = "Host";
@@ -68,6 +67,7 @@ public class GlobalLabelParameters {
 	public static final String AUTH_ERROR = "Invalid Authentication Type in cybs.properties :: ";
 	public static final String PROP_ERROR = "Property not Found.";
 	public static final String MERCHANT_VALIDATION_ERROR="Merchant Validation Failed";
+	public static final String REQUEST_VALIDATION_ERROR="Request Validation Failed";
 	public static final String KEY_ALIAS_NULL_EMPTY = "KeyAlias Empty/Null. Assigning merchantID value :: ";
 	public static final String KEY_ALIAS_MISMATCH = "KeyAlias Mismatch. Assigning merchantID value ";
 	public static final String KEY_PASSWORD_EMPTY_NULL = "KeyPassword Empty/Null. Assigning merchantID value";

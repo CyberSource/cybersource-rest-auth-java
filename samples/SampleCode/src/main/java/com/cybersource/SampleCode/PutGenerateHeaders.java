@@ -13,8 +13,8 @@ import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
 
@@ -24,9 +24,9 @@ import com.cybersource.authsdk.util.Utility;
  *
  */
 public class PutGenerateHeaders {
-	private static Properties merchantProp;
-	private static MerchantConfig merchantConfig;
-	private static MerchantUtil merchantUtil;
+	private Properties merchantProp;
+	private MerchantConfig merchantConfig;
+	private AuthenticationRequestContext requestContext;
 	private String authenticationType = null;
 	private String requestData;
 	private String requestType = "PUT";
@@ -37,6 +37,8 @@ public class PutGenerateHeaders {
 	private String tempSig;
 
 	private static String requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
+	
+	private String requestJsonPath = "src/main/resources/TRRReport.json";
 
 	/**
 	 * @param merchantConfig
@@ -55,19 +57,18 @@ public class PutGenerateHeaders {
 		try {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			merchantUtil = new MerchantUtil(merchantConfig);
-			merchantUtil.setRequestTarget(requestTarget);
-			merchantUtil.setRequestType("PUT");
-			merchantUtil.setRequestJsonPath("src/main/resources/TRRReport.json");
+			requestContext = new AuthenticationRequestContext();
+			requestContext.setRequestTarget(requestTarget);
+			requestContext.setRequestMethodType("PUT");
+			requestContext.setRequestJsonPath("src/main/resources/TRRReport.json");
 			logger = merchantConfig.getLogger();
-			this.requestData = merchantUtil.getRequestData();
-			digest = new PayloadDigest(requestData);
-	
+			
 			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PUT Headers *******************",
 					Level.INFO);
-			boolean isMerchant = MerchantUtil.validateMerchantDetails();
-			if (isMerchant) {
+			if (requestContext.validateRequestDetails(requestJsonPath) ) {
+				this.requestData = requestContext.getRequestBody();
+				digest = new PayloadDigest(requestData);
 				PutMethodHeaders(merchantConfig);
 			}
 			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
@@ -86,9 +87,9 @@ public class PutGenerateHeaders {
 	private void PutMethodHeaders(MerchantConfig merchantConfig) throws ConfigException {
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Signature Header */
-		tempSig = Authorization.getToken(merchantConfig, requestData);
+		tempSig = Authorization.getToken(merchantConfig, requestContext);
 
-		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, MerchantUtil.getRequestTarget(),
+		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestContext.getRequestTarget(),
 				Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.REQUEST_TYPE.concat(" : "), requestType, Level.INFO);

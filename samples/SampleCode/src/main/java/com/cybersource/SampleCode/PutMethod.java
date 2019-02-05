@@ -4,13 +4,12 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.cybersource.Data.PayloadData;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.util.MerchantUtil;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 /**
@@ -23,7 +22,7 @@ public class PutMethod {
 	private Response response;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private MerchantUtil merchantUtil;
+	private AuthenticationRequestContext requestContext;
 	/**
 	 * REQUEST-TARGET [Editable]
 	 */
@@ -37,8 +36,6 @@ public class PutMethod {
 	 */
 	private String requestType = "PUT";
 	private String url;
-	/* Request Data. */
-	private String requestData = PayloadData.readData();
 
 	/**
 	 * This method initiates or begins the process.
@@ -54,26 +51,25 @@ public class PutMethod {
 			apiController = new ApiController();
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			merchantUtil = new MerchantUtil(merchantConfig);
+			requestContext = new AuthenticationRequestContext();
 
-			merchantUtil.setRequestType(requestType);
+			requestContext.setRequestMethodType(requestType);
 			/* Extract Authentication Type from cybs.properties */
 			authenticationType = merchantConfig.getAuthenticationType();
 			/*
 			 * Set Json Path, request target, request data into merchant config
 			 * object.
 			 */
-			merchantUtil.setRequestJsonPath(requestJsonPath);
+			requestContext.setRequestJsonPath(requestJsonPath);
 			/* Set request target */
-			merchantUtil.setRequestTarget(requestTarget);
+			requestContext.setRequestTarget(requestTarget);
 			/* Set request Data */
-			requestData = merchantUtil.getRequestData();
-			merchantUtil.setRequestData(requestData);
+			requestContext.setRequestBody(requestContext.getRequestBody());
 
 			/* Construct the URL with respect to PUTID. */
-			url = "https://" + merchantConfig.getRequestHost() + MerchantUtil.getRequestTarget();
+			url = "https://" + merchantConfig.getRequestHost() + requestContext.getRequestTarget();
 			/* Set the URL. */
-			merchantUtil.setUrl(url);
+			requestContext.setUrl(url);
 			/* Begin PUT process. */
 			process();
 
@@ -95,7 +91,7 @@ public class PutMethod {
 	private void process() throws ConfigException, ClientException {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 		/* Call payment method of Api Controller class */
-		response = apiController.paymentPut(merchantConfig, requestData);
+		response = apiController.paymentPut(merchantConfig, requestContext);
 
 		if (!StringUtils.isBlank(response.getResponseCode()) && !StringUtils.isBlank(response.getResponseMessage())) {
 			System.out.println(" URL                 : " + url);

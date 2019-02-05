@@ -12,8 +12,8 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
 
@@ -25,7 +25,7 @@ public class GetGenerateHeaders {
 
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private MerchantUtil merchantUtil;
+	private AuthenticationRequestContext requestContext;
 	private String authenticationType = null;
 	private Logger logger;
 	private String tempSig;
@@ -64,15 +64,13 @@ public class GetGenerateHeaders {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
 			this.logger = merchantConfig.getLogger();
-			merchantUtil = new MerchantUtil(merchantConfig);
+			requestContext = new AuthenticationRequestContext();
 			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-			merchantUtil.setRequestType(requestType);
-			merchantUtil.setRequestJsonPath("not required");
+			requestContext.setRequestMethodType(requestType);
+			requestContext.setRequestJsonPath("not required");
 			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
 					" Generate GET Headers *******************", Level.INFO);
-			if (MerchantUtil.validateMerchantDetails()) {
-				generateGetHeaders();
-			}
+			generateGetHeaders();
 			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			Utility.log(this.logger, " ", "", Level.OFF);
 		} catch (ConfigException e) {
@@ -90,10 +88,10 @@ public class GetGenerateHeaders {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantUtil = new MerchantUtil(merchantConfig);
-		merchantUtil.setRequestJsonPath("not required");
+		requestContext = new AuthenticationRequestContext();
+		requestContext.setRequestJsonPath("not required");
 		/* Set Request Type into the merchant config object. */
-		merchantUtil.setRequestType(requestType);
+		requestContext.setRequestMethodType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
 		this.logger = merchantConfig.getLogger();
@@ -110,7 +108,7 @@ public class GetGenerateHeaders {
 	private void generateGetHeaders() throws ConfigException {
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Signature Header */
-		tempSig = Authorization.getToken(merchantConfig, merchantUtil.getRequestData());
+		tempSig = Authorization.getToken(merchantConfig, requestContext);
 
 		Utility.log(this.logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestTarget, Level.INFO);
 		Utility.log(this.logger, GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType, Level.INFO);
@@ -119,7 +117,7 @@ public class GetGenerateHeaders {
 		Utility.log(logger, GlobalLabelParameters.GET + "_ID".concat(" : "), this.id, Level.INFO);
 
 		System.out.println(" Request Type        : " + requestType);
-		System.out.println(" GET_ID                  : " + this.id);
+		System.out.println(" GET_ID              : " + this.id);
 
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),

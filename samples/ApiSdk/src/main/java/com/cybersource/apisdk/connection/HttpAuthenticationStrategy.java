@@ -26,12 +26,12 @@ import org.bouncycastle.util.encoders.Base64;
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
+import com.cybersource.authsdk.util.AuthenticationRequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.MerchantUtil;
 import com.cybersource.authsdk.util.Utility;
 
 /**
@@ -44,30 +44,35 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	private MerchantConfig merchantConfig;
 	private PayloadDigest digestPayLoad;
 	private HttpURLConnection con;
-	private String requestType;
+	private String requestMethodType;
+	private String requestBody;
 	private Logger logger;
 	private String digestMessageBody;
-	private String requestData;
+	private AuthenticationRequestContext requestContext;
+	private HttpSignatureTokenGenerator tokenGenerator;
 
 	/**
 	 * 
 	 * @param merchantConfig
 	 *            - contains information for merchant.
-	 * @param requestData
-	 *            - request Payload .
+	 * @param requestContext
+	 *            - contains request details
 	 * @param logger
 	 *            - logger to log all information in log file.
 	 * @throws ClientException
 	 *             - if some error will occur.
+	 * @throws ConfigException
 	 */
-	public HttpAuthenticationStrategy(MerchantConfig merchantConfig, String requestData, Logger logger)
-			throws ClientException {
+	public HttpAuthenticationStrategy(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
+			throws ClientException, ConfigException {
 
 		this.merchantConfig = merchantConfig;
-		this.requestData = requestData;
-		this.digestPayLoad = new PayloadDigest(requestData);
-		this.requestType = MerchantUtil.getRequestType();
-		this.logger = logger;
+		this.requestContext = requestContext;
+		this.requestBody = requestContext.getRequestBody();
+		this.digestPayLoad = new PayloadDigest(requestContext.getRequestBody());
+		this.requestMethodType = requestContext.getRequestMethodType();
+		this.logger = merchantConfig.getLogger();
+		tokenGenerator = new HttpSignatureTokenGenerator(merchantConfig, requestContext);
 	}
 
 	@Override
@@ -76,8 +81,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 		try {
 
 			/* Add Request Headers :: Content Type */
-			if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
-					|| requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+			if (requestMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
+					|| requestMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
 				Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE,
 						" : ".concat(GlobalLabelParameters.APPLICATION_JSON), Level.INFO);
 				con.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
@@ -102,8 +107,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			 * Add Request Header :: "Date" The date and time that the message
 			 * was originated from. "HTTP-date" format as defined by RFC7231.
 			 */
-			con.setRequestProperty(GlobalLabelParameters.DATE, MerchantUtil.date);
-			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(MerchantUtil.date), Level.INFO);
+			con.setRequestProperty(GlobalLabelParameters.DATE, requestContext.date);
+			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.date), Level.INFO);
 			/*
 			 * Add Request Header :: "Host" Sandbox Host ::
 			 * apitest.cybersource.com Production Host :: api.cybersource.com
@@ -113,14 +118,16 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			/*
 			 * set digest if request type is POST or PUT
 			 */
-			if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
-					|| requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+			if (requestMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
+					|| requestMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
 				con.setRequestProperty(GlobalLabelParameters.DIGEST, digestPayLoad.getDigest());
 				this.digestMessageBody = digestPayLoad.getDigest();
 				Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
 			}
 			/* Add Request Header :: "Signature" */
-			String signatureHeaderValue = Authorization.getToken(merchantConfig, requestData);
+			// String signatureHeaderValue =
+			// Authorization.getToken(merchantConfig, requestContext);
+			String signatureHeaderValue = tokenGenerator.getToken();
 			con.setRequestProperty(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE, " : ".concat(signatureHeaderValue), Level.INFO);
 
@@ -147,7 +154,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 		try {
 			/**/
 			Proxy proxy = createProxy(merchantConfig);
-			String getUrl = MerchantUtil.getUrl();
+			String getUrl = requestContext.getUrl();
 			Utility.log(logger, "URL : ", " " + getUrl, Level.INFO);
 			url = new URL(getUrl);
 			con = (HttpURLConnection) url.openConnection(proxy);
@@ -208,13 +215,13 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 
 		try {
 
-			if (requestType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
-				return executePatch(requestData);
+			if (requestMethodType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+				return executePatch(requestBody);
 			} else {
 				/* Make a new connection using the URL. */
 				openConnection();
 				/* Add Request Request Type :: "Get or Post" */
-				setRequestMethod(requestType);
+				setRequestMethod(requestMethodType);
 				/*
 				 * Add Request Header :: "v-c-merchant-id" set value to
 				 * Cybersource Merchant ID or v-c-merchant-id This ID can be
@@ -224,15 +231,15 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 
 				/* Send post request */
 
-				if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
-						|| requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+				if (requestMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
+						|| requestMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
 					/* Masking Request Body */
-					Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, Masking.prepareMasking(requestData),
+					Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, Masking.prepareMasking(requestBody),
 							Level.INFO);
 					con.setDoOutput(true);
 					con.setDoInput(true);
 					DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-					wr.write(requestData.getBytes("UTF-8"));
+					wr.write(requestBody.getBytes("UTF-8"));
 					wr.flush();
 					wr.close();
 				}
@@ -292,7 +299,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 * @param mc
 	 * @return
 	 */
-	private static Proxy createProxy(MerchantConfig mc) {
+	private Proxy createProxy(MerchantConfig mc) {
 		if (mc.getProxyAddress() == null) {
 			return Proxy.NO_PROXY;
 		}
@@ -308,7 +315,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 * @param con
 	 * @param mc
 	 */
-	private static void addProxyCredentials(HttpURLConnection con, MerchantConfig mc) {
+	private void addProxyCredentials(HttpURLConnection con, MerchantConfig mc) {
 		if (mc.getProxyUser() != null) {
 			con.setRequestProperty("Proxy-Authorization", "Basic " + Base64
 					.encode((mc.getProxyUser() + ":" + mc.getProxyPassword()).getBytes(Charset.forName("UTF-8"))));
@@ -325,7 +332,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response executePatch(String requestData) throws ConfigException, ClientException {
+	protected Response executePatch(String requestBody) throws ConfigException, ClientException {
 
 		/* For Disable the org.apache.log */
 		java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
@@ -338,16 +345,16 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 		/* For Disable the org.apache.log */
 		CloseableHttpResponse response = null;
 		try {
-			Utility.log(logger, "URL : ", MerchantUtil.getUrl(), Level.INFO);
+			Utility.log(logger, "URL : ", requestContext.getUrl(), Level.INFO);
 
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPatch httpPatch = new HttpPatch(MerchantUtil.getUrl());
+			HttpPatch httpPatch = new HttpPatch(requestContext.getUrl());
 			httpPatch = setPatchHeader(httpPatch);
 
-			if (null != requestData) {
-				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, " " + Masking.prepareMasking(requestData),
+			if (null != requestBody) {
+				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, " " + Masking.prepareMasking(requestBody),
 						Level.INFO);
-				HttpEntity httpEntity = new ByteArrayEntity(requestData.getBytes("UTF-8"));
+				HttpEntity httpEntity = new ByteArrayEntity(requestBody.getBytes("UTF-8"));
 				httpPatch.setEntity(httpEntity);
 			} else {
 				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, "  NULL", Level.ERROR);
@@ -408,7 +415,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 * @return HttpPatch
 	 * @throws ClientException
 	 */
-	public HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException, ClientException {
+	protected HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException, ClientException {
 		try {
 			/* Addition Request Header : "Content Type" */
 			httpPatch.setHeader(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
@@ -425,8 +432,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			 * Add Request Header :: "Date" The date and time that the message
 			 * was originated from. "HTTP-date" format as defined by RFC7231.
 			 */
-			httpPatch.setHeader(GlobalLabelParameters.DATE, MerchantUtil.date);
-			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(MerchantUtil.date), Level.INFO);
+			httpPatch.setHeader(GlobalLabelParameters.DATE, requestContext.date);
+			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.date), Level.INFO);
 			/*
 			 * Add Request Header :: "Host" Sandbox Host ::
 			 * apitest.cybersource.com Production Host :: api.cybersource.com
@@ -450,7 +457,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
 
 			/* Add Request Header :: "Signature" */
-			String signatureHeaderValue = Authorization.getToken(merchantConfig, requestData);
+			String signatureHeaderValue = tokenGenerator.getToken();
 			httpPatch.setHeader(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
 			Utility.log(logger, GlobalLabelParameters.SIGNATURE, " : ".concat(signatureHeaderValue), Level.INFO);
 
