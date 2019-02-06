@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.cache.Cache;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
@@ -27,7 +27,7 @@ import com.cybersource.authsdk.util.Utility;
  */
 public class JwtSignatureTokenGenerator implements TokenGenerator {
 	private MerchantConfig merchantConfig;
-	private AuthenticationRequestContext authRequestContext;
+	private RequestContext authRequestContext;
 	private String jwtMethod;
 	private Logger logger;
 	private Cache cache;
@@ -41,7 +41,7 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 	 * @param requestContext
 	 *            - contains request details
 	 */
-	public JwtSignatureTokenGenerator(MerchantConfig merchantConfig, AuthenticationRequestContext authRequestContext) {
+	public JwtSignatureTokenGenerator(MerchantConfig merchantConfig, RequestContext authRequestContext) {
 
 		this.merchantConfig = merchantConfig;
 		this.authRequestContext = authRequestContext;

@@ -10,7 +10,7 @@ import org.mockito.Mock;
 
 import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.cache.Identity;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -34,14 +34,14 @@ public class CacheTest {
 	MerchantConfig merchantConfig;
 	
 	@Mock
-	AuthenticationRequestContext authRequestContext;
+	RequestContext authRequestContext;
 
 	@Test
 	public void setP12FileDetailsInCacheEmptyTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantConfig.setMerchantDetails();
-		authRequestContext=new AuthenticationRequestContext();
+		authRequestContext=new RequestContext(merchantConfig.getLogger());
 		authRequestContext.setRequestMethodType("POST");
 		authRequestContext.setRequestJsonPath(requestJsonPath);
 
@@ -60,7 +60,7 @@ public class CacheTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantConfig.setMerchantDetails();
-		authRequestContext=new AuthenticationRequestContext();
+		authRequestContext=new RequestContext(merchantConfig.getLogger());
 		authRequestContext.setRequestMethodType("POST");
 		authRequestContext.setRequestJsonPath(requestJsonPath);
 
@@ -80,7 +80,7 @@ public class CacheTest {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		merchantConfig.setMerchantDetails();
-		authRequestContext=new AuthenticationRequestContext();
+		authRequestContext=new RequestContext(merchantConfig.getLogger());
 		authRequestContext.setRequestMethodType("POST");
 		authRequestContext.setRequestJsonPath(requestJsonPath);
 		

@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.apisdk.service.PaymentRequestService;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -30,7 +30,7 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentGet(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
+	public Response paymentGet(MerchantConfig merchantConfig, RequestContext requestContext)
 			throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestContext);
 	}
@@ -46,7 +46,7 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentPost(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
+	public Response paymentPost(MerchantConfig merchantConfig, RequestContext requestContext)
 			throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestContext);
 	}
@@ -62,7 +62,7 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentPut(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
+	public Response paymentPut(MerchantConfig merchantConfig, RequestContext requestContext)
 			throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestContext);
 	}
@@ -78,7 +78,7 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentDelete(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
+	public Response paymentDelete(MerchantConfig merchantConfig, RequestContext requestContext)
 			throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestContext);
 	}
@@ -94,7 +94,7 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	public Response paymentPatch(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
+	public Response paymentPatch(MerchantConfig merchantConfig, RequestContext requestContext)
 			throws ConfigException, ClientException {
 		return processPayment(merchantConfig, requestContext);
 	}
@@ -110,7 +110,7 @@ public class ApiController {
 	 * @throws ClientException
 	 *             - throws custom client exception.
 	 */
-	private Response processPayment(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
+	private Response processPayment(MerchantConfig merchantConfig, RequestContext requestContext)
 			throws ConfigException, ClientException {
 		Response responseObj = null;
 		try {

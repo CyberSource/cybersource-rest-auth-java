@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
@@ -26,7 +26,7 @@ public class PostGenerateHeaders {
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
 	private String requestData;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 	private String authenticationType = null;
 	private PayloadDigest digest;
 	private Logger logger = null;
@@ -51,7 +51,7 @@ public class PostGenerateHeaders {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
 			this.logger = merchantConfig.getLogger();
-			requestContext = new AuthenticationRequestContext();
+			requestContext = new RequestContext(this.logger);
 
 			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 			requestContext.setRequestMethodType(requestType);

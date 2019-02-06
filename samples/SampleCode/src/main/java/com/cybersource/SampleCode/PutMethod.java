@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -22,7 +22,7 @@ public class PutMethod {
 	private Response response;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 	/**
 	 * REQUEST-TARGET [Editable]
 	 */
@@ -51,7 +51,7 @@ public class PutMethod {
 			apiController = new ApiController();
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			requestContext = new AuthenticationRequestContext();
+			requestContext = new RequestContext(merchantConfig.getLogger());
 
 			requestContext.setRequestMethodType(requestType);
 			/* Extract Authentication Type from cybs.properties */

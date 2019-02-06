@@ -9,19 +9,19 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
-public class MerchantUtilTest {
+public class MerchantConfigTest {
 	
 	@Mock
 	MerchantConfig merchantConfig;
 	
 	@Mock
-	AuthenticationRequestContext merchantUtil;
+	RequestContext requestContext;
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -33,116 +33,97 @@ public class MerchantUtilTest {
 	
 
 	// Test cases for request data
-//	@Test
-//	public void getRequestDataTestPass() throws ConfigException, IOException, IOException {
-//		merchantProp = PropertiesUtil.getMerchantProperties();
-//		merchantConfig = MerchantConfig.getInstance(merchantProp);
-//		merchantConfig.setMerchantDetails();
-//		merchantUtil = new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestJsonPath(requestJsonPath);
-//
-//		String requestData = merchantUtil.getRequestData();
-//		Assert.assertNotNull(requestData);
-//	}
-//
-//	@Test
-//	public void getRequestDataTestFail() throws ConfigException, IOException {
-//		merchantProp = PropertiesUtil.getMerchantProperties();
-//		merchantConfig = MerchantConfig.getInstance(merchantProp);
-//		merchantConfig.setMerchantDetails();
-//		merchantUtil = new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
-//		merchantUtil.setRequestJsonPath(testJsonPath);
-//		String Data = merchantUtil.getRequestData();
-//		Assert.assertNotNull(Data);
-//
-//	}
-//
-//	// test cases for validate merchant detail
-//	@Test
-//	public void validateMerchantDetailsHttpTestforGet() throws ConfigException, IOException {
-//		merchantProp = PropertiesUtil.getMerchantProperties();
-//		merchantConfig = MerchantConfig.getInstance(merchantProp);
-//		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantConfig.setAuthenticationType("Http_Signature");
-//		merchantUtil.setRequestType("GET");
-//		merchantConfig.setMerchantDetails();
-//		merchantConfig.getLogger();
-//		
-//		boolean check = false;
-//		
-//		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-//			Assert.assertEquals(false,check);
-//		} else {
-//			check = AuthenticationRequestContext.validateMerchantDetails();
-//			Assert.assertEquals(true,check);
-//		}
-//	}
-//
-//	@Test
-//	public void validateMerchantDetailsHttpTestforPost() throws ConfigException, IOException {
-//		merchantProp = PropertiesUtil.getMerchantProperties();
-//		merchantConfig = MerchantConfig.getInstance(merchantProp);
-//		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantConfig.setAuthenticationType("Http_Signature");
-//		merchantUtil.setRequestType("POST");
-//		merchantConfig.setMerchantDetails();
-//		merchantUtil.setRequestJsonPath(requestJsonPath);
-//		merchantConfig.getLogger();
-//        
-//		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-//			Assert.assertNull(null);
-//		} else {
-//			boolean check = AuthenticationRequestContext.validateMerchantDetails();
-//			Assert.assertEquals(true, check);
-//		}
-//	}
-//
-//	@Test
-//	public void validateMerchantDetailsHttpTestforPut() throws ConfigException, IOException {
-//		merchantProp = PropertiesUtil.getMerchantProperties();
-//		merchantConfig = MerchantConfig.getInstance(merchantProp);
-//		merchantConfig.setMerchantDetails();
-//		
-//		merchantConfig.setAuthenticationType("Http_Signature");
-//		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("PUT");
-//		
-//		merchantUtil.setRequestJsonPath(requestJsonPath);
-//		merchantConfig.getLogger();
-//
-//		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-//			Assert.assertNull(null);
-//		} else {
-//			boolean check = AuthenticationRequestContext.validateMerchantDetails();
-//			Assert.assertEquals(true, check);
-//		}
-//	}
-//
-//	@Test
-//	public void validateMerchantDetailsJwtTestForGet() throws ConfigException, IOException {
-//		merchantProp = PropertiesUtil.getMerchantProperties();
-//		merchantConfig = MerchantConfig.getInstance(merchantProp);
-//		merchantConfig.setMerchantDetails();
-//		merchantConfig.setAuthenticationType("jwt");
-//		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("GET");
-//
-//		merchantConfig.getLogger();
-//
-//		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-//			Assert.assertNull(null);
-//		} else {
-//			boolean check = AuthenticationRequestContext.validateMerchantDetails();
-//			Assert.assertEquals(true, check);
-//		}	
-//
-//	}
-//
+	@Test
+	public void getRequestBodyTestPass() throws ConfigException, IOException, IOException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
+		requestContext = new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestJsonPath(requestJsonPath);
+
+		String requestData = requestContext.getRequestBody();
+		Assert.assertNotNull(requestData);
+	}
+
+	@Test
+	public void getRequestBodyTestFail() throws ConfigException, IOException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setMerchantDetails();
+		requestContext = new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("POST");
+		requestContext.setRequestJsonPath(testJsonPath);
+		String Data = requestContext.getRequestBody();
+		Assert.assertNotNull(Data);
+
+	}
+
+	@Test
+	public void validateRequestDetailsHttpTestforGet() throws ConfigException, IOException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantProp.setProperty("authenticationType", "Http_Signature");
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		requestContext=new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("GET");
+		
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+			Assert.assertEquals(false,false);
+		} else {
+			Assert.assertEquals(true, requestContext.validateRequestDetails(requestJsonPath));
+		}
+	}
+
+	@Test
+	public void validateRequestDetailsHttpTestforPost() throws ConfigException, IOException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantProp.setProperty("authenticationType", "Http_Signature");
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		requestContext=new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("POST");
+		requestContext.setRequestJsonPath(requestJsonPath);
+		merchantConfig.getLogger();
+        
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+			Assert.assertEquals(false,false);
+		} else {
+			Assert.assertEquals(true, requestContext.validateRequestDetails(requestJsonPath));
+		}
+	}
+	
+	@Test
+	public void validateRequestDetailsHttpTestforPut() throws ConfigException, IOException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantProp.setProperty("authenticationType", "Http_Signature");
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		requestContext=new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("PUT");
+		requestContext.setRequestJsonPath(requestJsonPath);
+		merchantConfig.getLogger();
+
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+			Assert.assertEquals(false,false);
+		} else {
+			Assert.assertEquals(true, requestContext.validateRequestDetails(requestJsonPath));
+		}
+	}
+
+	@Test
+	public void validateMerchantDetailsJwtTestForGet() throws ConfigException, IOException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantProp.setProperty("authenticationType", "jwt");
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		requestContext=new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("GET");
+
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertNull(null);
+		} else {
+			merchantConfig.setMerchantDetails();
+			Assert.assertEquals("testrest", merchantConfig.getMerchantID());
+		}	
+
+	}
+
 //	@Test
 //	public void validateMerchantDetailsJwtTestForPost() throws ConfigException, IOException {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
@@ -151,15 +132,15 @@ public class MerchantUtilTest {
 //		merchantConfig.setAuthenticationType("jwt");
 //		merchantConfig.setMerchantDetails();
 //		
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
-//		merchantUtil.setRequestJsonPath(requestJsonPath);
+//		requestContext=new RequestContext(merchantConfig.getLogger());
+//		requestContext.setRequestMethodType("POST");
+//		requestContext.setRequestJsonPath(requestJsonPath);
 //		merchantConfig.getLogger();
 //        
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 //			Assert.assertNull(null);
 //		} else {
-//			boolean check = AuthenticationRequestContext.validateMerchantDetails();
+//			boolean check = RequestContext.validateMerchantDetails();
 //			Assert.assertEquals(true, check);
 //		}		
 //
@@ -172,15 +153,15 @@ public class MerchantUtilTest {
 //		merchantConfig.setAuthenticationType("jwt");
 //		merchantConfig.setMerchantDetails();
 //		
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("PUT");
-//		merchantUtil.setRequestJsonPath(requestJsonPath);
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("PUT");
+//		requestContext.setRequestJsonPath(requestJsonPath);
 //		merchantConfig.getLogger();
 //		
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 //			Assert.assertNull(null);
 //		} else {
-//			boolean check =  AuthenticationRequestContext.validateMerchantDetails();
+//			boolean check =  RequestContext.validateMerchantDetails();
 //			Assert.assertEquals(true, check);
 //		}
 //	}
@@ -192,9 +173,9 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //		
-//		boolean check = AuthenticationRequestContext.checkKeyPassword();
+//		boolean check = RequestContext.checkKeyPassword();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -205,9 +186,9 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyPass(null);
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //
-//		boolean check = AuthenticationRequestContext.checkKeyPassword();
+//		boolean check = RequestContext.checkKeyPassword();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -218,9 +199,9 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyPass("");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //
-//		boolean check = AuthenticationRequestContext.checkKeyPassword();
+//		boolean check = RequestContext.checkKeyPassword();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -231,9 +212,9 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyPass("test");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //
-//		boolean check = AuthenticationRequestContext.checkKeyPassword();
+//		boolean check = RequestContext.checkKeyPassword();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -245,9 +226,9 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //		
-//		boolean check =AuthenticationRequestContext.checkRunEvironment();
+//		boolean check =RequestContext.checkRunEvironment();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -258,12 +239,12 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setRunEnvironment(null);
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //		
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
 //		
-//		AuthenticationRequestContext.checkRunEvironment();
+//		RequestContext.checkRunEvironment();
 //		
 //
 //	}
@@ -274,12 +255,12 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setRunEnvironment("");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //		
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
 //		
-//		AuthenticationRequestContext.checkRunEvironment();
+//		RequestContext.checkRunEvironment();
 //		
 //
 //	}
@@ -290,9 +271,9 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setRunEnvironment("CyberSource.Environment.PRODUCTION");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //
-//		boolean check =AuthenticationRequestContext.checkRunEvironment();
+//		boolean check =RequestContext.checkRunEvironment();
 //		Assert.assertEquals(true,check);
 //
 //	}
@@ -304,10 +285,10 @@ public class MerchantUtilTest {
 //			merchantConfig = MerchantConfig.getInstance(merchantProp);
 //			merchantConfig.setMerchantDetails();
 //			merchantConfig.setRunEnvironment("");
-//			merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//			requestContext=new RequestContext();
 //			boolean check = false;
 //			try {
-//				check = AuthenticationRequestContext.checkRunEvironment();
+//				check = RequestContext.checkRunEvironment();
 //			} catch (ConfigException e) {
 //				check = false;
 //			}
@@ -322,12 +303,12 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setMerchantKeyId(null);
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //		
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.MERCHANT_KEYID_MISSING);
 //
-//		AuthenticationRequestContext.checkMerchantKeyId();
+//		RequestContext.checkMerchantKeyId();
 //
 //	}
 //
@@ -337,12 +318,12 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setMerchantKeyId("");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //		
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.MERCHANT_KEYID_MISSING);
 //
-//		AuthenticationRequestContext.checkMerchantKeyId();
+//		RequestContext.checkMerchantKeyId();
 //	}
 //
 //	// Test cases for check merchantSecretKey
@@ -353,12 +334,12 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setMerchantSecretKey(null);
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //		
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.MERCHANTSECERT_KEY_MISSING);
 //
-//		AuthenticationRequestContext.checkMerchantSecertKey();
+//		RequestContext.checkMerchantSecertKey();
 //
 //	}
 //
@@ -368,12 +349,12 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setMerchantSecretKey("");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //		
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.MERCHANTSECERT_KEY_MISSING);
 //
-//		AuthenticationRequestContext.checkMerchantSecertKey();
+//		RequestContext.checkMerchantSecertKey();
 //
 //	}
 //
@@ -384,7 +365,7 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //
 //		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
 //		Assert.assertEquals(true, check);
@@ -397,7 +378,7 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setLogDirectory(null);
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //
 //		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
 //		Assert.assertEquals(true, check);
@@ -410,7 +391,7 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setLogDirectory("");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //
 //		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
 //		Assert.assertEquals(true, check);
@@ -423,7 +404,7 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setLogDirectory(null);
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //
 //		boolean check = merchantConfig.checkLogMaxSizeAndFolder();
 //		Assert.assertEquals(true, check);
@@ -437,10 +418,10 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //		
-//		boolean check = AuthenticationRequestContext.checkJsonPath(requestJsonPath);
+//		boolean check = RequestContext.checkJsonPath(requestJsonPath);
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -450,13 +431,13 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("OPTION");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("OPTION");
 //		
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.INVALID_REQUEST_TYPE);
 //
-//		AuthenticationRequestContext.checkJsonPath(jsonPathforCheck);
+//		RequestContext.checkJsonPath(jsonPathforCheck);
 //		
 //
 //	}
@@ -466,10 +447,10 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("GET");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("GET");
 //		
-//		boolean check = AuthenticationRequestContext.checkJsonPath(null);
+//		boolean check = RequestContext.checkJsonPath(null);
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -479,10 +460,10 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("GET");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("GET");
 //		
-//		boolean check = AuthenticationRequestContext.checkJsonPath("");
+//		boolean check = RequestContext.checkJsonPath("");
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -492,13 +473,13 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //		
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.REQUEST_JSON_ERROR);
 //
-//		AuthenticationRequestContext.checkJsonPath(jsonPathforCheck);
+//		RequestContext.checkJsonPath(jsonPathforCheck);
 //
 //	}
 //
@@ -507,13 +488,13 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //		
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.REQUEST_JSON_ERROR);
 //		
-//		AuthenticationRequestContext.checkJsonPath(jsonPathforCheck);
+//		RequestContext.checkJsonPath(jsonPathforCheck);
 //		
 //
 //	}
@@ -525,10 +506,10 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyAlias("testrest");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //
-//		boolean check = AuthenticationRequestContext.checkKeyAlias();
+//		boolean check = RequestContext.checkKeyAlias();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -539,10 +520,10 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyAlias(null);
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //
-//		boolean check = AuthenticationRequestContext.checkKeyAlias();
+//		boolean check = RequestContext.checkKeyAlias();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -553,10 +534,10 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyAlias("");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //
-//		boolean check = AuthenticationRequestContext.checkKeyAlias();
+//		boolean check = RequestContext.checkKeyAlias();
 //		Assert.assertEquals(true, check);
 //	}
 //
@@ -566,10 +547,10 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyAlias("test");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //
-//		boolean check = AuthenticationRequestContext.checkKeyAlias();
+//		boolean check = RequestContext.checkKeyAlias();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -580,8 +561,8 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //		merchantConfig.setRunEnvironment(null);
 //       
 //		Boolean check = true;
@@ -601,13 +582,13 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyFilename(null);
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //		
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 //			Assert.assertEquals(true, true);
 //		} else {
-//			boolean check = AuthenticationRequestContext.checkKeyFile();
+//			boolean check = RequestContext.checkKeyFile();
 //			Assert.assertEquals(true, check);
 //		}	
 //
@@ -619,13 +600,13 @@ public class MerchantUtilTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyFilename("test");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //        
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 //			Assert.assertEquals(true, true);
 //		} else {
-//			boolean check = AuthenticationRequestContext.checkKeyFile();
+//			boolean check = RequestContext.checkKeyFile();
 //			Assert.assertEquals(false, check);
 //		}
 //		
@@ -640,10 +621,10 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("GET");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("GET");
 //
-//		boolean check = AuthenticationRequestContext.isRequestTypeMethodValid();
+//		boolean check = RequestContext.isRequestTypeMethodValid();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -653,10 +634,10 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("POST");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("POST");
 //
-//		boolean check = AuthenticationRequestContext.isRequestTypeMethodValid();
+//		boolean check = RequestContext.isRequestTypeMethodValid();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -666,10 +647,10 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("PUT");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("PUT");
 //
-//		boolean check = AuthenticationRequestContext.isRequestTypeMethodValid();
+//		boolean check = RequestContext.isRequestTypeMethodValid();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -679,10 +660,10 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("Delete");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("Delete");
 //
-//		boolean check = AuthenticationRequestContext.isRequestTypeMethodValid();
+//		boolean check = RequestContext.isRequestTypeMethodValid();
 //		Assert.assertEquals(true, check);
 //
 //	}
@@ -692,12 +673,12 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
-//		merchantUtil.setRequestType("option");
+//		requestContext=new RequestContext();
+//		requestContext.setRequestMethodType("option");
 //
 //		thrown.expect(ConfigException.class);
 //		thrown.expectMessage(GlobalLabelParameters.INVALID_REQUEST_TYPE);
-//		AuthenticationRequestContext.isRequestTypeMethodValid();
+//		RequestContext.isRequestTypeMethodValid();
 //		
 //	}
 //
@@ -707,10 +688,10 @@ public class MerchantUtilTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		requestContext=new RequestContext();
 //		
-//		boolean str = merchantUtil.isRequestJson();
+//		boolean str = requestContext.isRequestJson();
 //		Assert.assertNotNull(str);
 //	}
-	
+//	
 }

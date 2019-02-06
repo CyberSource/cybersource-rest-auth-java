@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -27,7 +27,7 @@ public class DeleteMethod {
 	private String url;
 	/* Request Target. */
 	private String requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 
 	/**
 	 * @param args
@@ -46,7 +46,7 @@ public class DeleteMethod {
 
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			requestContext = new AuthenticationRequestContext();
+			requestContext = new RequestContext(merchantConfig.getLogger());
 			requestContext.setRequestJsonPath("not required");
 			requestContext.setRequestMethodType(requestType);
 			authenticationType = merchantConfig.getAuthenticationType();

@@ -3,7 +3,7 @@ package com.cybersource.apisdk.service;
 import com.cybersource.apisdk.connection.HttpAuthenticationStrategy;
 import com.cybersource.apisdk.connection.JWTAuthenticationStrategy;
 import com.cybersource.apisdk.model.Response;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -15,7 +15,7 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 public class PaymentRequestService {
 
 	private MerchantConfig merchantConfig;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 
 	/**
 	 * 
@@ -26,7 +26,7 @@ public class PaymentRequestService {
 	 * @param logger
 	 *            - logger to log all information in log file.
 	 */
-	public PaymentRequestService(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext) {
+	public PaymentRequestService(MerchantConfig merchantConfig, RequestContext requestContext) {
 		this.merchantConfig = merchantConfig;
 		this.requestContext = requestContext;
 	}

@@ -13,7 +13,7 @@ public class GlobalLabelParameters {
 	public static final String SPACE = " ";
 	/* Header Labels. */
 	public static final String AUTENTICATION_TYPE = "Authentication Type : ";
-	public static final String HTTP = "HTTP_Signature";
+	public static final String HTTP = "HTTP_SIGNATURE";
 	public static final String JWT = "JWT";
 	public static final String V_C_MERCHANTID = "v-c-merchant-id";
 	public static final String DATE = "Date";
@@ -90,8 +90,8 @@ public class GlobalLabelParameters {
 	public static final String JWT_SIG_FAILED = "JWT Signature production failed.";
 	public static final String RUN_ENVIRONMENT_ERR = "Run Environment value is missing in cybs.properties";
 	public static final String INVALID_REQUEST_TYPE = "Invalid Request Type :: ";
-	public static final String INVALID_LOG_DIRECTORY = "Invalid log directory, creating default log directory";
-	public static final String NO_LOG_DIRECTORY = "No log directory, setting default directory path.";
+	public static final String INVALID_LOG_DIRECTORY = "Invalid log directory, creating default log directory. ";
+	public static final String NO_LOG_DIRECTORY = "No log directory, setting default directory path. ";
 	public static final String NO_LOG_FILENAME = "No log file name, setting default log file name :: "
 			+ DEFAULT_LOG_NAME + LOG_EXTENSION;
 	public static final String MERCHANT_NULL_EMPTY = "MerchantID mandatory : NO MerchantID entered. ";

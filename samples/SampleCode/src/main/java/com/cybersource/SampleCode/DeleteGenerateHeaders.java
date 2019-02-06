@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
@@ -24,7 +24,7 @@ public class DeleteGenerateHeaders {
 
 	private Properties merchantProp;
 	private static MerchantConfig merchantConfig;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 	private String authenticationType = null;
 	private static String requestType = "DELETE";
 	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
@@ -36,7 +36,7 @@ public class DeleteGenerateHeaders {
 		try {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			requestContext = new AuthenticationRequestContext();
+			requestContext = new RequestContext(merchantConfig.getLogger());
 			requestContext.setRequestJsonPath("not required");
 			authenticationType = merchantConfig.getAuthenticationType();
 			requestContext.setRequestMethodType(requestType);

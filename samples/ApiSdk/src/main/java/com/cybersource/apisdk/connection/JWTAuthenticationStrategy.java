@@ -30,7 +30,7 @@ import org.bouncycastle.util.encoders.Base64;
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
@@ -52,8 +52,9 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	private String responseMessage;
 	private String jwtMethodType = null;
 	private String requestBody = null;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 	private JwtSignatureTokenGenerator tokenGenerator;
+	private Response responseObj;
 
 	/**
 	 * 
@@ -64,7 +65,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 * @throws ClientException
 	 * @throws ConfigException
 	 */
-	public JWTAuthenticationStrategy(MerchantConfig merchantConfig, AuthenticationRequestContext authRequestContext)
+	public JWTAuthenticationStrategy(MerchantConfig merchantConfig, RequestContext authRequestContext)
 			throws ClientException, ConfigException {
 		this.merchantConfig = merchantConfig;
 		this.requestContext = authRequestContext;
@@ -73,8 +74,6 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		this.jwtMethodType = authRequestContext.getRequestMethodType();
 		tokenGenerator = new JwtSignatureTokenGenerator(merchantConfig, requestContext);
 	}
-
-	Response responseObj;
 
 	/**
 	 * @return response.

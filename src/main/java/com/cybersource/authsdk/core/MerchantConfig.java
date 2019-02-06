@@ -40,7 +40,7 @@ public class MerchantConfig {
 
 	/* Logging Parameters. */
 	private Logger log;
-	private boolean isEnableLog;
+	private boolean isLogEnable;
 	private String logDirectory;
 	private String logFilename;
 	private String logMaximumSize;
@@ -66,12 +66,16 @@ public class MerchantConfig {
 		}
 	}
 
-	public static synchronized MerchantConfig getInstance(Properties properties) throws IOException, ConfigException {
+	public static MerchantConfig getInstance(Properties properties) throws IOException, ConfigException {
 		if (instance == null) {
-			instance = new MerchantConfig(properties);
+			synchronized (MerchantConfig.class) {
+				if(instance == null) {
+					instance = new MerchantConfig(properties);
+				}
+		   }
 		}
 		return instance;
-	}
+	}	
 
 	public String getRunEnvironment() {
 		return runEnvironment;
@@ -170,12 +174,12 @@ public class MerchantConfig {
 		return this.keyFilename;
 	}
 
-	public boolean isEnableLog() {
-		return isEnableLog;
+	public boolean isLogEnable() {
+		return isLogEnable;
 	}
 
-	public void setEnableLog(boolean isEnableLog) {
-		this.isEnableLog = isEnableLog;
+	public void setLog(boolean isLogEnable) {
+		this.isLogEnable = isLogEnable;
 	}
 
 	public Properties getProps() {
@@ -264,7 +268,7 @@ public class MerchantConfig {
 
 	public void setPropertiesByAuthType(String authType) throws ConfigException {
 		if (StringUtils.isNotBlank(authType)) {
-			switch (authType) {
+			switch (authType.toUpperCase()) {
 			case (GlobalLabelParameters.JWT):
 				/* JWT Parameters */
 				this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory");
@@ -294,8 +298,8 @@ public class MerchantConfig {
 		try {
 			this.merchantID = this.getProperty(this.merchantID, "merchantID");
 			/* Logging Parameters */
-			this.isEnableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
-			if (isEnableLog) {
+			this.isLogEnable = this.checkBooleanLogValue(this.merchantID, "enableLog");
+			if (isLogEnable) {
 				this.logDirectory = this.getProperty(this.merchantID, "logDirectory");
 				this.logFilename = this.getProperty(this.merchantID, "logFilename");
 				this.logMaximumSize = this.getProperty(this.merchantID, "logMaximumSize");
@@ -350,29 +354,29 @@ public class MerchantConfig {
 	 *             - if some value is missing or wrong for merchant.
 	 */
 	public String checkLogMaxSizeAndFolder() throws ConfigException {
-		String errorMsg = null;
+		StringBuffer errorMsg = new StringBuffer();
 
 		if (StringUtils.isBlank(this.logDirectory)) {
 			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
-			errorMsg = GlobalLabelParameters.NO_LOG_DIRECTORY;
+			errorMsg.append(GlobalLabelParameters.NO_LOG_DIRECTORY);
 		}
 
 		File dir = new File(this.getLogDirectory());
 		if (!dir.isDirectory()) {
 			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
-			errorMsg = GlobalLabelParameters.INVALID_LOG_DIRECTORY;
+			errorMsg.append(GlobalLabelParameters.INVALID_LOG_DIRECTORY);
 		}
 
 		if (StringUtils.isBlank(this.logFilename)) {
 			this.logFilename = GlobalLabelParameters.DEFAULT_LOG_NAME;
-			errorMsg = GlobalLabelParameters.NO_LOG_FILENAME;
+			errorMsg.append(GlobalLabelParameters.NO_LOG_FILENAME);
 		}
 
 		if (StringUtils.isBlank(this.logMaximumSize)) {
 			this.logMaximumSize = GlobalLabelParameters.DEFAULT_LOG_SIZE;
 		}
 
-		return errorMsg;
+		return errorMsg.toString();
 	}
 
 	/**
@@ -571,7 +575,7 @@ public class MerchantConfig {
 
 	public String toString() {
 		return "{ authenticationType : " + authenticationType + ", runEnvironment : " + runEnvironment
-				+ ", keyFileName : " + keyFilename + ", enableLog : " + isEnableLog + ", logDirectory : " + logDirectory
+				+ ", keyFileName : " + keyFilename + ", enableLog : " + isLogEnable + ", logDirectory : " + logDirectory
 				+ ", logMaximumSize : " + logMaximumSize + ", logFilename : " + logFilename + " }";
 	}
 }

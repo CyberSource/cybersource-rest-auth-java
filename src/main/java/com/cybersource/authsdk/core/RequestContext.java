@@ -13,19 +13,27 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
 
-public class AuthenticationRequestContext {
-
+public class RequestContext {
+	private String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
 	private String requestBody;
 	private String requestJsonPath;
 	private boolean isRequestJson = true;
 	private String requestMethodType;
 	private String requestTarget;
 	private String url;
-
-	/* Others. */
 	private Logger log;
 
-	public String date = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT")));
+	public RequestContext(Logger log) {
+		this.log = log;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
 
 	public String getRequestTarget() {
 		return requestTarget;

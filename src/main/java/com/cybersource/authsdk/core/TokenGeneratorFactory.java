@@ -20,7 +20,7 @@ public class TokenGeneratorFactory {
 	 * @throws ConfigException
 	 *             - if some value is missing or wrong for merchant.
 	 */
-	public static TokenGenerator getAuthTokenGenerator(MerchantConfig merchantConfig, AuthenticationRequestContext authRequestContext)
+	public static TokenGenerator getAuthTokenGenerator(MerchantConfig merchantConfig, RequestContext authRequestContext)
 			throws ConfigException {
 		String authType = merchantConfig.getAuthenticationType();
 

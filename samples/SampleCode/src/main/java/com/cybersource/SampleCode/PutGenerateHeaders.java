@@ -9,7 +9,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
@@ -26,7 +26,7 @@ import com.cybersource.authsdk.util.Utility;
 public class PutGenerateHeaders {
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 	private String authenticationType = null;
 	private String requestData;
 	private String requestType = "PUT";
@@ -57,7 +57,7 @@ public class PutGenerateHeaders {
 		try {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			requestContext = new AuthenticationRequestContext();
+			requestContext = new RequestContext(merchantConfig.getLogger());
 			requestContext.setRequestTarget(requestTarget);
 			requestContext.setRequestMethodType("PUT");
 			requestContext.setRequestJsonPath("src/main/resources/TRRReport.json");

@@ -26,7 +26,7 @@ import org.bouncycastle.util.encoders.Base64;
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
@@ -48,7 +48,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	private String requestBody;
 	private Logger logger;
 	private String digestMessageBody;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 	private HttpSignatureTokenGenerator tokenGenerator;
 
 	/**
@@ -63,7 +63,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 *             - if some error will occur.
 	 * @throws ConfigException
 	 */
-	public HttpAuthenticationStrategy(MerchantConfig merchantConfig, AuthenticationRequestContext requestContext)
+	public HttpAuthenticationStrategy(MerchantConfig merchantConfig, RequestContext requestContext)
 			throws ClientException, ConfigException {
 
 		this.merchantConfig = merchantConfig;
@@ -107,8 +107,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			 * Add Request Header :: "Date" The date and time that the message
 			 * was originated from. "HTTP-date" format as defined by RFC7231.
 			 */
-			con.setRequestProperty(GlobalLabelParameters.DATE, requestContext.date);
-			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.date), Level.INFO);
+			con.setRequestProperty(GlobalLabelParameters.DATE, requestContext.getDate());
+			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.getDate()), Level.INFO);
 			/*
 			 * Add Request Header :: "Host" Sandbox Host ::
 			 * apitest.cybersource.com Production Host :: api.cybersource.com
@@ -432,8 +432,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			 * Add Request Header :: "Date" The date and time that the message
 			 * was originated from. "HTTP-date" format as defined by RFC7231.
 			 */
-			httpPatch.setHeader(GlobalLabelParameters.DATE, requestContext.date);
-			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.date), Level.INFO);
+			httpPatch.setHeader(GlobalLabelParameters.DATE, requestContext.getDate());
+			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.getDate()), Level.INFO);
 			/*
 			 * Add Request Header :: "Host" Sandbox Host ::
 			 * apitest.cybersource.com Production Host :: api.cybersource.com

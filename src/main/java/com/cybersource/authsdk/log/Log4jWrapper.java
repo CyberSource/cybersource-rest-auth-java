@@ -24,6 +24,7 @@ public class Log4jWrapper {
 	private String logDirectory;
 	private String logFileName;
 	private String logSize;
+	
 
 	/**
 	 * @param merchantConfig
@@ -43,10 +44,11 @@ public class Log4jWrapper {
 	 * @return logger object of Log4jWrapper
 	 */
 	public static Logger getInstance(MerchantConfig merchantConfig) {
-		if (logger == null) {
-			// To provide thread-safe implementation.
+		if (merchantConfig.isLogEnable() && logger == null) { 
 			synchronized (Log4jWrapper.class) {
-				logger = new Log4jWrapper(merchantConfig).getLogger();
+				if (logger == null) {
+				 logger = new Log4jWrapper(merchantConfig).getLogger();
+				} 
 			}
 		}
 		return logger;

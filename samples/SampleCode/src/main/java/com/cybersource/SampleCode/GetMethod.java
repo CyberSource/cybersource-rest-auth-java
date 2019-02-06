@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -28,7 +28,7 @@ public class GetMethod {
 	 */
 	private String requestType = "GET";
 	private String url;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 
 	/**
 	 * This method initiates or begins the process.
@@ -48,7 +48,7 @@ public class GetMethod {
 
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			requestContext = new AuthenticationRequestContext();
+			requestContext = new RequestContext(merchantConfig.getLogger());
 			requestContext.setRequestJsonPath("not required");
 			/* Set Request Type into the merchant config object. */
 			requestContext.setRequestMethodType(requestType);

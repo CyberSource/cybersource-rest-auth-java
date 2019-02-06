@@ -9,7 +9,7 @@ import com.cybersource.Data.PayloadData;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -24,7 +24,7 @@ public class PostObjectMethod {
 	private String authenticationType;
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 	private Response response;
 	/**
 	 * REQUEST-TYPE. [Non-Editable]
@@ -62,7 +62,7 @@ public class PostObjectMethod {
 		/* Read Merchant details. */
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		requestContext = new AuthenticationRequestContext();
+		requestContext = new RequestContext(merchantConfig.getLogger());
 
 		requestContext.setRequestMethodType(requestType);
 		/* Extract Authentication Type from cybs.properties */

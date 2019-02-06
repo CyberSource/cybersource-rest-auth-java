@@ -9,7 +9,7 @@ import com.cybersource.Data.Configuration;
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 
@@ -28,7 +28,7 @@ public class GetObjectMethod {
 	/* [Non Editable] */
 	private String url;
 	
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 
 	/* This method initiates or begins the process. */
 	public static void main(String[] args) {
@@ -45,7 +45,7 @@ public class GetObjectMethod {
 			/* Read Merchant details. */
 			merchantProp = Configuration.getMerchantDetails();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
-			requestContext = new AuthenticationRequestContext();
+			requestContext = new RequestContext(merchantConfig.getLogger());
 			requestContext.setRequestJsonPath("not required");
 			/* Set Request Type */
 			requestContext.setRequestMethodType(requestType);

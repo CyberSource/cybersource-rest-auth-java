@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
@@ -26,7 +26,7 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 
 	private MerchantConfig merchantConfig = null;
 	private String httpMethod = null;
-	private AuthenticationRequestContext authRequestContext;
+	private RequestContext authRequestContext;
 	private Logger log;
 
 	/**
@@ -35,7 +35,7 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 	 * @param requestContext
 	 *            - contains request details
 	 */
-	public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, AuthenticationRequestContext authRequestContext) {
+	public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, RequestContext authRequestContext) {
 
 		this.merchantConfig = merchantConfig;
 		this.authRequestContext = authRequestContext;

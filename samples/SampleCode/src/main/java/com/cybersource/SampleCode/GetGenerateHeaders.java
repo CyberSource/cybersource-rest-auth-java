@@ -9,7 +9,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
@@ -25,7 +25,7 @@ public class GetGenerateHeaders {
 
 	private Properties merchantProp;
 	private MerchantConfig merchantConfig;
-	private AuthenticationRequestContext requestContext;
+	private RequestContext requestContext;
 	private String authenticationType = null;
 	private Logger logger;
 	private String tempSig;
@@ -64,7 +64,7 @@ public class GetGenerateHeaders {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
 			this.logger = merchantConfig.getLogger();
-			requestContext = new AuthenticationRequestContext();
+			requestContext = new RequestContext(this.logger);
 			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
 			requestContext.setRequestMethodType(requestType);
 			requestContext.setRequestJsonPath("not required");
@@ -88,14 +88,14 @@ public class GetGenerateHeaders {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		requestContext = new AuthenticationRequestContext();
+		this.logger = merchantConfig.getLogger();
+		requestContext = new RequestContext(this.logger);
 		requestContext.setRequestJsonPath("not required");
 		/* Set Request Type into the merchant config object. */
 		requestContext.setRequestMethodType(requestType);
 		/* Extract Authentication Type from cybs.properties */
 		authenticationType = merchantConfig.getAuthenticationType();
-		this.logger = merchantConfig.getLogger();
-		Authorization.getToken(merchantConfig, null);
+		Authorization.getToken(merchantConfig, requestContext);
 	}
 
 	/**

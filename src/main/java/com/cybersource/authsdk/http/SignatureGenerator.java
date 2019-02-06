@@ -8,7 +8,7 @@ import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
@@ -26,7 +26,7 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 public class SignatureGenerator {
 
 	private MerchantConfig merchantConfig;
-	private AuthenticationRequestContext authRequestContext;
+	private RequestContext authRequestContext;
 	private String httpMethod;
 
 	/**
@@ -39,7 +39,7 @@ public class SignatureGenerator {
 	 * @throws NoSuchAlgorithmException
 	 *           - if algorithm is not available.
 	 */
-	public SignatureGenerator(MerchantConfig merchantConfig, AuthenticationRequestContext authRequestContext)
+	public SignatureGenerator(MerchantConfig merchantConfig, RequestContext authRequestContext)
 			throws InvalidKeyException, NoSuchAlgorithmException {
 		this.merchantConfig = merchantConfig;
 		this.authRequestContext = authRequestContext;
@@ -69,7 +69,7 @@ public class SignatureGenerator {
 		signatureString.append('\n');
 		signatureString.append(GlobalLabelParameters.DATE.toLowerCase());
 		signatureString.append(": ");
-		signatureString.append(authRequestContext.date);
+		signatureString.append(authRequestContext.getDate());
 		signatureString.append('\n');
 		signatureString.append("(request-target)");
 		signatureString.append(": ");
