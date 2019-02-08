@@ -9,6 +9,8 @@ public class Identity {
 	private RSAPrivateKey rsaPrivateKey;
 	private long lastModifiedTime;
 	
+	public Identity() {	}
+	
 	public long getLastModifiedTime() {
 		return lastModifiedTime;
 	}

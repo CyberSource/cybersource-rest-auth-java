@@ -59,7 +59,6 @@ public class MerchantConfig {
 	private MerchantConfig(Properties props) throws ConfigException {
 		if (props != null) {
 			this.props = props;
-			this.merchantID = this.props.getProperty("merchantID");
 			setMerchantDetails();
 		} else {
 			throw new ConfigException(GlobalLabelParameters.PROP_ERROR);
@@ -273,18 +272,18 @@ public class MerchantConfig {
 				/* JWT Parameters */
 				this.keysDirectory = this.getProperty(this.merchantID, "keysDirectory");
 				this.keyAlias = this.getProperty(this.merchantID, "keyAlias");
-				this.keyPass = this.getProperty(this.merchantID, "keyPass");
-				this.keyFilename = this.getProperty(this.merchantID, "keyFileName");
 				checkKeyAlias();
+				this.keyPass = this.getProperty(this.merchantID, "keyPass");
 				checkKeyPassword();
+				this.keyFilename = this.getProperty(this.merchantID, "keyFileName");
 				checkKeyFile();
 				break;
 			case (GlobalLabelParameters.HTTP):
 				/* HTTP Parameters */
 				this.merchantKeyId = this.getProperty(this.merchantID, "merchantKeyId");
+				checkMerchantKeyId();
 				this.merchantSecretKey = this.getProperty(this.merchantID, "merchantsecretKey");
 				checkMerchantSecertKey();
-				checkMerchantKeyId();
 				break;
 			default:
 				throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
@@ -297,6 +296,9 @@ public class MerchantConfig {
 	public void setMerchantDetails() throws ConfigException {
 		try {
 			this.merchantID = this.getProperty(this.merchantID, "merchantID");
+			if (StringUtils.isBlank(this.merchantID)) {
+				throw new ConfigException("merchantId not set");
+			}
 			/* Logging Parameters */
 			this.isLogEnable = this.checkBooleanLogValue(this.merchantID, "enableLog");
 			if (isLogEnable) {
@@ -308,7 +310,7 @@ public class MerchantConfig {
 				String logErrorMsg = checkLogMaxSizeAndFolder();
 				/* Initialize log */
 				this.log = Log4jWrapper.getInstance(this);
-				if (logErrorMsg != null) {
+				if (StringUtils.isNotBlank(logErrorMsg)) {
 					Utility.log(log, logErrorMsg, "", Level.ERROR);
 				}
 			}
@@ -557,6 +559,7 @@ public class MerchantConfig {
 		}
 		try {
 			setKeyFile(new File(keysDirectory, keyFilename.concat(GlobalLabelParameters.P12_EXTENSION)));
+			setKeyType(GlobalLabelParameters.P12_EXTENSION);
 			if (!keyFile.exists()) {
 				setKeyFile(null);
 				throw new ConfigException(GlobalLabelParameters.KEY_FILE_NOT_FOUND.concat(keysDirectory).concat("/")

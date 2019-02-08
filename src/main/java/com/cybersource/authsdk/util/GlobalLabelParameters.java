@@ -78,7 +78,7 @@ public class GlobalLabelParameters {
 			+ DEF_KEY_DIRECTORY_PATH;
 	public static final String REQUEST_SET_ERROR = "Unable to set Request type :: ";
 	public static final String PROXY_HOST_PORT_ERR = "Unable to set Proxy Host/Port";
-	public static final String No_SUCH_ALGORITHM="No Such algoritm found to generate digest.";
+	public static final String NO_SUCH_ALGORITHM="No Such algoritm found to generate digest.";
 	public static final String UNSUPPORTED_ENCODING = "Encoding is not supported. Please check the Merchant Configuration";
 	public static final String INVALID_KEY = "Key is not valid";
 	public static final String DIGEST_GEN_FAILED = "Digest generation failed";
@@ -103,6 +103,8 @@ public class GlobalLabelParameters {
 	public static final String IO_EXCEPTION = "IO Exception occured :: ";
 	public static final String REQUEST_EMPTY = "Request is null or Empty :: ";
 	public static final String HEADER_SET_EXCEPTION = "issue occured while Setting the header :: ";
+	public static final String CERTIFICATE_EXCEPTION = "Certificate Exception occured while generating the signature, Please check the Merchant Configuration.";
+	public static final String KEY_STORE_EXCEPTION = "Key Srore Exception occured while generating the signature, Please check the Merchant Configuration.";
 	/* Masking Parameter. */
 	public static final String MASKING_PATTERN = "XXXXXXXXX";
 	/* Proxy Parameter */

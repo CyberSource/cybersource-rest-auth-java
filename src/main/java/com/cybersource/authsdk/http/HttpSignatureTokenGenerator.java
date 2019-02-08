@@ -64,8 +64,8 @@ public class HttpSignatureTokenGenerator implements TokenGenerator {
 			throw new ConfigException(GlobalLabelParameters.INVALID_KEY);
 
 		} catch (NoSuchAlgorithmException e) {
-			Utility.log(log, GlobalLabelParameters.No_SUCH_ALGORITHM, "", Level.INFO);
-			throw new ConfigException(GlobalLabelParameters.No_SUCH_ALGORITHM);
+			Utility.log(log, GlobalLabelParameters.NO_SUCH_ALGORITHM, "", Level.INFO);
+			throw new ConfigException(GlobalLabelParameters.NO_SUCH_ALGORITHM);
 
 		} catch (IllegalArgumentException e) {
 			Utility.log(log, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.INFO);

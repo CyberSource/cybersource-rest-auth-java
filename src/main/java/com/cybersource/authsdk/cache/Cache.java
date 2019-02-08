@@ -1,122 +1,116 @@
 package com.cybersource.authsdk.cache;
 
-import java.io.File;
-import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPrivateKey;
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.jwt.KeyCertificateGenerator;
+import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
-
 
 /**
  * class for caching X509Certificate, lastModified KeyFile time and private key.
  *
  */
 public class Cache {
-	public static boolean isCache = false;
-	private MerchantConfig merchantConfig;
-	public long lastModifiedTime;
-	private Identity identity = new Identity();
-	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
-	private X509Certificate x509Certificate;
-	private RSAPrivateKey rsaPrivateKey;
-	Logger logger;
+	private ConcurrentHashMap<String, Identity> p12IdentityMap = new ConcurrentHashMap<>();
+	private static Cache instance;
+	public Logger log;
 
-	public void setX509Certificate(X509Certificate x509Certificate) {
-		this.x509Certificate = x509Certificate;
+	public static Cache getInstance(Logger logger) {
+		if (instance == null) {
+			synchronized (Cache.class) {
+				if (instance == null) {
+					instance = new Cache(logger);
+				}
+			}
+		}
+		return instance;
 	}
 
-	public void setRsaPrivateKey(RSAPrivateKey rsaPrivateKey) {
-		this.rsaPrivateKey = rsaPrivateKey;
+	/**
+	 * @param log
+	 *            - contains logger.
+	 */
+	public Cache(Logger log) {
+		this.log = log;
 	}
 
-	public RSAPrivateKey getRsaPrivateKey() {
-		return rsaPrivateKey;
-	}
+	/**
+	 * @throws ConfigException
+	 *             - if some value is missing or wrong for merchant.
+	 */
+	public Identity setUpP12Cache(MerchantConfig merchantConfig)
+			throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, ConfigException {
+		Utility.log(log, GlobalLabelParameters.CACHE_BEGIN, "", Level.INFO);
+		Identity identity = new Identity();
+		identity.setLastModifiedTime(merchantConfig.getKeyFile().lastModified());
+		identity.setX509(KeyCertificateGenerator.initializeCertificate(merchantConfig));
+		identity.setRsaPrivateKey(KeyCertificateGenerator.initializePrivateKey(merchantConfig));
+		p12IdentityMap.put(merchantConfig.getMerchantID(), identity);
+		return identity;
 
-	public X509Certificate getX509Certificate() {
-		return x509Certificate;
 	}
 
 	/**
 	 * @param merchantConfig
-	 *            - contains all information for merchant.
-	 */
-	public Cache(MerchantConfig merchantConfig) {
-		this.merchantConfig = merchantConfig;
-		logger = merchantConfig.getLogger();
-		if (cacheP12.isEmpty()) {
-			Cache.isCache = true;
-		} else {
-			Cache.isCache = false;
-		}
-	}
-
-	/**
+	 *            - contains merchant Configuration
 	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 * 
+	 * @throws CertificateException
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyStoreException
+	 * @throws IOException
 	 */
-	public void setP12FileDetailsInCache() throws ConfigException {
-		if (cacheP12.isEmpty()) {
-			setUpP12Cache();
-		} else {
-			 boolean isTimeStamp = isLastModifiedTimeP12();
-			if (isTimeStamp) {
-				retriveP12DataFromCache();
+	public Identity retriveP12DataFromCache(MerchantConfig merchantConfig)
+			throws ConfigException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+		try {
+			Identity identity = p12IdentityMap.get(merchantConfig.getMerchantID());
+			if (identity != null && !isLastModifiedTimeUpdated(merchantConfig, identity)) {
+				Utility.log(log, GlobalLabelParameters.CACHE_EXTRACT, "", Level.INFO);
+				return identity;
 			} else {
-				setUpP12Cache();
+				Utility.log(log, GlobalLabelParameters.CACHE_EXTEND, "", Level.INFO);
+				return setUpP12Cache(merchantConfig);
 			}
+		} catch (CertificateException e) {
+			Utility.log(log, e);
+			throw new ConfigException(GlobalLabelParameters.CERTIFICATE_EXCEPTION);
+		} catch (NoSuchAlgorithmException e) {
+			Utility.log(log, e);
+			throw new ConfigException(GlobalLabelParameters.NO_SUCH_ALGORITHM);
+		} catch (KeyStoreException e) {
+			Utility.log(log, e);
+			throw new ConfigException(GlobalLabelParameters.KEY_STORE_EXCEPTION);
+		} catch (IOException e) {
+			Utility.log(log, e);
+			throw new ConfigException(e.toString());
+		} catch (ConfigException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ConfigException("Eception occured while setting the cache");
 		}
+
 	}
 
 	/**
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 */
-	public void setUpP12Cache() throws ConfigException {
-		identity.setLastModifiedTime(getLastModifiedFileP12());
-		identity.setX509(x509Certificate);
-		identity.setRsaPrivateKey(rsaPrivateKey);
-		String tempMerchantID = merchantConfig.getMerchantID();
-		cacheP12.put(tempMerchantID, identity);
-		lastModifiedTime = merchantConfig.getKeyFile().lastModified();
-	}
-
-	public void retriveP12DataFromCache() {
-		Identity tempIdentity = cacheP12.get(merchantConfig.getMerchantID());
-		x509Certificate = tempIdentity.getX509();
-		rsaPrivateKey = tempIdentity.getRsaPrivateKey();
-	}
-
-	/**
+	 * @param merchantConfig
+	 *            - contains MerchantConfig
+	 * @param identity
+	 *            - contains Identity
 	 * @return true if file is modified else return false.
 	 */
-	public boolean isLastModifiedTimeP12() {
-		Identity tempIdentity = cacheP12.get(merchantConfig.getMerchantID());
-		long tempLastModifiedTime = tempIdentity.getLastModifiedTime();
-		if (lastModifiedTime == tempLastModifiedTime) {
-			return true;
-		} else {
+	public boolean isLastModifiedTimeUpdated(MerchantConfig merchantConfig, Identity identity) {
+		if (identity.getLastModifiedTime() == merchantConfig.getKeyFile().lastModified()) {
 			return false;
-		}
-	}
-
-	/**
-	 * @return value for last modified.
-	 */
-	public Long getLastModifiedFileP12() {
-		File f;
-		try {
-			f = new File(merchantConfig.getKeyFile().getAbsolutePath());
-			return f.lastModified();
-		} catch (Exception e) {
-			Utility.log(logger, e);
-			return null;
+		} else {
+			return true;
 		}
 	}
 }
