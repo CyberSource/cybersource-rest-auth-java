@@ -13,4 +13,14 @@ public class ConfigException extends Exception {
 	public ConfigException(String message) {
 		super(message);
 	}
+    
+	/**
+	 * @param message
+	 *            - messgae to print if exception occurs
+	 * @param throwable
+	 *            - passing Throwable
+	 */
+	public ConfigException(String message, Throwable throwable) {
+		super(message, throwable);
+	}
 }

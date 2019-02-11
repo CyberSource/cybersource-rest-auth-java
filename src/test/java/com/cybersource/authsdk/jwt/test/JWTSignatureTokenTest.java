@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
-import com.cybersource.authsdk.cache.Cache;
+import com.cybersource.authsdk.cache.MerchantIdentityCache;
 import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
@@ -171,7 +171,7 @@ public class JWTSignatureTokenTest {
 //		} else {
 //			jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, requestContext);
 //			jwtSignatureToken.generateSignature();
-//			Cache cache = new Cache(merchantConfig);
+//			MerchantIdentityCache cache = new MerchantIdentityCache(merchantConfig);
 //			cache.lastModifiedTime = 1528;
 //			token1 = jwtSignatureToken.generateSignature();
 //			Assert.assertNotNull(token1);

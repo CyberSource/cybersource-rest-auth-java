@@ -9,10 +9,10 @@ import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -37,7 +37,7 @@ public class PutGenerateHeaders {
 	private String tempSig;
 
 	private static String requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
-	
+
 	private String requestJsonPath = "src/main/resources/TRRReport.json";
 
 	/**
@@ -52,25 +52,22 @@ public class PutGenerateHeaders {
 		PutMethodHeaders(merchantConfig);
 	}
 
-	
-	public PutGenerateHeaders()  {
+	public PutGenerateHeaders() {
 		try {
 			merchantProp = PropertiesUtil.getMerchantProperties();
 			merchantConfig = MerchantConfig.getInstance(merchantProp);
 			requestContext = new RequestContext(merchantConfig.getLogger());
 			requestContext.setRequestTarget(requestTarget);
 			requestContext.setRequestMethodType("PUT");
-			requestContext.setRequestJsonPath("src/main/resources/TRRReport.json");
+			requestContext.setRequestJsonPath(requestJsonPath);
 			logger = merchantConfig.getLogger();
-			
+
 			System.out.println(" Authentication Type : " + merchantConfig.getAuthenticationType());
-			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION, " Generate PUT Headers *******************",
-					Level.INFO);
-			if (requestContext.validateRequestDetails(requestJsonPath) ) {
-				this.requestData = requestContext.getRequestBody();
-				digest = new PayloadDigest(requestData);
-				PutMethodHeaders(merchantConfig);
-			}
+			Utility.log(this.logger, GlobalLabelParameters.BEGIN_TRANSACTION,
+					" Generate PUT Headers *******************", Level.INFO);
+			this.requestData = requestContext.getRequestBody();
+			digest = new PayloadDigest(requestData);
+			PutMethodHeaders(merchantConfig);
 			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			Utility.log(this.logger, " ", "", Level.OFF);
 		} catch (ConfigException e) {
@@ -134,7 +131,7 @@ public class PutGenerateHeaders {
 	 * @throws IOException
 	 * @throws ConfigException
 	 */
-	public static void main(String[] args)  {
+	public static void main(String[] args) {
 		new PutGenerateHeaders();
 	}
 }

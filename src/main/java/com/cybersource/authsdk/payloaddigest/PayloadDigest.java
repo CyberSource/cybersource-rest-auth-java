@@ -39,9 +39,9 @@ public class PayloadDigest {
 					.digest(getPayLoad().getBytes("UTF-8"));
 			return GlobalLabelParameters.SHA_256 + "=" + Base64.getEncoder().encodeToString(digestBytes);
 		} catch (NoSuchAlgorithmException e) {
-			throw new ConfigException(GlobalLabelParameters.NO_SUCH_ALGORITHM);
+			throw new ConfigException(GlobalLabelParameters.NO_SUCH_ALGORITHM, e);
 		} catch (UnsupportedEncodingException e) {
-			throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
+			throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING, e);
 		}
 	}
 

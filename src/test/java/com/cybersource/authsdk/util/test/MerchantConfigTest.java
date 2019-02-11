@@ -33,96 +33,96 @@ public class MerchantConfigTest {
 	
 
 	// Test cases for request data
-	@Test
-	public void getRequestBodyTestPass() throws ConfigException, IOException, IOException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
-		requestContext = new RequestContext(merchantConfig.getLogger());
-		requestContext.setRequestJsonPath(requestJsonPath);
-
-		String requestData = requestContext.getRequestBody();
-		Assert.assertNotNull(requestData);
-	}
-
-	@Test
-	public void getRequestBodyTestFail() throws ConfigException, IOException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
-		requestContext = new RequestContext(merchantConfig.getLogger());
-		requestContext.setRequestMethodType("POST");
-		requestContext.setRequestJsonPath(testJsonPath);
-		String Data = requestContext.getRequestBody();
-		Assert.assertNotNull(Data);
-
-	}
-
-	@Test
-	public void validateRequestDetailsHttpTestforGet() throws ConfigException, IOException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantProp.setProperty("authenticationType", "Http_Signature");
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		requestContext=new RequestContext(merchantConfig.getLogger());
-		requestContext.setRequestMethodType("GET");
-		
-		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			Assert.assertEquals(false,false);
-		} else {
-			Assert.assertEquals(true, requestContext.validateRequestDetails(requestJsonPath));
-		}
-	}
-
-	@Test
-	public void validateRequestDetailsHttpTestforPost() throws ConfigException, IOException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantProp.setProperty("authenticationType", "Http_Signature");
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		requestContext=new RequestContext(merchantConfig.getLogger());
-		requestContext.setRequestMethodType("POST");
-		requestContext.setRequestJsonPath(requestJsonPath);
-		merchantConfig.getLogger();
-        
-		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			Assert.assertEquals(false,false);
-		} else {
-			Assert.assertEquals(true, requestContext.validateRequestDetails(requestJsonPath));
-		}
-	}
-	
-	@Test
-	public void validateRequestDetailsHttpTestforPut() throws ConfigException, IOException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantProp.setProperty("authenticationType", "Http_Signature");
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		requestContext=new RequestContext(merchantConfig.getLogger());
-		requestContext.setRequestMethodType("PUT");
-		requestContext.setRequestJsonPath(requestJsonPath);
-		merchantConfig.getLogger();
-
-		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			Assert.assertEquals(false,false);
-		} else {
-			Assert.assertEquals(true, requestContext.validateRequestDetails(requestJsonPath));
-		}
-	}
-
-	@Test
-	public void validateMerchantDetailsJwtTestForGet() throws ConfigException, IOException {
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantProp.setProperty("authenticationType", "jwt");
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		requestContext=new RequestContext(merchantConfig.getLogger());
-		requestContext.setRequestMethodType("GET");
-
-		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			Assert.assertNull(null);
-		} else {
-			merchantConfig.setMerchantDetails();
-			Assert.assertEquals("testrest", merchantConfig.getMerchantID());
-		}	
-
-	}
+//	@Test
+//	public void getRequestBodyTestPass() throws ConfigException, IOException, IOException {
+//		merchantProp = PropertiesUtil.getMerchantProperties();
+//		merchantConfig = MerchantConfig.getInstance(merchantProp);
+//		merchantConfig.setMerchantDetails();
+//		requestContext = new RequestContext(merchantConfig.getLogger());
+//		requestContext.setRequestJsonPath(requestJsonPath);
+//
+//		String requestData = requestContext.getRequestBody();
+//		Assert.assertNotNull(requestData);
+//	}
+//
+//	@Test
+//	public void getRequestBodyTestFail() throws ConfigException, IOException {
+//		merchantProp = PropertiesUtil.getMerchantProperties();
+//		merchantConfig = MerchantConfig.getInstance(merchantProp);
+//		merchantConfig.setMerchantDetails();
+//		requestContext = new RequestContext(merchantConfig.getLogger());
+//		requestContext.setRequestMethodType("POST");
+//		requestContext.setRequestJsonPath(testJsonPath);
+//		String Data = requestContext.getRequestBody();
+//		Assert.assertNotNull(Data);
+//
+//	}
+//
+//	@Test
+//	public void validateRequestDetailsHttpTestforGet() throws ConfigException, IOException {
+//		merchantProp = PropertiesUtil.getMerchantProperties();
+//		merchantProp.setProperty("authenticationType", "Http_Signature");
+//		merchantConfig = MerchantConfig.getInstance(merchantProp);
+//		requestContext=new RequestContext(merchantConfig.getLogger());
+//		requestContext.setRequestMethodType("GET");
+//		
+//		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+//			Assert.assertEquals(false,false);
+//		} else {
+//			Assert.assertEquals(true, requestContext.validateRequestDetails(requestJsonPath));
+//		}
+//	}
+//
+//	@Test
+//	public void validateRequestDetailsHttpTestforPost() throws ConfigException, IOException {
+//		merchantProp = PropertiesUtil.getMerchantProperties();
+//		merchantProp.setProperty("authenticationType", "Http_Signature");
+//		merchantConfig = MerchantConfig.getInstance(merchantProp);
+//		requestContext=new RequestContext(merchantConfig.getLogger());
+//		requestContext.setRequestMethodType("POST");
+//		requestContext.setRequestJsonPath(requestJsonPath);
+//		merchantConfig.getLogger();
+//        
+//		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+//			Assert.assertEquals(false,false);
+//		} else {
+//			Assert.assertEquals(true, requestContext.validateRequestDetails(requestJsonPath));
+//		}
+//	}
+//	
+//	@Test
+//	public void validateRequestDetailsHttpTestforPut() throws ConfigException, IOException {
+//		merchantProp = PropertiesUtil.getMerchantProperties();
+//		merchantProp.setProperty("authenticationType", "Http_Signature");
+//		merchantConfig = MerchantConfig.getInstance(merchantProp);
+//		requestContext=new RequestContext(merchantConfig.getLogger());
+//		requestContext.setRequestMethodType("PUT");
+//		requestContext.setRequestJsonPath(requestJsonPath);
+//		merchantConfig.getLogger();
+//
+//		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
+//			Assert.assertEquals(false,false);
+//		} else {
+//			Assert.assertEquals(true, requestContext.validateRequestDetails(requestJsonPath));
+//		}
+//	}
+//
+//	@Test
+//	public void validateMerchantDetailsJwtTestForGet() throws ConfigException, IOException {
+//		merchantProp = PropertiesUtil.getMerchantProperties();
+//		merchantProp.setProperty("authenticationType", "jwt");
+//		merchantConfig = MerchantConfig.getInstance(merchantProp);
+//		requestContext=new RequestContext(merchantConfig.getLogger());
+//		requestContext.setRequestMethodType("GET");
+//
+//		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+//			Assert.assertNull(null);
+//		} else {
+//			merchantConfig.setMerchantDetails();
+//			Assert.assertEquals("testrest", merchantConfig.getMerchantID());
+//		}	
+//
+//	}
 
 //	@Test
 //	public void validateMerchantDetailsJwtTestForPost() throws ConfigException, IOException {

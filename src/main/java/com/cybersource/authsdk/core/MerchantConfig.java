@@ -296,8 +296,9 @@ public class MerchantConfig {
 	public void setMerchantDetails() throws ConfigException {
 		try {
 			this.merchantID = this.getProperty(this.merchantID, "merchantID");
+			/* validate merchant ID */
 			if (StringUtils.isBlank(this.merchantID)) {
-				throw new ConfigException("merchantId not set");
+				throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
 			}
 			/* Logging Parameters */
 			this.isLogEnable = this.checkBooleanLogValue(this.merchantID, "enableLog");
@@ -313,10 +314,6 @@ public class MerchantConfig {
 				if (StringUtils.isNotBlank(logErrorMsg)) {
 					Utility.log(log, logErrorMsg, "", Level.ERROR);
 				}
-			}
-			/* validate merchant ID */
-			if (StringUtils.isBlank(this.merchantID)) {
-				throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
 			}
 			/* Optional use [ TIME OUT ] */
 			this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
@@ -346,7 +343,7 @@ public class MerchantConfig {
 			throw e;
 		} catch (Exception e) {
 			Utility.log(log, e.getMessage(), "", Level.ERROR);
-			throw new ConfigException(e.getMessage());
+			throw new ConfigException(e.getMessage(), e);
 		}
 	}
 
@@ -448,9 +445,9 @@ public class MerchantConfig {
 		} else {
 			try {
 				return Integer.parseInt(strValue);
-			} catch (NumberFormatException var6) {
+			} catch (NumberFormatException nfe) {
 				Utility.log(log, GlobalLabelParameters.PROP_INVALID, "", Level.ERROR);
-				throw new ConfigException(prop + " has an invalid value.");
+				throw new ConfigException(prop + " has an invalid value.", nfe);
 
 			}
 		}

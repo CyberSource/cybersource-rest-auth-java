@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
-import com.cybersource.authsdk.cache.Cache;
+import com.cybersource.authsdk.cache.MerchantIdentityCache;
 import com.cybersource.authsdk.cache.Identity;
 import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.MerchantConfig;
@@ -28,7 +28,7 @@ public class CacheTest {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Mock
-	Cache cache;
+	MerchantIdentityCache cache;
 	
 	@Mock
 	MerchantConfig merchantConfig;
@@ -49,7 +49,7 @@ public class CacheTest {
 //		
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			merchantConfig.checkKeyFile();
-//			cache = Cache.getInstance(merchantConfig.getLogger());
+//			cache = MerchantIdentityCache.getInstance(merchantConfig.getLogger());
 //			cache.setUpP12Cache(merchantConfig);
 //		}
 //		Assert.assertNotNull(cacheP12);
@@ -68,7 +68,7 @@ public class CacheTest {
 //		
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			merchantConfig.checkKeyFile();
-//			cache = new Cache(merchantConfig);
+//			cache = new MerchantIdentityCache(merchantConfig);
 //			cache.setUpP12Cache();
 //			cache.setP12FileDetailsInCache();
 //		}
@@ -89,7 +89,7 @@ public class CacheTest {
 //		
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			merchantConfig.checkKeyFile();
-//			cache = new Cache(merchantConfig);
+//			cache = new MerchantIdentityCache(merchantConfig);
 //			cache.setUpP12Cache();
 //			cache.lastModifiedTime = 1528;
 //			cache.setP12FileDetailsInCache();
@@ -104,7 +104,7 @@ public class CacheTest {
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setKeyFile(null);
 //
-//		cache = new Cache(merchantConfig);
+//		cache = new MerchantIdentityCache(merchantConfig);
 //		Long result  = cache.getLastModifiedFileP12();
 //		Assert.assertNull(result);
 //	}

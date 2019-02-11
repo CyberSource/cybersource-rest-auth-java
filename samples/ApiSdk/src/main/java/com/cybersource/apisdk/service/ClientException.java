@@ -13,4 +13,14 @@ public class ClientException extends Exception {
 	public ClientException(String message) {
 		super(message);
 	}
+	
+	/**
+	 * @param message
+	 *            - messgae to print if exception occurs
+	 * @param throwable
+	 *            - passing Throwable
+	 */
+	public ClientException(String message, Throwable throwable) {
+		super(message, throwable);
+	}
 }

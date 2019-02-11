@@ -1,6 +1,5 @@
 package com.cybersource.SampleCode;
 
-import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,10 +8,10 @@ import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
@@ -46,19 +45,6 @@ public class GetGenerateHeaders {
 
 	private String requestTarget = "/pts/v2/payments/5383909529456080803003";
 
-	/**
-	 * 
-	 * @param requestTarget
-	 *            : requestTarget
-	 * @throws ConfigException
-	 * @throws IOException
-	 */
-	public GetGenerateHeaders(String requestTarget) throws IOException, ConfigException {
-		setGenerateHeaders();
-		this.id = Utility.retrieveGetIDFromRequestTarget(requestTarget);
-		generateGetHeaders();
-	}
-
 	public GetGenerateHeaders() {
 		try {
 			merchantProp = PropertiesUtil.getMerchantProperties();
@@ -78,24 +64,6 @@ public class GetGenerateHeaders {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-	}
-
-	/**
-	 * @throws IOException
-	 * @throws ConfigException
-	 */
-	private void setGenerateHeaders() throws IOException, ConfigException {
-
-		merchantProp = PropertiesUtil.getMerchantProperties();
-		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		this.logger = merchantConfig.getLogger();
-		requestContext = new RequestContext(this.logger);
-		requestContext.setRequestJsonPath("not required");
-		/* Set Request Type into the merchant config object. */
-		requestContext.setRequestMethodType(requestType);
-		/* Extract Authentication Type from cybs.properties */
-		authenticationType = merchantConfig.getAuthenticationType();
-		Authorization.getToken(merchantConfig, requestContext);
 	}
 
 	/**

@@ -87,7 +87,7 @@ public class GlobalLabelParameters {
 	public static final String CONNECTION_ERROR = "Unable to open connection ";
 	public static final String MERCHANT_KEYID_MISSING = "Merchant KeyID missing/null, check cybs.properties";
 	public static final String MERCHANTSECERT_KEY_MISSING = "Merchant Secret Key missing/null, check cybs.properties";
-	public static final String JWT_SIG_FAILED = "JWT Signature production failed.";
+	public static final String SIG_FAILED = "Signature production failed.";
 	public static final String RUN_ENVIRONMENT_ERR = "Run Environment value is missing in cybs.properties";
 	public static final String INVALID_REQUEST_TYPE = "Invalid Request Type :: ";
 	public static final String INVALID_LOG_DIRECTORY = "Invalid log directory, creating default log directory. ";
@@ -105,13 +105,14 @@ public class GlobalLabelParameters {
 	public static final String HEADER_SET_EXCEPTION = "issue occured while Setting the header :: ";
 	public static final String CERTIFICATE_EXCEPTION = "Certificate Exception occured while generating the signature, Please check the Merchant Configuration.";
 	public static final String KEY_STORE_EXCEPTION = "Key Srore Exception occured while generating the signature, Please check the Merchant Configuration.";
+	public static final String UNRECOVARABLE_ENTRY_EXCEPTIION = "UnrecoverableEntryException occurs, Please check the Merchant Configuration.";
 	/* Masking Parameter. */
 	public static final String MASKING_PATTERN = "XXXXXXXXX";
 	/* Proxy Parameter */
 	public static final String PROXY_HOST = "http.proxyHost";
 	public static final String PROXY_PORT = "http.proxyPort";
-	/* Cache logging.*/
-	public static final String CACHE_BEGIN = " Empty Cache :: Adding Data";
-	public static final String CACHE_EXTRACT = " Data present in Cache :: Extracting Data";
-	public static final String CACHE_EXTEND = " New Data present:: Inserting Data in Cache";
+	/* MerchantIdentityCache logging.*/
+	public static final String CACHE_BEGIN = "Setting up Identity cache";
+	public static final String CACHE_EXTRACT = "Merchant identity present in the cache";
+	public static final String CACHE_EXTEND = "Either Merchant identity not found or expired. Inserting Data into MerchantIdentityCache.";
 }

@@ -19,16 +19,16 @@ import com.cybersource.authsdk.util.Utility;
  * class for caching X509Certificate, lastModified KeyFile time and private key.
  *
  */
-public class Cache {
+public class MerchantIdentityCache {
 	private ConcurrentHashMap<String, Identity> p12IdentityMap = new ConcurrentHashMap<>();
-	private static Cache instance;
+	private static MerchantIdentityCache instance;
 	public Logger log;
 
-	public static Cache getInstance(Logger logger) {
+	public static MerchantIdentityCache getInstance(Logger logger) {
 		if (instance == null) {
-			synchronized (Cache.class) {
+			synchronized (MerchantIdentityCache.class) {
 				if (instance == null) {
-					instance = new Cache(logger);
+					instance = new MerchantIdentityCache(logger);
 				}
 			}
 		}
@@ -39,7 +39,7 @@ public class Cache {
 	 * @param log
 	 *            - contains logger.
 	 */
-	public Cache(Logger log) {
+	public MerchantIdentityCache(Logger log) {
 		this.log = log;
 	}
 
@@ -63,13 +63,8 @@ public class Cache {
 	 * @param merchantConfig
 	 *            - contains merchant Configuration
 	 * @throws ConfigException
-	 * @throws CertificateException
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyStoreException
-	 * @throws IOException
 	 */
-	public Identity retriveP12DataFromCache(MerchantConfig merchantConfig)
-			throws ConfigException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+	public Identity retrieveP12DataFromCache(MerchantConfig merchantConfig) throws ConfigException {
 		try {
 			Identity identity = p12IdentityMap.get(merchantConfig.getMerchantID());
 			if (identity != null && !isLastModifiedTimeUpdated(merchantConfig, identity)) {
@@ -81,20 +76,18 @@ public class Cache {
 			}
 		} catch (CertificateException e) {
 			Utility.log(log, e);
-			throw new ConfigException(GlobalLabelParameters.CERTIFICATE_EXCEPTION);
+			throw new ConfigException(GlobalLabelParameters.CERTIFICATE_EXCEPTION, e);
 		} catch (NoSuchAlgorithmException e) {
 			Utility.log(log, e);
-			throw new ConfigException(GlobalLabelParameters.NO_SUCH_ALGORITHM);
+			throw new ConfigException(GlobalLabelParameters.NO_SUCH_ALGORITHM, e);
 		} catch (KeyStoreException e) {
 			Utility.log(log, e);
-			throw new ConfigException(GlobalLabelParameters.KEY_STORE_EXCEPTION);
+			throw new ConfigException(GlobalLabelParameters.KEY_STORE_EXCEPTION, e);
 		} catch (IOException e) {
 			Utility.log(log, e);
-			throw new ConfigException(e.toString());
-		} catch (ConfigException e) {
-			throw e;
+			throw new ConfigException(e.toString(), e);
 		} catch (Exception e) {
-			throw new ConfigException("Eception occured while setting the cache");
+			throw new ConfigException("Eception occured while setting the cache", e);
 		}
 
 	}

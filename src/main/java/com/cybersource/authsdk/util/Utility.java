@@ -2,39 +2,17 @@ package com.cybersource.authsdk.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
+import com.cybersource.authsdk.core.ConfigException;
+
 public class Utility {
-	private enum validationType {
-		HTTP_SIGNATURE, JWT
-	};
-
-
-	/**
-	 * Checks whether the authentication type is rightly entered with no typo
-	 * error.
-	 * 
-	 * @param authenticationType
-	 *            : HTTP or JWT
-	 * @return -true if valid authentication type else return false.
-	 */
-	public static boolean checkAuthenticationValidation(String authenticationType) {
-		boolean status = false;
-
-		if (authenticationType.equalsIgnoreCase(validationType.HTTP_SIGNATURE.toString())
-				|| authenticationType.equalsIgnoreCase(validationType.JWT.toString())) {
-			status = true;
-		}
-		return status;
-	}
-
 	/**
 	 * Depending on the logging LEVEL, the message is logged.
-	 * 
+	 *
 	 * @param logger
 	 *            : Logging object (Log4j2).
 	 * @param exceptionMessage
@@ -70,19 +48,17 @@ public class Utility {
 			}
 		} catch (Exception e) {
 			log(logger, e);
-			
+
 		}
 	}
 
 	/**
-	 * 
 	 * @param logger
 	 *            : Logging object (Log4j2).
 	 * @param e
 	 *            : Exception caught during the process.
 	 */
 	public static void log(Logger logger, Exception e) {
-
 		if (logger != null) {
 			String logMessage = getStackTrace(e);
 			logger.error(logMessage);
@@ -92,7 +68,7 @@ public class Utility {
 	/**
 	 * This method returns the exception in string format to log, caught during
 	 * the process.
-	 * 
+	 *
 	 * @param e
 	 *            : Exception caught during the process.
 	 * @return stackTrace of Exception.
@@ -107,79 +83,23 @@ public class Utility {
 	}
 
 	/**
-	 * 
-	 * @param requestTarget
-	 *            : request target from where we will retrieve Id
-	 * @return id from request target.
+	 * @return true if valid method type else return false.
+	 * @throws ConfigException
+	 *             - if some value is missing or wrong for merchant.
 	 */
-	public static String retrieveGetIDFromRequestTarget(String requestTarget) {
-		StringTokenizer str = new StringTokenizer(requestTarget, "/");
-		String temp = null;
-		while (str.hasMoreTokens()) {
-			temp = str.nextToken();
-			if (temp.matches("^[0-9]+$")) {
-				return temp;
-			}
+	public static boolean isRequestMethodTypeValid(String httpMethod) throws ConfigException {
+		Boolean isValid = true;
+		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT)
+				|| httpMethod.equalsIgnoreCase(GlobalLabelParameters.GET)
+				|| httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST)
+				|| httpMethod.equalsIgnoreCase(GlobalLabelParameters.DELETE)
+				|| httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+			isValid = true;
+		} else {
+			isValid = false;
+			throw new ConfigException(GlobalLabelParameters.REQUEST_VALIDATION_ERROR);
 		}
-		return temp;
+		return isValid;
 	}
 
-	/**
-	 * 
-	 * @param responseCode
-	 *            :responseCode to log .
-	 * @param logger
-	 *            :Log4j object
-	 */
-	public static void logResponseCodeMessage(Integer responseCode, Logger logger) {
-		if (logger != null) {
-			String tempResponseCode = String.valueOf(responseCode);
-			String tempResponseCodeMessage = "Status Information :: ";
-			switch (tempResponseCode) {
-			case "200":
-				tempResponseCodeMessage = tempResponseCodeMessage + "Transaction Successful";
-				logger.info(tempResponseCodeMessage);
-				break;
-			case "400":
-				tempResponseCodeMessage = tempResponseCodeMessage + "Bad Request";
-				logger.info(tempResponseCodeMessage);
-				break;
-			case "401":
-				tempResponseCodeMessage = tempResponseCodeMessage + "Authentication Failed";
-				logger.info(tempResponseCodeMessage);
-				break;
-			case "201":
-				tempResponseCodeMessage = tempResponseCodeMessage + "Transaction Successful";
-				logger.info(tempResponseCodeMessage);
-				break;
-			case "500":
-				tempResponseCodeMessage = tempResponseCodeMessage + "Internal Server Error";
-				logger.info(tempResponseCodeMessage);
-				break;
-			case "502":
-				tempResponseCodeMessage = tempResponseCodeMessage + "Bad Gateway";
-				logger.info(tempResponseCodeMessage);
-				break;
-			case "503":
-				tempResponseCodeMessage = tempResponseCodeMessage + "SERVICE UNAVAILABLE";
-				logger.info(tempResponseCodeMessage);
-				break;
-			case "504":
-				tempResponseCodeMessage = tempResponseCodeMessage + "Gateway Timeout";
-				logger.info(tempResponseCodeMessage);
-				break;
-			case "404":
-				tempResponseCodeMessage = tempResponseCodeMessage + "Not Found";
-				logger.info(tempResponseCodeMessage);
-				break;
-			case "403":
-				tempResponseCodeMessage = tempResponseCodeMessage + "Forbidden";
-				logger.info(tempResponseCodeMessage);
-				break;
-			default:
-				String unDefinedResponse = "Un-Identified";
-				logger.info(tempResponseCodeMessage + unDefinedResponse);
-			}
-		}
-	}
 }

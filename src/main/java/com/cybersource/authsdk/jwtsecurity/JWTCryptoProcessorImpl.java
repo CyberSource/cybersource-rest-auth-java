@@ -40,6 +40,7 @@ import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.util.Base64;
 
 import io.vertx.core.json.Json;
 
@@ -88,7 +89,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		} else {
 			serialNumber = x509Certificate.getSerialNumber().toString();
 		}
-		List<com.nimbusds.jose.util.Base64> x5cBase64List = new ArrayList();
+		List<com.nimbusds.jose.util.Base64> x5cBase64List = new ArrayList<Base64>();
 		try {
 			x5cBase64List.add(com.nimbusds.jose.util.Base64.encode(x509Certificate.getEncoded()));
 		} catch (CertificateEncodingException e) {
@@ -165,7 +166,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		} else {
 			serialNumber = x509Certificate.getSerialNumber().toString();
 		}
-		List<com.nimbusds.jose.util.Base64> x5cBase64List = new ArrayList();
+		List<com.nimbusds.jose.util.Base64> x5cBase64List = new ArrayList<Base64>();
 		try {
 			x5cBase64List.add(com.nimbusds.jose.util.Base64.encode(x509Certificate.getEncoded()));
 		} catch (CertificateEncodingException e) {
@@ -232,15 +233,15 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			logger.error("Empty or null JWS or null value for publicCertificate");
 			return null;
 		}
+		X509Certificate x509Certificate = null;
 		try {
 			InputStream in = new ByteArrayInputStream(publicCertificate);
 			Throwable localThrowable3 = null;
 			try {
 				CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
 				Certificate certificate = certFactory.generateCertificate(in);
-				X509Certificate x509Certificate = (X509Certificate) certificate;
+				x509Certificate = (X509Certificate) certificate;
 			} catch (Throwable localThrowable1) {
-				X509Certificate x509Certificate;
 				localThrowable3 = localThrowable1;
 				throw localThrowable1;
 			} finally {
@@ -257,14 +258,12 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 				}
 			}
 		} catch (CertificateException ex) {
-			X509Certificate x509Certificate;
 			logger.error("couldn't create certificate from encoded cert string {}", ex);
 			return null;
 		} catch (IOException e) {
 			logger.error("Unable to close input stream object: ", e);
 			return null;
 		}
-		X509Certificate x509Certificate = null;
 		return validateSignature(jwsString, x509Certificate);
 	}
 
@@ -301,7 +300,6 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			logger.error("Couldn't verify or parse  JWT Token", e);
 			return false;
 		}
-		JWSObject jwsObject;
 		return false;
 	}
 

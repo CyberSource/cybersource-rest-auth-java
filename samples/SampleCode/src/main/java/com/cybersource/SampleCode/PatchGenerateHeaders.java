@@ -8,10 +8,10 @@ import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -60,11 +60,9 @@ public class PatchGenerateHeaders {
 					" Generate PATCH Headers *******************", Level.INFO);
 			requestContext.setRequestMethodType(requestType);
 			requestContext.setRequestJsonPath(requestJsonPath);
-			if (requestContext.validateRequestDetails(requestJsonPath)) {
-				requestData = requestContext.getRequestBody();
-				digest = new PayloadDigest(requestData);
-				generatePatchHeaders();
-			}
+			requestData = requestContext.getRequestBody();
+			digest = new PayloadDigest(requestData);
+			generatePatchHeaders();
 			Utility.log(this.logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			Utility.log(this.logger, " ", "", Level.OFF);
 		} catch (ConfigException e) {

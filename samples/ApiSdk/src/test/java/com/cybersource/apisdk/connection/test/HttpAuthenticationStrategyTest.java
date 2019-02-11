@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import com.cybersource.apisdk.connection.HttpAuthenticationStrategy;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -28,7 +28,7 @@ public class HttpAuthenticationStrategyTest {
 	MerchantConfig merchantConfig;
 	
 	@Mock
-	AuthenticationRequestContext merchantUtil;
+	RequestContext merchantUtil;
 	
 	@Mock
 	Logger logger;
@@ -48,7 +48,7 @@ public class HttpAuthenticationStrategyTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //		
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			Assert.assertNull(null);
@@ -56,7 +56,7 @@ public class HttpAuthenticationStrategyTest {
 //			merchantConfig.setMerchantID("testrest");
 //	        requestTarget = requestTarget + id;
 //	        merchantUtil.setRequestTarget(requestTarget);
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			/* Set the URL. */
 //			merchantUtil.setUrl(url);
 //			merchantUtil.setRequestType("GET");
@@ -73,7 +73,7 @@ public class HttpAuthenticationStrategyTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //		
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			Assert.assertNull(null);
@@ -81,7 +81,7 @@ public class HttpAuthenticationStrategyTest {
 //			
 //			merchantConfig.setMerchantID("testrest");
 //	        merchantUtil.setRequestTarget(requestTarget);
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			/* Set the URL. */
 //			merchantUtil.setUrl(url);
 //			merchantUtil.setRequestJsonPath(requestJsonPath);
@@ -99,14 +99,14 @@ public class HttpAuthenticationStrategyTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //		
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			Assert.assertNull(null);
 //		} else {
 //			merchantConfig.setMerchantID("testrest");
 //	        merchantUtil.setRequestTarget(requestTarget);
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			/* Set the URL. */
 //			merchantUtil.setUrl(url);
 //			merchantUtil.setRequestJsonPath(requestJsonPath);
@@ -128,7 +128,7 @@ public class HttpAuthenticationStrategyTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setMerchantID(null);
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //		
 //		
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
@@ -138,7 +138,7 @@ public class HttpAuthenticationStrategyTest {
 //			merchantUtil.setRequestType("GET");
 //			requestTarget = requestTarget + id;
 //			merchantUtil.setRequestTarget(requestTarget);
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			merchantUtil.setUrl(url);
 //			
 //			logger = merchantConfig.getLogger();
@@ -148,7 +148,7 @@ public class HttpAuthenticationStrategyTest {
 //	
 //			httpConnection = new HttpAuthenticationStrategy(merchantConfig,merchantUtil.getRequestData(), logger);
 //			httpConnection.openConnection();
-//			httpConnection.setRequestMethod(AuthenticationRequestContext.getRequestType());
+//			httpConnection.setRequestMethod(RequestContext.getRequestType());
 //	        httpConnection.setHeaderData();
 //	    }	
 //	}
@@ -158,7 +158,7 @@ public class HttpAuthenticationStrategyTest {
 //		merchantProp = PropertiesUtil.getMerchantProperties();
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			Assert.assertNull(null);
@@ -188,20 +188,20 @@ public class HttpAuthenticationStrategyTest {
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			Assert.assertNull(null);
 //		} else {
-//			merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//			merchantUtil=new RequestContext(merchantConfig);
 //			requestTarget = requestTarget + id;
 //			merchantUtil.setRequestTarget(requestTarget);
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			/* Set the URL. */
 //			merchantUtil.setUrl(url);
 //			merchantUtil.setRequestJsonPath(requestJsonPath);
 //			merchantUtil.setRequestType("GET");
 //			logger = merchantConfig.getLogger();
-//			AuthenticationRequestContext.validateMerchantDetails();
+//			RequestContext.validateMerchantDetails();
 //	        
 //			httpConnection = new HttpAuthenticationStrategy(merchantConfig,merchantUtil.getRequestData(), logger);
 //			httpConnection.openConnection();
-//			httpConnection.setRequestMethod(AuthenticationRequestContext.getRequestType());
+//			httpConnection.setRequestMethod(RequestContext.getRequestType());
 //		}
 //	}
 //	
@@ -214,17 +214,17 @@ public class HttpAuthenticationStrategyTest {
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			Assert.assertNull(null);
 //		} else {
-//			merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//			merchantUtil=new RequestContext(merchantConfig);
 //			requestTarget = requestTarget + id;
 //			merchantUtil.setRequestTarget(requestTarget);
 //			merchantUtil.setRequestJsonPath(requestJsonPath);
 //			merchantUtil.setRequestType("GET");
 //	
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			merchantUtil.setUrl(url);
 //	
 //			logger = merchantConfig.getLogger();
-//			AuthenticationRequestContext.validateMerchantDetails();
+//			RequestContext.validateMerchantDetails();
 //	
 //			httpConnection = new HttpAuthenticationStrategy(merchantConfig,merchantUtil.getRequestData(), logger);
 //			Response str = httpConnection.getHttpConnection();
@@ -241,16 +241,16 @@ public class HttpAuthenticationStrategyTest {
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			Assert.assertNull(null);
 //		} else {
-//			merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//			merchantUtil=new RequestContext(merchantConfig);
 //			merchantUtil.setRequestTarget(requestTarget);
 //			merchantUtil.setRequestJsonPath(requestJsonPath);
 //			merchantUtil.setRequestType("POST");
 //	
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			merchantUtil.setUrl(url);
 //	
 //			logger = merchantConfig.getLogger();
-//			AuthenticationRequestContext.validateMerchantDetails();
+//			RequestContext.validateMerchantDetails();
 //	
 //			httpConnection = new HttpAuthenticationStrategy(merchantConfig,merchantUtil.getRequestData(), logger);
 //			Response str = httpConnection.getHttpConnection();
@@ -267,16 +267,16 @@ public class HttpAuthenticationStrategyTest {
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			Assert.assertNull(null);
 //		} else {
-//			merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//			merchantUtil=new RequestContext(merchantConfig);
 //			merchantUtil.setRequestTarget(requestTarget);
 //			merchantUtil.setRequestJsonPath(requestJsonPath);
 //			merchantUtil.setRequestType("PUT");
 //	
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			merchantUtil.setUrl(url);
 //	
 //			logger = merchantConfig.getLogger();
-//			AuthenticationRequestContext.validateMerchantDetails();
+//			RequestContext.validateMerchantDetails();
 //	
 //			httpConnection = new HttpAuthenticationStrategy(merchantConfig,merchantUtil.getRequestData(), logger);
 //			Response str = httpConnection.getHttpConnection();
@@ -294,16 +294,16 @@ public class HttpAuthenticationStrategyTest {
 //		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 //			Assert.assertNull(null);
 //		} else {
-//			merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//			merchantUtil=new RequestContext(merchantConfig);
 //			merchantUtil.setRequestTarget(requestTarget);
 //			merchantUtil.setRequestJsonPath(requestJsonPath);
 //			merchantUtil.setRequestType("PATCH");
 //	
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			merchantUtil.setUrl(url);
 //	
 //			logger = merchantConfig.getLogger();
-//			AuthenticationRequestContext.validateMerchantDetails();
+//			RequestContext.validateMerchantDetails();
 //	
 //			httpConnection = new HttpAuthenticationStrategy(merchantConfig,merchantUtil.getRequestData(), logger);
 //			response=httpConnection.executePatch(merchantUtil.getRequestData());

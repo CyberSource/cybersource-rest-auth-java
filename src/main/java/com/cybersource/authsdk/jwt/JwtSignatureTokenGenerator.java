@@ -1,7 +1,6 @@
 package com.cybersource.authsdk.jwt;
 
 import java.security.MessageDigest;
-import java.security.cert.X509Certificate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -11,8 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.cache.Identity;
+import com.cybersource.authsdk.cache.MerchantIdentityCache;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
@@ -51,7 +50,7 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 		} catch (ConfigException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ConfigException(GlobalLabelParameters.JWT_SIG_FAILED);
+			throw new ConfigException(GlobalLabelParameters.SIG_FAILED, e);
 		}
 	}
 
@@ -95,16 +94,14 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 
 				String authType = merchantConfig.getAuthenticationType();
 				JWTCryptoProcessorImpl jwtCryptoProcessor = new JWTCryptoProcessorImpl();
-				Identity identity = Cache.getInstance(merchantConfig.getLogger())
-						.retriveP12DataFromCache(merchantConfig);
+				Identity identity = MerchantIdentityCache.getInstance(merchantConfig.getLogger())
+						.retrieveP12DataFromCache(merchantConfig);
 				if (GlobalLabelParameters.JWT.equalsIgnoreCase(authType)) {
 					return jwtCryptoProcessor.sign(claimSet, identity.getRsaPrivateKey(), identity.getX509(),
 							customHeaders);
 
 				} else {
-					X509Certificate x509Cert = KeyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
-					return jwtCryptoProcessor.signAndEncrypt(claimSet, identity.getRsaPrivateKey(), identity.getX509(),
-							x509Cert, customHeaders);
+					throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 				}
 
 			} else {
@@ -114,8 +111,8 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 			Utility.log(logger, e.getMessage(), "", Level.FATAL);
 			throw e;
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.JWT_SIG_FAILED, "", Level.FATAL);
-			throw new ConfigException(GlobalLabelParameters.JWT_SIG_FAILED);
+			Utility.log(logger, GlobalLabelParameters.SIG_FAILED, "", Level.FATAL);
+			throw new ConfigException(GlobalLabelParameters.SIG_FAILED, e);
 		}
 	}
 }

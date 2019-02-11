@@ -10,7 +10,7 @@ import org.mockito.Mock;
 
 import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
-import com.cybersource.authsdk.core.AuthenticationRequestContext;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
@@ -23,7 +23,7 @@ public class ApiControllerTest {
 	MerchantConfig merchantConfig;
 	
 	@Mock
-	AuthenticationRequestContext merchantUtil;
+	RequestContext merchantUtil;
 	
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -47,14 +47,14 @@ public class ApiControllerTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		String requestTarget = "/pts/v2/payments/5383909529456080803003";
-//		merchantUtil = new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil = new RequestContext(merchantConfig);
 //		merchantUtil.setRequestTarget(requestTarget);
-//		url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//		url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //		merchantUtil.setUrl(url);
 //		merchantUtil.setRequestType("GET");
 //		merchantUtil.setRequestJsonPath("not required");
 //		
-//		if(AuthenticationRequestContext.validateMerchantDetails()) {
+//		if(RequestContext.validateMerchantDetails()) {
 //			response = apiController.paymentGet(merchantConfig,null);
 //		    Assert.assertNotNull(response.getResponseCode());
 //		} else {
@@ -70,14 +70,14 @@ public class ApiControllerTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //		merchantUtil.setRequestTarget(requestTarget);
 //		merchantUtil.setRequestJsonPath(requestJsonPath);
 //		merchantUtil.setRequestType("POST");
-//		url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//		url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //		merchantUtil.setUrl(url);
 //		
-//		if(AuthenticationRequestContext.validateMerchantDetails()) {
+//		if(RequestContext.validateMerchantDetails()) {
 //			response = apiController.paymentPost(merchantConfig, merchantUtil.getRequestData());
 //			Assert.assertNotNull(response.getResponseCode());
 //		} else {
@@ -93,16 +93,16 @@ public class ApiControllerTest {
 //		merchantConfig.setMerchantDetails();
 //		requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
 //		
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //		merchantUtil.setRequestTarget(requestTarget);
-//		url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//		url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //		merchantUtil.setUrl(url);
 //		requestJsonPath = "src/test/resources/TRRReport.json";
 //		merchantUtil.setRequestJsonPath(requestJsonPath);
 //		merchantUtil.setRequestType("PUT");
 //		
 //		
-//		if(AuthenticationRequestContext.validateMerchantDetails()) {
+//		if(RequestContext.validateMerchantDetails()) {
 //			response = apiController.paymentPut(merchantConfig, merchantUtil.getRequestData());
 //			Assert.assertNotNull(response.getResponseCode());
 //		} else {
@@ -119,14 +119,14 @@ public class ApiControllerTest {
 //		merchantConfig.setMerchantDetails();
 //		requestTarget = "/reporting/v2/reportSubscriptions/TRRReport?organizationId=testrest";
 //		
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //		merchantUtil.setRequestTarget(requestTarget);
-//		url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//		url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //		merchantUtil.setUrl(url);
 //		merchantUtil.setRequestJsonPath("not required");
 //		merchantUtil.setRequestType("DELETE");
 //		
-//		if(AuthenticationRequestContext.validateMerchantDetails()) {
+//		if(RequestContext.validateMerchantDetails()) {
 //			response = apiController.paymentDelete(merchantConfig, null);
 //			Assert.assertNotNull(response.getResponseCode());
 //		} else {
@@ -145,10 +145,10 @@ public class ApiControllerTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		merchantConfig.setAuthenticationType("test");
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //		merchantUtil.setRequestTarget(GlobalLabelParameters.REQUEST_TARGET);
 //
-//		url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//		url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //		merchantUtil.setRequestType("POST");
 //		
 //		merchantUtil.setUrl(url);
@@ -168,11 +168,11 @@ public class ApiControllerTest {
 //			merchantConfig.setMerchantDetails();
 //			
 //			merchantConfig.setRunEnvironment("");
-//			merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//			merchantUtil=new RequestContext(merchantConfig);
 //			merchantUtil.setRequestJsonPath(requestJsonPath);
 //			merchantUtil.setRequestType("POST");
 //			merchantUtil.setRequestTarget(GlobalLabelParameters.REQUEST_TARGET);
-//			url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//			url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //			merchantUtil.setUrl(url);
 //			
 //			thrown.expect(ConfigException.class);
@@ -190,9 +190,9 @@ public class ApiControllerTest {
 //		merchantConfig = MerchantConfig.getInstance(merchantProp);
 //		merchantConfig.setMerchantDetails();
 //		
-//		merchantUtil=new AuthenticationRequestContext(merchantConfig);
+//		merchantUtil=new RequestContext(merchantConfig);
 //		merchantUtil.setRequestTarget(GlobalLabelParameters.REQUEST_TARGET);
-//		url = url + merchantConfig.getRequestHost() + AuthenticationRequestContext.getRequestTarget();
+//		url = url + merchantConfig.getRequestHost() + RequestContext.getRequestTarget();
 //		merchantUtil.setUrl(url);
 //		merchantUtil.setRequestJsonPath(requestJsonPath);
 //		merchantUtil.setRequestType("GET");

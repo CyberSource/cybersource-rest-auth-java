@@ -10,9 +10,6 @@ public interface Headers {
 	/**
 	 * Setting of merchantID i.e the Header attribute of the token, into the
 	 * connection object.
-	 * 
-	 * @param merchantId
-	 *            : The unique name of the merchant.
 	 * @throws ConfigException
 	 *             - if some value is missing for merchant.
 	 * @throws ClientException
@@ -23,12 +20,14 @@ public interface Headers {
 	/**
 	 * The response message obtained form the server is sent for masking the
 	 * important fields.
+	 * @param serverResponse
+	 * @param title
 	 */
 	void maskingPayload(String serverResponse, String title);
 
 	/**
 	 * Sets the request type ( GET/POST )
-	 * 
+	 * @param method type
 	 * @throws ClientException
 	 *             - throws custom client exception .
 	 */

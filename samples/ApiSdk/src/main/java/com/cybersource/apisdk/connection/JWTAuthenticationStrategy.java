@@ -30,9 +30,9 @@ import org.bouncycastle.util.encoders.Base64;
 import com.cybersource.apisdk.masking.Masking;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
@@ -107,7 +107,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			}
 		} catch (IOException e) {
 			Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, e.toString(), Level.FATAL);
-			throw new ClientException(GlobalLabelParameters.IO_EXCEPTION + e.toString());
+			throw new ClientException(GlobalLabelParameters.IO_EXCEPTION.concat(e.toString()), e);
 		} catch (ConfigException e) {
 			Utility.log(logger, e.getMessage(), "", Level.ERROR);
 			throw e;
@@ -117,7 +117,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		} catch (Exception e) {
 			Utility.log(logger, e.getMessage(), "", Level.ERROR);
 			Utility.log(logger, e);
-			throw new ClientException("Exception in getJwtConnection method : " + e.getMessage());
+			throw new ClientException("Exception in getJwtConnection method : ".concat(e.getMessage()), e);
 		}
 	}
 
@@ -167,12 +167,12 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 				return responseObj;
 			}
 			responseCode = connection.getResponseCode();
-			Utility.logResponseCodeMessage(responseCode, logger);
+			logResponseCodeMessage(responseCode, logger);
 			return this.connection.getErrorStream() != null ? this.readInputStream(this.connection.getErrorStream())
 					: this.readInputStream(this.connection.getInputStream());
 
 		} catch (IOException e) {
-			throw new ClientException(e.toString());
+			throw new ClientException(e.toString(), e);
 		} catch (ConfigException e) {
 			throw e;
 		} catch (ClientException e) {
@@ -210,7 +210,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		out1.close();
 
 		responseCode = connection.getResponseCode();
-		Utility.logResponseCodeMessage(responseCode, logger);
+		logResponseCodeMessage(responseCode, logger);
 		return this.connection.getErrorStream() != null ? this.readInputStream(this.connection.getErrorStream())
 				: this.readInputStream(this.connection.getInputStream());
 	}
@@ -253,12 +253,12 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 */
 	@Override
 	public void openConnection() throws ClientException {
-		URL url = null;
+		String conUrl = "";
 		try {
 			Proxy proxy = createProxy(merchantConfig);
-			String getUrl = requestContext.getUrl();
-			Utility.log(logger, "URL : ", " " + getUrl, Level.INFO);
-			url = new URL(getUrl);
+			conUrl = requestContext.getUrl();
+			Utility.log(logger, "URL : ", " ".concat(conUrl), Level.INFO);
+			URL url = new URL(conUrl);
 			this.connection = (HttpURLConnection) url.openConnection(proxy);
 			if (proxy != Proxy.NO_PROXY) {
 				addProxyCredentials(connection, merchantConfig);
@@ -267,9 +267,9 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			connection.setConnectTimeout(timeoutInMS);
 			connection.setReadTimeout(timeoutInMS);
 		} catch (MalformedURLException e) {
-			throw new ClientException(GlobalLabelParameters.URL_NOT_SET);
+			throw new ClientException(GlobalLabelParameters.URL_NOT_SET, e);
 		} catch (IOException e) {
-			throw new ClientException(GlobalLabelParameters.CONNECTION_ERROR.concat(" : " + url));
+			throw new ClientException(GlobalLabelParameters.CONNECTION_ERROR.concat(" : ".concat(conUrl)), e);
 		}
 	}
 
@@ -292,7 +292,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		try {
 			this.connection.setRequestMethod(method);
 		} catch (ProtocolException e) {
-			throw new ClientException(GlobalLabelParameters.REQUEST_SET_ERROR.concat(method));
+			throw new ClientException(GlobalLabelParameters.REQUEST_SET_ERROR.concat(method), e);
 		}
 	}
 
@@ -373,7 +373,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 					httpEntity = new ByteArrayEntity(requestData.getBytes("UTF-8"));
 					httpPatch.setEntity(httpEntity);
 				} catch (UnsupportedEncodingException e) {
-					throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING);
+					throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING, e);
 				}
 			} else {
 				Utility.log(logger, GlobalLabelParameters.REQUEST_BODY_LABEL, "  NULL", Level.ERROR);
@@ -387,13 +387,13 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 				Integer responseCode = response.getStatusLine().getStatusCode();
 				Response responseObj = new Response();
 				responseObj.setResponseCode(String.valueOf(responseCode));
-				Utility.logResponseCodeMessage(responseCode, logger);
-				Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE + " : ", responseObj.getResponseCode(),
+				logResponseCodeMessage(responseCode, logger);
+				Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE.concat(" : "), responseObj.getResponseCode(),
 						Level.INFO);
 
 				Header header = response.getFirstHeader(GlobalLabelParameters.V_C_CORRELATION_ID);
 				responseObj.setVcCorelationId(header.getValue());
-				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : ", responseObj.getVcCorelationId(),
+				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID.concat(" : "), responseObj.getVcCorelationId(),
 						Level.INFO);
 
 				StringBuilder responseBuilder = new StringBuilder();
@@ -408,11 +408,11 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 				throw new ClientException(GlobalLabelParameters.EMPTY_RESPONSE);
 			}
 		} catch (IOException e) {
-			throw new ClientException(e.toString());
+			throw new ClientException(e.toString(), e);
 		} catch (ConfigException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION.concat(e.getMessage()));
+			throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION.concat(e.getMessage()), e);
 		} finally {
 			if (response != null) {
 				try {
@@ -447,14 +447,14 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		if (StringUtils.isBlank(encryptedJWTSignature)) {
 			isSignatureAlert = true;
 		}
-		httpPatch.setHeader("Authorization", "Bearer " + encryptedJWTSignature);
+		httpPatch.setHeader("Authorization", "Bearer ".concat(encryptedJWTSignature));
 		Utility.log(logger, GlobalLabelParameters.AUTHORIZARION_BEARER, encryptedJWTSignature, Level.INFO);
 
 		/*
 		 * Add Request Header :: "profile-id"
 		 */
 		httpPatch.setHeader(GlobalLabelParameters.PROFILE_ID, GlobalLabelParameters.PROFILE_ID_VAL);
-		Utility.log(logger, GlobalLabelParameters.PROFILE_ID, " : " + GlobalLabelParameters.PROFILE_ID_VAL, Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.PROFILE_ID, " : ".concat(GlobalLabelParameters.PROFILE_ID_VAL), Level.INFO);
 		return httpPatch;
 	}
 }
