@@ -10,6 +10,7 @@ import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.apisdk.service.PaymentRequestService;
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -29,12 +30,14 @@ public class ApiController {
 	 * @param requestContext
 	 *            - contains request details
 	 * @throws ConfigException
-	 *             - contains information for merchant.
+	 *             - throws custom config exception.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws SignatureGenerationException
+	 *             - throws custom signature generation exception. 
 	 */
 	public Response paymentGet(MerchantConfig merchantConfig, RequestContext requestContext)
-			throws ConfigException, ClientException {
+			throws ConfigException, ClientException, SignatureGenerationException {
 		return processPayment(merchantConfig, requestContext);
 	}
 
@@ -45,12 +48,14 @@ public class ApiController {
 	 * @param requestContext
 	 *            - contains request details
 	 * @throws ConfigException
-	 *             - contains information for merchant.
+	 *             - throws custom config exception.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws SignatureGenerationException
+	 *             - throws custom signature generation exception. 
 	 */
 	public Response paymentPost(MerchantConfig merchantConfig, RequestContext requestContext)
-			throws ConfigException, ClientException {
+			throws ConfigException, ClientException, SignatureGenerationException {
 		return processPayment(merchantConfig, requestContext);
 	}
 
@@ -61,12 +66,14 @@ public class ApiController {
 	 * @param requestContext
 	 *            - contains request details
 	 * @throws ConfigException
-	 *             - contains information for merchant.
+	 *             - throws custom config exception.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws SignatureGenerationException 
+	 *             - throws custom signature generation exception.
 	 */
 	public Response paymentPut(MerchantConfig merchantConfig, RequestContext requestContext)
-			throws ConfigException, ClientException {
+			throws ConfigException, ClientException, SignatureGenerationException {
 		return processPayment(merchantConfig, requestContext);
 	}
 
@@ -77,12 +84,14 @@ public class ApiController {
 	 * @param requestContext
 	 *            - contains request details
 	 * @throws ConfigException
-	 *             - contains information for merchant.
+	 *             - throws custom config exception.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 */
+	 * @throws SignatureGenerationException 
+	             - throws custom signature generation exception.
+	 */            
 	public Response paymentDelete(MerchantConfig merchantConfig, RequestContext requestContext)
-			throws ConfigException, ClientException {
+			throws ConfigException, ClientException, SignatureGenerationException {
 		return processPayment(merchantConfig, requestContext);
 	}
 
@@ -93,12 +102,14 @@ public class ApiController {
 	 * @param requestContext
 	 *            - contains request details
 	 * @throws ConfigException
-	 *             - contains information for merchant.
+	 *             - throws custom config exception.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 */
+	 * @throws SignatureGenerationException 
+	               - throws custom signature generation exception.
+	 */        
 	public Response paymentPatch(MerchantConfig merchantConfig, RequestContext requestContext)
-			throws ConfigException, ClientException {
+			throws ConfigException, ClientException, SignatureGenerationException {
 		return processPayment(merchantConfig, requestContext);
 	}
 
@@ -109,17 +120,19 @@ public class ApiController {
 	 * @param requestContext
 	 *            - contains request details
 	 * @throws ConfigException
-	 *             - contains information for merchant.
+	 *             - throws custom config exception.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws SignatureGenerationException 
+	 *             - throws custom Signature generation exception.
 	 */
 	private Response processPayment(MerchantConfig merchantConfig, RequestContext requestContext)
-			throws ConfigException, ClientException {
+			throws ConfigException, ClientException, SignatureGenerationException {
 		Response responseObj = null;
 		try {
 			logger = merchantConfig.getLogger();
 			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSACTION, "", Level.INFO);
-			if (validateRequestDetails(requestContext.getRequestMethodType(), requestContext.getRequestJsonPath(), logger)) {
+			validateRequestDetails(requestContext.getRequestMethodType(), requestContext.getRequestJsonPath(), logger);
 				Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestContext.getRequestTarget(),
 						Level.INFO);
 				Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(),
@@ -130,15 +143,17 @@ public class ApiController {
 						Level.INFO);
 				PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestContext);
 				responseObj = paymentRequest.processPaymentRequest();
-				return responseObj;
-			} else {
-				Utility.log(logger, GlobalLabelParameters.REQUEST_VALIDATION_ERROR, "", Level.INFO);
-				throw new ConfigException(GlobalLabelParameters.REQUEST_VALIDATION_ERROR);
-			}
+		} catch (ConfigException e) {
+			throw e;
+		} catch (SignatureGenerationException e) {
+			throw e;
+		} catch (ClientException e) {
+			throw e;
 		} finally {
 			Utility.log(logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
 			Utility.log(logger, " ", "", Level.OFF);
 		}
+		return responseObj;
 	}
 	
 	/**
@@ -161,40 +176,29 @@ public class ApiController {
      * @return true if path is valid else return false.
      * @throws ConfigException - if some value is missing or wrong for merchant.
      */
-    private boolean validateRequestDetails(String requestMethodType, String jsonPath, Logger logger) throws ConfigException {
-		boolean check = true;
-
+    private void validateRequestDetails(String requestMethodType, String jsonPath, Logger logger) throws ConfigException {
 		if (!isRequestMethodTypeValid(requestMethodType)) {
-			return false;
+			Utility.log(logger, GlobalLabelParameters.AUTH_ERROR, "", Level.ERROR);
+			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 		}
 
-		if (requestMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
-				|| requestMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-			return check;
-		}
+		if (!requestMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)
+				|| !requestMethodType.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
+			if (StringUtils.isBlank(jsonPath)) {
+				Utility.log(logger, GlobalLabelParameters.REQUEST_JSON_MIS_NULL, "", Level.ERROR);
+				throw new ConfigException(GlobalLabelParameters.REQUEST_JSON_MIS_NULL);
+			} else if (StringUtils.isNotBlank(jsonPath) && !jsonPath.equalsIgnoreCase(GlobalLabelParameters.REQUEST_JSON_PATH_NOT_REQUIRED)) {
+				File f = new File(jsonPath);
+				if (!f.exists()) {
+					Utility.log(logger, GlobalLabelParameters.REQUEST_JSON_ERROR, f.getAbsolutePath(), Level.ERROR);
+					throw new ConfigException(GlobalLabelParameters.REQUEST_JSON_ERROR);
 
-		if (StringUtils.isBlank(jsonPath)) {
-			Utility.log(logger, GlobalLabelParameters.REQUEST_JSON_MIS_NULL, "", Level.ERROR);
-			check = false;
-			throw new ConfigException(GlobalLabelParameters.REQUEST_JSON_MIS_NULL);
+				}
+				if (!f.canRead()) {
+					Utility.log(logger, GlobalLabelParameters.FILE_NOT_READ, f.getAbsolutePath(), Level.ERROR);
+					throw new ConfigException(GlobalLabelParameters.FILE_NOT_READ);
+				}
+			}
 		}
-
-		if (StringUtils.isNotBlank(jsonPath)
-				&& jsonPath.equalsIgnoreCase(GlobalLabelParameters.REQUEST_JSON_PATH_NOT_REQUIRED)) {
-			return check;
-		}
-		File f = new File(jsonPath);
-		if (!f.exists()) {
-			Utility.log(logger, GlobalLabelParameters.REQUEST_JSON_ERROR, f.getAbsolutePath(), Level.ERROR);
-			check = false;
-			throw new ConfigException(GlobalLabelParameters.REQUEST_JSON_ERROR);
-
-		}
-		if (!f.canRead()) {
-			Utility.log(logger, GlobalLabelParameters.FILE_NOT_READ, f.getAbsolutePath(), Level.ERROR);
-			check = false;
-			throw new ConfigException(GlobalLabelParameters.FILE_NOT_READ);
-		}
-		return check;
     }
 }

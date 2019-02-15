@@ -12,6 +12,7 @@ import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
 import com.cybersource.authsdk.util.Utility;
@@ -61,7 +62,9 @@ public class GetGenerateHeaders {
 			Utility.log(this.logger, " ", "", Level.OFF);
 		} catch (ConfigException e) {
 			System.out.println(e.getMessage());
-		} catch (Exception e) {
+		}  catch (SignatureGenerationException e) {
+			System.out.println(e.getMessage());
+		}  catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
@@ -72,8 +75,9 @@ public class GetGenerateHeaders {
 	 * 
 	 * @throws ConfigException
 	 *             : Throws runtime exception.
+	 * @throws SignatureGenerationException 
 	 */
-	private void generateGetHeaders() throws ConfigException {
+	private void generateGetHeaders() throws ConfigException, SignatureGenerationException {
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Signature Header */
 		tempSig = Authorization.getToken(merchantConfig, requestContext);
@@ -88,7 +92,7 @@ public class GetGenerateHeaders {
 		System.out.println(" GET_ID              : " + this.id);
 
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),
+			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANT_ID.concat(" : "), merchantConfig.getMerchantID(),
 					Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "), date, Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "), merchantConfig.getRequestHost(), Level.INFO);

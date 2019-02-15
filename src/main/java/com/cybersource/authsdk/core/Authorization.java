@@ -14,8 +14,10 @@ public class Authorization {
 	 * @return token generated as per http_signature or JWT.
 	 * @throws ConfigException
 	 *             - if some value will be wrong or missing for merchant.
+	 * @throws SignatureGenerationException
+	 *             - if some exception occurs while generating the signature.
 	 */
-	public static String getToken(MerchantConfig merchantConfig, RequestContext authRequestContext) throws ConfigException {
+	public static String getToken(MerchantConfig merchantConfig, RequestContext authRequestContext) throws ConfigException, SignatureGenerationException {
 		return TokenGeneratorFactory.getAuthTokenGenerator(merchantConfig, authRequestContext).getToken();
 	}
 }

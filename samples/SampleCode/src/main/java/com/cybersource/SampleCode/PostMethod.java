@@ -8,6 +8,7 @@ import com.cybersource.apisdk.controller.ApiController;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -66,6 +67,8 @@ public class PostMethod {
 
 		} catch (ConfigException e) {
 			System.out.println(e.getMessage());
+		}  catch (SignatureGenerationException e) {
+			System.out.println(e.getMessage());
 		} catch (ClientException e) {
 			System.out.println(e.getMessage());
 		} catch (Exception e) {
@@ -78,8 +81,9 @@ public class PostMethod {
 	 * 
 	 * @throws ClientException
 	 * @throws ConfigException
+	 * @throws SignatureGenerationException 
 	 */
-	private void process() throws ConfigException, ClientException {
+	private void process() throws ConfigException, ClientException, SignatureGenerationException {
 		System.out.println(authenticationType.toUpperCase() + " Request");
 
 		/* Call payment method of Api Controller class */

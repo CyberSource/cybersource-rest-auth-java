@@ -4,6 +4,7 @@ import com.cybersource.apisdk.connection.HttpAuthenticationStrategy;
 import com.cybersource.apisdk.connection.JWTAuthenticationStrategy;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -37,8 +38,10 @@ public class PaymentRequestService {
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws SignatureGenerationException 
+	 *             - throws custom signature exception.
 	 */
-	public Response processPaymentRequest() throws ConfigException, ClientException {
+	public Response processPaymentRequest() throws ConfigException, ClientException, SignatureGenerationException {
 		String authenticatonType = merchantConfig.getAuthenticationType();
 		if (authenticatonType != null && authenticatonType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			HttpAuthenticationStrategy connection = new HttpAuthenticationStrategy(merchantConfig, requestContext);

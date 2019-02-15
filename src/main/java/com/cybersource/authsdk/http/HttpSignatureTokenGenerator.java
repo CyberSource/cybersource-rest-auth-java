@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
@@ -23,108 +24,122 @@ import com.cybersource.authsdk.util.Utility;
                 Parameter 'Signature' must contain all the parameters mentioned in header above in given order  */
 
 public class HttpSignatureTokenGenerator implements TokenGenerator {
-    private MerchantConfig merchantConfig;
-    private String httpMethod;
-    private RequestContext authRequestContext;
-    private Logger log;
+	private MerchantConfig merchantConfig;
+	private String httpMethod;
+	private RequestContext authRequestContext;
+	private Logger log;
 
-    /**
-     * @param merchantConfig     -contains information for merchant.
-     * @param authRequestContext - contains request details
-     */
-    public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, RequestContext authRequestContext) {
-        this.merchantConfig = merchantConfig;
-        this.authRequestContext = authRequestContext;
-        this.httpMethod = authRequestContext.getRequestMethodType();
-        this.log = merchantConfig.getLogger();
-    }
+	/**
+	 * @param merchantConfig
+	 *            -contains information for merchant.
+	 * @param authRequestContext
+	 *            - contains request details
+	 */
+	public HttpSignatureTokenGenerator(MerchantConfig merchantConfig, RequestContext authRequestContext) {
+		this.merchantConfig = merchantConfig;
+		this.authRequestContext = authRequestContext;
+		this.httpMethod = authRequestContext.getRequestMethodType();
+		this.log = merchantConfig.getLogger();
+	}
 
-    /**
-     * Method to get Token.
-     *
-     * @throws ConfigException - if some value is missing for merchant.
-     */
-    @Override
-    public String getToken() throws ConfigException {
-        try {
-            validateGivenInput(merchantConfig, authRequestContext);
-            return getSignatureHeader();
-        } catch (UnsupportedEncodingException e) {
-            Utility.log(log, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.INFO);
-			throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING, e);
-        } catch (InvalidKeyException e) {
-            Utility.log(log, GlobalLabelParameters.INVALID_KEY, "", Level.INFO);
-            throw new ConfigException(GlobalLabelParameters.INVALID_KEY, e);
-        } catch (NoSuchAlgorithmException e) {
-            Utility.log(log, GlobalLabelParameters.NO_SUCH_ALGORITHM, "", Level.INFO);
-            throw new ConfigException(GlobalLabelParameters.NO_SUCH_ALGORITHM, e);
-        } catch (IllegalArgumentException e) {
-            Utility.log(log, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.INFO);
-            throw new ConfigException(GlobalLabelParameters.UNSUPPORTED_ENCODING, e);
-        }
-    }
+	/**
+	 * Method to get Token.
+	 *
+	 * @throws ConfigException
+	 *             - if some value is missing for merchant.
+	 * @throws SignatureGenerationException
+	 *             - throws custom signature generation exception.
+	 */
+	@Override
+	public String getToken() throws ConfigException, SignatureGenerationException {
+		try {
+			validateGivenInput(merchantConfig, authRequestContext);
+			return getSignatureHeader();
+		} catch (ConfigException e) {
+			throw e;
+		} catch (UnsupportedEncodingException e) {
+			Utility.log(log, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.INFO);
+			throw new SignatureGenerationException(GlobalLabelParameters.UNSUPPORTED_ENCODING, e);
+		} catch (InvalidKeyException e) {
+			Utility.log(log, GlobalLabelParameters.INVALID_KEY, "", Level.INFO);
+			throw new SignatureGenerationException(GlobalLabelParameters.INVALID_KEY, e);
+		} catch (NoSuchAlgorithmException e) {
+			Utility.log(log, GlobalLabelParameters.NO_SUCH_ALGORITHM, "", Level.INFO);
+			throw new SignatureGenerationException(GlobalLabelParameters.NO_SUCH_ALGORITHM, e);
+		} catch (IllegalArgumentException e) {
+			Utility.log(log, GlobalLabelParameters.UNSUPPORTED_ENCODING, "", Level.INFO);
+			throw new SignatureGenerationException(GlobalLabelParameters.UNSUPPORTED_ENCODING, e);
+		} catch (Exception e) {
+			throw new SignatureGenerationException(GlobalLabelParameters.SIG_FAILED, e);
+		}
+	}
 
-    /**
-     * @return headers to generate signature.
-     * @throws InvalidKeyException          - if key is not valid.
-     * @throws NoSuchAlgorithmException     - if algorithm is not available.
-     * @throws ConfigException              - if some value is missing for merchant.
-     * @throws UnsupportedEncodingException - if encoding is not supported.
-     */
-    private String getSignatureHeader()
-            throws InvalidKeyException, NoSuchAlgorithmException, ConfigException, UnsupportedEncodingException {
+	/**
+	 * @return headers to generate signature.
+	 * @throws InvalidKeyException
+	 *             - if key is not valid.
+	 * @throws NoSuchAlgorithmException
+	 *             - if algorithm is not available.
+	 * @throws ConfigException
+	 *             - if some value is missing for merchant.
+	 * @throws UnsupportedEncodingException
+	 *             - if encoding is not supported.
+	 */
+	private String getSignatureHeader()
+			throws InvalidKeyException, NoSuchAlgorithmException, ConfigException, UnsupportedEncodingException {
 
-        StringBuilder signatureHeader = new StringBuilder();
-        /* KeyId is the key obtained from EBC */
-        signatureHeader.append("keyid=\"" + merchantConfig.getMerchantKeyId() + "\"");
+		StringBuilder signatureHeader = new StringBuilder();
+		/* KeyId is the key obtained from EBC */
+		signatureHeader.append("keyid=\"" + merchantConfig.getMerchantKeyId() + "\"");
 		/* Algorithm should be always HmacSHA256 for http signature */
-        signatureHeader.append(", algorithm=\"HmacSHA256\"");
+		signatureHeader.append(", algorithm=\"HmacSHA256\"");
 
-        if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.GET))
-            signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.GET) + "\"");
-        if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.DELETE))
-            signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.DELETE) + "\"");
-        if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST))
-            signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.POST) + "\"");
+		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.GET))
+			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.GET) + "\"");
+		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.DELETE))
+			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.DELETE) + "\"");
+		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST))
+			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.POST) + "\"");
 
-        if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH))
-            signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PATCH) + "\"");
+		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH))
+			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PATCH) + "\"");
 
-        else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT))
-            signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PUT) + "\"");
+		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT))
+			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PUT) + "\"");
 		/*
 		 * Get Value for paramter 'Signature' to be passed to Signature Header
 		 */
-        String signatureValue = SignatureGenerator.generateSignature(merchantConfig, authRequestContext);
-        signatureHeader.append(", signature=\"" + signatureValue + "\"");
-        return signatureHeader.toString();
-    }
+		String signatureValue = SignatureGenerator.generateSignature(merchantConfig, authRequestContext);
+		signatureHeader.append(", signature=\"" + signatureValue + "\"");
+		return signatureHeader.toString();
+	}
 
-    /**
-     * @param requestType : GET/POST/PUT
-     * @return request header as per request type.
-     */
-    private String getRequestHeaders(String requestType) {
-        String requestHeader = null;
-        switch (requestType) {
-            case GlobalLabelParameters.GET:
-                requestHeader = "host date (request-target)" + " " + "v-c-merchant-id";
-                break;
-            case GlobalLabelParameters.DELETE:
-                requestHeader = "host date (request-target)" + " " + "v-c-merchant-id";
-                break;
-            case GlobalLabelParameters.POST:
-                requestHeader = "host date (request-target) digest v-c-merchant-id";
-                break;
-            case GlobalLabelParameters.PUT:
-                requestHeader = "host date (request-target) digest v-c-merchant-id";
-                break;
-            case GlobalLabelParameters.PATCH:
-                requestHeader = "host date (request-target) digest v-c-merchant-id";
-                break;
-            default:
-                return requestHeader;
-        }
-        return requestHeader;
-    }
+	/**
+	 * @param requestType
+	 *            : GET/POST/PUT
+	 * @return request header as per request type.
+	 */
+	private String getRequestHeaders(String requestType) {
+		String requestHeader = null;
+		switch (requestType) {
+		case GlobalLabelParameters.GET:
+			requestHeader = "host date (request-target)" + " " + "v-c-merchant-id";
+			break;
+		case GlobalLabelParameters.DELETE:
+			requestHeader = "host date (request-target)" + " " + "v-c-merchant-id";
+			break;
+		case GlobalLabelParameters.POST:
+			requestHeader = "host date (request-target) digest v-c-merchant-id";
+			break;
+		case GlobalLabelParameters.PUT:
+			requestHeader = "host date (request-target) digest v-c-merchant-id";
+			break;
+		case GlobalLabelParameters.PATCH:
+			requestHeader = "host date (request-target) digest v-c-merchant-id";
+			break;
+		default:
+			return requestHeader;
+		}
+		return requestHeader;
+	}
 }

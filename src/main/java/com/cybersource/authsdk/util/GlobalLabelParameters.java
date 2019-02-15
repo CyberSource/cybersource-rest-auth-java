@@ -15,7 +15,8 @@ public class GlobalLabelParameters {
 	public static final String AUTENTICATION_TYPE = "Authentication Type : ";
 	public static final String HTTP = "HTTP_SIGNATURE";
 	public static final String JWT = "JWT";
-	public static final String V_C_MERCHANTID = "v-c-merchant-id";
+	public static final String V_C_MERCHANT_ID = "v-c-merchant-id";
+	public static final String V_C_PARTNER_ID = "v-c-partner-id";
 	public static final String DATE = "Date";
 	public static final String HOST = "Host";
 	public static final String SIGNATURE = "Signature";

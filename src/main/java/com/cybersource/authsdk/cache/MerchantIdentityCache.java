@@ -1,9 +1,7 @@
 package com.cybersource.authsdk.cache;
 
-import java.io.IOException;
-import java.security.KeyStoreException;
+import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.Level;
@@ -11,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.jwt.KeyCertificateGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
@@ -44,18 +43,31 @@ public class MerchantIdentityCache {
 	}
 
 	/**
+	 * @param merchantConfig
+	 *            - contains merchant Configuration
+	 * @throws SignatureGenerationException
 	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
 	 */
-	public Identity setUpP12Cache(MerchantConfig merchantConfig)
-			throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, ConfigException {
-		Utility.log(log, GlobalLabelParameters.CACHE_BEGIN, "", Level.INFO);
-		Identity identity = new Identity();
-		identity.setLastModifiedTime(merchantConfig.getKeyFile().lastModified());
-		identity.setX509(KeyCertificateGenerator.initializeCertificate(merchantConfig));
-		identity.setRsaPrivateKey(KeyCertificateGenerator.initializePrivateKey(merchantConfig));
-		p12IdentityMap.put(merchantConfig.getMerchantID(), identity);
-		return identity;
+	public Identity setUpP12Cache(MerchantConfig merchantConfig) throws SignatureGenerationException, ConfigException {
+		try {
+			Utility.log(log, GlobalLabelParameters.CACHE_BEGIN, "", Level.INFO);
+			Identity identity = new Identity();
+			identity.setLastModifiedTime(merchantConfig.getKeyFile().lastModified());
+			identity.setX509(KeyCertificateGenerator.initializeCertificate(merchantConfig));
+			identity.setRsaPrivateKey(KeyCertificateGenerator.initializePrivateKey(merchantConfig));
+			p12IdentityMap.put(merchantConfig.getMerchantID(), identity);
+			return identity;
+		} catch (ConfigException e) {
+			throw e;
+		} catch (UnsupportedEncodingException e) {
+			throw new SignatureGenerationException(GlobalLabelParameters.UNSUPPORTED_ENCODING, e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new SignatureGenerationException(GlobalLabelParameters.NO_SUCH_ALGORITHM, e);
+		} catch (IllegalArgumentException e) {
+			throw new SignatureGenerationException(GlobalLabelParameters.UNSUPPORTED_ENCODING, e);
+		} catch (Exception e) {
+			throw new SignatureGenerationException(GlobalLabelParameters.SIG_FAILED, e);
+		}
 
 	}
 
@@ -64,7 +76,7 @@ public class MerchantIdentityCache {
 	 *            - contains merchant Configuration
 	 * @throws ConfigException
 	 */
-	public Identity retrieveP12DataFromCache(MerchantConfig merchantConfig) throws ConfigException {
+	public Identity retrieveP12DataFromCache(MerchantConfig merchantConfig) throws SignatureGenerationException {
 		try {
 			Identity identity = p12IdentityMap.get(merchantConfig.getMerchantID());
 			if (identity != null && !isLastModifiedTimeUpdated(merchantConfig, identity)) {
@@ -74,20 +86,10 @@ public class MerchantIdentityCache {
 				Utility.log(log, GlobalLabelParameters.CACHE_EXTEND, "", Level.INFO);
 				return setUpP12Cache(merchantConfig);
 			}
-		} catch (CertificateException e) {
-			Utility.log(log, e);
-			throw new ConfigException(GlobalLabelParameters.CERTIFICATE_EXCEPTION, e);
-		} catch (NoSuchAlgorithmException e) {
-			Utility.log(log, e);
-			throw new ConfigException(GlobalLabelParameters.NO_SUCH_ALGORITHM, e);
-		} catch (KeyStoreException e) {
-			Utility.log(log, e);
-			throw new ConfigException(GlobalLabelParameters.KEY_STORE_EXCEPTION, e);
-		} catch (IOException e) {
-			Utility.log(log, e);
-			throw new ConfigException(e.toString(), e);
+		} catch (SignatureGenerationException e) {
+			throw e;
 		} catch (Exception e) {
-			throw new ConfigException("Eception occured while setting the cache", e);
+			throw new SignatureGenerationException("Eception occured while setting the cache", e);
 		}
 
 	}

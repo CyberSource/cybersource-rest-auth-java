@@ -12,6 +12,7 @@ import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -66,6 +67,8 @@ public class PostGenerateHeaders {
 			Utility.log(this.logger, " ", "", Level.OFF);
 		} catch (ConfigException e) {
 			System.out.println(e.getMessage());
+		} catch (SignatureGenerationException e) {
+			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -76,8 +79,9 @@ public class PostGenerateHeaders {
 	 * for POST operation.
 	 * 
 	 * @throws ConfigException
+	 * @throws SignatureGenerationException 
 	 */
-	private void generatePostHeaders() throws ConfigException {
+	private void generatePostHeaders() throws ConfigException, SignatureGenerationException {
 		authenticationType = merchantConfig.getAuthenticationType();
 		/* Signature Header */
 		tempSig = Authorization.getToken(merchantConfig, requestContext);
@@ -97,7 +101,7 @@ public class PostGenerateHeaders {
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			digest = new PayloadDigest(requestData);
 
-			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID.concat(" : "), merchantConfig.getMerchantID(),
+			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANT_ID.concat(" : "), merchantConfig.getMerchantID(),
 					Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "), date, Level.INFO);
 			Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "), merchantConfig.getRequestHost(), Level.INFO);

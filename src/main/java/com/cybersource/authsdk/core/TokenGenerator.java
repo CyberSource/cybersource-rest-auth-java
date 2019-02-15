@@ -11,9 +11,11 @@ public interface TokenGenerator {
 	/**
 	 * @return token generated as per http_signature or JWT
 	 * @throws ConfigException
-	 *             - if some value is missing for merchant.
+	 *            - if some value is missing for merchant.
+	 * @throws SignatureGenerationException 
+	 *            - throws custom signature generation exception.
 	 */
-	String getToken() throws ConfigException;
+	String getToken() throws ConfigException, SignatureGenerationException;
 
 	default void validateGivenInput(MerchantConfig config, RequestContext context) throws ConfigException {
 		if(config != null && context != null){

@@ -33,6 +33,7 @@ import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
@@ -81,8 +82,10 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws SignatureGenerationException
+	 *             - throws custom client exception. 
 	 */
-	public Response getJwtConnection() throws ConfigException, ClientException {
+	public Response getJwtConnection() throws ConfigException, ClientException, SignatureGenerationException {
 
 		try {
 
@@ -108,6 +111,9 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		} catch (IOException e) {
 			Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, e.toString(), Level.FATAL);
 			throw new ClientException(GlobalLabelParameters.IO_EXCEPTION.concat(e.toString()), e);
+		} catch (SignatureGenerationException e) {
+			Utility.log(logger, e.getMessage(), "", Level.ERROR);
+			throw e;
 		} catch (ConfigException e) {
 			Utility.log(logger, e.getMessage(), "", Level.ERROR);
 			throw e;
@@ -127,7 +133,7 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 * @throws ClientException
 	 */
 	@Override
-	public void setHeaderData() throws ConfigException, ClientException {
+	public void setHeaderData() throws ConfigException, SignatureGenerationException, ClientException {
 		/* Addition Request Headers : Content Type */
 
 		Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE.concat(" : "), GlobalLabelParameters.APPLICATION_JSON,
@@ -149,11 +155,13 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	/**
 	 * @return response.
 	 * @throws ConfigException
-	 *             - contains information for merchant.
+	 *             - throws custom config exception.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws SignatureGenerationException 
+	 *             - throws custom signature generation exception.
 	 */
-	public Response jwtConnection() throws ConfigException, ClientException {
+	public Response jwtConnection() throws ConfigException, ClientException, SignatureGenerationException {
 		try {
 			/* Open Connection with API server. */
 			openConnection();
@@ -175,6 +183,8 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			throw new ClientException(e.toString(), e);
 		} catch (ConfigException e) {
 			throw e;
+		} catch (SignatureGenerationException e) {
+			throw e;
 		} catch (ClientException e) {
 			throw e;
 		}
@@ -191,8 +201,9 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - throws custom client exception.
 	 * @throws IOException
 	 *             - throws exception if some I/O error comes.
+	 * @throws SignatureGenerationException 
 	 */
-	public Response postDocument(String request) throws ConfigException, ClientException, IOException {
+	public Response postDocument(String request) throws ConfigException, ClientException, IOException, SignatureGenerationException {
 		openConnection();
 		setHeaderData();
 		setRequestMethod(jwtMethodType);
@@ -341,9 +352,11 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - throws exception if some configuration error comes.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws SignatureGenerationException 
+	 *             - throws custom Signature generation exception.
 	 * @throws IOException
 	 */
-	protected Response executePatch(String requestData) throws ConfigException, ClientException {
+	protected Response executePatch(String requestData) throws ConfigException, ClientException, SignatureGenerationException {
 		/* For Disable the org.apache.log */
 		java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
 		java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.FINEST);
@@ -411,6 +424,8 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			throw new ClientException(e.toString(), e);
 		} catch (ConfigException e) {
 			throw e;
+		} catch (SignatureGenerationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ClientException(GlobalLabelParameters.PATCH_CLIENT_EXCEPTION.concat(e.getMessage()), e);
 		} finally {
@@ -430,9 +445,11 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 * @param httpPatch
 	 * @throws ConfigException
 	 *             - if some configuration error comes.
-	 * @return HttpPatch
+	 * @throws SignatureGenerationException 
+	 *             - throws custom Signature generation exception
 	 */
-	protected HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException {
+	protected HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException, SignatureGenerationException
+	{
 		/*
 		 * Add Request Header :: "Content Type"
 		 */

@@ -15,6 +15,7 @@ import com.cybersource.authsdk.cache.MerchantIdentityCache;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.jwtsecurity.JWTCryptoProcessorImpl;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -44,13 +45,15 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 	}
 
 	@Override
-	public String getToken() throws ConfigException {
+	public String getToken() throws ConfigException, SignatureGenerationException {
 		try {
 			return generateSignature();
 		} catch (ConfigException e) {
 			throw e;
+		} catch (SignatureGenerationException e) {
+			throw e;
 		} catch (Exception e) {
-			throw new ConfigException(GlobalLabelParameters.SIG_FAILED, e);
+			throw new SignatureGenerationException(GlobalLabelParameters.SIG_FAILED, e);
 		}
 	}
 
@@ -58,9 +61,10 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 	 * 
 	 * @return the generated signature.
 	 * @throws ConfigException
+	 * @throws SignatureGenerationException
 	 *             - if some value is missing for merchant.
 	 */
-	protected String generateSignature() throws ConfigException {
+	protected String generateSignature() throws ConfigException, SignatureGenerationException {
 		try {
 			if (merchantConfig != null) {
 				String encryptedSigMessage;
@@ -88,18 +92,17 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 				/* Preparing the Signature Header. */
 				HashMap<String, Object> customHeaders = new HashMap<>();
 				if (merchantConfig.getMerchantID() != null) {
-					customHeaders.put(JWTCryptoProcessorImpl.MERCHANT_ID, merchantConfig.getMerchantID());
+					customHeaders.put(GlobalLabelParameters.V_C_MERCHANT_ID, merchantConfig.getMerchantID());
 					customHeaders.put("v-c-partner-id", merchantConfig.getMerchantID());
 				}
 
 				String authType = merchantConfig.getAuthenticationType();
-				JWTCryptoProcessorImpl jwtCryptoProcessor = new JWTCryptoProcessorImpl();
+				JWTCryptoProcessorImpl jwtCryptoProcessor = new JWTCryptoProcessorImpl(merchantConfig.getLogger());
 				Identity identity = MerchantIdentityCache.getInstance(merchantConfig.getLogger())
 						.retrieveP12DataFromCache(merchantConfig);
 				if (GlobalLabelParameters.JWT.equalsIgnoreCase(authType)) {
 					return jwtCryptoProcessor.sign(claimSet, identity.getRsaPrivateKey(), identity.getX509(),
 							customHeaders);
-
 				} else {
 					throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 				}
@@ -107,6 +110,9 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 			} else {
 				throw new ConfigException("merchant config fields missing: keyType, key type");
 			}
+		} catch (SignatureGenerationException e) {
+			Utility.log(logger, e.getMessage(), "", Level.FATAL);
+			throw e;
 		} catch (ConfigException e) {
 			Utility.log(logger, e.getMessage(), "", Level.FATAL);
 			throw e;

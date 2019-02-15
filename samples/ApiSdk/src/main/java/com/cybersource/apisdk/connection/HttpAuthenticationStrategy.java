@@ -29,6 +29,7 @@ import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -76,7 +77,7 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	}
 
 	@Override
-	public void setHeaderData() throws ConfigException, ClientException {
+	public void setHeaderData() throws ConfigException, ClientException, SignatureGenerationException {
 
 		try {
 
@@ -94,9 +95,9 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 				 * Cybersource Merchant ID or v-c-merchant-id This ID can be
 				 * found on portal
 				 */
-				Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID, " : ".concat(merchantConfig.getMerchantID()),
+				Utility.log(logger, GlobalLabelParameters.V_C_MERCHANT_ID, " : ".concat(merchantConfig.getMerchantID()),
 						Level.INFO);
-				con.setRequestProperty(GlobalLabelParameters.V_C_MERCHANTID, merchantConfig.getMerchantID());
+				con.setRequestProperty(GlobalLabelParameters.V_C_MERCHANT_ID, merchantConfig.getMerchantID());
 			} catch (Exception e) {
 				Utility.log(logger, GlobalLabelParameters.MERCHANTID_NOT_SET, "", Level.FATAL);
 				Utility.log(logger, e);
@@ -136,6 +137,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			Utility.log(logger, GlobalLabelParameters.USERAGENT, " : ".concat(GlobalLabelParameters.USER_AGENT_VALUE),
 					Level.INFO);
 		} catch (ConfigException e) {
+			throw e;
+		} catch (SignatureGenerationException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new ClientException(GlobalLabelParameters.HEADER_SET_EXCEPTION.concat(e.getMessage()), e);
@@ -208,8 +211,10 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 *             - if some value is missing for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
+	 * @throws SignatureGenerationException 
+	               - throws custom signature generation exception.
 	 */
-	public Response getHttpConnection() throws ConfigException, ClientException {
+	public Response getHttpConnection() throws ConfigException, ClientException, SignatureGenerationException {
 
 		try {
 
@@ -279,6 +284,9 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, e.toString(), Level.FATAL);
 			throw new ClientException(GlobalLabelParameters.IO_EXCEPTION.concat(e.toString()), e);
 		} catch (ConfigException e) {
+			Utility.log(logger, e.getMessage(), "", Level.FATAL);
+			throw e;
+		} catch (SignatureGenerationException e) {
 			Utility.log(logger, e.getMessage(), "", Level.FATAL);
 			throw e;
 		} catch (ClientException e) {
@@ -423,8 +431,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 			 * Add Request Header :: "v-c-merchant-id" set value to Cybersource
 			 * Merchant ID or v-c-merchant-id This ID can be found on EBC portal
 			 */
-			httpPatch.setHeader(GlobalLabelParameters.V_C_MERCHANTID, merchantConfig.getMerchantID());
-			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID, " : ".concat(merchantConfig.getMerchantID()),
+			httpPatch.setHeader(GlobalLabelParameters.V_C_MERCHANT_ID, merchantConfig.getMerchantID());
+			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANT_ID, " : ".concat(merchantConfig.getMerchantID()),
 					Level.INFO);
 			/*
 			 * Add Request Header :: "Date" The date and time that the message

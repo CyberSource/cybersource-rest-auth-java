@@ -11,7 +11,7 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 public class TokenGeneratorFactory {
 
 	/**
-	 * @param requestType 
+	 * @param requestType
 	 * @param merchantConfig-
 	 *            - contains information of merchant.
 	 * @param requestContext
@@ -23,7 +23,6 @@ public class TokenGeneratorFactory {
 	public static TokenGenerator getAuthTokenGenerator(MerchantConfig merchantConfig, RequestContext authRequestContext)
 			throws ConfigException {
 		String authType = merchantConfig.getAuthenticationType();
-
 		if (authType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			return new HttpSignatureTokenGenerator(merchantConfig, authRequestContext);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {

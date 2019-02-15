@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
@@ -30,7 +31,7 @@ public class HttpSignatureTokenTest {
 	private String requestJsonPath = "src/test/resources/request.json";
 
 	@Test
-	public void getTokenTestForGet() throws ConfigException, IOException {
+	public void getTokenTestForGet() throws ConfigException, IOException, SignatureGenerationException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
@@ -51,7 +52,7 @@ public class HttpSignatureTokenTest {
 	}
 
 	@Test
-	public void getTokenTestForPost() throws ConfigException, IOException {
+	public void getTokenTestForPost() throws ConfigException, IOException, SignatureGenerationException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
@@ -72,7 +73,7 @@ public class HttpSignatureTokenTest {
 	}
 
 	@Test
-	public void getTokenTestForPut() throws ConfigException, IOException {
+	public void getTokenTestForPut() throws ConfigException, IOException, SignatureGenerationException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
@@ -93,7 +94,7 @@ public class HttpSignatureTokenTest {
 	}
 
 	@Test
-	public void getTokenTestForDelete() throws ConfigException, IOException {
+	public void getTokenTestForDelete() throws ConfigException, IOException, SignatureGenerationException {
 
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);

@@ -1,8 +1,13 @@
 package com.cybersource.authsdk.core;
 
 
-public class SignatureGenerationException extends RuntimeException{
-    public SignatureGenerationException() {
+public class SignatureGenerationException extends Exception {
+    /**
+	 * This class will throw signature related specific message as per exception.
+	 */
+	private static final long serialVersionUID = 5923788812181927433L;
+
+	public SignatureGenerationException() {
     }
 
     public SignatureGenerationException(String message) {

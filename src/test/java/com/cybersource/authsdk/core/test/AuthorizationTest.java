@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.Authorization;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
@@ -27,7 +28,7 @@ public class AuthorizationTest {
 	private Properties merchantProp;
 
 	@Test
-	public void getTokenTestForHttp() throws ConfigException, IOException {
+	public void getTokenTestForHttp() throws ConfigException, IOException, SignatureGenerationException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		requestContext=new RequestContext(merchantConfig.getLogger());
@@ -45,7 +46,7 @@ public class AuthorizationTest {
 	}
 
 	@Test
-	public void getTokenTestForJwt() throws ConfigException, IOException {
+	public void getTokenTestForJwt() throws ConfigException, IOException, SignatureGenerationException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		requestContext=new RequestContext(merchantConfig.getLogger());
@@ -63,7 +64,7 @@ public class AuthorizationTest {
 	}
 
 	@Test
-	public void getTokenTestFail() throws ConfigException, IOException {
+	public void getTokenTestFail() throws ConfigException, IOException, SignatureGenerationException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
 		requestContext=new RequestContext(merchantConfig.getLogger());
