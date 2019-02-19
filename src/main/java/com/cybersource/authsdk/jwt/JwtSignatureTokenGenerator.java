@@ -17,6 +17,7 @@ import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.TokenGenerator;
+import com.cybersource.authsdk.jwtsecurity.CryptoProcessor;
 import com.cybersource.authsdk.jwtsecurity.JWTCryptoProcessorImpl;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
@@ -97,7 +98,7 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 				}
 
 				String authType = merchantConfig.getAuthenticationType();
-				JWTCryptoProcessorImpl jwtCryptoProcessor = new JWTCryptoProcessorImpl(merchantConfig.getLogger());
+				CryptoProcessor jwtCryptoProcessor = JWTCryptoProcessorImpl.getInstance(merchantConfig.getLogger());
 				Identity identity = MerchantIdentityCache.getInstance(merchantConfig.getLogger())
 						.retrieveP12DataFromCache(merchantConfig);
 				if (GlobalLabelParameters.JWT.equalsIgnoreCase(authType)) {

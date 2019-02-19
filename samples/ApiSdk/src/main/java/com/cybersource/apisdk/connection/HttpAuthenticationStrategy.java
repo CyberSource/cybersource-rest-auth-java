@@ -79,70 +79,61 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	@Override
 	public void setHeaderData() throws ConfigException, ClientException, SignatureGenerationException {
 
-		try {
-
-			/* Add Request Headers :: Content Type */
-			if (requestMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
-					|| requestMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
-				Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE,
-						" : ".concat(GlobalLabelParameters.APPLICATION_JSON), Level.INFO);
-				con.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
-			}
-
-			try {
-				/*
-				 * Add Request Header :: "v-c-merchant-id" set value to
-				 * Cybersource Merchant ID or v-c-merchant-id This ID can be
-				 * found on portal
-				 */
-				Utility.log(logger, GlobalLabelParameters.V_C_MERCHANT_ID, " : ".concat(merchantConfig.getMerchantID()),
-						Level.INFO);
-				con.setRequestProperty(GlobalLabelParameters.V_C_MERCHANT_ID, merchantConfig.getMerchantID());
-			} catch (Exception e) {
-				Utility.log(logger, GlobalLabelParameters.MERCHANTID_NOT_SET, "", Level.FATAL);
-				Utility.log(logger, e);
-				throw new ConfigException(GlobalLabelParameters.MERCHANTID_NOT_SET, e);
-			}
-
-			/*
-			 * Add Request Header :: "Date" The date and time that the message
-			 * was originated from. "HTTP-date" format as defined by RFC7231.
-			 */
-			con.setRequestProperty(GlobalLabelParameters.DATE, requestContext.getDate());
-			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.getDate()), Level.INFO);
-			/*
-			 * Add Request Header :: "Host" Sandbox Host ::
-			 * apitest.cybersource.com Production Host :: api.cybersource.com
-			 */
-			con.setRequestProperty(GlobalLabelParameters.HOST, merchantConfig.getRequestHost());
-			Utility.log(logger, GlobalLabelParameters.HOST, " : ".concat(merchantConfig.getRequestHost()), Level.INFO);
-			/*
-			 * set digest if request type is POST or PUT
-			 */
-			if (requestMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
-					|| requestMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
-				con.setRequestProperty(GlobalLabelParameters.DIGEST, digestPayLoad.getDigest());
-				this.digestMessageBody = digestPayLoad.getDigest();
-				Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
-			}
-			/* Add Request Header :: "Signature" */
-			// String signatureHeaderValue =
-			// Authorization.getToken(merchantConfig, requestContext);
-			String signatureHeaderValue = tokenGenerator.getToken();
-			con.setRequestProperty(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
-			Utility.log(logger, GlobalLabelParameters.SIGNATURE, " : ".concat(signatureHeaderValue), Level.INFO);
-
-			/* Addition Request Headers : User Agent */
-			con.setRequestProperty(GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
-			Utility.log(logger, GlobalLabelParameters.USERAGENT, " : ".concat(GlobalLabelParameters.USER_AGENT_VALUE),
-					Level.INFO);
-		} catch (ConfigException e) {
-			throw e;
-		} catch (SignatureGenerationException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ClientException(GlobalLabelParameters.HEADER_SET_EXCEPTION.concat(e.getMessage()), e);
+		/* Add Request Headers :: Content Type */
+		if (requestMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
+				|| requestMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+			Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE,
+					" : ".concat(GlobalLabelParameters.APPLICATION_JSON), Level.INFO);
+			con.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 		}
+
+		try {
+			/*
+			 * Add Request Header :: "v-c-merchant-id" set value to Cybersource
+			 * Merchant ID or v-c-merchant-id This ID can be found on portal
+			 */
+			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANT_ID, " : ".concat(merchantConfig.getMerchantID()),
+					Level.INFO);
+			con.setRequestProperty(GlobalLabelParameters.V_C_MERCHANT_ID, merchantConfig.getMerchantID());
+		} catch (Exception e) {
+			Utility.log(logger, GlobalLabelParameters.MERCHANTID_NOT_SET, "", Level.FATAL);
+			Utility.log(logger, e);
+			throw new ConfigException(GlobalLabelParameters.MERCHANTID_NOT_SET, e);
+		}
+
+		/*
+		 * Add Request Header :: "Date" The date and time that the message was
+		 * originated from. "HTTP-date" format as defined by RFC7231.
+		 */
+		con.setRequestProperty(GlobalLabelParameters.DATE, requestContext.getDate());
+		Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.getDate()), Level.INFO);
+		/*
+		 * Add Request Header :: "Host" Sandbox Host :: apitest.cybersource.com
+		 * Production Host :: api.cybersource.com
+		 */
+		con.setRequestProperty(GlobalLabelParameters.HOST, merchantConfig.getRequestHost());
+		Utility.log(logger, GlobalLabelParameters.HOST, " : ".concat(merchantConfig.getRequestHost()), Level.INFO);
+		/*
+		 * set digest if request type is POST or PUT
+		 */
+		if (requestMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
+				|| requestMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
+			con.setRequestProperty(GlobalLabelParameters.DIGEST, digestPayLoad.getDigest());
+			this.digestMessageBody = digestPayLoad.getDigest();
+			Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
+		}
+		/* Add Request Header :: "Signature" */
+		// String signatureHeaderValue =
+		// Authorization.getToken(merchantConfig, requestContext);
+		String signatureHeaderValue = tokenGenerator.getToken();
+		con.setRequestProperty(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
+		Utility.log(logger, GlobalLabelParameters.SIGNATURE, " : ".concat(signatureHeaderValue), Level.INFO);
+
+		/* Addition Request Headers : User Agent */
+		con.setRequestProperty(GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
+		Utility.log(logger, GlobalLabelParameters.USERAGENT, " : ".concat(GlobalLabelParameters.USER_AGENT_VALUE),
+				Level.INFO);
+
 	}
 
 	/**
@@ -211,8 +202,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 *             - if some value is missing for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws SignatureGenerationException 
-	               - throws custom signature generation exception.
+	 * @throws SignatureGenerationException
+	 *             - throws custom signature generation exception.
 	 */
 	public Response getHttpConnection() throws ConfigException, ClientException, SignatureGenerationException {
 
@@ -254,8 +245,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 				Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE.concat(" : "), responseObj.getResponseCode(),
 						Level.INFO);
 				logResponseCodeMessage(responseCode, logger);
-				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID.concat(" : "), responseObj.getVcCorelationId(),
-						Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID.concat(" : "),
+						responseObj.getVcCorelationId(), Level.INFO);
 
 				BufferedReader in = null;
 				/* Reading Response Message */
@@ -381,8 +372,8 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 
 				Header header = response.getFirstHeader(GlobalLabelParameters.V_C_CORRELATION_ID);
 				responseObj.setVcCorelationId(header.getValue());
-				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID.concat(" : "), responseObj.getVcCorelationId(),
-						Level.INFO);
+				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID.concat(" : "),
+						responseObj.getVcCorelationId(), Level.INFO);
 
 				StringBuilder responseBuilder = new StringBuilder();
 				responseBuilder.append(responseString);
@@ -420,64 +411,60 @@ public class HttpAuthenticationStrategy implements AuthenticationStrategy, Heade
 	 *             - if some configuration error comes.
 	 * @return HttpPatch
 	 * @throws ClientException
+	 * @throws SignatureGenerationException
 	 */
-	protected HttpPatch setPatchHeader(HttpPatch httpPatch) throws ConfigException, ClientException {
-		try {
-			/* Addition Request Header : "Content Type" */
-			httpPatch.setHeader(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
-			Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE,
-					" : ".concat(GlobalLabelParameters.APPLICATION_JSON), Level.INFO);
-			/*
-			 * Add Request Header :: "v-c-merchant-id" set value to Cybersource
-			 * Merchant ID or v-c-merchant-id This ID can be found on EBC portal
-			 */
-			httpPatch.setHeader(GlobalLabelParameters.V_C_MERCHANT_ID, merchantConfig.getMerchantID());
-			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANT_ID, " : ".concat(merchantConfig.getMerchantID()),
-					Level.INFO);
-			/*
-			 * Add Request Header :: "Date" The date and time that the message
-			 * was originated from. "HTTP-date" format as defined by RFC7231.
-			 */
-			httpPatch.setHeader(GlobalLabelParameters.DATE, requestContext.getDate());
-			Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.getDate()), Level.INFO);
-			/*
-			 * Add Request Header :: "Host" Sandbox Host ::
-			 * apitest.cybersource.com Production Host :: api.cybersource.com
-			 */
-			httpPatch.setHeader(GlobalLabelParameters.HOST, merchantConfig.getRequestHost());
-			Utility.log(logger, GlobalLabelParameters.HOST, " : ".concat(merchantConfig.getRequestHost()), Level.INFO);
+	protected HttpPatch setPatchHeader(HttpPatch httpPatch)
+			throws ConfigException, ClientException, SignatureGenerationException {
+		/* Addition Request Header : "Content Type" */
+		httpPatch.setHeader(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
+		Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE, " : ".concat(GlobalLabelParameters.APPLICATION_JSON),
+				Level.INFO);
+		/*
+		 * Add Request Header :: "v-c-merchant-id" set value to Cybersource
+		 * Merchant ID or v-c-merchant-id This ID can be found on EBC portal
+		 */
+		httpPatch.setHeader(GlobalLabelParameters.V_C_MERCHANT_ID, merchantConfig.getMerchantID());
+		Utility.log(logger, GlobalLabelParameters.V_C_MERCHANT_ID, " : ".concat(merchantConfig.getMerchantID()),
+				Level.INFO);
+		/*
+		 * Add Request Header :: "Date" The date and time that the message was
+		 * originated from. "HTTP-date" format as defined by RFC7231.
+		 */
+		httpPatch.setHeader(GlobalLabelParameters.DATE, requestContext.getDate());
+		Utility.log(logger, GlobalLabelParameters.DATE, " : ".concat(requestContext.getDate()), Level.INFO);
+		/*
+		 * Add Request Header :: "Host" Sandbox Host :: apitest.cybersource.com
+		 * Production Host :: api.cybersource.com
+		 */
+		httpPatch.setHeader(GlobalLabelParameters.HOST, merchantConfig.getRequestHost());
+		Utility.log(logger, GlobalLabelParameters.HOST, " : ".concat(merchantConfig.getRequestHost()), Level.INFO);
 
-			/*
-			 * Add Request Header :: "profile-id"
-			 */
-			httpPatch.setHeader(GlobalLabelParameters.PROFILE_ID, GlobalLabelParameters.PROFILE_ID_VAL);
-			Utility.log(logger, GlobalLabelParameters.PROFILE_ID, " : ".concat(GlobalLabelParameters.PROFILE_ID_VAL),
-					Level.INFO);
+		/*
+		 * Add Request Header :: "profile-id"
+		 */
+		httpPatch.setHeader(GlobalLabelParameters.PROFILE_ID, GlobalLabelParameters.PROFILE_ID_VAL);
+		Utility.log(logger, GlobalLabelParameters.PROFILE_ID, " : ".concat(GlobalLabelParameters.PROFILE_ID_VAL),
+				Level.INFO);
 
-			/*
-			 * Add Request Header :: "Digest"
-			 */
+		/*
+		 * Add Request Header :: "Digest"
+		 */
 
-			httpPatch.setHeader(GlobalLabelParameters.DIGEST, digestPayLoad.getDigest());
-			this.digestMessageBody = digestPayLoad.getDigest();
-			Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
+		httpPatch.setHeader(GlobalLabelParameters.DIGEST, digestPayLoad.getDigest());
+		this.digestMessageBody = digestPayLoad.getDigest();
+		Utility.log(logger, GlobalLabelParameters.DIGEST, " : ".concat(this.digestMessageBody), Level.INFO);
 
-			/* Add Request Header :: "Signature" */
-			// Authorization.getToken(merchantConfig, requestContext);
-			String signatureHeaderValue = tokenGenerator.getToken();
-			httpPatch.setHeader(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
-			Utility.log(logger, GlobalLabelParameters.SIGNATURE, " : ".concat(signatureHeaderValue), Level.INFO);
+		/* Add Request Header :: "Signature" */
+		// Authorization.getToken(merchantConfig, requestContext);
+		String signatureHeaderValue = tokenGenerator.getToken();
+		httpPatch.setHeader(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
+		Utility.log(logger, GlobalLabelParameters.SIGNATURE, " : ".concat(signatureHeaderValue), Level.INFO);
 
-			/* Addition Request Header : "User Agent" */
-			httpPatch.setHeader(GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
-			Utility.log(logger, GlobalLabelParameters.USERAGENT, " : ".concat(GlobalLabelParameters.USER_AGENT_VALUE),
-					Level.INFO);
-			return httpPatch;
-		} catch (ConfigException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ClientException(GlobalLabelParameters.HEADER_SET_EXCEPTION.concat(e.getMessage()), e);
-		}
+		/* Addition Request Header : "User Agent" */
+		httpPatch.setHeader(GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
+		Utility.log(logger, GlobalLabelParameters.USERAGENT, " : ".concat(GlobalLabelParameters.USER_AGENT_VALUE),
+				Level.INFO);
+		return httpPatch;
 	}
 
 }

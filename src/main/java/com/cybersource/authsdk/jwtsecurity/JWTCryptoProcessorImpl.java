@@ -23,9 +23,21 @@ import com.nimbusds.jose.util.Base64;
 
 public class JWTCryptoProcessorImpl implements CryptoProcessor {
 	private Logger logger;
+	private static CryptoProcessor cryptoProcessor;
 
-	public JWTCryptoProcessorImpl(Logger logger) {
+	private JWTCryptoProcessorImpl(Logger logger) {
 		this.logger = logger;
+	}
+
+	public static CryptoProcessor getInstance(Logger logger) {
+		if (cryptoProcessor == null) {
+			synchronized (CryptoProcessor.class) {
+				if (cryptoProcessor == null) {
+					cryptoProcessor = new JWTCryptoProcessorImpl(logger);
+				}
+			}
+		}
+		return cryptoProcessor;
 	}
 
 	public String sign(String content, PrivateKey privateKey, X509Certificate x509Certificate,

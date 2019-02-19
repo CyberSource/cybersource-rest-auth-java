@@ -160,9 +160,9 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 	 *             - throws custom client exception.
 	 * @throws SignatureGenerationException 
 	 *             - throws custom signature generation exception.
+	 * @throws IOException 
 	 */
-	public Response jwtConnection() throws ConfigException, ClientException, SignatureGenerationException {
-		try {
+	public Response jwtConnection() throws ConfigException, ClientException, SignatureGenerationException, IOException {
 			/* Open Connection with API server. */
 			openConnection();
 			setHeaderData();
@@ -178,16 +178,6 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 			logResponseCodeMessage(responseCode, logger);
 			return this.connection.getErrorStream() != null ? this.readInputStream(this.connection.getErrorStream())
 					: this.readInputStream(this.connection.getInputStream());
-
-		} catch (IOException e) {
-			throw new ClientException(e.toString(), e);
-		} catch (ConfigException e) {
-			throw e;
-		} catch (SignatureGenerationException e) {
-			throw e;
-		} catch (ClientException e) {
-			throw e;
-		}
 	}
 
 	/**
@@ -458,8 +448,6 @@ public class JWTAuthenticationStrategy implements AuthenticationStrategy, Header
 		httpPatch.setHeader(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 
 		/* Add Request Header :: "Signature" */
-		// String encryptedJWTSignature = Authorization.getToken(merchantConfig,
-		// requestContext);
 		String encryptedJWTSignature = tokenGenerator.getToken();
 		if (StringUtils.isBlank(encryptedJWTSignature)) {
 			isSignatureAlert = true;
