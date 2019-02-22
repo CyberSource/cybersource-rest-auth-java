@@ -20,7 +20,7 @@ import com.cybersource.authsdk.util.Utility;
  */
 public class MerchantIdentityCache {
 	private ConcurrentHashMap<String, Identity> p12IdentityMap = new ConcurrentHashMap<>();
-	private static MerchantIdentityCache instance;
+	private static volatile MerchantIdentityCache instance;
 	public Logger log;
 
 	public static MerchantIdentityCache getInstance(Logger logger) {

@@ -7,10 +7,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.cybersource.authsdk.core.RequestContext;
-import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.http.HttpSignatureTokenGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;

@@ -23,7 +23,7 @@ import com.nimbusds.jose.util.Base64;
 
 public class JWTCryptoProcessorImpl implements CryptoProcessor {
 	private Logger logger;
-	private static CryptoProcessor cryptoProcessor;
+	private static volatile CryptoProcessor cryptoProcessor;
 
 	private JWTCryptoProcessorImpl(Logger logger) {
 		this.logger = logger;

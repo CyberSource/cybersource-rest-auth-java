@@ -91,8 +91,9 @@ public class SignatureGenerator {
 	/**
 	 * @param
 	 * @return request target as per request type.
+	 * @throws ConfigException 
 	 */
-	private static String getRequestTarget(RequestContext authRequestContext) {
+	private static String getRequestTarget(RequestContext authRequestContext) throws ConfigException {
 		String requestTarget;
 		String requestType = authRequestContext.getRequestMethodType();
 		switch (requestType) {
@@ -117,8 +118,7 @@ public class SignatureGenerator {
 					+ authRequestContext.getRequestTarget();
 			break;
 		default:
-			requestTarget = null;
-			break;
+			throw new ConfigException(GlobalLabelParameters.REQUEST_VALIDATION_ERROR);
 		}
 		return requestTarget;
 	}

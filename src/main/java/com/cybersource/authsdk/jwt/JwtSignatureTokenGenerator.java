@@ -65,7 +65,7 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 	 * @throws SignatureGenerationException
 	 *             - if some value is missing for merchant.
 	 */
-	protected String generateSignature() throws ConfigException, SignatureGenerationException {
+	public String generateSignature() throws ConfigException, SignatureGenerationException {
 		try {
 			if (merchantConfig != null) {
 				String encryptedSigMessage;

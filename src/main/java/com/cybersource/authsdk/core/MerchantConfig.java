@@ -1,7 +1,6 @@
 package com.cybersource.authsdk.core;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -54,7 +53,7 @@ public class MerchantConfig {
 	private String proxyAddress;
 	private int proxyPort;
 
-	private static MerchantConfig instance;
+	private static volatile MerchantConfig instance;
 
 	private MerchantConfig(Properties props) throws ConfigException {
 		if (props != null) {
@@ -65,16 +64,16 @@ public class MerchantConfig {
 		}
 	}
 
-	public static MerchantConfig getInstance(Properties properties) throws IOException, ConfigException {
+	public static MerchantConfig getInstance(Properties properties) throws ConfigException {
 		if (instance == null) {
 			synchronized (MerchantConfig.class) {
-				if(instance == null) {
+				if (instance == null) {
 					instance = new MerchantConfig(properties);
 				}
-		   }
+			}
 		}
 		return instance;
-	}	
+	}
 
 	public String getRunEnvironment() {
 		return runEnvironment;
@@ -318,8 +317,7 @@ public class MerchantConfig {
 			/* Optional use [ TIME OUT ] */
 			this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
 			this.proxyPort = this.getIntegerProperty(this.merchantID, "proxyPort", 8080);
-			// this.proxyUser =
-			// this.getProperty(this.merchantID,"proxyUser").trim();
+			this.proxyUser = this.getProperty(this.merchantID, "proxyUser");
 			this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
 			this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
 			/* Run Environment. */
@@ -524,7 +522,6 @@ public class MerchantConfig {
 		if (StringUtils.isBlank(keyAlias)) {
 			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY, merchantID, Level.ERROR);
 			setKeyAlias(merchantID);
-
 		} else if (!keyAlias.equalsIgnoreCase(merchantID)) {
 			setKeyAlias(merchantID);
 			Utility.log(log, GlobalLabelParameters.KEY_ALIAS_MISMATCH, "", Level.ERROR);
@@ -562,6 +559,8 @@ public class MerchantConfig {
 				throw new ConfigException(GlobalLabelParameters.KEY_FILE_NOT_FOUND.concat(keysDirectory).concat("/")
 						.concat(keyFilename).concat(GlobalLabelParameters.P12_EXTENSION));
 			}
+		} catch (ConfigException e) {
+			throw e;
 		} catch (Exception e) {
 			setKeyFile(null);
 			throw new ConfigException(GlobalLabelParameters.KEY_FILE_NOT_FOUND);

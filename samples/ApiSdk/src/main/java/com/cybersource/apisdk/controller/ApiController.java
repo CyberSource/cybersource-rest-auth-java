@@ -172,8 +172,8 @@ public class ApiController {
 	private void validateRequestDetails(String requestMethodType, String jsonPath, Logger logger)
 			throws ConfigException {
 		if (!isRequestMethodTypeValid(requestMethodType)) {
-			Utility.log(logger, GlobalLabelParameters.AUTH_ERROR, "", Level.ERROR);
-			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
+			Utility.log(logger, GlobalLabelParameters.REQUEST_VALIDATION_ERROR, "", Level.ERROR);
+			throw new ConfigException(GlobalLabelParameters.REQUEST_VALIDATION_ERROR);
 		}
 
 		if (!requestMethodType.equalsIgnoreCase(GlobalLabelParameters.GET)

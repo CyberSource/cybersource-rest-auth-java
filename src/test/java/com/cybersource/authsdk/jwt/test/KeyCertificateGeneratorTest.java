@@ -96,7 +96,6 @@ public class KeyCertificateGeneratorTest {
 			KeyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
 			thrown.expectMessage("merchant config fields missing: recipientId, key file");
 		} else {
-			merchantConfig.checkKeyFile();
 			X509Certificate certificate = KeyCertificateGenerator.initializeRecipientCertificate(merchantConfig);
 			Assert.assertNotNull(certificate);
 		}

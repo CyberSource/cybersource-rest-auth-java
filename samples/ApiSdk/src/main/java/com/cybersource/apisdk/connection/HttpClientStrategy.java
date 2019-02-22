@@ -1,32 +1,44 @@
 package com.cybersource.apisdk.connection;
 
-import java.io.IOException;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
+import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
+import com.cybersource.authsdk.core.ConfigException;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 
 /**
  * This interface will be used to get common behavior for connection for JWT and
  * HTTP.
  */
-public interface AuthenticationStrategy {
+public interface HttpClientStrategy {
 
 	/**
-	 * Depending on the URL, connection is opened to the API server.
+	 * Send Request
 	 * 
-	 * @throws ClientException
-	 *             - throws custom client exception message.
-	 * @throws IOException
-	 *             - throws exception if some I/O error comes.
+	 * @param headerMap
+	 * @return Response
 	 */
-	void openConnection() throws ClientException;
+	Response sendRequest(Map<String, String> headerMap)
+			throws ConfigException, ClientException, SignatureGenerationException;
 
 	/**
-	 * After successfully operation, connection is nullified.
+	 * The response message obtained form the server is sent for masking the
+	 * important fields.
+	 * 
+	 * @param serverResponse
+	 * @param title
 	 */
-	void endConnection();
+	void maskingPayload(String serverResponse, String title);
 
+	/**
+	 * Sets the Response code message
+	 * 
+	 * @param responseCode
+	 * @param logger
+	 */
 	default void logResponseCodeMessage(Integer responseCode, Logger logger) {
 		if (logger != null) {
 			String tempResponseCode = String.valueOf(responseCode);
