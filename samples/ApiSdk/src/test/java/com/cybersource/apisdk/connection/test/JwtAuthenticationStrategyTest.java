@@ -1,29 +1,21 @@
 package com.cybersource.apisdk.connection.test;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
-import com.cybersource.apisdk.connection.JWTAuthenticationStrategy;
 import com.cybersource.apisdk.model.Response;
-import com.cybersource.apisdk.service.ClientException;
-import com.cybersource.authsdk.core.RequestContext;
-import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.PropertiesUtil;
-
-import junit.framework.Assert;
 
 public class JwtAuthenticationStrategyTest {
 
-	@Mock
-	JWTAuthenticationStrategy jwtUrlConnection;
+//	@Mock
+//	JWTAuthenticationStrategy jwtUrlConnection;
 
 	@Mock
 	MerchantConfig merchantConfig;

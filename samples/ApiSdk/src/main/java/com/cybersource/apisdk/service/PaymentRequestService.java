@@ -1,12 +1,13 @@
 package com.cybersource.apisdk.service;
 
-import com.cybersource.apisdk.connection.HttpAuthenticationStrategy;
-import com.cybersource.apisdk.connection.JWTAuthenticationStrategy;
+import org.apache.commons.lang.StringUtils;
+
+import com.cybersource.apisdk.connection.HttpClientWrapper;
 import com.cybersource.apisdk.model.Response;
-import com.cybersource.authsdk.core.RequestContext;
-import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 /**
@@ -38,17 +39,13 @@ public class PaymentRequestService {
 	 *             - contains information for merchant.
 	 * @throws ClientException
 	 *             - throws custom client exception.
-	 * @throws SignatureGenerationException 
+	 * @throws SignatureGenerationException
 	 *             - throws custom signature exception.
 	 */
 	public Response processPaymentRequest() throws ConfigException, ClientException, SignatureGenerationException {
-		String authenticatonType = merchantConfig.getAuthenticationType();
-		if (authenticatonType != null && authenticatonType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			HttpAuthenticationStrategy connection = new HttpAuthenticationStrategy(merchantConfig, requestContext);
-			return connection.getHttpConnection();
-		} else if (authenticatonType != null && authenticatonType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			JWTAuthenticationStrategy jwtConnection = new JWTAuthenticationStrategy(merchantConfig, requestContext);
-			return jwtConnection.getJwtConnection();
+		if (StringUtils.isNotBlank(merchantConfig.getAuthenticationType())) {
+			HttpClientWrapper httpclientwrappper = HttpClientWrapper.getInstance(merchantConfig);
+			return httpclientwrappper.sendRequest(requestContext);
 		} else {
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 		}
