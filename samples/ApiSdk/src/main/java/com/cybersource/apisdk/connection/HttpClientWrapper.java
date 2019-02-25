@@ -85,15 +85,7 @@ public class HttpClientWrapper {
 	 */
 	public Response sendRequest(RequestContext requestContext)
 			throws ConfigException, ClientException, SignatureGenerationException {
-		/* For Disable the org.apache.log */
-		java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
-		java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.FINEST);
-		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
-		System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
-		System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "ERROR");
-		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "ERROR");
-		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.headers", "ERROR");
-		/* For Disable the org.apache.log */
+		disableHttpClientLog(); /* Disable the HttpClient log */
 		CloseableHttpResponse response = null;
 		try {
 			String requestBody = requestContext.getRequestBody();
@@ -191,11 +183,24 @@ public class HttpClientWrapper {
 				if (response != null) {
 					response.close();
 				}
-				httpClient = null;
 			} catch (IOException e) {
 				Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, e.toString(), Level.FATAL);
 			}
 		}
+	}
+
+	/**
+	 * disableHttpClientLog - For disable the apache client logs
+	 */
+	private void disableHttpClientLog() {
+		/* For Disable the org.apache.commons.logging */
+		java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
+		java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.FINEST);
+		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+		System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+		System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "ERROR");
+		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "ERROR");
+		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.headers", "ERROR");
 	}
 
 	/**
