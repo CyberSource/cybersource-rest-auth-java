@@ -76,7 +76,7 @@ public class MerchantIdentityCache {
 	 *            - contains merchant Configuration
 	 * @throws ConfigException
 	 */
-	public Identity retrieveP12DataFromCache(MerchantConfig merchantConfig) throws SignatureGenerationException {
+	public Identity retrieveP12DataFromCache(MerchantConfig merchantConfig) throws SignatureGenerationException, ConfigException {
 		try {
 			Identity identity = p12IdentityMap.get(merchantConfig.getMerchantID());
 			if (identity != null && !isLastModifiedTimeUpdated(merchantConfig, identity)) {
@@ -86,12 +86,13 @@ public class MerchantIdentityCache {
 				Utility.log(log, GlobalLabelParameters.CACHE_EXTEND, "", Level.INFO);
 				return setUpP12Cache(merchantConfig);
 			}
+		} catch (ConfigException e) {
+			throw e;
 		} catch (SignatureGenerationException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new SignatureGenerationException("Eception occured while setting the cache", e);
+			throw new SignatureGenerationException("Eception occured while setting the cache :: ".concat(e.getMessage()), e);
 		}
-
 	}
 
 	/**

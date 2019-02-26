@@ -53,7 +53,6 @@ public class HttpClientWrapper {
 	private MerchantConfig merchantConfig;
 	private static volatile HttpClientWrapper instance;
 	private Logger logger;
-	HttpClient httpClient = null;
 
 	private HttpClientWrapper(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
@@ -88,6 +87,7 @@ public class HttpClientWrapper {
 			throws ConfigException, ClientException, SignatureGenerationException {
 		disableHttpClientLog(); /* Disable the HttpClient log */
 		CloseableHttpResponse response = null;
+		HttpClient httpClient = null;
 		try {
 			String requestBody = requestContext.getRequestBody();
 			Utility.log(logger, "URL : ", requestContext.getUrl(), Level.INFO);
@@ -134,7 +134,8 @@ public class HttpClientWrapper {
 				setHeader(httpDelete, getHeader(requestContext));
 				response = (CloseableHttpResponse) httpClient.execute(httpDelete, context);
 			} else {
-				throw new ConfigException(GlobalLabelParameters.REQUEST_VALIDATION_ERROR);
+				throw new ClientException(
+						"HTTP Request method invalid. Supported types(POST, PUT, GET, DELETE, PATCH)");
 			}
 
 			String responseString = "";
@@ -180,7 +181,13 @@ public class HttpClientWrapper {
 			Utility.log(logger, e);
 			throw new ClientException("Exception in sendRequest method : ".concat(e.getMessage()), e);
 		} finally {
-			HttpClientUtils.closeQuietly(response);
+			if (response != null) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, e.toString(), Level.FATAL);
+				}
+			}
 			HttpClientUtils.closeQuietly(httpClient);
 		}
 	}
@@ -213,7 +220,7 @@ public class HttpClientWrapper {
 		} else if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			return getJWTHeader(requestContext);
 		} else {
-			return null;
+			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 		}
 	}
 

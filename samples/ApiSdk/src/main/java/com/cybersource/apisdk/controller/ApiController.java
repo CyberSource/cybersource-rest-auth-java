@@ -9,10 +9,10 @@ import org.apache.logging.log4j.Logger;
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.ClientException;
 import com.cybersource.apisdk.service.PaymentRequestService;
-import com.cybersource.authsdk.core.RequestContext;
-import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
+import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
 
@@ -128,22 +128,26 @@ public class ApiController {
 	 */
 	private Response processPayment(MerchantConfig merchantConfig, RequestContext requestContext)
 			throws ConfigException, ClientException, SignatureGenerationException {
-		Response responseObj = null;
-		logger = merchantConfig.getLogger();
-		Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSACTION, "", Level.INFO);
-		validateRequestDetails(requestContext.getRequestMethodType(), requestContext.getRequestJsonPath(), logger);
-		Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestContext.getRequestTarget(), Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(),
-				Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : ".concat(requestContext.getRequestMethodType()),
-				Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " ".concat(merchantConfig.toString()), Level.INFO);
-		PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestContext);
-		responseObj = paymentRequest.processPaymentRequest();
-		Utility.log(logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
-		Utility.log(logger, " ", "", Level.OFF);
-		return responseObj;
-
+		try {
+			Response responseObj = null;
+			logger = merchantConfig.getLogger();
+			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSACTION, "", Level.INFO);
+			validateRequestDetails(requestContext.getRequestMethodType(), requestContext.getRequestJsonPath(), logger);
+			Utility.log(logger, GlobalLabelParameters.USING_REQUEST_TARGET, requestContext.getRequestTarget(),
+					Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE, merchantConfig.getAuthenticationType(),
+					Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE, " : ".concat(requestContext.getRequestMethodType()),
+					Level.INFO);
+			Utility.log(logger, GlobalLabelParameters.MERCH_CONF_LABEL, " ".concat(merchantConfig.toString()),
+					Level.INFO);
+			PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, requestContext);
+			responseObj = paymentRequest.processPaymentRequest();
+			return responseObj;
+		} finally {
+			Utility.log(logger, GlobalLabelParameters.END_TRANSACTION, "", Level.INFO);
+			Utility.log(logger, " ", "", Level.OFF);
+		}
 	}
 
 	/**
