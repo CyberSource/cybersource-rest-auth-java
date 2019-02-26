@@ -25,6 +25,7 @@ import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ByteArrayEntity;
@@ -179,13 +180,8 @@ public class HttpClientWrapper {
 			Utility.log(logger, e);
 			throw new ClientException("Exception in sendRequest method : ".concat(e.getMessage()), e);
 		} finally {
-			try {
-				if (response != null) {
-					response.close();
-				}
-			} catch (IOException e) {
-				Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, e.toString(), Level.FATAL);
-			}
+			HttpClientUtils.closeQuietly(response);
+			HttpClientUtils.closeQuietly(httpClient);
 		}
 	}
 
