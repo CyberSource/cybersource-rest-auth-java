@@ -55,8 +55,6 @@ public class MerchantConfigTest {
 		Assert.assertEquals(merchantConfig.getAuthenticationType(), "HTTP_Signature");
 	}
 
-	// Test cases for keyPassword check
-
 	@Test
 	public void checkKeyPasswordTest() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();

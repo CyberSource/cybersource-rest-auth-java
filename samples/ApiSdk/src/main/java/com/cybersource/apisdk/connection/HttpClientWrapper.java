@@ -15,6 +15,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpMessage;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -149,7 +150,9 @@ public class HttpClientWrapper {
 				logResponseCodeMessage(responseCode, logger);
 
 				Header header = response.getFirstHeader(GlobalLabelParameters.V_C_CORRELATION_ID);
-				responseObj.setVcCorelationId(header.getValue());
+				if(header != null) {
+					responseObj.setVcCorelationId(header.getValue());
+				}
 				Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID.concat(" : "),
 						responseObj.getVcCorelationId(), Level.INFO);
 
@@ -164,6 +167,9 @@ public class HttpClientWrapper {
 				Utility.log(logger, GlobalLabelParameters.EMPTY_RESPONSE, "", Level.FATAL);
 				throw new ClientException(GlobalLabelParameters.EMPTY_RESPONSE);
 			}
+		} catch (ClientProtocolException e) {
+			Utility.log(logger, GlobalLabelParameters.URL_NOT_SET, e.toString(), Level.FATAL);
+			throw new ClientException(GlobalLabelParameters.URL_NOT_SET.concat(e.toString()), e);
 		} catch (IOException e) {
 			Utility.log(logger, GlobalLabelParameters.IO_EXCEPTION, e.toString(), Level.FATAL);
 			throw new ClientException(GlobalLabelParameters.IO_EXCEPTION.concat(e.toString()), e);

@@ -46,7 +46,6 @@ public class RequestContextTest {
 	public void getRequestBodyTestPass() throws ConfigException, IOException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
 		requestContext = new RequestContext(merchantConfig.getLogger());
 		requestContext.setRequestJsonPath(requestJsonPath);
 
@@ -58,7 +57,6 @@ public class RequestContextTest {
 	public void getRequestBodyTestFail() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
 		requestContext = new RequestContext(merchantConfig.getLogger());
 		requestContext.setRequestMethodType("POST");
 		requestContext.setRequestJsonPath(testJsonPath);
@@ -70,7 +68,6 @@ public class RequestContextTest {
 	public void isRequestTypeMethodValidTestForGet() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
 		requestContext = new RequestContext(merchantConfig.getLogger());
 		requestContext.setRequestMethodType("GET");
 
@@ -83,7 +80,6 @@ public class RequestContextTest {
 	public void isRequestTypeMethodValidTestForPost() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
 		requestContext = new RequestContext(merchantConfig.getLogger());
 		requestContext.setRequestMethodType("POST");
 
@@ -95,7 +91,6 @@ public class RequestContextTest {
 	public void isRequestTypeMethodValidTestForPut() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
 		requestContext = new RequestContext(merchantConfig.getLogger());
 		requestContext.setRequestMethodType("PUT");
 
@@ -107,7 +102,6 @@ public class RequestContextTest {
 	public void isRequestTypeMethodValidTestForDelete() throws ConfigException, IOException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
 		requestContext = new RequestContext(merchantConfig.getLogger());
 		requestContext.setRequestMethodType("DELETE");
 
@@ -119,7 +113,6 @@ public class RequestContextTest {
 	public void isRequestTypeMethodValidTestFail() throws ConfigException, IOException {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
 		requestContext = new RequestContext(merchantConfig.getLogger());
 		requestContext.setRequestMethodType("option");
 

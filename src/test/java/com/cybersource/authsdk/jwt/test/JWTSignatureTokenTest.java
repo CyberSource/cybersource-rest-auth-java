@@ -1,17 +1,18 @@
 package com.cybersource.authsdk.jwt.test;
 
-import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Properties;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
-import com.cybersource.authsdk.core.SignatureGenerationException;
 import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
@@ -33,6 +34,15 @@ public class JWTSignatureTokenTest {
 	private String requestJsonPath = "src/test/resources/request.json";
 	private String testJsonPath = "src/test/resources/test.json";
 	private Properties merchantProp;
+
+	@Before
+	public void resetBeforeSingleton()
+			throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+		Field instance = MerchantConfig.class.getDeclaredField("instance");
+		instance.setAccessible(true);
+		instance.set(null, null);
+		merchantProp = null;
+	}
 
 	@Test
 	public void getTokenTestForGet() throws Exception {
@@ -147,19 +157,21 @@ public class JWTSignatureTokenTest {
 	public void getTokenTestFail() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setKeyFile(null);
 		requestContext = new RequestContext(merchantConfig.getLogger());
 		requestContext.setRequestMethodType(GlobalLabelParameters.POST);
 		requestContext.setRequestJsonPath(requestJsonPath);
         
-		File keyFile = merchantConfig.getKeyFile();
-		merchantConfig.setKeyFile(null); // Setting null
+		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			Assert.assertTrue(true);
+		} else {
+			thrown.expect(ConfigException.class);
+			thrown.expectMessage(GlobalLabelParameters.SIG_FAILED);
 
-		thrown.expect(SignatureGenerationException.class);
-
-		jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, requestContext);
-		jwtSignatureToken.getToken();
-		merchantConfig.setKeyFile(keyFile); // Reset
-
+			jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, requestContext);
+			jwtSignatureToken.getToken();
+		}
+		
 	}
 
 	@Test

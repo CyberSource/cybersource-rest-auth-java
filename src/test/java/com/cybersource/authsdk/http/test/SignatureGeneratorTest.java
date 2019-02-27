@@ -117,7 +117,7 @@ public class SignatureGeneratorTest {
 
 		thrown.expect(ConfigException.class);
 		thrown.expectMessage(GlobalLabelParameters.REQUEST_VALIDATION_ERROR);
-		
+
 		SignatureGenerator.generateSignature(merchantConfig, requestContext);
 	}
 

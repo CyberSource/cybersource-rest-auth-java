@@ -8,19 +8,17 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
-import com.cybersource.authsdk.cache.MerchantIdentityCache;
 import com.cybersource.authsdk.cache.Identity;
-import com.cybersource.authsdk.core.RequestContext;
-import com.cybersource.authsdk.core.SignatureGenerationException;
+import com.cybersource.authsdk.cache.MerchantIdentityCache;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
 import junit.framework.Assert;
 
 public class CacheTest {
-    
-	
+
 	private Properties merchantProp;
 	private String requestJsonPath = "src/test/resources/request.json";
 	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
@@ -30,21 +28,20 @@ public class CacheTest {
 
 	@Mock
 	MerchantIdentityCache cache;
-	
+
 	@Mock
 	MerchantConfig merchantConfig;
-	
+
 	@Mock
-	RequestContext authRequestContext;
+	RequestContext requestContext;
 
 	@Test
 	public void setP12FileDetailsInCacheEmptyTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
-		authRequestContext=new RequestContext(merchantConfig.getLogger());
-		authRequestContext.setRequestMethodType("POST");
-		authRequestContext.setRequestJsonPath(requestJsonPath);
+		requestContext = new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("POST");
+		requestContext.setRequestJsonPath(requestJsonPath);
 
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			merchantConfig.checkKeyFile();
@@ -59,11 +56,10 @@ public class CacheTest {
 	public void setP12FileDetailsInCacheNotEmptyTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
-		authRequestContext=new RequestContext(merchantConfig.getLogger());
-		authRequestContext.setRequestMethodType("POST");
-		authRequestContext.setRequestJsonPath(requestJsonPath);
-		
+		requestContext = new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("POST");
+		requestContext.setRequestJsonPath(requestJsonPath);
+
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			merchantConfig.checkKeyFile();
 			cache = MerchantIdentityCache.getInstance(merchantConfig.getLogger());
@@ -78,43 +74,40 @@ public class CacheTest {
 	public void setP12FileDetailsInCacheTimeStampTest() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
-		authRequestContext=new RequestContext(merchantConfig.getLogger());
-		authRequestContext.setRequestMethodType("POST");
-		authRequestContext.setRequestJsonPath(requestJsonPath);
-		
+		requestContext = new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("POST");
+		requestContext.setRequestJsonPath(requestJsonPath);
+
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Identity identity = null;
 			merchantConfig.checkKeyFile();
 			cache = MerchantIdentityCache.getInstance(merchantConfig.getLogger());
 			identity = cache.setUpP12Cache(merchantConfig);
-			Boolean result  = cache.isLastModifiedTimeUpdated(merchantConfig, identity);
-			if(result) {
+			Boolean result = cache.isLastModifiedTimeUpdated(merchantConfig, identity);
+			if (result) {
 				identity = cache.setUpP12Cache(merchantConfig);
 				Assert.assertNotNull(identity);
 			} else {
 				identity = cache.retrieveP12DataFromCache(merchantConfig);
 			}
-			
+
 		} else {
 			Assert.assertTrue(true);
 		}
 	}
-	
+
 	@Test
 	public void getLastModifiedFileP12Test() throws Exception {
 		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantProp.keySet().remove("keyFile");
 		merchantConfig = MerchantConfig.getInstance(merchantProp);
-		merchantConfig.setMerchantDetails();
-		merchantConfig.setKeyFile(null);
-        
+
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			cache = MerchantIdentityCache.getInstance(merchantConfig.getLogger());
-			thrown.expect(SignatureGenerationException.class);
-			cache.retrieveP12DataFromCache(merchantConfig);
+			Assert.assertNotNull(cache.retrieveP12DataFromCache(merchantConfig));
 		} else {
 			Assert.assertTrue(true);
 		}
-		
+
 	}
 }

@@ -48,6 +48,7 @@ public class JwtSignatureTokenGenerator implements TokenGenerator {
 	@Override
 	public String getToken() throws ConfigException, SignatureGenerationException {
 		try {
+			validateGivenInput(merchantConfig, authRequestContext);
 			return generateSignature();
 		} catch (ConfigException e) {
 			throw e;
