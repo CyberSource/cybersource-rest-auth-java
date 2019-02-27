@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
-import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.jwt.JwtSignatureTokenGenerator;
@@ -161,17 +160,16 @@ public class JWTSignatureTokenTest {
 		requestContext = new RequestContext(merchantConfig.getLogger());
 		requestContext.setRequestMethodType(GlobalLabelParameters.POST);
 		requestContext.setRequestJsonPath(requestJsonPath);
-        
+
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertTrue(true);
 		} else {
-			thrown.expect(ConfigException.class);
 			thrown.expectMessage(GlobalLabelParameters.SIG_FAILED);
 
 			jwtSignatureToken = new JwtSignatureTokenGenerator(merchantConfig, requestContext);
 			jwtSignatureToken.getToken();
 		}
-		
+
 	}
 
 	@Test

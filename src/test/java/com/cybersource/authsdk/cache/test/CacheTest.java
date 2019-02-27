@@ -46,7 +46,8 @@ public class CacheTest {
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			merchantConfig.checkKeyFile();
 			cache = MerchantIdentityCache.getInstance(merchantConfig.getLogger());
-			Assert.assertNotNull(cache.retrieveP12DataFromCache(merchantConfig));
+			Identity identity = cache.retrieveP12DataFromCache(merchantConfig);
+			Assert.assertNotNull(identity);
 		} else {
 			Assert.assertNull(null);
 		}
@@ -64,7 +65,8 @@ public class CacheTest {
 			merchantConfig.checkKeyFile();
 			cache = MerchantIdentityCache.getInstance(merchantConfig.getLogger());
 			cache.setUpP12Cache(merchantConfig);
-			Assert.assertNotNull(cache.retrieveP12DataFromCache(merchantConfig));
+			Identity identity = cache.retrieveP12DataFromCache(merchantConfig);
+			Assert.assertNotNull(identity.getX509());
 		} else {
 			Assert.assertNull(null);
 		}
@@ -86,9 +88,10 @@ public class CacheTest {
 			Boolean result = cache.isLastModifiedTimeUpdated(merchantConfig, identity);
 			if (result) {
 				identity = cache.setUpP12Cache(merchantConfig);
-				Assert.assertNotNull(identity);
+				Assert.assertNotNull(identity.getLastModifiedTime());
 			} else {
 				identity = cache.retrieveP12DataFromCache(merchantConfig);
+				Assert.assertNotNull(identity.getX509());
 			}
 
 		} else {
@@ -104,7 +107,8 @@ public class CacheTest {
 
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			cache = MerchantIdentityCache.getInstance(merchantConfig.getLogger());
-			Assert.assertNotNull(cache.retrieveP12DataFromCache(merchantConfig));
+			Identity identity = cache.retrieveP12DataFromCache(merchantConfig);
+			Assert.assertNotNull(identity.getRsaPrivateKey());
 		} else {
 			Assert.assertTrue(true);
 		}

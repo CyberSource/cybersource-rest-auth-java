@@ -16,6 +16,7 @@ import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.RequestContext;
 import com.cybersource.authsdk.core.SignatureGenerationException;
+import com.cybersource.authsdk.core.TokenGeneratorFactory;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
 
@@ -87,5 +88,29 @@ public class AuthorizationTest {
 		thrown.expect(ConfigException.class);
 		thrown.expectMessage(GlobalLabelParameters.REQUEST_VALIDATION_ERROR);
 		Authorization.getToken(merchantConfig, requestContext);
+	}
+	
+	@Test
+	public void getTokenGeneratorFactoryTest() throws ConfigException, IOException, SignatureGenerationException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		requestContext = new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("POST");
+		requestContext.setRequestJsonPath(requestJsonPath);
+		String token = TokenGeneratorFactory.getAuthTokenGenerator(merchantConfig, requestContext).getToken();
+		Assert.assertNotNull(token);
+	}
+	
+	@Test
+	public void getTokenGeneratorFactoryTestFail() throws ConfigException, IOException, SignatureGenerationException {
+		merchantProp = PropertiesUtil.getMerchantProperties();
+		merchantConfig = MerchantConfig.getInstance(merchantProp);
+		merchantConfig.setAuthenticationType("JWE");
+		requestContext = new RequestContext(merchantConfig.getLogger());
+		requestContext.setRequestMethodType("POST");
+		requestContext.setRequestJsonPath(requestJsonPath);
+		thrown.expect(ConfigException.class);
+		thrown.expectMessage(GlobalLabelParameters.AUTH_ERROR);
+		TokenGeneratorFactory.getAuthTokenGenerator(merchantConfig, requestContext).getToken();
 	}
 }
