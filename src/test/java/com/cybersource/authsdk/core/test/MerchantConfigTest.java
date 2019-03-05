@@ -36,7 +36,6 @@ public class MerchantConfigTest {
 		Field instance = MerchantConfig.class.getDeclaredField("instance");
 		instance.setAccessible(true);
 		instance.set(null, null);
-		merchantProp = null;
 	}
 
 	@Test
