@@ -94,8 +94,10 @@ public class Cache {
 	 */
 	public void retriveP12DataFromCache() {
 		Identity tempIdentity = cacheP12.get(merchantID);
-		x509Certificate = tempIdentity.getX509();
-		rsaPrivateKey = tempIdentity.getRsaPrivateKey();
+		if (tempIdentity != null) {
+			x509Certificate = tempIdentity.getX509();
+			rsaPrivateKey = tempIdentity.getRsaPrivateKey();
+		}
 	}
 
 	/**
@@ -103,10 +105,15 @@ public class Cache {
 	 */
 	public boolean isLastModifiedTimeP12() {
 		Identity tempIdentity = cacheP12.get(merchantID);
-		long tempLastModifiedTime = tempIdentity.getLastModifiedDate();
-		if (lastModifiedTime == tempLastModifiedTime) {
-			return true;
-		} else {
+		if (tempIdentity != null) {
+			long tempLastModifiedTime = tempIdentity.getLastModifiedDate();
+			if (lastModifiedTime == tempLastModifiedTime) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		else {
 			return false;
 		}
 	}
