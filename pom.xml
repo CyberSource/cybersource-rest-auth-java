@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
-			<version>4.22</version>
+			<version>4.39</version>
 		</dependency>
 
 
@@ -148,7 +148,6 @@
 						<target>1.8</target>
 					</configuration>
 				</plugin>
-
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
