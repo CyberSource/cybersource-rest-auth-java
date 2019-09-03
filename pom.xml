@@ -7,7 +7,7 @@
     </parent>
     <groupId>com.cybersource</groupId>
 	<artifactId>AuthenticationSdk</artifactId>
-	<version>0.0.6</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<name>CyberSource Authentication SDK</name>
      <licenses>
         <license>
