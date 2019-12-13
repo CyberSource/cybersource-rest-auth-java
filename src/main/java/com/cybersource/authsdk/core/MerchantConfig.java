@@ -62,6 +62,7 @@ public class MerchantConfig {
 	private boolean isRequestJson = true;
 	/* Others. */
 	private Logger log;
+	private String solutionId;
 
 	public void setRunEnvironment(String runEnvironment) {
 		this.runEnvironment = runEnvironment;
@@ -170,6 +171,15 @@ public class MerchantConfig {
 
 	public void setRequestJsonPath(String requestJsonPath) {
 		this.requestJsonPath = requestJsonPath;
+	}
+	
+	public String getSolutionId() {
+
+		return solutionId;
+	}
+
+	public void setSolutionId(String solutionId) {
+		this.solutionId = solutionId;
 	}
 
 	public String getGetID() {
@@ -709,6 +719,9 @@ public class MerchantConfig {
 				}
 			}
 		}
+		
+		this.solutionId = this.getProperty(this.merchantID, "solutionId");
+		
 		/* Run Environment. */
 		if (this.props.getProperty("runEnvironment") == null) {
 			throw new ConfigException("Run Environment is mandatory");
