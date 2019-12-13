@@ -28,14 +28,15 @@ public class MerchantConfig {
 	private String password;
 	private boolean enableLog;
 	private int timeout;
+	private boolean useProxy = false;
+	private String proxyAddress;
+	private int proxyPort;
 	private String proxyUser;
 	private String proxyPassword;
 	private String recipientID;
 	private String effectivePassword;
 	private String requestData;
 	private String runEnvironment;
-	private String proxyAddress;
-	private int proxyPort;
 	private File keyFile;
 	private boolean isRequestType = false;
 	public static boolean isSetMerchantDetails = true;
@@ -84,6 +85,10 @@ public class MerchantConfig {
 
 	public boolean isRequestJson() {
 		return isRequestJson;
+	}
+	
+	public boolean isUseProxyEnabled() {
+		return useProxy;
 	}
 
 	/**
@@ -322,6 +327,10 @@ public class MerchantConfig {
 
 	public void setRequestJson(boolean isRequestJson) {
 		this.isRequestJson = isRequestJson;
+	}
+	
+	public void setUseProxy(boolean useProxy) {
+		this.useProxy = useProxy;
 	}
 
 	public void setLogSignedData(boolean logSignedData) {
@@ -672,9 +681,19 @@ public class MerchantConfig {
 		this.enableLog = this.checkBooleanLogValue(this.merchantID, "enableLog");
 		/* Optional use [ TIME OUT ] */
 		this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
-		this.proxyPort = this.getIntegerProperty(this.merchantID, "proxyPort", 8080);
-		this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
+		
+		this.useProxy = this.getBooleanProperty(this.merchantID, "useProxy", false);
 		this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
+		
+		if (this.getProperty(this.merchantID, "proxyPort") != null) {
+			this.proxyPort = Integer.parseInt(this.getProperty(this.merchantID, "proxyPort"));
+		} else {
+			throw new ConfigException("Proxy Port is necessary for using Proxy");
+		}
+		
+		this.proxyUser = this.getProperty(this.merchantID, "proxyUser");
+		this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
+		
 		/* HTTP Parameters */
 		if (authenticationType != null) {
 			if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
