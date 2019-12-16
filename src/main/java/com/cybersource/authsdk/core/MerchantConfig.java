@@ -693,16 +693,17 @@ public class MerchantConfig {
 		this.timeout = this.getIntegerProperty(this.merchantID, "timeout", 130);
 		
 		this.useProxy = this.getBooleanProperty(this.merchantID, "useProxy", false);
-		this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
 		
-		if (this.getProperty(this.merchantID, "proxyPort") != null) {
-			this.proxyPort = Integer.parseInt(this.getProperty(this.merchantID, "proxyPort"));
-		} else {
-			throw new ConfigException("Proxy Port is necessary for using Proxy");
+		if (this.useProxy) {
+			this.proxyAddress = this.getProperty(this.merchantID, "proxyAddress");
+			if (this.getProperty(this.merchantID, "proxyPort") != null) {
+				this.proxyPort = Integer.parseInt(this.getProperty(this.merchantID, "proxyPort"));
+			} else {
+				throw new ConfigException("Proxy Port is necessary for using Proxy");
+			}
+			this.proxyUser = this.getProperty(this.merchantID, "proxyUser");
+			this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
 		}
-		
-		this.proxyUser = this.getProperty(this.merchantID, "proxyUser");
-		this.proxyPassword = this.getProperty(this.merchantID, "proxyPassword");
 		
 		/* HTTP Parameters */
 		if (authenticationType != null) {
