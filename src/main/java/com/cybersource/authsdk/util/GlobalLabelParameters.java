@@ -30,9 +30,13 @@ public class GlobalLabelParameters {
 	public static final String REQUEST_TARGET = "/pts/v2/payments/";
 	public static final String URL_PREFIX = "https://";
 	public static final String SANDBOX_URL = "apitest.cybersource.com";
+	public static final String PRODUCTION_URL = "api.cybersource.com";
 	public static final String RUN_SANDBOX = "CyberSource.Environment.SANDBOX";
 	public static final String RUN_PRODUCTION = "CyberSource.Environment.PRODUCTION";
-	public static final String PRODUCTION_URL = "api.cybersource.com";
+	public static final String BOA_SANDBOX_URL = "apitest.merchant-services.bankofamerica.com";
+	public static final String BOA_PRODUCTION_URL = "api.merchant-services.bankofamerica.com";
+	public static final String BOA_RUN_SANDBOX = "BankofAmerica.Environment.SANDBOX";
+	public static final String BOA_RUN_PRODUCTION = "BankofAmerica.Environment.PRODUCTION";	
 	public static final String P12_EXTENSION = ".p12";
 	public static final String LOG_EXTENSION = ".log";
 	public static final String DEFAULT_LOG_PATH = "log";
