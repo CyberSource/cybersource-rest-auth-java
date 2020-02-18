@@ -24,6 +24,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObject;
@@ -40,8 +42,6 @@ import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
-
-import io.vertx.core.json.Json;
 
 public class JWTCryptoProcessorImpl implements CryptoProcessor {
 	public static String MERCHANT_ID = "v-c-merchant-id";
@@ -560,7 +560,8 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 
 	public JWTPayload getJWTPayload(String jwtString) {
 		String payload = getPayload(jwtString);
-		return (JWTPayload) Json.decodeValue(payload, JWTPayload.class);
+		Gson gson = new GsonBuilder().create();
+		return (JWTPayload) gson.fromJson(payload, JWTPayload.class);
 	}
 
 	public String createBodyDigest(String jsonBody) {
