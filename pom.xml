@@ -127,12 +127,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-core</artifactId>
-			<version>3.8.4</version>
-		</dependency>
-
 	</dependencies>
 
 
