@@ -513,7 +513,9 @@ public class MerchantConfig {
 		if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_SANDBOX)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_PRODUCTION)) {
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_PRODUCTION)
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_SANDBOX)
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_PRODUCTION)) {
 			runEnvironment = true;
 		} else if (this.runEnvironment == null || this.runEnvironment.isEmpty()) {
 			Utility.log(log, GlobalLabelParameters.RUN_ENVIRONMENT_ERR, "", Level.ERROR);
@@ -741,6 +743,10 @@ public class MerchantConfig {
 				this.requestHost = GlobalLabelParameters.BOA_SANDBOX_URL;
 			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_PRODUCTION)) {
 				this.requestHost = GlobalLabelParameters.BOA_PRODUCTION_URL;
+			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_SANDBOX)) {
+				this.requestHost = GlobalLabelParameters.IDC_SANDBOX_URL;
+			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_PRODUCTION)) {
+				this.requestHost = GlobalLabelParameters.IDC_PRODUCTION_URL;
 			}
 			else {
 				this.requestHost = this.runEnvironment;
