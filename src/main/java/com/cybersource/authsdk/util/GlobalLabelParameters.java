@@ -38,7 +38,7 @@ public class GlobalLabelParameters {
 	public static final String BOA_RUN_SANDBOX = "BankofAmerica.Environment.SANDBOX";
 	public static final String BOA_RUN_PRODUCTION = "BankofAmerica.Environment.PRODUCTION";
 	public static final String IDC_SANDBOX_URL = "apitest.cybersource.com";
-	public static final String IDC_PRODUCTION_URL = "api.in.cybersource.com ";
+	public static final String IDC_PRODUCTION_URL = "api.in.cybersource.com";
 	public static final String IDC_RUN_SANDBOX = "CyberSource.IN.Environment.SANDBOX";
 	public static final String IDC_RUN_PRODUCTION = "CyberSource.IN.Environment.PRODUCTION";
 	public static final String P12_EXTENSION = ".p12";
