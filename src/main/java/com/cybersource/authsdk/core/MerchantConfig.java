@@ -58,6 +58,8 @@ public class MerchantConfig {
 	private String responseCode;
 	private String vcCorelationID;
 	private String requestType;
+	private boolean retryEnabled;
+	private long retryDelay;
 
 	private boolean isRequestJson = true;
 	/* Others. */
@@ -411,6 +413,34 @@ public class MerchantConfig {
 		this.isRequestType = b;
 
 	}
+	
+	/**
+	 * @return the retryEnabled
+	 */
+	public boolean isRetryEnabled() {
+		return retryEnabled;
+	}
+
+	/**
+	 * @return the retryDelay
+	 */
+	public long getRetryDelay() {
+		return retryDelay;
+	}
+
+	/**
+	 * @param retryEnabled the retryEnabled to set
+	 */
+	public void setRetryEnabled(boolean retryEnabled) {
+		this.retryEnabled = retryEnabled;
+	}
+
+	/**
+	 * @param retryDelay the retryDelay to set
+	 */
+	public void setRetryDelay(long retryDelay) {
+		this.retryDelay = retryDelay;
+	}
 
 	public MerchantConfig(Properties _props) throws ConfigException {
 		if (_props != null) {
@@ -758,6 +788,15 @@ public class MerchantConfig {
 			isSetMerchantDetails = false;
 		}
 
+		/* Retry logic */
+		String retryEnabledValue = this.props.getProperty("retryEnabled");
+		if (retryEnabledValue != null && !retryEnabledValue.isEmpty()) {
+			this.retryEnabled = Boolean.valueOf(retryEnabledValue);
+		} else {
+			this.retryEnabled = false;
+		}
+		
+		this.retryDelay = Long.valueOf(this.props.getProperty("retryDelay", "0"));
 	}
 
 	/**
