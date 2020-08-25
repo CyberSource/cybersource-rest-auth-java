@@ -61,7 +61,7 @@ public class SignatureGenerator {
 		signatureString.append('\n');
 		signatureString.append(GlobalLabelParameters.DATE.toLowerCase());
 		signatureString.append(": ");
-		signatureString.append(PropertiesUtil.date);
+		signatureString.append(PropertiesUtil.getNewDate());
 		signatureString.append('\n');
 		signatureString.append("(request-target)");
 		signatureString.append(": ");
