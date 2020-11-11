@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -48,6 +49,8 @@ public class MerchantConfig {
 	private String merchantSecretKey;
 	/* Common parameters for HTTP and JWT. */
 	private String merchantID;
+	private String portfolioID;
+	private boolean useMetaKey;
 	private String url;
 	private String requestTarget;
 	private String authenticationType;
@@ -92,6 +95,10 @@ public class MerchantConfig {
 	
 	public boolean isUseProxyEnabled() {
 		return useProxy;
+	}
+
+	public boolean isUseMetaKeyEnabled() throws ConfigException {
+		return getBooleanProperty(merchantID, "useMetaKey", false);
 	}
 
 	/**
@@ -204,6 +211,10 @@ public class MerchantConfig {
 		return this.merchantID;
 	}
 
+	public String getPortfolioID() {
+		return this.portfolioID;
+	}
+
 	public void setRecipientID(String recipientID) {
 		this.recipientID = recipientID;
 	}
@@ -229,6 +240,10 @@ public class MerchantConfig {
 		this.keyPass = keyPass;
 	}
 
+	public String getKeyPass() {
+		return this.keyPass;
+	}
+
 	public boolean getrequestJson() {
 		return false;
 	}
@@ -239,6 +254,10 @@ public class MerchantConfig {
 
 	public void setMerchantID(String merchantID) {
 		this.merchantID = merchantID;
+	}
+
+	public void setPortfolioID(String portfolioID) {
+		this.portfolioID = portfolioID;
 	}
 
 	public String getKey() {
@@ -673,6 +692,16 @@ public class MerchantConfig {
 	public void setMerchantDetails() throws ConfigException {
 		this.authenticationType = this.getProperty(this.merchantID, "authenticationType");
         this.merchantID = this.getProperty(this.merchantID, "merchantID");
+        this.useMetaKey = this.getBooleanProperty(this.merchantID, "useMetaKey", false);
+
+        if(this.useMetaKey)
+		{
+			this.portfolioID = this.getProperty(this.merchantID, "portfolioID");
+			if(StringUtils.isEmpty(this.portfolioID))
+			{
+				throw new ConfigException("Portfolio ID is mandatory");
+			}
+		}
 		/* Logging Parameters */
 		if (this.props.getProperty("logDirectory") == null) {
 			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
@@ -782,6 +811,7 @@ public class MerchantConfig {
 				this.requestHost = this.runEnvironment;
 			}
 		} catch (Exception e) {
+			System.out.println("error");
 			this.log = Log4j.getInstance(this);
 			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 			Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, "", Level.ERROR);
@@ -1008,7 +1038,7 @@ public class MerchantConfig {
 	 */
 	public boolean getBooleanProperty(String merchantID, String prop, boolean defaultVal) throws ConfigException {
 		String strValue = this.getProperty(merchantID, prop);
-		if (strValue == null) {
+		if (strValue == null || strValue == "") {
 			return defaultVal;
 		} else if (!"1".equals(strValue) && !"true".equalsIgnoreCase(strValue)) {
 			if (!"0".equals(strValue) && !"false".equalsIgnoreCase(strValue)) {

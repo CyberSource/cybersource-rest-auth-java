@@ -3,6 +3,7 @@ package com.cybersource.authsdk.http;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+import com.cybersource.authsdk.core.ConfigException;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.core.MerchantConfig;
@@ -58,6 +59,8 @@ public class HttpSignatureToken implements TokenGenerator {
 		} catch (InvalidKeyException e) {
 			Utility.log(logger, e);
 
+		} catch (ConfigException e) {
+			Utility.log(logger, e);
 		}
 		return signature;
 	}
@@ -69,7 +72,7 @@ public class HttpSignatureToken implements TokenGenerator {
 	 * @throws NoSuchAlgorithmException
 	 *             - if algorith is not available.
 	 */
-	private String signatureHeader() throws InvalidKeyException, NoSuchAlgorithmException {
+	private String signatureHeader() throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
 
 		signatureHeader = new StringBuilder();
 		/* KeyId is the key obtained from EBC */

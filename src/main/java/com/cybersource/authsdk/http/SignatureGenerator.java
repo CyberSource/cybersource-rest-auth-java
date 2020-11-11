@@ -7,10 +7,12 @@ import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
+import org.apache.commons.lang.StringUtils;
 
 /* This method returns value for parameter Signature which is then passed to Signature header
  * paramter 'Signature' is calucated based on below key values and then signed with SECRET KEY -
@@ -28,6 +30,8 @@ public class SignatureGenerator {
 	private String httpMethod;
 	private String merchantSecertKey;
 	private String merchantId;
+	private String portfolioId;
+	private boolean useMetaKey;
 
 	/**
 	 * @param merchantConfig-contains
@@ -37,11 +41,16 @@ public class SignatureGenerator {
 	 * @throws NoSuchAlgorithmException
 	 *             - if algorithm is not available.
 	 */
-	public SignatureGenerator(MerchantConfig merchantConfig) throws InvalidKeyException, NoSuchAlgorithmException {
+	public SignatureGenerator(MerchantConfig merchantConfig) throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
 		this.merchantConfig = merchantConfig;
 		this.httpMethod = merchantConfig.getRequestType();
 		this.merchantSecertKey = merchantConfig.getMerchantSecretKey();
 		this.merchantId = merchantConfig.getMerchantID();
+		this.useMetaKey = merchantConfig.isUseMetaKeyEnabled();
+		if(this.useMetaKey)
+		{
+			this.portfolioId = merchantConfig.getPortfolioID();
+		}
 	}
 
 	/**
@@ -92,7 +101,13 @@ public class SignatureGenerator {
 
 		signatureString.append(GlobalLabelParameters.V_C_MERCHANTID);
 		signatureString.append(": ");
-		signatureString.append(merchantId);
+		if(useMetaKey)
+		{
+			signatureString.append(portfolioId);
+		}
+		else {
+			signatureString.append(merchantId);
+		}
 		signatureString.delete(0, 1);
 		String signatureStr = signatureString.toString();
 
