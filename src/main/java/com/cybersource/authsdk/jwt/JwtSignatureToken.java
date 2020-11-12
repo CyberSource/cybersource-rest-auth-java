@@ -115,10 +115,6 @@ public class JwtSignatureToken implements TokenGenerator {
 					customHeaders.put(JWTCryptoProcessorImpl.MERCHANT_ID, merchantConfig.getMerchantID());
 				}
 
-//				if (merchantConfig.getMerchantID() != null) {
-//					customHeaders.put("v-c-partner-id", merchantConfig.getMerchantID());
-//				}
-
 				String authType = merchantConfig.getAuthenticationType().trim();
 				JWTCryptoProcessorImpl jwtCryptoProcessor = new JWTCryptoProcessorImpl();
 

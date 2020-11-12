@@ -811,7 +811,6 @@ public class MerchantConfig {
 				this.requestHost = this.runEnvironment;
 			}
 		} catch (Exception e) {
-			System.out.println("error");
 			this.log = Log4j.getInstance(this);
 			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 			Utility.log(this.log, GlobalLabelParameters.RUN_ENV_NULL_EMPTY, "", Level.ERROR);
