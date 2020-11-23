@@ -84,6 +84,7 @@ public class JwtSignatureToken implements TokenGenerator {
 						setUpCache();
 					}
 				}
+
 				/* Generating certificate. */
 
 				String encryptedSigMessage = "";
@@ -112,10 +113,6 @@ public class JwtSignatureToken implements TokenGenerator {
 				HashMap<String, Object> customHeaders = new HashMap<String, Object>();
 				if (merchantConfig.getMerchantID() != null) {
 					customHeaders.put(JWTCryptoProcessorImpl.MERCHANT_ID, merchantConfig.getMerchantID());
-				}
-
-				if (merchantConfig.getMerchantID() != null) {
-					customHeaders.put("v-c-partner-id", merchantConfig.getMerchantID());
 				}
 
 				String authType = merchantConfig.getAuthenticationType().trim();
