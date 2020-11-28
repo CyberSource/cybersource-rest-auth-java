@@ -6,7 +6,8 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>ApiSdk</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+<!--   <artifactId>SampleApiClient</artifactId> -->
+  <version>0.0.3</version>
   
   <dependencies>
 		
@@ -67,7 +68,7 @@
 		<dependency>
 			<groupId>com.cybersource</groupId>
 			<artifactId>AuthenticationSdk</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.13-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>

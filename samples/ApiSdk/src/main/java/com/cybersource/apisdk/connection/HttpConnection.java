@@ -199,7 +199,7 @@ public class HttpConnection implements Connection, Headers {
 		 * Add Request Header :: "Date" The date and time that the message was
 		 * originated from. "HTTP-date" format as defined by RFC7231.
 		 */
-		con.setRequestProperty(GlobalLabelParameters.DATE, PropertiesUtil.date);
+		con.setRequestProperty(GlobalLabelParameters.DATE, PropertiesUtil.getNewDate());
 		/*
 		 * Add Request Header :: "Host" Sandbox Host :: apitest.cybersource.com
 		 * Production Host :: api.cybersource.com
@@ -234,7 +234,7 @@ public class HttpConnection implements Connection, Headers {
         Response responseObj=new Response();
         responseObj.setResponseCode(String.valueOf(responseCode));
         responseObj.setVcCorelationId(con.getHeaderField(GlobalLabelParameters.V_C_CORRELATION_ID));
-		Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "),PropertiesUtil.date, Level.INFO);
+		Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "),PropertiesUtil.getNewDate(), Level.INFO);
 		Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "),requestHost, Level.INFO);
 		if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)) {
 			Utility.log(logger, GlobalLabelParameters.DIGEST , " : "
@@ -246,23 +246,28 @@ public class HttpConnection implements Connection, Headers {
 		Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : " , responseObj.getVcCorelationId(),
 				Level.INFO);
 
-		/* Reading Response Message */
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
 		StringBuilder response = new StringBuilder();
 
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+		if (responseCode != 404) {
+			/* Reading Response Message */
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
 		}
-		in.close();
+
 		/* Close HTTP Connection. */
 		endConnection();
 		/* Masking the response payload from the server. */
-		maskingPayload(response.toString());
-		/* Set Response Message */
-		String resp=Masking.prepareMasking(response.toString(), logger);
-		 responseObj.setResponseMessage(resp);
-	       
+		if (response != null) {
+			maskingPayload(response.toString());
+			/* Set Response Message */
+			String resp=Masking.prepareMasking(response.toString(), logger);
+			responseObj.setResponseMessage(resp);
+		}
+
 		return responseObj;
 	}
 

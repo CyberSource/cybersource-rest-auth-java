@@ -41,6 +41,8 @@ public class GlobalLabelParameters {
 	public static final String IDC_PRODUCTION_URL = "api.in.cybersource.com";
 	public static final String IDC_RUN_SANDBOX = "CyberSource.IN.Environment.SANDBOX";
 	public static final String IDC_RUN_PRODUCTION = "CyberSource.IN.Environment.PRODUCTION";
+	public static final String SIT_ENVIRONMENT_URL = "pnrstage.ic3.com:7448";
+	public static final String SIT_RUN_ENVIRONMENT = "CyberSource.Environment.SIT";
 	public static final String P12_EXTENSION = ".p12";
 	public static final String LOG_EXTENSION = ".log";
 	public static final String DEFAULT_LOG_PATH = "log";
