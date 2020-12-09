@@ -43,6 +43,7 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
    logDirectory        = log
    logMaximumSize      = 5M
    logFilename         = cybs
+   useMetaKey          = false
 ```
   * Jwt
 
@@ -58,6 +59,34 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
    logDirectory        = log
    logMaximumSize      = 5M
    logFilename         = cybs
+   useMetaKey          = false
+```
+
+#### For using MetaKey
+
+  MetaKey can be used for HTTP Signature and JWT authentication  
+
+  For HTTP Signature Authentication - 
+
+```
+   authenticationType  = http_Signature
+   merchantID 	       = <child merchantID>  
+   merchantKeyId       = <MetaKey merchantKeyId>
+   merchantsecretKey   = <Metakey merchantsecretKey>
+   useMetaKey          = true
+   portfolioID         = <Portfolio ID>
+```
+
+  For JWT Authentication - 
+
+```
+   authenticationType  = Jwt
+   merchantID 	       = <child merchantID>   
+   keyAlias		       = <keyAlias>
+   keyPassword	       = <keyPassword>
+   keyFileName         = <keyFileName>
+   keysDirectory       = <keysDirectory>
+   useMetaKey          = true
 ```
 
 ### Switching between the sandbox environment and the production environment
