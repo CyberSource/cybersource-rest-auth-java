@@ -25,10 +25,30 @@ public class Cache {
 	private X509Certificate x509Certificate;
 	private RSAPrivateKey rsaPrivateKey;
 	private String merchantID;
+	private String accessToken;
+	private String refreshToken;
 	Logger logger;
 
 	public void setX509Certificate(X509Certificate x509Certificate) {
 		this.x509Certificate = x509Certificate;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public String getAccessToken()
+	{
+		return accessToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	public String getRefreshToken()
+	{
+		return refreshToken;
 	}
 
 	public void setRsaPrivateKey(RSAPrivateKey rsaPrivateKey) {

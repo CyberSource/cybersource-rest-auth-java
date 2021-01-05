@@ -14,6 +14,8 @@ public class GlobalLabelParameters {
 	/* Header Labels. */
 	public static final String AUTENTICATION_TYPE = "Authentication Type : ";
 	public static final String HTTP = "HTTP_Signature";
+	public static final String OAUTH = "OAuth";
+	public static final String NOAUTH = "NoAuth";
 	public static final String JWT = "JWT";
 	public static final String JWE = "JWE";
 	public static final String V_C_MERCHANTID = "v-c-merchant-id";
@@ -31,8 +33,12 @@ public class GlobalLabelParameters {
 	public static final String URL_PREFIX = "https://";
 	public static final String SANDBOX_URL = "apitest.cybersource.com";
 	public static final String PRODUCTION_URL = "api.cybersource.com";
+	public static final String SANDBOX_MA_URL = "api-matest.cybersource.com";
+	public static final String PRODUCTION_MA_URL = "api-ma.cybersource.com";
 	public static final String RUN_SANDBOX = "CyberSource.Environment.SANDBOX";
 	public static final String RUN_PRODUCTION = "CyberSource.Environment.PRODUCTION";
+	public static final String RUN_SANDBOX_MA = "CyberSource.Environment.MutualAuth.SANDBOX";
+	public static final String RUN_PRODUCTION_MA = "CyberSource.Environment.MutualAuth.PRODUCTION";
 	public static final String BOA_SANDBOX_URL = "apitest.merchant-services.bankofamerica.com";
 	public static final String BOA_PRODUCTION_URL = "api.merchant-services.bankofamerica.com";
 	public static final String BOA_RUN_SANDBOX = "BankofAmerica.Environment.SANDBOX";
@@ -84,6 +90,7 @@ public class GlobalLabelParameters {
 	public static final String MERCHANT_KEYID_MISSING = "Merchant KeyID missing/null, check cybs.properties";
 	public static final String MERCHANTSECERT_KEY_MISSING = "Merchant Secret Key missing/null, check cybs.properties";
 	public static final String JWT_SIG_FAILED = "JWT Signature production failed.";
+	public static final String RETRIEVE_ACCESS_TOKEN_FAILED = "Retrieve Access Token failed.";
 	public static final String RUN_ENVIRONMENT_ERR = "Run Environment value is missing in cybs.properties";
 	public static final String INVALID_REQUEST_TYPE = "Invalid Request Type :: ";
 	public static final String INVALID_LOG_DIRECTORY = "Invalid log directory, creating default log directory";

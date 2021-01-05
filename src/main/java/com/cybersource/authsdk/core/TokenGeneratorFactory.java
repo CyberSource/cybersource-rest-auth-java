@@ -4,6 +4,7 @@ import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.http.HttpSignatureToken;
 import com.cybersource.authsdk.jwt.JwtSignatureToken;
+import com.cybersource.authsdk.oauth.OAuthToken;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 public class TokenGeneratorFactory {
@@ -25,6 +26,8 @@ public class TokenGeneratorFactory {
 			return new HttpSignatureToken(merchantConfig);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			return new JwtSignatureToken(merchantConfig, jwtRequestBody);
+		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.OAUTH)) {
+			return new OAuthToken(merchantConfig);
 		} else {
 			return null;
 		}
