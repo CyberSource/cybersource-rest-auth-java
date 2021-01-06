@@ -41,6 +41,8 @@ public class MerchantConfig {
 	private String requestData;
 	private String runEnvironment;
 	private File keyFile;
+	private String clientId;
+	private String clientSecret;
 	private boolean enableClientCert;
 	private String clientCertFile;
 	private String clientCertDirectory;
@@ -280,6 +282,22 @@ public class MerchantConfig {
 
 	public String getClientCertFile() {
 		return this.clientCertFile;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	public String getClientId() {
+		return this.clientId;
+	}
+
+	public void setClientSecret(String clientSecret) {
+		this.clientSecret = clientSecret;
+	}
+
+	public String getClientSecret() {
+		return this.clientSecret;
 	}
 
 	public void setClientCertPassword(String clientCertPassword) {
@@ -574,7 +592,7 @@ public class MerchantConfig {
 		}
 		else if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.OAUTH) || authenticationType.equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH))
 		{
-			isMerchantDetailStatus = true;
+			isMerchantDetailStatus = isCheckJsonPath && isCheckLogMaxSize && isCheckRunEnvironment && isRequestType;
 		}
 		return isMerchantDetailStatus;
 	}
@@ -877,6 +895,19 @@ public class MerchantConfig {
 					throw new ConfigException("Refresh Token is mandatory for OAuth");
 				}
 				this.refreshToken = this.props.getProperty("refreshToken");
+			}
+		}
+
+		if (authenticationType != null) {
+			if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH)) {
+				if (this.props.getProperty("clientId") == null) {
+					throw new ConfigException("Client Id is mandatory to generate OAuth");
+				}
+				this.clientId = this.props.getProperty("clientId");
+				if (this.props.getProperty("clientSecret") == null) {
+					throw new ConfigException("Client Secret is mandatory to generate OAuth");
+				}
+				this.clientSecret = this.props.getProperty("clientSecret");
 			}
 		}
 		
