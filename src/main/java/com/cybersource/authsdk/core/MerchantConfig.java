@@ -572,7 +572,7 @@ public class MerchantConfig {
 					&& isCheckJsonPath && isCheckLogMaxSize && isCheckRunEnvironment && isRequestType
 					&& isSetMerchantDetails;
 		}
-		else if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.OAUTH) || authenticationType.equalsIgnoreCase(GlobalLabelParameters.NOAUTH))
+		else if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.OAUTH) || authenticationType.equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH))
 		{
 			isMerchantDetailStatus = true;
 		}
@@ -624,7 +624,10 @@ public class MerchantConfig {
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_PRODUCTION)
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_SANDBOX)
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_PRODUCTION)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT)) {
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT)
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX_MA)
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION_MA)
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT_MA)) {
 			runEnvironment = true;
 		} else if (this.runEnvironment == null || this.runEnvironment.isEmpty()) {
 			Utility.log(log, GlobalLabelParameters.RUN_ENVIRONMENT_ERR, "", Level.ERROR);
@@ -905,6 +908,8 @@ public class MerchantConfig {
 				this.requestHost = GlobalLabelParameters.IDC_PRODUCTION_URL;
 			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT)) {
 				this.requestHost = GlobalLabelParameters.SIT_ENVIRONMENT_URL;
+			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT_MA)) {
+				this.requestHost = GlobalLabelParameters.SIT_ENVIRONMENT_MA_URL;
 			}
 			else {
 				this.requestHost = this.runEnvironment;
@@ -946,7 +951,7 @@ public class MerchantConfig {
 				this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)||
 						this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWE) ||
 				this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.OAUTH) ||
-				this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.NOAUTH))) {
+				this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH))) {
 			this.log = Log4j.getInstance(this);
 			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 			Utility.log(this.log, GlobalLabelParameters.AUTH_ERROR, "", Level.ERROR);

@@ -74,6 +74,39 @@ public class Utility {
 	}
 
 	/**
+	 * Depending on the logging LEVEL, the message is logged.
+	 *
+	 * @param logger
+	 *            : Logging object (Log4j2).
+	 * @param message
+	 *            : Custom message for logging the log file.
+	 * @param logLevel
+	 *            : Level at which logging should occur
+	 *            [INFO,ERROR,DEBUG,FATAL].
+	 */
+	public static void log(Logger logger, String message, Level logLevel) {
+		try {
+			if (logEnable) {
+				if (message != null && !message.isEmpty()) {
+					if (logLevel == Level.ERROR) {
+						logger.error(message);
+					} else if (logLevel == Level.DEBUG) {
+						logger.debug(message);
+					} else if (logLevel == Level.FATAL) {
+						logger.fatal(message);
+					} else if (logLevel == Level.OFF) {
+						logger.printf(Level.OFF, "%n");
+					} else {
+						logger.info(message);
+					}
+				}
+			}
+		} catch (Exception e) {
+			log(logger, e);
+		}
+	}
+
+	/**
 	 * 
 	 * @param logger
 	 *            : Logging object (Log4j2).

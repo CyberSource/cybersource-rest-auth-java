@@ -15,7 +15,7 @@ public class GlobalLabelParameters {
 	public static final String AUTENTICATION_TYPE = "Authentication Type : ";
 	public static final String HTTP = "HTTP_Signature";
 	public static final String OAUTH = "OAuth";
-	public static final String NOAUTH = "NoAuth";
+	public static final String MUTUALAUTH = "MutualAuth";
 	public static final String JWT = "JWT";
 	public static final String JWE = "JWE";
 	public static final String V_C_MERCHANTID = "v-c-merchant-id";
@@ -36,8 +36,8 @@ public class GlobalLabelParameters {
 	public static final String SANDBOX_MA_URL = "api-matest.cybersource.com";
 	public static final String PRODUCTION_MA_URL = "api-ma.cybersource.com";
 	public static final String RUN_SANDBOX = "CyberSource.Environment.SANDBOX";
-	public static final String RUN_PRODUCTION = "CyberSource.Environment.PRODUCTION";
 	public static final String RUN_SANDBOX_MA = "CyberSource.Environment.MutualAuth.SANDBOX";
+	public static final String RUN_PRODUCTION = "CyberSource.Environment.PRODUCTION";
 	public static final String RUN_PRODUCTION_MA = "CyberSource.Environment.MutualAuth.PRODUCTION";
 	public static final String BOA_SANDBOX_URL = "apitest.merchant-services.bankofamerica.com";
 	public static final String BOA_PRODUCTION_URL = "api.merchant-services.bankofamerica.com";
@@ -49,6 +49,8 @@ public class GlobalLabelParameters {
 	public static final String IDC_RUN_PRODUCTION = "CyberSource.IN.Environment.PRODUCTION";
 	public static final String SIT_ENVIRONMENT_URL = "pnrstage.ic3.com:7448";
 	public static final String SIT_RUN_ENVIRONMENT = "CyberSource.Environment.SIT";
+	public static final String SIT_ENVIRONMENT_MA_URL = "pnrstage.ic3.com:8451";
+	public static final String SIT_RUN_ENVIRONMENT_MA = "CyberSource.Environment.MutualAuth.SIT";
 	public static final String P12_EXTENSION = ".p12";
 	public static final String LOG_EXTENSION = ".log";
 	public static final String DEFAULT_LOG_PATH = "log";
