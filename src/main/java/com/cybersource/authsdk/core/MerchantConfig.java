@@ -27,6 +27,8 @@ public class MerchantConfig {
 	private String keyType;
 	private String keyFilename;
 	private String password;
+	private String accessToken;
+	private String refreshToken;
 	private boolean enableLog;
 	private int timeout;
 	private boolean useProxy = false;
@@ -39,6 +41,12 @@ public class MerchantConfig {
 	private String requestData;
 	private String runEnvironment;
 	private File keyFile;
+	private String clientId;
+	private String clientSecret;
+	private boolean enableClientCert;
+	private String clientCertFile;
+	private String clientCertDirectory;
+	private String clientCertPassword;
 	private boolean isRequestType = false;
 	public static boolean isSetMerchantDetails = true;
 	/**
@@ -242,6 +250,70 @@ public class MerchantConfig {
 
 	public String getKeyPass() {
 		return this.keyPass;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public String getAccessToken() {
+		return this.accessToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	public String getRefreshToken() {
+		return this.refreshToken;
+	}
+
+	public void setEnableClientCert(boolean enableClientCert) {
+		this.enableClientCert = enableClientCert;
+	}
+
+	public boolean getEnableClientCert() {
+		return this.enableClientCert;
+	}
+
+	public void setClientCertFile(String clientCertFile) {
+		this.clientCertFile = clientCertFile;
+	}
+
+	public String getClientCertFile() {
+		return this.clientCertFile;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	public String getClientId() {
+		return this.clientId;
+	}
+
+	public void setClientSecret(String clientSecret) {
+		this.clientSecret = clientSecret;
+	}
+
+	public String getClientSecret() {
+		return this.clientSecret;
+	}
+
+	public void setClientCertPassword(String clientCertPassword) {
+		this.clientCertPassword = clientCertPassword;
+	}
+
+	public String getClientCertPassword() {
+		return this.clientCertPassword;
+	}
+
+	public void setClientCertDirectory(String clientCertDirectory) {
+		this.clientCertDirectory = clientCertDirectory;
+	}
+
+	public String getClientCertDirectory() {
+		return this.clientCertDirectory;
 	}
 
 	public boolean getrequestJson() {
@@ -493,13 +565,14 @@ public class MerchantConfig {
 		boolean isMerchantDetailStatus = false;
 
 		checkAuthenticationType();
-		isMerchantId = checkMerchantId();
 
 		if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			isMerchantId = checkMerchantId();
 			isCheckMerchantSecertKey = checkMerchantSecertKey();
 			isCheckMerchantKeyId = checkMerchantKeyId();
 		} else if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWT)
 				|| authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWE)) {
+			isMerchantId = checkMerchantId();
 			isGetKeyAlias = checkKeyAlias();
 			isCheckKeyPassword = checkKeyPassword();
 			isCheckKeyFile = checkKeyFile();
@@ -516,6 +589,10 @@ public class MerchantConfig {
 			isMerchantDetailStatus = isMerchantId && isGetKeyAlias && isCheckKeyPassword && isCheckKeyFile
 					&& isCheckJsonPath && isCheckLogMaxSize && isCheckRunEnvironment && isRequestType
 					&& isSetMerchantDetails;
+		}
+		else if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.OAUTH) || authenticationType.equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH))
+		{
+			isMerchantDetailStatus = isCheckJsonPath && isCheckLogMaxSize && isCheckRunEnvironment && isRequestType;
 		}
 		return isMerchantDetailStatus;
 	}
@@ -565,7 +642,10 @@ public class MerchantConfig {
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_PRODUCTION)
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_SANDBOX)
 				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_PRODUCTION)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT)) {
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT)
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX_MA)
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION_MA)
+				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT_MA)) {
 			runEnvironment = true;
 		} else if (this.runEnvironment == null || this.runEnvironment.isEmpty()) {
 			Utility.log(log, GlobalLabelParameters.RUN_ENVIRONMENT_ERR, "", Level.ERROR);
@@ -694,6 +774,7 @@ public class MerchantConfig {
 		this.authenticationType = this.getProperty(this.merchantID, "authenticationType");
         this.merchantID = this.getProperty(this.merchantID, "merchantID");
         this.useMetaKey = this.getBooleanProperty(this.merchantID, "useMetaKey", false);
+        this.enableClientCert = this.getBooleanProperty(this.merchantID, "enableClientCert", false);
 
         if(this.useMetaKey)
 		{
@@ -703,6 +784,25 @@ public class MerchantConfig {
 				throw new ConfigException("Portfolio ID is mandatory");
 			}
 		}
+
+        if(this.enableClientCert)
+		{
+			if (this.props.getProperty("clientCertFile") == null) {
+				throw new ConfigException("Client Cert is mandatory");
+			}
+			this.clientCertFile = this.props.getProperty("clientCertFile");
+
+			if (this.props.getProperty("clientCertPassword") == null) {
+				throw new ConfigException("Client Cert Password is mandatory");
+			}
+			this.clientCertPassword = this.props.getProperty("clientCertPassword");
+
+			if (this.props.getProperty("clientCertDirectory") == null) {
+				throw new ConfigException("Client Cert Directory is mandatory");
+			}
+			this.clientCertDirectory = this.props.getProperty("clientCertDirectory");
+		}
+
 		/* Logging Parameters */
 		if (this.props.getProperty("logDirectory") == null) {
 			this.logDirectory = GlobalLabelParameters.DEFAULT_LOG_PATH;
@@ -784,6 +884,32 @@ public class MerchantConfig {
 				}
 			}
 		}
+
+		if (authenticationType != null) {
+			if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.OAUTH)) {
+				if (this.props.getProperty("accessToken") == null) {
+					throw new ConfigException("Access Token is mandatory for OAuth");
+				}
+				this.accessToken = this.props.getProperty("accessToken");
+				if (this.props.getProperty("refreshToken") == null) {
+					throw new ConfigException("Refresh Token is mandatory for OAuth");
+				}
+				this.refreshToken = this.props.getProperty("refreshToken");
+			}
+		}
+
+		if (authenticationType != null) {
+			if (authenticationType.equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH)) {
+				if (this.props.getProperty("clientId") == null) {
+					throw new ConfigException("Client Id is mandatory to generate OAuth");
+				}
+				this.clientId = this.props.getProperty("clientId");
+				if (this.props.getProperty("clientSecret") == null) {
+					throw new ConfigException("Client Secret is mandatory to generate OAuth");
+				}
+				this.clientSecret = this.props.getProperty("clientSecret");
+			}
+		}
 		
 		this.solutionId = this.getProperty(this.merchantID, "solutionId");
 		
@@ -799,6 +925,10 @@ public class MerchantConfig {
 				this.requestHost = GlobalLabelParameters.SANDBOX_URL;
 			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)) {
 				this.requestHost = GlobalLabelParameters.PRODUCTION_URL;
+			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX_MA)) {
+				this.requestHost = GlobalLabelParameters.SANDBOX_MA_URL;
+			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION_MA)) {
+				this.requestHost = GlobalLabelParameters.PRODUCTION_MA_URL;
 			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_SANDBOX)) {
 				this.requestHost = GlobalLabelParameters.BOA_SANDBOX_URL;
 			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_PRODUCTION)) {
@@ -809,6 +939,8 @@ public class MerchantConfig {
 				this.requestHost = GlobalLabelParameters.IDC_PRODUCTION_URL;
 			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT)) {
 				this.requestHost = GlobalLabelParameters.SIT_ENVIRONMENT_URL;
+			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT_MA)) {
+				this.requestHost = GlobalLabelParameters.SIT_ENVIRONMENT_MA_URL;
 			}
 			else {
 				this.requestHost = this.runEnvironment;
@@ -848,7 +980,9 @@ public class MerchantConfig {
 		}
 		if (!(this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWT)||
 				this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.HTTP)||
-						this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWE))) {
+						this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWE) ||
+				this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.OAUTH) ||
+				this.authenticationType.equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH))) {
 			this.log = Log4j.getInstance(this);
 			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
 			Utility.log(this.log, GlobalLabelParameters.AUTH_ERROR, "", Level.ERROR);
