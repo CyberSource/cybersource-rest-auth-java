@@ -35,7 +35,7 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 
 ```
    authenticationType  = http_Signature
-   merchantID 	       = testrest
+   merchantID          = testrest
    runEnvironment      = CyberSource.Environment.SANDBOX
    merchantKeyId       = 08c94330-f618-42a3-b09d-e1e43be5efda
    merchantsecretKey   = yBJxy6LjM2TmcPGu+GaJrHtkke25fPpUX+UY6/L/1tE=
@@ -52,7 +52,7 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
    merchantID          = testrest
    runEnvironment      = CyberSource.Environment.SANDBOX
    keyAlias            = testrest
-   keyPassword	        = testrest
+   keyPassword         = testrest
    keyFileName         = testrest
    keysDirectory       = resources
    enableLog           = true
@@ -81,9 +81,9 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 
 ```
    authenticationType  = Jwt
-   merchantID 	        = <child merchantID>   
+   merchantID          = <child merchantID>   
    keyAlias            = <keyAlias>
-   keyPassword	        = <keyPassword>
+   keyPassword         = <keyPassword>
    keyFileName         = <keyFileName>
    keysDirectory       = <keysDirectory>
    useMetaKey          = true
