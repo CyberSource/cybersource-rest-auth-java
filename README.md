@@ -51,7 +51,7 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
    authenticationType  = Jwt
    merchantID          = testrest
    runEnvironment      = CyberSource.Environment.SANDBOX
-   keyAlias		          = testrest
+   keyAlias            = testrest
    keyPassword	        = testrest
    keyFileName         = testrest
    keysDirectory       = resources
@@ -82,7 +82,7 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 ```
    authenticationType  = Jwt
    merchantID 	        = <child merchantID>   
-   keyAlias		          = <keyAlias>
+   keyAlias            = <keyAlias>
    keyPassword	        = <keyPassword>
    keyFileName         = <keyFileName>
    keysDirectory       = <keysDirectory>
