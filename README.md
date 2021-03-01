@@ -6,9 +6,9 @@ This project provides a simple Java helper class that simplifies authentication 
 * Maven 2.2.0 or higher (build SDK only)
 * A cybersource-rest-auth-java account (see _Registration & Configuration_ section below)
 
-_Note: Support for building the SDK with Maven has been made. Please see the respective build processes below. 
+_Note: Support for building the SDK with Maven has been made. Please see the respective build processes below.
  All initial jars and docs were built with Maven, however._
- 
+
  ## Dependencies
 * log4j-api-2.11.0              : logging
 * log4j-2.11.0.jar              : logging
@@ -30,7 +30,7 @@ The Authentication SDK works for POST and GET requests.
 It works with any one of the two authentication mechanisms, which are HTTP signature and JWT token.
 
 #### To set your API credentials for an API request,Configure the following information in cybs.properties file:
-  
+
   * Http
 
 ```
@@ -64,15 +64,15 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 
 #### For using MetaKey
 
-  MetaKey can be used for HTTP Signature and JWT authentication  
+  MetaKey can be used for HTTP Signature and JWT authentication.
 
   For HTTP Signature Authentication - 
 
 ```
    authenticationType  = http_Signature
-   merchantID 	       = <child merchantID>  
+   merchantID          = <child merchantID>
    merchantKeyId       = <MetaKey merchantKeyId>
-   merchantsecretKey   = <Metakey merchantsecretKey>
+   merchantsecretKey   = <MetaKey merchantsecretKey>
    useMetaKey          = true
    portfolioID         = <Portfolio ID>
 ```
@@ -81,7 +81,7 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 
 ```
    authenticationType  = Jwt
-   merchantID          = <child merchantID>   
+   merchantID          = <child merchantID>
    keyAlias            = <keyAlias>
    keyPassword         = <keyPassword>
    keyFileName         = <keyFileName>
@@ -116,6 +116,6 @@ Build the SDK with Maven
 To compile the SDK and create a jar...
 
   ` $ mvn clean package`
-  
+
 ## License
 This repository is distributed under a proprietary license.
