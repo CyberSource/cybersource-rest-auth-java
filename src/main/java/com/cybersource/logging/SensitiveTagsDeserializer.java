@@ -14,20 +14,10 @@ public class SensitiveTagsDeserializer implements JsonDeserializer<SensitiveData
 			throws JsonParseException {
 		final JsonObject jsonObject = arg0.getAsJsonObject();
 
-		final JsonArray jsonSensitiveRegexesArray = jsonObject.get("sensitiveStringRegexes").getAsJsonArray();
-
-		final String[] stringRegexes = new String[jsonSensitiveRegexesArray.size()];
-
-		for (int j = 0; j < stringRegexes.length; j++) {
-			final JsonElement jsonStringRegex = jsonSensitiveRegexesArray.get(j);
-			stringRegexes[j] = jsonStringRegex.getAsString();
-		}
-
 		SensitiveTag[] sensitiveTags = arg2.deserialize(jsonObject.get("sensitiveTags"), SensitiveTag[].class);
 
 		final SensitiveDataConfiguration configType = new SensitiveDataConfiguration();
 		configType.setSensitiveTags(sensitiveTags);
-		configType.setSensitiveStringRegexes(stringRegexes);
 
 		return configType;
 	}

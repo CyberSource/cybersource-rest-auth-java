@@ -10,14 +10,4 @@ public class SensitiveDataConfiguration {
 	public void setSensitiveTags(SensitiveTag[] sensitiveTags) {
 		this.sensitiveTags = sensitiveTags;
 	}
-
-	public String[] getSensitiveStringRegexes() {
-		return sensitiveStringRegexes;
-	}
-
-	public void setSensitiveStringRegexes(String[] sensitiveStringRegexes) {
-		this.sensitiveStringRegexes = sensitiveStringRegexes;
-	}
-
-	public String[] sensitiveStringRegexes;
 }
