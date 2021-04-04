@@ -1,20 +1,15 @@
 package com.cybersource.apisdk.controller;
 
-import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.apisdk.model.Response;
 import com.cybersource.apisdk.service.PaymentRequestService;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
 
-/**
- * 
- *
- */
 public class ApiController {
 
 	private Logger logger;
@@ -22,6 +17,10 @@ public class ApiController {
 	private String authenticationType;
 	private boolean isMerchantDetail;
 	private Response responseObj;
+	
+	public ApiController() {
+		this.logger = LogManager.getLogger(this.getClass());
+	}
 
 	/**
 	 * 
@@ -76,13 +75,11 @@ public class ApiController {
 		commonApiControllerCheck(merchantConfig);
 		if (authType) {
 			if (isMerchantDetail) {
-				Utility.log(logger, GlobalLabelParameters.AUTENTICATION_TYPE , authenticationType,
-						Level.INFO);
+				this.logger.info("{} : {}", GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType);
 				try {
-					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig, logger);
+					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig);
 					responseObj =  paymentRequest.processPaymentRequest();
-					Utility.log(logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
-					Utility.log(logger, " ","", Level.OFF);
+					this.logger.info(GlobalLabelParameters.END_TRANSACTION);
 					return responseObj;
 				} catch (Exception e) {
 					paymentEndException();
@@ -105,14 +102,10 @@ public class ApiController {
 		/* Retrieve authentication type for validating. */
 		authenticationType = merchantConfig.getAuthenticationType().trim();
 		authType = Utility.checkAuthenticationValidation(authenticationType);
-		if (MerchantConfig.isSetMerchantDetails) {
-			/* Initializing the logging object. */
-			logger = Log4j.getInstance(merchantConfig);
-			Utility.log(logger, GlobalLabelParameters.BEGIN_TRANSCATION,"", Level.INFO);
+		if (merchantConfig.isMerchantDetailsSet()) {
+			this.logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
 			/* Validate Merchant Details. */
-			isMerchantDetail = merchantConfig.validateMerchantDetails(logger);
-		} else {
-			logger = Log4j.getInstance(merchantConfig);
+			isMerchantDetail = merchantConfig.validateMerchantDetails();
 		}
 	}
 
@@ -121,20 +114,18 @@ public class ApiController {
 	 * 
 	 */
 	private void authenticationException() throws ConfigException{
-		Utility.log(logger, GlobalLabelParameters.AUTH_ERROR , authenticationType, Level.FATAL);
+		this.logger.fatal(GlobalLabelParameters.AUTH_ERROR);
 		try {
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 		} finally{
-		Utility.log(logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
+			this.logger.info(GlobalLabelParameters.END_TRANSACTION);
 		}
-		
 	}
 
 	/**
 	 * 
 	 */
 	private void paymentEndException() {
-		Utility.log(logger, GlobalLabelParameters.END_TRANSCATION,"", Level.INFO);
-		Utility.log(logger, " ","", Level.OFF);
+		this.logger.info(GlobalLabelParameters.END_TRANSACTION);
 	}
 }

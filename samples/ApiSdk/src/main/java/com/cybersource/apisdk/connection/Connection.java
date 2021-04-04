@@ -3,19 +3,12 @@ package com.cybersource.apisdk.connection;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.Utility;
 
-/**
- * 
- * 
- *
- */
 public interface Connection {
 
 	/**
@@ -32,26 +25,26 @@ public interface Connection {
 	 * @param merchantConfig
 	 */
 	default void setProxyConnection(MerchantConfig merchantConfig) {
-		Logger logger = Log4j.getInstance(merchantConfig);
-		String proxyAddress = merchantConfig.getProxyAddress(),
-				proxyPort = String.valueOf(merchantConfig.getProxyPort());
+		Logger logger = LogManager.getLogger(this.getClass());
+		
+		String proxyAddress = merchantConfig.getProxyAddress();
+		String proxyPort = String.valueOf(merchantConfig.getProxyPort());
 
 		try {
 			if (StringUtils.isBlank(proxyAddress) || StringUtils.isBlank(proxyPort)) {
 				return;
 			} else {
 				if (StringUtils.isNotBlank(proxyAddress) && StringUtils.isNotBlank(proxyPort)) {
-					Utility.log(logger, GlobalLabelParameters.PROXY_HOST, " : ".concat(proxyAddress), Level.INFO);
-					Utility.log(logger, GlobalLabelParameters.PROXY_PORT, " : ".concat(proxyPort), Level.INFO);
+					logger.info(GlobalLabelParameters.PROXY_HOST + " : " + proxyAddress);
+					logger.info(GlobalLabelParameters.PROXY_PORT + " : " + proxyPort);
 					Properties systemProperties = System.getProperties();
 					systemProperties.setProperty(GlobalLabelParameters.PROXY_HOST, proxyAddress);
 					systemProperties.setProperty(GlobalLabelParameters.PROXY_PORT, proxyPort);
 				}
 			}
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.PROXY_HOST_PORT_ERR, "", Level.FATAL);
-			Utility.log(logger, e);
+			logger.fatal(GlobalLabelParameters.PROXY_HOST_PORT_ERR);
+			logger.error(e);
 		}
-
 	}
 }

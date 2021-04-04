@@ -1,0 +1,82 @@
+{
+    "sensitiveTags": [
+        {
+            "tagName": "securityCode",
+            "pattern": "",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "number",
+            "pattern": "(\\p{N}+)(\\p{N}{4})",
+            "replacement": "xxxxx-$2",
+            "disableMask": false
+        },
+        {
+            "tagName": "expirationMonth",
+            "pattern": "",
+            "replacement": "xxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "expirationYear",
+            "pattern": "",
+            "replacement": "xxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "account",
+            "pattern": "(\\p{N}+)(\\p{N}{4})",
+            "replacement": "xxxxx-$2",
+            "disableMask": false
+        },
+        {
+            "tagName": "routingNumber",
+            "pattern": "",
+            "replacement": "xxxxx-$2",
+            "disableMask": false
+        },
+        {
+            "tagName": "email",
+            "pattern": "[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "firstName",
+            "pattern": "",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "lastName",
+            "pattern": "",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "phoneNumber",
+            "pattern": "",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "type",
+            "pattern": "",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "token",
+            "pattern": "",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "signature",
+            "pattern": "",
+            "replacement": "xxxxx",
+            "disableMask": false
+        }
+    ]
+}

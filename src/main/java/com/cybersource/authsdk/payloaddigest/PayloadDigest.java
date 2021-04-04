@@ -3,16 +3,12 @@ package com.cybersource.authsdk.payloaddigest;
 import java.security.MessageDigest;
 import java.util.Base64;
 
-import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.util.Utility;
 
-/**
- *
- */
 public class PayloadDigest {
 
 	private String bluePrint = null, messageBody = null;
@@ -21,21 +17,21 @@ public class PayloadDigest {
 	private String sha256 = GlobalLabelParameters.SHA_256;
 
 	/**
-	 * @param merchantConfig-
-	 *            contains all information for merchant.
+	 * @param merchantConfig - contains all information for merchant
 	 */
 	public PayloadDigest(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
+		this.logger = LogManager.getLogger(this.getClass());
 	}
 
 	/**
-	 * @return generated digest from requestBody.
+	 * @return generated digest from requestBody
 	 */
 	private String digestGeneration() {
 
 		/*
-		 * This method return Digest value which is SHA-256 hash of payload that
-		 * is BASE64 encoded
+		 * This method return Digest value which is SHA-256 hash of payload that is
+		 * BASE64 encoded
 		 */
 		String messageBody = payloadGeneration();
 		MessageDigest digestString;
@@ -44,8 +40,8 @@ public class PayloadDigest {
 			digestString = MessageDigest.getInstance(sha256);
 			digestBytes = digestString.digest(messageBody.getBytes("UTF-8"));
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.DIGEST_GEN_FAILED, "", Level.FATAL);
-			Utility.log(logger, e);
+			this.logger.fatal(GlobalLabelParameters.DIGEST_GEN_FAILED);
+			this.logger.error(e);
 			return null;
 		}
 		bluePrint = Base64.getEncoder().encodeToString(digestBytes);
@@ -68,13 +64,11 @@ public class PayloadDigest {
 	 * @return payLoad generated.
 	 */
 	public String getPayLoad() {
-
 		payloadGeneration();
 		return messageBody;
 	}
 
 	/**
-	 * 
 	 * @return Digest generated from payload.
 	 */
 	public String getDigest() {
@@ -88,5 +82,4 @@ public class PayloadDigest {
 	public String getMessageBody() {
 		return messageBody;
 	}
-
 }

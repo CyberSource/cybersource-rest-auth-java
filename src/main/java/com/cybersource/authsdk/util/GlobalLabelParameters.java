@@ -62,8 +62,8 @@ public class GlobalLabelParameters {
 	public static final String RESPONSE_CODE = "Response Code";
 	public static final String DEFAULT_LOG_SIZE = "5K";
 	/* Logging Messages. */
-	public static final String BEGIN_TRANSCATION = "********* START *********";
-	public static final String END_TRANSCATION = "********* END   *********";
+	public static final String BEGIN_TRANSACTION = "********* START *********";
+	public static final String END_TRANSACTION = "********* END   *********";
 	/* Exceptions */
 	public static final String FILE_NOT_FOUND = "File not found, Entered path/file name :: ";
 	public static final String KEY_FILE_NOT_FOUND = "KeyFile not found, Entered path/file name :: ";
@@ -90,15 +90,14 @@ public class GlobalLabelParameters {
 	public static final String CONTENT_TYPE_NOT_SET = "Unable to set content type";
 	public static final String URL_NOT_SET = "Unable to open/set URL :: ";
 	public static final String MERCHANT_KEYID_MISSING = "Merchant KeyID missing/null, check cybs.properties";
-	public static final String MERCHANTSECERT_KEY_MISSING = "Merchant Secret Key missing/null, check cybs.properties";
+	public static final String MERCHANTSECRET_KEY_MISSING = "Merchant Secret Key missing/null, check cybs.properties";
 	public static final String JWT_SIG_FAILED = "JWT Signature production failed.";
 	public static final String RETRIEVE_ACCESS_TOKEN_FAILED = "Retrieve Access Token failed.";
 	public static final String RUN_ENVIRONMENT_ERR = "Run Environment value is missing in cybs.properties";
 	public static final String INVALID_REQUEST_TYPE = "Invalid Request Type :: ";
 	public static final String INVALID_LOG_DIRECTORY = "Invalid log directory, creating default log directory";
 	public static final String NO_LOG_DIRECTORY = "No log directory, setting default directory path.";
-	public static final String NO_LOG_FILENAME = "No log file name, setting default log file name :: "
-			+ DEFAULT_LOG_NAME + LOG_EXTENSION;
+	public static final String NO_LOG_FILENAME = "No log file name, setting default log file name :: " + DEFAULT_LOG_NAME + LOG_EXTENSION;
 	public static final String MERCHANT_NULL_EMPTY = "MerchantID mandatory : NO MerchantID entered. ";
 	public static final String RUN_ENV_NULL_EMPTY = "Run Environment mandatory : NO Run Environment entered. ";
 	public static final String POST_OBJECT_METHOD_REQUEST_PATH="not required";
