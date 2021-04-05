@@ -11,18 +11,19 @@ import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 
 public class Cache {
+	private static Logger logger = LogManager.getLogger(Cache.class);	
 	public static boolean isCache = false;
+	public static long lastModifiedTime;
+	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
+	
 	private boolean isTimeStamp;
 	private MerchantConfig merchantConfig;
-	public static long lastModifiedTime;
 	private Identity identity = new Identity();
-	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
 	private X509Certificate x509Certificate;
 	private RSAPrivateKey rsaPrivateKey;
 	private String merchantID;
 	private String accessToken;
 	private String refreshToken;
-	private Logger logger;
 
 	public void setX509Certificate(X509Certificate x509Certificate) {
 		this.x509Certificate = x509Certificate;
@@ -133,7 +134,7 @@ public class Cache {
 			f = new File(merchantConfig.getKeyFile().getAbsolutePath());
 			return f.lastModified();
 		} catch (Exception e) {
-			this.logger.error(e);
+			logger.error(e);
 			return (Long) null;
 		}
 	}

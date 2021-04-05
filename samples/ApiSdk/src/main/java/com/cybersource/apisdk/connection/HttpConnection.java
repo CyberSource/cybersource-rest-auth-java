@@ -27,6 +27,7 @@ import com.cybersource.authsdk.util.Utility;
  *
  */
 public class HttpConnection implements Connection, Headers {
+	private static Logger logger = LogManager.getLogger(HttpConnection.class);
 
 	private MerchantConfig merchantConfig;
 	private PayloadDigest digestPayLoad;
@@ -34,7 +35,6 @@ public class HttpConnection implements Connection, Headers {
 	private String requestType;
 	private String requestId;
 	private String url;
-	private Logger logger;
 	private String merchantId;
 	private String digestMessageBody;
 	private String requestHost;
@@ -45,7 +45,6 @@ public class HttpConnection implements Connection, Headers {
 	 * @param logger
 	 */
 	public HttpConnection(MerchantConfig merchantConfig) {
-		this.logger = LogManager.getLogger(this.getClass());
 		this.merchantConfig = merchantConfig;
 		this.digestPayLoad = new PayloadDigest(merchantConfig);
 		this.requestType = merchantConfig.getRequestType();
@@ -53,7 +52,7 @@ public class HttpConnection implements Connection, Headers {
 		this.merchantId = merchantConfig.getMerchantID();
 		if (requestType.equalsIgnoreCase(GlobalLabelParameters.GET)) {
 			this.requestId = Utility.retrieveGetIDFromRequestTarget(merchantConfig.getRequestTarget());
-			this.logger.info("GET_ID : {}", requestId);
+			logger.info("GET_ID : {}", requestId);
 		}
 		
 	}
@@ -64,11 +63,11 @@ public class HttpConnection implements Connection, Headers {
 	@Override
 	public void setHeaderData(String merchantId) {
 		try {
-			this.logger.info("{} : {}", GlobalLabelParameters.V_C_MERCHANTID, merchantId);
+			logger.info("{} : {}", GlobalLabelParameters.V_C_MERCHANTID, merchantId);
 			con.setRequestProperty(GlobalLabelParameters.V_C_MERCHANTID, merchantId);
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.MERCHANTID_NOT_SET);
-			this.logger.error(e);
+			logger.fatal(GlobalLabelParameters.MERCHANTID_NOT_SET);
+			logger.error(e);
 		}
 	}
 
@@ -82,8 +81,8 @@ public class HttpConnection implements Connection, Headers {
 			URL urlObj = new URL(url);
 			con = (HttpURLConnection) urlObj.openConnection();			
 		} catch (Exception e) {
-			this.logger.error(GlobalLabelParameters.URL_NOT_SET);
-			this.logger.error(e);
+			logger.error(GlobalLabelParameters.URL_NOT_SET);
+			logger.error(e);
 		}
 	}
 
@@ -102,11 +101,11 @@ public class HttpConnection implements Connection, Headers {
 	@Override
 	public void setContentType() {
 		try {
-			this.logger.info("{} : {}", GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
+			logger.info("{} : {}", GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 			con.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.CONTENT_TYPE_NOT_SET);
-			this.logger.error(e);
+			logger.fatal(GlobalLabelParameters.CONTENT_TYPE_NOT_SET);
+			logger.error(e);
 		}
 	}
 
@@ -115,7 +114,7 @@ public class HttpConnection implements Connection, Headers {
 	 */
 	@Override
 	public void maskingPayload(String serverResponse) {
-		this.logger.info("Response Message : {}", serverResponse);
+		logger.info("Response Message : {}", serverResponse);
 	}
 
 	/**
@@ -133,11 +132,11 @@ public class HttpConnection implements Connection, Headers {
 	@Override
 	public void setUserAgent() {
 		try {
-			this.logger.info("{} : {}", GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
+			logger.info("{} : {}", GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
 			con.setRequestProperty(GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.USER_AGENT_ERROR);
-			this.logger.error(e);
+			logger.fatal(GlobalLabelParameters.USER_AGENT_ERROR);
+			logger.error(e);
 		}
 	}
 
@@ -152,8 +151,8 @@ public class HttpConnection implements Connection, Headers {
 
 			con.setRequestProperty(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.SIG_SET_ERROR);
-			this.logger.error(e);
+			logger.fatal(GlobalLabelParameters.SIG_SET_ERROR);
+			logger.error(e);
 		}
 	}
 	
@@ -163,11 +162,11 @@ public class HttpConnection implements Connection, Headers {
 	@Override
 	public void setRequestMethod(String method) {
 		try {
-			this.logger.info("{} : {}", GlobalLabelParameters.REQUEST_TYPE, method);
+			logger.info("{} : {}", GlobalLabelParameters.REQUEST_TYPE, method);
 			con.setRequestMethod(method);
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.INVALID_REQUEST_TYPE);
-			this.logger.error(e);
+			logger.fatal(GlobalLabelParameters.INVALID_REQUEST_TYPE);
+			logger.error(e);
 		}
 	}
 
@@ -225,14 +224,14 @@ public class HttpConnection implements Connection, Headers {
         responseObj.setResponseCode(String.valueOf(responseCode));
         responseObj.setVcCorelationId(con.getHeaderField(GlobalLabelParameters.V_C_CORRELATION_ID));
         
-        this.logger.info("{} : {}", GlobalLabelParameters.DATE, PropertiesUtil.getNewDate());
-        this.logger.info("{} : {}", GlobalLabelParameters.HOST, requestHost);
+        logger.info("{} : {}", GlobalLabelParameters.DATE, PropertiesUtil.getNewDate());
+        logger.info("{} : {}", GlobalLabelParameters.HOST, requestHost);
 		if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)) {
-			this.logger.info("{} : {}", GlobalLabelParameters.DIGEST, this.digestMessageBody);
+			logger.info("{} : {}", GlobalLabelParameters.DIGEST, this.digestMessageBody);
 		}
 		
-		this.logger.info("{} : {}", GlobalLabelParameters.RESPONSE_CODE, responseObj.getResponseCode());
-		this.logger.info("{} : {}", GlobalLabelParameters.V_C_CORRELATION_ID, responseObj.getVcCorelationId());
+		logger.info("{} : {}", GlobalLabelParameters.RESPONSE_CODE, responseObj.getResponseCode());
+		logger.info("{} : {}", GlobalLabelParameters.V_C_CORRELATION_ID, responseObj.getVcCorelationId());
 
 		StringBuilder response = new StringBuilder();
 

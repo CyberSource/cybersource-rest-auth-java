@@ -30,11 +30,12 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
  */
 
 public class HttpSignatureToken implements TokenGenerator {
+	private static Logger logger = LogManager.getLogger(HttpSignatureToken.class);
+	
 	private MerchantConfig merchantConfigSigHead = null;
 	private StringBuilder signatureHeader;
 	private String merchantkeyId = null;
 	private String httpMethod = null;
-	private Logger logger;
 
 	/**
 	 * @param merchantConfig - merchant configuration information
@@ -45,8 +46,6 @@ public class HttpSignatureToken implements TokenGenerator {
 		this.httpMethod = merchantConfig.getRequestType();
 		merchantConfig.getMerchantSecretKey();
 		merchantConfig.getMerchantID();
-
-		this.logger = LogManager.getLogger(this.getClass());
 	}
 
 	/**
@@ -58,11 +57,11 @@ public class HttpSignatureToken implements TokenGenerator {
 		try {
 			signature = signatureHeader();
 		} catch (NoSuchAlgorithmException e) {
-			this.logger.error(e);
+			logger.error(e);
 		} catch (InvalidKeyException e) {
-			this.logger.error(e);
+			logger.error(e);
 		} catch (ConfigException e) {
-			this.logger.error(e);
+			logger.error(e);
 		}
 		return signature;
 	}

@@ -10,10 +10,10 @@ import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 public class PayloadDigest {
+	private static Logger logger = LogManager.getLogger(PayloadDigest.class);
 
 	private String bluePrint = null, messageBody = null;
 	private MerchantConfig merchantConfig = null;
-	private Logger logger;
 	private String sha256 = GlobalLabelParameters.SHA_256;
 
 	/**
@@ -21,7 +21,6 @@ public class PayloadDigest {
 	 */
 	public PayloadDigest(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
-		this.logger = LogManager.getLogger(this.getClass());
 	}
 
 	/**
@@ -40,8 +39,8 @@ public class PayloadDigest {
 			digestString = MessageDigest.getInstance(sha256);
 			digestBytes = digestString.digest(messageBody.getBytes("UTF-8"));
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.DIGEST_GEN_FAILED);
-			this.logger.error(e);
+			logger.fatal(GlobalLabelParameters.DIGEST_GEN_FAILED);
+			logger.error(e);
 			return null;
 		}
 		bluePrint = Base64.getEncoder().encodeToString(digestBytes);

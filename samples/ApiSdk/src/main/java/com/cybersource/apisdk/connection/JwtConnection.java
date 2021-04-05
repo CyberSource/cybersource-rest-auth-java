@@ -25,10 +25,11 @@ import com.cybersource.authsdk.util.Utility;
  * response message and response code : 200 is obtained.
  */
 public class JwtConnection implements Connection, Headers {
+	private static Logger logger = LogManager.getLogger(JwtConnection.class);
+	
 	private boolean signatureAlert = false;
 	private HttpURLConnection connection = null;
 	private MerchantConfig merchantConfig = null;
-	private Logger logger = null;
 	private URL url;
 	private int responseCode;
 	private String responseMessage;
@@ -43,7 +44,6 @@ public class JwtConnection implements Connection, Headers {
 	 */
 	public JwtConnection(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
-		this.logger = LogManager.getLogger(this.getClass());
 		this.jwtMethodType = merchantConfig.getRequestType();
 		this.getId = Utility.retrieveGetIDFromRequestTarget(merchantConfig.getRequestTarget());
 	}
@@ -65,7 +65,7 @@ public class JwtConnection implements Connection, Headers {
 				responseObj = jwtConnection();
 				responseCode = connection.getResponseCode();
 			} catch (Exception e) {
-				this.logger.error(e);
+				logger.error(e);
 			}
 		} else if (jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.POST)
 				|| jwtMethodType.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
@@ -73,7 +73,7 @@ public class JwtConnection implements Connection, Headers {
 				responseObj = postDocument(requestBody);
 				responseCode = connection.getResponseCode();
 			} catch (Exception e) {
-				this.logger.error(e);
+				logger.error(e);
 			}
 		}
 
@@ -108,7 +108,7 @@ public class JwtConnection implements Connection, Headers {
 		}
 
 		responseCode = connection.getResponseCode();
-		this.logger.info("{} : {}", GlobalLabelParameters.RESPONSE_CODE, responseCode);
+		logger.info("{} : {}", GlobalLabelParameters.RESPONSE_CODE, responseCode);
 		return this.connection.getErrorStream() != null ? this.readInputStream(this.connection.getErrorStream())
 				: this.readInputStream(this.connection.getInputStream());
 	}
@@ -125,7 +125,7 @@ public class JwtConnection implements Connection, Headers {
 		openConnection();
 		setContentType();
 		setRequestMethod(jwtMethodType);
-		this.logger.info("Claim Set : {}", requestBody);
+		logger.info("Claim Set : {}", requestBody);
 		setSignature();
 		if (signatureAlert) {
 			responseObj.setResponseMessage("No Response");
@@ -140,7 +140,7 @@ public class JwtConnection implements Connection, Headers {
 		out1.close();
 
 		responseCode = connection.getResponseCode();
-		this.logger.info("{} : {}", GlobalLabelParameters.RESPONSE_CODE, responseCode);
+		logger.info("{} : {}", GlobalLabelParameters.RESPONSE_CODE, responseCode);
 		return this.connection.getErrorStream() != null ? this.readInputStream(this.connection.getErrorStream())
 				: this.readInputStream(this.connection.getInputStream());
 	}
@@ -154,11 +154,11 @@ public class JwtConnection implements Connection, Headers {
 	private Response readInputStream(InputStream inputStream) throws IOException {
 		responseObj = new Response();
 		responseObj.setResponseCode(String.valueOf(responseCode));
-		this.logger.info("{} : {}", GlobalLabelParameters.RESPONSE_CODE, responseCode);
+		logger.info("{} : {}", GlobalLabelParameters.RESPONSE_CODE, responseCode);
 
 		String responseHeader = connection.getHeaderField(GlobalLabelParameters.V_C_CORRELATION_ID);
 		responseObj.setVcCorelationId(responseHeader);
-		this.logger.info("{} : {}", GlobalLabelParameters.V_C_CORRELATION_ID, String.valueOf(responseHeader));
+		logger.info("{} : {}", GlobalLabelParameters.V_C_CORRELATION_ID, String.valueOf(responseHeader));
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 		StringBuilder response = new StringBuilder();
@@ -182,7 +182,7 @@ public class JwtConnection implements Connection, Headers {
 			url = new URL(getUrl);
 			this.connection = (HttpURLConnection) url.openConnection();
 		} catch (Exception e) {
-			this.logger.error(GlobalLabelParameters.URL_NOT_SET);
+			logger.error(GlobalLabelParameters.URL_NOT_SET);
 		}
 
 	}
@@ -193,11 +193,11 @@ public class JwtConnection implements Connection, Headers {
 	@Override
 	public void setContentType() {
 		try {
-			this.logger.info("{} : {}", GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
+			logger.info("{} : {}", GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 			this.connection.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE,
 					GlobalLabelParameters.APPLICATION_JSON);
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.CONTENT_TYPE_NOT_SET);
+			logger.fatal(GlobalLabelParameters.CONTENT_TYPE_NOT_SET);
 		}
 	}
 
@@ -206,7 +206,7 @@ public class JwtConnection implements Connection, Headers {
 	 */
 	@Override
 	public void maskingPayload(String serverResponse) {
-		this.logger.info("Response Message : {}", serverResponse);
+		logger.info("Response Message : {}", serverResponse);
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class JwtConnection implements Connection, Headers {
 			}
 			this.connection.setRequestProperty("Authorization", "Bearer " + encryptedJWTSignature);
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.SIG_SET_ERROR);
+			logger.fatal(GlobalLabelParameters.SIG_SET_ERROR);
 		}
 	}
 
@@ -234,13 +234,13 @@ public class JwtConnection implements Connection, Headers {
 	@Override
 	public void setRequestMethod(String method) {
 		try {
-			this.logger.info("{} : {}", GlobalLabelParameters.REQUEST_TYPE, method);
+			logger.info("{} : {}", GlobalLabelParameters.REQUEST_TYPE, method);
 			this.connection.setRequestMethod(method);
 			if (method.equalsIgnoreCase(GlobalLabelParameters.GET)) {
 				logger.info("GET ID" + " : " + this.getId);
 			}
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.REQUEST_SET_ERROR);
+			logger.fatal(GlobalLabelParameters.REQUEST_SET_ERROR);
 		}
 	}
 

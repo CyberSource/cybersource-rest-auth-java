@@ -13,9 +13,9 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PrettyPrintingMap;
 
 public class MerchantConfig {
+	private static Logger logger = LogManager.getLogger(MerchantConfig.class);
+	
 	private Properties props;
-
-	private Logger logger;
 
 	/* Authentication related parameters */
 
@@ -216,8 +216,6 @@ public class MerchantConfig {
 			this.setMerchantID(this.getProps().getProperty("merchantID"));
 			setMerchantDetails();
 		}
-
-		this.logger = LogManager.getLogger(this.getClass());
 	}
 
 	/**
@@ -270,7 +268,7 @@ public class MerchantConfig {
 		configurationData.put("AuthenticationType", this.getAuthenticationType());
 		configurationData.put("RunEnvironment", this.getRunEnvironment());
 
-		this.logger.info("Configuration :\n{}", new PrettyPrintingMap<String, Object>(configurationData));
+		logger.info("Configuration :\n{}", new PrettyPrintingMap<String, Object>(configurationData));
 
 		return isMerchantDetailStatus;
 	}
@@ -288,7 +286,7 @@ public class MerchantConfig {
 				|| requestTypeCheck.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 			return true;
 		} else {
-			this.logger.error("ConfigException : " + GlobalLabelParameters.INVALID_REQUEST_TYPE + " : " + this.requestType);
+			logger.error("ConfigException : " + GlobalLabelParameters.INVALID_REQUEST_TYPE + " : " + this.requestType);
 			throw new ConfigException(GlobalLabelParameters.INVALID_REQUEST_TYPE);
 		}
 	}
@@ -300,7 +298,7 @@ public class MerchantConfig {
 	public boolean checkKeyPassword() throws ConfigException {
 		if (this.getKeyPass() == null || this.getKeyPass().isEmpty()) {
 			this.setKeyPass(this.getMerchantID());
-			this.logger.error(GlobalLabelParameters.KEY_PASSWORD_EMPTY_NULL);
+			logger.error(GlobalLabelParameters.KEY_PASSWORD_EMPTY_NULL);
 		}
 		return true;
 	}
@@ -314,7 +312,7 @@ public class MerchantConfig {
 		String runEnvironment = this.getRunEnvironment();
 
 		if (runEnvironment == null || runEnvironment.isEmpty()) {
-			this.logger.error(GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
+			logger.error(GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
 			throw new ConfigException(GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
 		} else if (runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)
 				|| runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)
@@ -339,7 +337,7 @@ public class MerchantConfig {
 	 */
 	public boolean checkMerchantKeyId() throws ConfigException {
 		if (this.getMerchantKeyId() == null || this.getMerchantKeyId().isEmpty()) {
-			this.logger.error("ConfigException : " + GlobalLabelParameters.MERCHANT_KEYID_MISSING);
+			logger.error("ConfigException : " + GlobalLabelParameters.MERCHANT_KEYID_MISSING);
 			throw new ConfigException(GlobalLabelParameters.MERCHANT_KEYID_MISSING);
 		}
 		return true;
@@ -351,7 +349,7 @@ public class MerchantConfig {
 	 */
 	public boolean checkMerchantSecretKey() throws ConfigException {
 		if (this.getMerchantSecretKey() == null || this.getMerchantSecretKey().isEmpty()) {
-			this.logger.error("ConfigException : " + GlobalLabelParameters.MERCHANTSECRET_KEY_MISSING);
+			logger.error("ConfigException : " + GlobalLabelParameters.MERCHANTSECRET_KEY_MISSING);
 			throw new ConfigException(GlobalLabelParameters.MERCHANTSECRET_KEY_MISSING);
 		}
 		return true;
@@ -363,11 +361,11 @@ public class MerchantConfig {
 	 */
 	public boolean checkKeyAlias() throws ConfigException {
 		if (this.getKeyAlias() == null || this.getKeyAlias().isEmpty()) {
-			this.logger.error(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
+			logger.error(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
 			this.setKeyAlias(this.getMerchantID());
 		} else if (!this.getKeyAlias().equalsIgnoreCase(this.getMerchantID())) {
 			this.setKeyAlias(this.getMerchantID());
-			this.logger.error(GlobalLabelParameters.KEY_ALIAS_MISMATCH);
+			logger.error(GlobalLabelParameters.KEY_ALIAS_MISMATCH);
 		}
 		return true;
 	}
@@ -387,19 +385,19 @@ public class MerchantConfig {
 
 		if (this.isEnableClientCert()) {
 			if (this.getProps().getProperty("clientCertFile") == null) {
-				this.logger.error("ConfigException : Client Certificate is mandatory");
+				logger.error("ConfigException : Client Certificate is mandatory");
 				throw new ConfigException("Client Cert is mandatory");
 			}
 			this.setClientCertFile(this.getProps().getProperty("clientCertFile"));
 
 			if (this.getProps().getProperty("clientCertPassword") == null) {
-				this.logger.error("ConfigException : Client Certificate Password is mandatory");
+				logger.error("ConfigException : Client Certificate Password is mandatory");
 				throw new ConfigException("Client Cert Password is mandatory");
 			}
 			this.setClientCertPassword(this.getProps().getProperty("clientCertPassword"));
 
 			if (this.getProps().getProperty("clientCertDirectory") == null) {
-				this.logger.error("ConfigException : Client Certificate Directory is mandatory");
+				logger.error("ConfigException : Client Certificate Directory is mandatory");
 				throw new ConfigException("Client Cert Directory is mandatory");
 			}
 			this.setClientCertDirectory(this.getProps().getProperty("clientCertDirectory"));
@@ -414,7 +412,7 @@ public class MerchantConfig {
 			this.setKeysDirectory(this.getProps().getProperty("keysDirectory").trim());
 
 			if (this.getProps().getProperty("keyAlias") == null) {
-				this.logger.error(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
+				logger.error(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
 				this.setKeyAlias(this.getMerchantID());
 			}
 			this.setKeyAlias(this.getProps().getProperty("keyAlias").trim());
@@ -432,13 +430,13 @@ public class MerchantConfig {
 				&& this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			/* HTTP Signature Authentication */
 			if (this.getProps().getProperty("merchantKeyId") == null) {
-				this.logger.error("ConfigException : Merchant Key ID is mandatory");
+				logger.error("ConfigException : Merchant Key ID is mandatory");
 				throw new ConfigException("Merchant KeyId is mandatory");
 			}
 			this.setMerchantKeyId(this.getProps().getProperty("merchantKeyId").trim());
 
 			if (this.getProps().getProperty("merchantsecretKey") == null) {
-				this.logger.error("ConfigException : Merchant Secret Key is mandatory");
+				logger.error("ConfigException : Merchant Secret Key is mandatory");
 				throw new ConfigException("Merchant SecretKey is mandatory");
 			}
 			this.setMerchantSecretKey(this.getProps().getProperty("merchantsecretKey").trim());
@@ -446,13 +444,13 @@ public class MerchantConfig {
 				&& this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.OAUTH)) {
 			/* OAuth Authentication */
 			if (this.getProps().getProperty("accessToken") == null) {
-				this.logger.error("ConfigException : Access Token is mandatory for OAuth");
+				logger.error("ConfigException : Access Token is mandatory for OAuth");
 				throw new ConfigException("Access Token is mandatory for OAuth");
 			}
 			this.setAccessToken(this.getProps().getProperty("accessToken"));
 
 			if (this.getProps().getProperty("refreshToken") == null) {
-				this.logger.error("ConfigException : Refresh Token is mandatory for OAuth");
+				logger.error("ConfigException : Refresh Token is mandatory for OAuth");
 				throw new ConfigException("Refresh Token is mandatory for OAuth");
 			}
 			this.setRefreshToken(this.getProps().getProperty("refreshToken"));
@@ -460,13 +458,13 @@ public class MerchantConfig {
 				&& this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH)) {
 			/* Mutual Auth Authentication */
 			if (this.getProps().getProperty("clientId") == null) {
-				this.logger.error("ConfigException : Client ID is mandatory to generate OAuth");
+				logger.error("ConfigException : Client ID is mandatory to generate OAuth");
 				throw new ConfigException("Client Id is mandatory to generate OAuth");
 			}
 			this.setClientId(this.getProps().getProperty("clientId"));
 
 			if (this.getProps().getProperty("clientSecret") == null) {
-				this.logger.error("ConfigException : Client Secret is mandatory to generate OAuth");
+				logger.error("ConfigException : Client Secret is mandatory to generate OAuth");
 				throw new ConfigException("Client Secret is mandatory to generate OAuth");
 			}
 			this.setClientSecret(this.getProps().getProperty("clientSecret"));
@@ -479,7 +477,7 @@ public class MerchantConfig {
 			if (this.getProps().getProperty("proxyPort") != null) {
 				this.setProxyPort(Integer.parseInt(this.getProps().getProperty("proxyPort")));
 			} else {
-				this.logger.error("ConfigException : Proxy Port is necessary for using Proxy");
+				logger.error("ConfigException : Proxy Port is necessary for using Proxy");
 				throw new ConfigException("Proxy Port is necessary for using Proxy");
 			}
 
@@ -491,7 +489,7 @@ public class MerchantConfig {
 
 		/* Run Environment. */
 		if (this.getProps().getProperty("runEnvironment") == null) {
-			this.logger.error("ConfigException : Run Environment is mandatory");
+			logger.error("ConfigException : Run Environment is mandatory");
 			throw new ConfigException("Run Environment is mandatory");
 		} else {
 			this.setRunEnvironment(this.getProps().getProperty("runEnvironment").trim());
@@ -523,8 +521,8 @@ public class MerchantConfig {
 				this.setRequestHost(runEnvironment);
 			}
 		} catch (Exception e) {
-			this.logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
-			this.logger.error(GlobalLabelParameters.RUN_ENV_NULL_EMPTY);
+			logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
+			logger.error(GlobalLabelParameters.RUN_ENV_NULL_EMPTY);
 			this.setMerchantDetailsSet(false);
 		}
 
@@ -547,8 +545,8 @@ public class MerchantConfig {
 	private void checkAuthenticationType() throws ConfigException {
 		/* Authentication Type. */
 		if (this.getAuthenticationType() == null || this.getAuthenticationType().isEmpty()) {
-			this.logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
-			this.logger.error(GlobalLabelParameters.AUTH_NULL_EMPTY);
+			logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
+			logger.error(GlobalLabelParameters.AUTH_NULL_EMPTY);
 			throw new ConfigException(GlobalLabelParameters.AUTH_NULL_EMPTY);
 		}
 		if (!(this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)
@@ -559,8 +557,8 @@ public class MerchantConfig {
 				 */
 				|| this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.OAUTH)
 				|| this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH))) {
-			this.logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
-			this.logger.error(GlobalLabelParameters.AUTH_ERROR);
+			logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
+			logger.error(GlobalLabelParameters.AUTH_ERROR);
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 		}
 	}
@@ -572,8 +570,8 @@ public class MerchantConfig {
 	public boolean checkMerchantId() throws ConfigException {
 		boolean check = true;
 		if (this.getMerchantID() == null || this.getMerchantID().isEmpty()) {
-			this.logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
-			this.logger.error(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
+			logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
+			logger.error(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
 			check = false;
 			throw new ConfigException(GlobalLabelParameters.MERCHANT_NULL_EMPTY);
 		}
@@ -591,33 +589,33 @@ public class MerchantConfig {
 		this.setKeyFile(null);
 
 		if (this.getKeyFilename() == null || this.getKeyFilename().isEmpty()) {
-			this.logger.error(GlobalLabelParameters.KEY_FILE_EMPTY);
+			logger.error(GlobalLabelParameters.KEY_FILE_EMPTY);
 			if (this.getMerchantID() != null) {
 				this.setKeyFilename(this.getMerchantID());
 			}
 		}
 		if (this.getKeysDirectory() == null || this.getKeysDirectory().isEmpty()) {
 			this.setKeysDirectory(GlobalLabelParameters.DEF_KEY_DIRECTORY_PATH);
-			this.logger.error(GlobalLabelParameters.KEY_DIRECTORY_EMPTY);
+			logger.error(GlobalLabelParameters.KEY_DIRECTORY_EMPTY);
 		}
 
 		newFile = new File(this.keysDirectory);
 
 		if (!newFile.isDirectory()) {
-			this.logger.error(GlobalLabelParameters.KEY_FILE_DIRECTORY_NOT_FOUND + " : " + this.keysDirectory);
+			logger.error(GlobalLabelParameters.KEY_FILE_DIRECTORY_NOT_FOUND + " : " + this.keysDirectory);
 			return false;
 		}
 		try {
 			newFile = new File(this.getKeysDirectory(),
 					this.getKeyFilename().concat(GlobalLabelParameters.P12_EXTENSION));
 			if (!newFile.exists()) {
-				this.logger.error(GlobalLabelParameters.KEY_FILE_NOT_FOUND + " : "
+				logger.error(GlobalLabelParameters.KEY_FILE_NOT_FOUND + " : "
 						+ this.keysDirectory.concat("/").concat(this.getKeyFilename())
 						+ GlobalLabelParameters.P12_EXTENSION);
 				return false;
 			}
 
-			this.logger.info(GlobalLabelParameters.KEY_FILE + " : "
+			logger.info(GlobalLabelParameters.KEY_FILE + " : "
 					+ this.keysDirectory.concat("/").concat(this.getKeyFilename())
 					+ GlobalLabelParameters.P12_EXTENSION);
 		} catch (Exception e) {
@@ -629,7 +627,7 @@ public class MerchantConfig {
 			this.setKeyFile(newFile);
 			return true;
 		} else {
-			this.logger.info(GlobalLabelParameters.FILE_NOT_READ + " : " + this.keysDirectory.concat(this.getKeyFilename()));
+			logger.info(GlobalLabelParameters.FILE_NOT_READ + " : " + this.keysDirectory.concat(this.getKeyFilename()));
 			return false;
 		}
 	}

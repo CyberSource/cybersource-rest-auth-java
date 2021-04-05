@@ -18,9 +18,10 @@ import com.cybersource.authsdk.jwtsecurity.JWTCryptoProcessorImpl;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 public class JwtSignatureToken implements TokenGenerator {
+	private static Logger logger = LogManager.getLogger(JwtSignatureToken.class);
+	
 	private MerchantConfig merchantConfig;
 	private String requestBody, jwtMethod;
-	private Logger logger;
 	private Cache cache;
 	private RSAPrivateKey rsaPrivateKey = null;
 	private X509Certificate x509Certificate = null;
@@ -28,14 +29,13 @@ public class JwtSignatureToken implements TokenGenerator {
 
 	/**
 	 * @param merchantConfig - list of parameters required for JWT token.
-	 * @param requestBody    -user information to be sent.
+	 * @param requestBody    - user information to be sent.
 	 */
 	public JwtSignatureToken(MerchantConfig merchantConfig, String requestBody) {
 
 		this.merchantConfig = merchantConfig;
 		this.requestBody = requestBody;
 		this.jwtMethod = merchantConfig.getRequestType();
-		this.logger = LogManager.getLogger(this.getClass());
 		this.cache = new Cache(this.merchantConfig);
 	}
 
@@ -63,18 +63,18 @@ public class JwtSignatureToken implements TokenGenerator {
 				if (Cache.isCache) {
 					rsaPrivateKey = newKeyCertGen.initializePrivateKey(merchantConfig);
 					x509Certificate = newKeyCertGen.initializeCertificate(merchantConfig);
-					this.logger.info(GlobalLabelParameters.CACHE_BEGIN);
+					logger.info(GlobalLabelParameters.CACHE_BEGIN);
 					setUpCache();
 					Cache.isCache = false;
 				} else {
 					boolean lastModified = cache.isLastModifiedTimeP12();
 					if (lastModified) {
-						this.logger.info(GlobalLabelParameters.CACHE_EXTRACT);
+						logger.info(GlobalLabelParameters.CACHE_EXTRACT);
 						cache.retrieveP12DataFromCache();
 						rsaPrivateKey = cache.getRsaPrivateKey();
 						x509Certificate = cache.getX509Certificate();
 					} else {
-						this.logger.info(GlobalLabelParameters.CACHE_EXTEND);
+						logger.info(GlobalLabelParameters.CACHE_EXTEND);
 						rsaPrivateKey = newKeyCertGen.initializePrivateKey(merchantConfig);
 						x509Certificate = newKeyCertGen.initializeCertificate(merchantConfig);
 						setUpCache();
@@ -134,8 +134,8 @@ public class JwtSignatureToken implements TokenGenerator {
 				throw new ConfigException("merchant config fields missing: keyType, key type");
 			}
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.JWT_SIG_FAILED);
-			this.logger.error(e);
+			logger.fatal(GlobalLabelParameters.JWT_SIG_FAILED);
+			logger.error(e);
 			signature = null;
 		}
 		return signature;

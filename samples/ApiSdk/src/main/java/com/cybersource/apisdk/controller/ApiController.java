@@ -11,16 +11,12 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
 
 public class ApiController {
-
-	private Logger logger;
+	private static Logger logger = LogManager.getLogger(ApiController.class);
+	
 	private boolean authType;
 	private String authenticationType;
 	private boolean isMerchantDetail;
 	private Response responseObj;
-	
-	public ApiController() {
-		this.logger = LogManager.getLogger(this.getClass());
-	}
 
 	/**
 	 * 
@@ -75,11 +71,11 @@ public class ApiController {
 		commonApiControllerCheck(merchantConfig);
 		if (authType) {
 			if (isMerchantDetail) {
-				this.logger.info("{} : {}", GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType);
+				logger.info("{} : {}", GlobalLabelParameters.AUTENTICATION_TYPE, authenticationType);
 				try {
 					PaymentRequestService paymentRequest = new PaymentRequestService(merchantConfig);
 					responseObj =  paymentRequest.processPaymentRequest();
-					this.logger.info(GlobalLabelParameters.END_TRANSACTION);
+					logger.info(GlobalLabelParameters.END_TRANSACTION);
 					return responseObj;
 				} catch (Exception e) {
 					paymentEndException();
@@ -103,8 +99,8 @@ public class ApiController {
 		authenticationType = merchantConfig.getAuthenticationType().trim();
 		authType = Utility.checkAuthenticationValidation(authenticationType);
 		if (merchantConfig.isMerchantDetailsSet()) {
-			this.logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
-			/* Validate Merchant Details. */
+			logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
+			/* Validate Merchant Details */
 			isMerchantDetail = merchantConfig.validateMerchantDetails();
 		}
 	}
@@ -114,11 +110,11 @@ public class ApiController {
 	 * 
 	 */
 	private void authenticationException() throws ConfigException{
-		this.logger.fatal(GlobalLabelParameters.AUTH_ERROR);
+		logger.fatal(GlobalLabelParameters.AUTH_ERROR);
 		try {
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 		} finally{
-			this.logger.info(GlobalLabelParameters.END_TRANSACTION);
+			logger.info(GlobalLabelParameters.END_TRANSACTION);
 		}
 	}
 
@@ -126,6 +122,6 @@ public class ApiController {
 	 * 
 	 */
 	private void paymentEndException() {
-		this.logger.info(GlobalLabelParameters.END_TRANSACTION);
+		logger.info(GlobalLabelParameters.END_TRANSACTION);
 	}
 }

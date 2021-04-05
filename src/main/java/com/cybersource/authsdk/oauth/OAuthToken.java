@@ -8,17 +8,17 @@ import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 public class OAuthToken implements TokenGenerator {
+    private static Logger logger = LogManager.getLogger(OAuthToken.class);
+    
 	private MerchantConfig merchantConfig;
 	private String refreshToken;
 	private String accessToken;
-    private Logger logger;
 
 	/**
 	 * @param merchantConfig - list of parameters required for JWT token.
 	 */
 	public OAuthToken(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
-		this.logger = LogManager.getLogger(this.getClass());
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class OAuthToken implements TokenGenerator {
 		try {
 			this.accessToken = getAccessToken();
 		} catch (Exception e) {
-			this.logger.error("Error retrieving access token\n{}", e);
+			logger.error("Error retrieving access token\n{}", e);
 			this.accessToken = null;
 		}
 		return this.accessToken;
@@ -48,8 +48,8 @@ public class OAuthToken implements TokenGenerator {
 				throw new ConfigException("merchant config is null");
 			}
 		} catch (Exception e) {
-			this.logger.fatal(GlobalLabelParameters.RETRIEVE_ACCESS_TOKEN_FAILED);
-			this.logger.error("Exception : {}", e);
+			logger.fatal(GlobalLabelParameters.RETRIEVE_ACCESS_TOKEN_FAILED);
+			logger.error("Exception : {}", e);
 			this.accessToken = null;
 		}
 		return this.accessToken;

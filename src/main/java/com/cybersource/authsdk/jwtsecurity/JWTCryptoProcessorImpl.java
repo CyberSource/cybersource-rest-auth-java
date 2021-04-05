@@ -46,11 +46,11 @@ import com.nimbusds.jose.util.Base64;
 
 public class JWTCryptoProcessorImpl implements CryptoProcessor {
 	public static String MERCHANT_ID = "v-c-merchant-id";
-	private Logger logger = LogManager.getLogger(this.getClass());
+	private static Logger logger = LogManager.getLogger(JWTCryptoProcessorImpl.class);
 
 	private JWEObject decryptPayload(String jweString, PrivateKey privateKey) {
 		if ((isNullOrEmpty(jweString)) || (privateKey == null)) {
-			this.logger.error("JWE String or Private Key is null or empty");
+			logger.error("JWE String or Private Key is null or empty");
 			return null;
 		}
 		try {
@@ -58,12 +58,12 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			JWEDecrypter decrypter = new RSADecrypter(privateKey);
 			jweObject.decrypt(decrypter);
 			if (!JWEObject.State.DECRYPTED.equals(jweObject.getState())) {
-				this.logger.error("Payload : \"" + jweString + "\" cannot be decrypted");
+				logger.error("Payload : \"" + jweString + "\" cannot be decrypted");
 				return null;
 			}
 		} catch (IllegalArgumentException | JOSEException | ParseException exception) {
-			this.logger.error("JWT payload : \"" + jweString + "\" cannot be decrypted");
-			this.logger.error(exception);
+			logger.error("JWT payload : \"" + jweString + "\" cannot be decrypted");
+			logger.error(exception);
 			return null;
 		}
 
@@ -74,7 +74,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 	private JOSEObject encryptPayload(String content, X509Certificate x509Certificate,
 			Map<String, Object> customHeaders) {
 		if ((isNullOrEmpty(content)) || (x509Certificate == null)) {
-			this.logger.error("Payload Content or Public Certificate is null or empty");
+			logger.error("Payload Content or Public Certificate is null or empty");
 			return null;
 		}
 		String serialNumber = null;
@@ -94,7 +94,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		try {
 			x5cBase64List.add(com.nimbusds.jose.util.Base64.encode(x509Certificate.getEncoded()));
 		} catch (CertificateEncodingException e) {
-			this.logger.error("CertificateEncodingException : Payload cannot be signed or encrypted\n" +  e);
+			logger.error("CertificateEncodingException : Payload cannot be signed or encrypted\n" +  e);
 			return null;
 		}
 		@SuppressWarnings("deprecation")
@@ -105,16 +105,16 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		try {
 			JWEEncrypter jweEncrypter = new RSAEncrypter((RSAPublicKey) x509Certificate.getPublicKey());
 			if (JWEObject.State.ENCRYPTED.equals(jweObject.getState())) {
-				this.logger.error("Payload is already encrypted");
+				logger.error("Payload is already encrypted");
 				return null;
 			}
 			jweObject.encrypt(jweEncrypter);
 			if (!JWEObject.State.ENCRYPTED.equals(jweObject.getState())) {
-				this.logger.error("Payload cannot be encrypted");
+				logger.error("Payload cannot be encrypted");
 				return null;
 			}
 		} catch (JOSEException joseException) {
-			this.logger.error("JOSEException : Payload encryption failed\n" + joseException);
+			logger.error("JOSEException : Payload encryption failed\n" + joseException);
 			return null;
 		}
 		return jweObject;
@@ -152,7 +152,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 	private JOSEObject signPayload(String content, PrivateKey privateKey, X509Certificate x509Certificate,
 			Map<String, Object> customHeaders) {
 		if ((isNullOrEmpty(content)) || (x509Certificate == null) || (privateKey == null)) {
-			this.logger.error("Payload Content or Public Certificate or Private Key is null or empty");
+			logger.error("Payload Content or Public Certificate or Private Key is null or empty");
 			return null;
 		}
 		String serialNumber = null;
@@ -172,7 +172,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		try {
 			x5cBase64List.add(com.nimbusds.jose.util.Base64.encode(x509Certificate.getEncoded()));
 		} catch (CertificateEncodingException e) {
-			this.logger.error("CertificateEncodingException : Payload cannot be signed or encrypted\n" + e);
+			logger.error("CertificateEncodingException : Payload cannot be signed or encrypted\n" + e);
 			return null;
 		}
 		RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) privateKey;
@@ -185,11 +185,11 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			RSASSASigner signer = new RSASSASigner(rsaPrivateKey);
 			jwsObject.sign(signer);
 			if (!jwsObject.getState().equals(JWSObject.State.SIGNED)) {
-				this.logger.error("Payload signing failed.");
+				logger.error("Payload signing failed.");
 				return null;
 			}
 		} catch (JOSEException joseException) {
-			this.logger.error("JOSEException : Payload cannot be signed or encrypted\n" + joseException);
+			logger.error("JOSEException : Payload cannot be signed or encrypted\n" + joseException);
 			return null;
 		}
 		return jwsObject;
@@ -208,7 +208,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 
 	public String validateSignature(String jwsString, X509Certificate publicCertificate) {
 		if ((isNullOrEmpty(jwsString)) || (publicCertificate == null)) {
-			this.logger.error("JWS or Public Certificate is null or empty");
+			logger.error("JWS or Public Certificate is null or empty");
 			return null;
 		}
 		try {
@@ -219,11 +219,11 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			}
 			RSASSAVerifier verifier = new RSASSAVerifier((RSAPublicKey) publicCertificate.getPublicKey());
 			if (!jwsObject.verify(verifier)) {
-				this.logger.error("Signature cannot be verified");
+				logger.error("Signature cannot be verified");
 				return null;
 			}
 		} catch (JOSEException | ParseException e) {
-			this.logger.error("JWT Token cannot be parsed or verified\n" + e);
+			logger.error("JWT Token cannot be parsed or verified\n" + e);
 			return null;
 		}
 		JWSObject jwsObject = null;
@@ -232,7 +232,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 
 	public String validateSignature(String jwsString, byte[] publicCertificate) {
 		if ((isNullOrEmpty(jwsString)) || (publicCertificate == null)) {
-			this.logger.error("JWS or Public Certificate is null or empty");
+			logger.error("JWS or Public Certificate is null or empty");
 			return null;
 		}
 		try {
@@ -260,10 +260,10 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 				}
 			}
 		} catch (CertificateException ex) {
-			this.logger.error("CertificateException : Cannot create certificate from encoded certificate string\n" + ex);
+			logger.error("CertificateException : Cannot create certificate from encoded certificate string\n" + ex);
 			return null;
 		} catch (IOException e) {
-			this.logger.error("IOException : Unable to close input stream object\n" + e);
+			logger.error("IOException : Unable to close input stream object\n" + e);
 			return null;
 		}
 		X509Certificate x509Certificate = null;
@@ -273,13 +273,13 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 	public String getPayload(String joseStr) {
 		JOSEObject joseObject;
 		if (isNullOrEmpty(joseStr)) {
-			this.logger.error("JWS is null or empty");
+			logger.error("JWS is null or empty");
 			return null;
 		}
 		try {
 			joseObject = JOSEObject.parse(joseStr);
 		} catch (ParseException e) {
-			this.logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
+			logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
 			return null;
 		}
 		return getPayload(joseObject);
@@ -300,7 +300,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 				return true;
 			}
 		} catch (JOSEException | ParseException e) {
-			this.logger.error("Cannot verify or parse JWT Token\n" + e);
+			logger.error("Cannot verify or parse JWT Token\n" + e);
 			return false;
 		}
 
@@ -310,7 +310,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 	public boolean isValidSignature(String jwsString, byte[] publicCertificate) {
 		X509Certificate x509Certificate;
 		if ((isNullOrEmpty(jwsString)) || (publicCertificate == null)) {
-			this.logger.error("JWS or Public Certificate is null or empty");
+			logger.error("JWS or Public Certificate is null or empty");
 			return false;
 		}
 		try {
@@ -337,10 +337,10 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 				}
 			}
 		} catch (CertificateException ex) {
-			this.logger.error("CertificateException : Cannot create certificate from encoded certificate string\n" + ex);
+			logger.error("CertificateException : Cannot create certificate from encoded certificate string\n" + ex);
 			return false;
 		} catch (IOException e) {
-			this.logger.error("IOException : Unable to close input stream object\n" + e);
+			logger.error("IOException : Unable to close input stream object\n" + e);
 			return false;
 		}
 
@@ -371,10 +371,10 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 				return (BigInteger) ((JWEObject) joseObject).getHeader().getCustomParam("modulus");
 			}
 			
-			this.logger.error("Unknown JWT authentication type, not signed, not encrypted");
+			logger.error("Unknown JWT authentication type, not signed, not encrypted");
 			return null;
 		} catch (ParseException e) {
-			this.logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
+			logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
 		}
 		return null;
 	}
@@ -382,7 +382,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 	public String getCustomParam(String joseStr, String param) {
 		try {
 			if (isNullOrEmpty(joseStr)) {
-				this.logger.error("JWT Payload is null or empty");
+				logger.error("JWT Payload is null or empty");
 				return null;
 			}
 			JOSEObject joseObject = JOSEObject.parse(joseStr);
@@ -393,10 +393,10 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 				return (String) joseObject.getHeader().getCustomParam(param);
 			}
 			
-			this.logger.error("Unknown JWT authentication type, not signed, not encrypted");
+			logger.error("Unknown JWT authentication type, not signed, not encrypted");
 			return null;
 		} catch (ParseException e) {
-			this.logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
+			logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
 		}
 		return null;
 	}
@@ -406,7 +406,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		try {
 			joseObject = JOSEObject.parse(joseStr);
 		} catch (ParseException e) {
-			this.logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
+			logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
 			return null;
 		}
 		return getKid(joseObject);
@@ -420,7 +420,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			return ((JWEObject) joseObject).getHeader().getKeyID();
 		}
 		
-		this.logger.error("Unknown JWT authentication type, not signed, not encrypted");
+		logger.error("Unknown JWT authentication type, not signed, not encrypted");
 		return null;
 	}
 
@@ -430,7 +430,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		try {
 			joseObject = JOSEObject.parse(joseStr);
 		} catch (ParseException e) {
-			this.logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
+			logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
 			return false;
 		}
 		return isEncrypted(joseObject);
@@ -444,7 +444,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			return JWEObject.State.ENCRYPTED == ((JWEObject) joseObject).getState();
 		}
 		
-		this.logger.error("Unknown JWT authentication type, not signed, not encrypted");
+		logger.error("Unknown JWT authentication type, not signed, not encrypted");
 		return false;
 	}
 
@@ -453,7 +453,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		try {
 			joseObject = JOSEObject.parse(joseStr);
 		} catch (ParseException e) {
-			this.logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
+			logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
 			return null;
 		}
 		return getSerialNumber(joseObject, issuerCN);
@@ -461,7 +461,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 
 	public String getSerialNumber(JOSEObject joseObject, String issuerCN) {
 		if ((joseObject == null) || (isNullOrEmpty(issuerCN))) {
-			this.logger.error("JOSE object or Certificate Issuer Common Name is null or empty");
+			logger.error("JOSE object or Certificate Issuer Common Name is null or empty");
 			return null;
 		}
 		List<com.nimbusds.jose.util.Base64> certList;
@@ -471,7 +471,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			if ((joseObject instanceof JWEObject)) {
 				certList = ((JWEObject) joseObject).getHeader().getX509CertChain();
 			} else {
-				this.logger.error("Unknown JWT authentication type, not signed, not encrypted");
+				logger.error("Unknown JWT authentication type, not signed, not encrypted");
 				return null;
 			}
 		}
@@ -503,28 +503,28 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 					}
 				}
 			} catch (CertificateException ex) {
-				this.logger.error("CertificateException : Cannot create certificate from encoded certificate string\n" + ex);
+				logger.error("CertificateException : Cannot create certificate from encoded certificate string\n" + ex);
 				return null;
 			} catch (IOException e) {
-				this.logger.error("IOException : Unable to close input stream object\n" + e);
+				logger.error("IOException : Unable to close input stream object\n" + e);
 				return null;
 			}
 		}
 		
-		this.logger.error("No Certificate chain available in JWT x5c header");
+		logger.error("No Certificate chain available in JWT x5c header");
 		return null;
 	}
 
 	public AuthAttributes getAuthAttributes(String jwtString, String issuerCN) {
 		JOSEObject joseObject;
 		if (isNullOrEmpty(jwtString)) {
-			this.logger.error("JWT String is null or empty");
+			logger.error("JWT String is null or empty");
 			return null;
 		}
 		try {
 			joseObject = JOSEObject.parse(jwtString);
 		} catch (ParseException e) {
-			this.logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
+			logger.error("ParseException : Cannot verify or parse JWT Token\n" + e);
 			return null;
 		}
 
@@ -556,7 +556,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		try {
 			messageDigest = MessageDigest.getInstance("SHA-256");
 		} catch (NoSuchAlgorithmException e) {
-			this.logger.error("NoSuchAlgorithmException : Couldn't instantiate SHA-256 digest\n" + e);
+			logger.error("NoSuchAlgorithmException : Couldn't instantiate SHA-256 digest\n" + e);
 			return false;
 		}
 		byte[] bodyDigestBytes = messageDigest.digest(jsonBody.getBytes());
@@ -576,7 +576,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		try {
 			messageDigest = MessageDigest.getInstance("SHA-256");
 		} catch (NoSuchAlgorithmException e) {
-			this.logger.error("NoSuchAlgorithmException : Couldn't instantiate SHA-256 digest\n" + e);
+			logger.error("NoSuchAlgorithmException : Couldn't instantiate SHA-256 digest\n" + e);
 			return null;
 		}
 		byte[] bodyDigestBytes = messageDigest.digest(jsonBody.getBytes());
