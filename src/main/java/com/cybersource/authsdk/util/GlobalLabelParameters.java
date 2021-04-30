@@ -90,7 +90,7 @@ public class GlobalLabelParameters {
 	public static final String JWT_SIG_FAILED = "JWT Signature production failed.";
 	public static final String RETRIEVE_ACCESS_TOKEN_FAILED = "Retrieve Access Token failed.";
 	public static final String RUN_ENVIRONMENT_ERR = "Run Environment value is missing in cybs.properties";
-	public static final String DEPRECATED_ENVIRONMENT = "The value provided for this field `RunEnvironment` has been deprecated and will not be used anymore.\n\nPlease refer to the README file [ https://github.com/CyberSource/cybersource-rest-samples-csharp/blob/master/README.md ] for information about the new values that are accepted.";
+	public static final String DEPRECATED_ENVIRONMENT = "The value provided for this field `RunEnvironment` has been deprecated and will not be used anymore.\n\nPlease refer to the README file [ https://github.com/CyberSource/cybersource-rest-samples-java/blob/master/README.md ] for information about the new values that are accepted.";
 	public static final String INVALID_REQUEST_TYPE = "Invalid Request Type :: ";
 	public static final String INVALID_LOG_DIRECTORY = "Invalid log directory, creating default log directory";
 	public static final String NO_LOG_DIRECTORY = "No log directory, setting default directory path.";
