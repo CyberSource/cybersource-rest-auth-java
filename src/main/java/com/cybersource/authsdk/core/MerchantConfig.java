@@ -636,22 +636,13 @@ public class MerchantConfig {
 	 */
 	public boolean checkRunEvironment() throws ConfigException {
 		boolean runEnvironment = false;
-		if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_SANDBOX)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_PRODUCTION)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_SANDBOX)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_PRODUCTION)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX_MA)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION_MA)
-				|| this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT_MA)) {
-			runEnvironment = true;
-		} else if (this.runEnvironment == null || this.runEnvironment.isEmpty()) {
+		
+		if (this.runEnvironment == null || this.runEnvironment.isEmpty()) {
 			Utility.log(log, GlobalLabelParameters.RUN_ENVIRONMENT_ERR, "", Level.ERROR);
 			throw new ConfigException(GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
-
-		} else {
+		} else if (GlobalLabelParameters.OLD_RUN_ENVIRONMENT_CONSTANTS.contains(this.runEnvironment.toUpperCase())) {
+			throw new ConfigException(GlobalLabelParameters.DEPRECATED_ENVIRONMENT);
+		}  else {
 			runEnvironment = true;
 		}
 		return runEnvironment;
@@ -921,30 +912,11 @@ public class MerchantConfig {
 		}
 		
 		try {
-			if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX)) {
-				this.requestHost = GlobalLabelParameters.SANDBOX_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION)) {
-				this.requestHost = GlobalLabelParameters.PRODUCTION_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_SANDBOX_MA)) {
-				this.requestHost = GlobalLabelParameters.SANDBOX_MA_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.RUN_PRODUCTION_MA)) {
-				this.requestHost = GlobalLabelParameters.PRODUCTION_MA_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_SANDBOX)) {
-				this.requestHost = GlobalLabelParameters.BOA_SANDBOX_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.BOA_RUN_PRODUCTION)) {
-				this.requestHost = GlobalLabelParameters.BOA_PRODUCTION_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_SANDBOX)) {
-				this.requestHost = GlobalLabelParameters.IDC_SANDBOX_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.IDC_RUN_PRODUCTION)) {
-				this.requestHost = GlobalLabelParameters.IDC_PRODUCTION_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT)) {
-				this.requestHost = GlobalLabelParameters.SIT_ENVIRONMENT_URL;
-			} else if (this.runEnvironment.equalsIgnoreCase(GlobalLabelParameters.SIT_RUN_ENVIRONMENT_MA)) {
-				this.requestHost = GlobalLabelParameters.SIT_ENVIRONMENT_MA_URL;
+			if (GlobalLabelParameters.OLD_RUN_ENVIRONMENT_CONSTANTS.contains(this.runEnvironment.toUpperCase())) {
+				throw new ConfigException(GlobalLabelParameters.DEPRECATED_ENVIRONMENT);
 			}
-			else {
-				this.requestHost = this.runEnvironment;
-			}
+				
+			this.requestHost = this.runEnvironment;
 		} catch (Exception e) {
 			this.log = Log4j.getInstance(this);
 			Utility.log(this.log, GlobalLabelParameters.BEGIN_TRANSCATION, "", Level.INFO);
