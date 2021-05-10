@@ -18,6 +18,8 @@ import com.google.gson.GsonBuilder;
 public class SensitiveFilterPatternConverter extends LogEventPatternConverter {
 	private static Pattern[] tagPatterns;
 	private static String[] tagReplacements;
+	private static Pattern[] authPatterns;
+	private static String[] authReplacements;
 	private static Gson gson;
 
 	private SensitiveFilterPatternConverter(final String name, final String style) {
@@ -34,9 +36,11 @@ public class SensitiveFilterPatternConverter extends LogEventPatternConverter {
 		try {
 			String message = event.getMessage().getFormattedMessage();
 			String maskXmlMessage = SensitiveFilterPatternConverter.maskSensitiveXmlString(message);
+			maskXmlMessage = SensitiveFilterPatternConverter.maskAuthenticationDataInString(maskXmlMessage);
 
 			toAppendTo.append(maskXmlMessage.trim());
 		} catch (Exception e) {
+			System.out.println("ERROR : " + e);
 		}
 	}
 
@@ -55,7 +59,7 @@ public class SensitiveFilterPatternConverter extends LogEventPatternConverter {
 				if (reader != null)
 					reader.close();
 			} catch (Exception e) {
-				System.out.println("HELLO ERROR : " + e);
+				System.out.println("ERROR : " + e);
 			}
 			
 			if (configType == null) {
@@ -71,13 +75,31 @@ public class SensitiveFilterPatternConverter extends LogEventPatternConverter {
 				String pattern = configType.sensitiveTags[j].pattern;
 				String replacement = configType.sensitiveTags[j].replacement;
 
-				if (pattern != null && !pattern.isEmpty())
+				if (pattern != null && !pattern.isEmpty()) {
 					tagPatterns[j] = Pattern.compile("\"" + tagName + "\":\"" + pattern + "\"");
-				else
+				}
+				else {
 					tagPatterns[j] = Pattern.compile("\"" + tagName + "\":\".+\"");
+				}
 				tagReplacements[j] = "\"" + tagName + "\":\"" + replacement + "\"";
 			}
+			
+			int noOfAuthenticationTags = configType.authenticationSchemes.length;
+			authPatterns = new Pattern[noOfAuthenticationTags];
+			authReplacements = new String[noOfAuthenticationTags];
+			
+			for (int i = 0; i < noOfAuthenticationTags; i++) {
+				String tagName = configType.authenticationSchemes[i].tagName;
+				String pattern = configType.authenticationSchemes[i].pattern;
+				String replacement = configType.authenticationSchemes[i].replacement;
+				
+				if (pattern != null && !pattern.isEmpty()) {
+					authPatterns[i] = Pattern.compile(tagName + ": " + pattern);
+				}
+				authReplacements[i] = replacement;
+			}
 		} catch (Exception e) {
+			System.out.println("ERROR : " + e);
 		}
 	}
 
@@ -85,6 +107,14 @@ public class SensitiveFilterPatternConverter extends LogEventPatternConverter {
 		for (int i = 0; i < tagPatterns.length; i++) {
 			str = tagPatterns[i].matcher(str).replaceAll(tagReplacements[i]);
 		}
+		return str;
+	}
+
+	public static String maskAuthenticationDataInString(String str) {
+		for (int i = 0; i < authPatterns.length; i++) {
+			str = str.replaceAll(authPatterns[i].toString(), authReplacements[i]);
+		}
+		
 		return str;
 	}
 }

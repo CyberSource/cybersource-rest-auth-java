@@ -15,9 +15,11 @@ public class SensitiveTagsDeserializer implements JsonDeserializer<SensitiveData
 		final JsonObject jsonObject = arg0.getAsJsonObject();
 
 		SensitiveTag[] sensitiveTags = arg2.deserialize(jsonObject.get("sensitiveTags"), SensitiveTag[].class);
+		AuthenticationSchemeTag[] authenticationTags = arg2.deserialize(jsonObject.get("authenticationSchemes"), AuthenticationSchemeTag[].class);
 
 		final SensitiveDataConfiguration configType = new SensitiveDataConfiguration();
 		configType.setSensitiveTags(sensitiveTags);
+		configType.setAuthenticationSchemeTags(authenticationTags);
 
 		return configType;
 	}
