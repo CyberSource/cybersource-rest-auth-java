@@ -36,7 +36,7 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 ```
    authenticationType  = http_Signature
    merchantID          = testrest
-   runEnvironment      = CyberSource.Environment.SANDBOX
+   runEnvironment      = apitest.cybersource.com
    merchantKeyId       = 08c94330-f618-42a3-b09d-e1e43be5efda
    merchantsecretKey   = yBJxy6LjM2TmcPGu+GaJrHtkke25fPpUX+UY6/L/1tE=
    enableLog           = true
@@ -50,7 +50,7 @@ It works with any one of the two authentication mechanisms, which are HTTP signa
 ```
    authenticationType  = Jwt
    merchantID          = testrest
-   runEnvironment      = CyberSource.Environment.SANDBOX
+   runEnvironment      = apitest.cybersource.com
    keyAlias            = testrest
    keyPassword         = testrest
    keyFileName         = testrest
@@ -97,7 +97,7 @@ constant in cybs.properties file.  For example:
 
 ```java
 // For PRODUCTION use
-  runEnvironment      = CyberSource.Environment.PRODUCTION
+  runEnvironment      = api.cybersource.com
 ```
 
 ## SDK Usage Examples and Sample Code

@@ -26,9 +26,9 @@ public class ApiController {
 	/**
 	 * 
 	 * @param merchantConfig
-	 * @throws ConfigException 
+	 * @throws Exception 
 	 */
-	public Response paymentGet(MerchantConfig merchantConfig) throws ConfigException {
+	public Response paymentGet(MerchantConfig merchantConfig) throws Exception {
 		return processPayment(merchantConfig);
 	}
 
@@ -37,9 +37,9 @@ public class ApiController {
 	 * @param merchantConfig
 	 *            : This object contains all the details present in the
 	 *            cybs.properties.
-	 * @throws ConfigException 
+	 * @throws Exception 
 	 */
-	public Response paymentPost(MerchantConfig merchantConfig) throws ConfigException {
+	public Response paymentPost(MerchantConfig merchantConfig) throws Exception {
 		return processPayment(merchantConfig);
 	}
 
@@ -48,10 +48,10 @@ public class ApiController {
 	 * @param merchantConfig
 	 *            : This object contains all the details present in the
 	 *            cybs.properties.
-	 * @throws ConfigException 
+	 * @throws Exception 
 	 * 
 	 */
-	public Response paymentPut(MerchantConfig merchantConfig) throws ConfigException {
+	public Response paymentPut(MerchantConfig merchantConfig) throws Exception {
 		return processPayment(merchantConfig);
 	}
 
@@ -60,19 +60,19 @@ public class ApiController {
 	 * @param merchantConfig
 	 *            : This object contains all the details present in the
 	 *            cybs.properties.
-	 * @throws ConfigException 
+	 * @throws Exception 
 	 * 
 	 */
-	public Response paymentDelete(MerchantConfig merchantConfig) throws ConfigException {
+	public Response paymentDelete(MerchantConfig merchantConfig) throws Exception {
 		return processPayment(merchantConfig);
 	}
 
 	/**
 	 * 
 	 * @param merchantConfig
-	 * @throws ConfigException 
+	 * @throws Exception 
 	 */
-	private Response processPayment(MerchantConfig merchantConfig) throws ConfigException {
+	private Response processPayment(MerchantConfig merchantConfig) throws Exception {
 		commonApiControllerCheck(merchantConfig);
 		if (authType) {
 			if (isMerchantDetail) {
@@ -86,9 +86,11 @@ public class ApiController {
 					return responseObj;
 				} catch (Exception e) {
 					paymentEndException();
+					throw(e);
 				}
 			} else {
 				paymentEndException();
+				throw(new Exception("Merchant Configuration is incorrect."));
 			}
 		} else {
 			authenticationException();
