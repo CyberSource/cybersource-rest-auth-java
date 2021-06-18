@@ -1,5 +1,9 @@
 package com.cybersource.authsdk.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * These variables are basically used for logging purpose.
  */
@@ -31,26 +35,18 @@ public class GlobalLabelParameters {
 	public static final String REQUEST_TYPE = "Request Type";
 	public static final String REQUEST_TARGET = "/pts/v2/payments/";
 	public static final String URL_PREFIX = "https://";
-	public static final String SANDBOX_URL = "apitest.cybersource.com";
-	public static final String PRODUCTION_URL = "api.cybersource.com";
-	public static final String SANDBOX_MA_URL = "api-matest.cybersource.com";
-	public static final String PRODUCTION_MA_URL = "api-ma.cybersource.com";
-	public static final String RUN_SANDBOX = "CyberSource.Environment.SANDBOX";
-	public static final String RUN_SANDBOX_MA = "CyberSource.Environment.MutualAuth.SANDBOX";
-	public static final String RUN_PRODUCTION = "CyberSource.Environment.PRODUCTION";
-	public static final String RUN_PRODUCTION_MA = "CyberSource.Environment.MutualAuth.PRODUCTION";
-	public static final String BOA_SANDBOX_URL = "apitest.merchant-services.bankofamerica.com";
-	public static final String BOA_PRODUCTION_URL = "api.merchant-services.bankofamerica.com";
-	public static final String BOA_RUN_SANDBOX = "BankofAmerica.Environment.SANDBOX";
-	public static final String BOA_RUN_PRODUCTION = "BankofAmerica.Environment.PRODUCTION";
-	public static final String IDC_SANDBOX_URL = "apitest.cybersource.com";
-	public static final String IDC_PRODUCTION_URL = "api.in.cybersource.com";
-	public static final String IDC_RUN_SANDBOX = "CyberSource.IN.Environment.SANDBOX";
-	public static final String IDC_RUN_PRODUCTION = "CyberSource.IN.Environment.PRODUCTION";
-	public static final String SIT_ENVIRONMENT_URL = "pnrstage.ic3.com:7448";
-	public static final String SIT_RUN_ENVIRONMENT = "CyberSource.Environment.SIT";
-	public static final String SIT_ENVIRONMENT_MA_URL = "pnrstage.ic3.com:8451";
-	public static final String SIT_RUN_ENVIRONMENT_MA = "CyberSource.Environment.MutualAuth.SIT";
+	public static final List<String> OLD_RUN_ENVIRONMENT_CONSTANTS = Arrays.asList(new String[] {
+					"CYBERSOURCE.ENVIRONMENT.SANDBOX", 
+					"CYBERSOURCE.ENVIRONMENT.PRODUCTION", 
+					"CYBERSOURCE.ENVIRONMENT.MUTUALAUTH.SANDBOX", 
+					"CYBERSOURCE.ENVIRONMENT.MUTUALAUTH.PRODUCTION", 
+					"BANKOFAMERICA.ENVIRONMENT.SANDBOX", 
+					"BANKOFAMERICA.ENVIRONMENT.PRODUCTION", 
+					"CYBERSOURCE.IN.ENVIRONMENT.SANDBOX", 
+					"CYBERSOURCE.IN.ENVIRONMENT.PRODUCTION", 
+					"CYBERSOURCE.ENVIRONMENT.SIT", 
+					"CYBERSOURCE.ENVIRONMENT.MUTUALAUTH.SIT"
+				});
 	public static final String P12_EXTENSION = ".p12";
 	public static final String LOG_EXTENSION = ".log";
 	public static final String DEFAULT_LOG_PATH = "log";
@@ -94,6 +90,7 @@ public class GlobalLabelParameters {
 	public static final String JWT_SIG_FAILED = "JWT Signature production failed.";
 	public static final String RETRIEVE_ACCESS_TOKEN_FAILED = "Retrieve Access Token failed.";
 	public static final String RUN_ENVIRONMENT_ERR = "Run Environment value is missing in cybs.properties";
+	public static final String DEPRECATED_ENVIRONMENT = "The value provided for this field `RunEnvironment` has been deprecated and will not be used anymore.\n\nPlease refer to the README file [ https://github.com/CyberSource/cybersource-rest-samples-java/blob/master/README.md ] for information about the new values that are accepted.";
 	public static final String INVALID_REQUEST_TYPE = "Invalid Request Type :: ";
 	public static final String INVALID_LOG_DIRECTORY = "Invalid log directory, creating default log directory";
 	public static final String NO_LOG_DIRECTORY = "No log directory, setting default directory path.";
