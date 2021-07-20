@@ -1,0 +1,96 @@
+{
+    "sensitiveTags": [
+        {
+            "tagName": "securityCode",
+            "pattern": "[0-9]{3,4}",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "number",
+            "pattern": "(\\p{N}+)(\\p{N}{4})",
+            "replacement": "xxxxx$2",
+            "disableMask": false
+        },
+        {
+            "tagName": "cardNumber",
+            "pattern": "(\\p{N}+)(\\p{N}{4})",
+            "replacement": "xxxxx$2",
+            "disableMask": false
+        },
+        {
+            "tagName": "expirationMonth",
+            "pattern": "[0-1][0-9]",
+            "replacement": "xxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "expirationYear",
+            "pattern": "2[0-9][0-9][0-9]",
+            "replacement": "xxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "account",
+            "pattern": "(\\p{N}+)(\\p{N}{4})",
+            "replacement": "xxxxx$2",
+            "disableMask": false
+        },
+        {
+            "tagName": "routingNumber",
+            "pattern": "[0-9]+",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "email",
+            "pattern": "[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "firstName",
+            "pattern": "([a-zA-Z]+( )?[a-zA-Z]*'?-?[a-zA-Z]*( )?([a-zA-Z]*)?)",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "lastName",
+            "pattern": "([a-zA-Z]+( )?[a-zA-Z]*'?-?[a-zA-Z]*( )?([a-zA-Z]*)?)",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "phoneNumber",
+            "pattern": "(\\+[0-9]{1,2} )?\\(?[0-9]{3}\\)?[ .-]?[0-9]{3}[ .-]?[0-9]{4}",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "type",
+            "pattern": "[-A-Za-z0-9 ]+",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "token",
+            "pattern": "[-.A-Za-z0-9 ]+",
+            "replacement": "xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "signature",
+            "pattern": "[-.A-Za-z0-9 ]+",
+            "replacement": "xxxxx",
+            "disableMask": false
+        }
+    ],
+    "authenticationSchemes": [
+        {
+            "tagName": "Signature",
+            "description": "This is to mask sensitive data as part of the HTTP Signature request header",
+            "pattern": "(keyid=\\\"([\\w-]*)\\\"),([\\w\\\"\\-\\(\\),= ]*), (signature=\\\"([\\w\\/=\\+]*)\\\")",
+            "replacement": "Signature: keyid=\"XXXXX\",$3, signature=\"$5\""
+        }
+    ]
+}

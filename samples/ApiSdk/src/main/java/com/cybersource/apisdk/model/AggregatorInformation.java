@@ -1,19 +1,16 @@
 package com.cybersource.apisdk.model;
 
 public class AggregatorInformation {
-
 	private SubMerchant subMerchant;
 	private String name;
 	private String aggregatorID;
 
-	public AggregatorInformation subMerchant(SubMerchant subMerchant) {
-		this.subMerchant = subMerchant;
-		return this;
+	public SubMerchant getSubMerchant() {
+		return subMerchant;
 	}
 
-	public AggregatorInformation name(String name) {
-		this.name = name;
-		return this;
+	public void setSubMerchant(SubMerchant subMerchant) {
+		this.subMerchant = subMerchant;
 	}
 
 	public String getName() {
@@ -22,12 +19,6 @@ public class AggregatorInformation {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public AggregatorInformation aggregatorID(String aggregatorID) {
-		this.aggregatorID = aggregatorID;
-		return this;
-
 	}
 
 	public String getAggregatorID() {

@@ -2,8 +2,6 @@ package com.cybersource.apisdk.service;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.Logger;
-
 import com.cybersource.apisdk.connection.HttpConnection;
 import com.cybersource.apisdk.connection.JwtConnection;
 import com.cybersource.apisdk.model.Response;
@@ -21,19 +19,15 @@ public class PaymentRequestService {
 
 	private String authenticatonType = null;
 	private MerchantConfig merchantConfig;
-	private Logger logger;
-
 	
 	/**
 	 * 
 	 * @param merchantConfig
 	 * @param logger
 	 */
-	public PaymentRequestService(MerchantConfig merchantConfig, Logger logger) {
-
+	public PaymentRequestService(MerchantConfig merchantConfig) {
 		authenticatonType = merchantConfig.getAuthenticationType().trim();
 		this.merchantConfig = merchantConfig;
-		this.logger = logger;
 	}
 
 	/**
@@ -42,10 +36,10 @@ public class PaymentRequestService {
 	public Response processPaymentRequest() throws IOException {
 
 		if (authenticatonType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			HttpConnection connection = new HttpConnection(merchantConfig, logger);
+			HttpConnection connection = new HttpConnection(merchantConfig);
 			return connection.httpConnection();
 		} else if (authenticatonType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			JwtConnection jwtConnection=new JwtConnection(merchantConfig, logger);
+			JwtConnection jwtConnection=new JwtConnection(merchantConfig);
 			return jwtConnection.getJwtConnection();
 		}
 		return null;

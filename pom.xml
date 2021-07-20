@@ -1,34 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
-    <groupId>com.cybersource</groupId>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	<groupId>com.cybersource</groupId>
 	<artifactId>AuthenticationSdk</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.16-SNAPSHOT</version>
 	<name>CyberSource Authentication SDK</name>
-     <licenses>
-        <license>
-            <name>SDK License Agreement</name>
-            <url>https://github.com/CyberSource/cybersource-rest-auth-java/blob/master/LICENSE.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <scm>
-        <connection>scm:git:https://github.com/CyberSource/cybersource-rest-auth-java.git</connection>
-        <developerConnection>scm:git:https://github.com/CyberSource/cybersource-rest-auth-java.git</developerConnection>
-        <url>https://github.com/CyberSource/cybersource-rest-auth-java.git</url>
-    </scm>
-    <developers>
-        <developer>
-            <id>CyberSource</id>
-            <name>CyberSource Developer</name>
-            <email>developer@cybersource.com</email>
-        </developer>
-    </developers>
+	<licenses>
+		<license>
+			<name>SDK License Agreement</name>
+			<url>https://github.com/CyberSource/cybersource-rest-auth-java/blob/master/LICENSE.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:https://github.com/CyberSource/cybersource-rest-auth-java.git</connection>
+		<developerConnection>scm:git:https://github.com/CyberSource/cybersource-rest-auth-java.git</developerConnection>
+		<url>https://github.com/CyberSource/cybersource-rest-auth-java.git</url>
+	</scm>
+	<developers>
+		<developer>
+			<id>CyberSource</id>
+			<name>CyberSource Developer</name>
+			<email>developer@cybersource.com</email>
+		</developer>
+	</developers>
 	<dependencies>
 
 
@@ -192,6 +194,26 @@
 				</configuration>
 			</plugin>
 		</plugins>
+
+		<resources>
+			<resource>
+				<directory>resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/SensitiveTagsConfiguration.json</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+				<excludes>
+					<exclude>log4j2.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
 	</build>
 
 	<properties>
@@ -199,7 +221,6 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
-
-	<profiles />	
+	<profiles />
 
 </project>

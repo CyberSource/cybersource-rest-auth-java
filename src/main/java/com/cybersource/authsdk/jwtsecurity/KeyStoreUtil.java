@@ -10,11 +10,12 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeyStoreUtil {
-	private static Logger logger = LoggerFactory.getLogger(KeyStoreUtil.class);
+	private static Logger logger = LogManager.getLogger(KeyStoreUtil.class);
 
 	public static PrivateKey getPrivateKey(String keyStorePath, String keystorePassword, String privateKeyPassword,
 			String keyAlias) {
@@ -31,7 +32,7 @@ public class KeyStoreUtil {
 			return null;
 		} catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException
 				| UnrecoverableKeyException e) {
-			logger.error("Couldn't retrieve private key from keystore:{} {}", keyStorePath, e);
+			logger.error("Couldn't retrieve private key from keystore : {}\n{}", keyStorePath, e);
 			return null;
 		} finally {
 			try {
@@ -39,7 +40,7 @@ public class KeyStoreUtil {
 					is.close();
 				}
 			} catch (Exception e) {
-				logger.error("Error while closing file input stream " + keyStorePath, e);
+				logger.error("Error while closing file input stream : {}\n{}", keyStorePath, e);
 			}
 		}
 	}
@@ -52,7 +53,7 @@ public class KeyStoreUtil {
 			keystore.load(is, keystorePassword.toCharArray());
 			return (X509Certificate) keystore.getCertificate(alias);
 		} catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {
-			logger.error("Couldn't retrieve public key from keystore:{} {}", keyStorePath, e);
+			logger.error("Couldn't retrieve public key from keystore : {}\n{}", keyStorePath, e);
 			return null;
 		} finally {
 			try {
@@ -60,7 +61,7 @@ public class KeyStoreUtil {
 					is.close();
 				}
 			} catch (Exception e) {
-				logger.error("Error while closing file input stream " + keyStorePath, e);
+				logger.error("Error while closing file input stream : {}\n{}", keyStorePath, e);
 			}
 		}
 	}

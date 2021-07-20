@@ -12,53 +12,64 @@ import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.payloaddigest.PayloadDigest;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PropertiesUtil;
-import org.apache.commons.lang.StringUtils;
 
-/* This method returns value for parameter Signature which is then passed to Signature header
- * paramter 'Signature' is calucated based on below key values and then signed with SECRET KEY -
- * host: Sandbox (apitest.cybersource.com) or Production (api.cybersource.com) hostname
- * date: "HTTP-date" format as defined by RFC7231.
- * (request-target): Should be in format of httpMethod: path
-                     Example: "post /pts/v2/payments"
- * Digest: Only needed for POST calls.
- * v-c-merchant-id: set value to Cybersource Merchant ID
-                     This ID can be found on EBC portal */
+/***
+ * Module to generate digital signature which is then passed to signature header
+ * parameter
+ * <p>
+ * The signature is created from the following values and then signed with
+ * <code>Secret Key</code>
+ * <p>
+ * <strong>host</strong> - Sandbox
+ * (<strong><code>apitest.cybersource.com</code></strong>) or Production
+ * (<strong><code>api.cybersource.com</code></strong>) hostname
+ * <p>
+ * <strong>date</strong> - HTTP-date with format as defined by
+ * <strong>RFC7231</strong>
+ * <p>
+ * <strong>(request-target)</strong> - Should be in format of httpMethod: path
+ * <p>
+ * 
+ * <pre>
+ *                 Example : <strong><code>post /pts/v2/payments</code></strong>
+ * </pre>
+ * <p>
+ * <strong>Digest</strong> - Only needed for POST calls
+ * <p>
+ * <strong>v-c-merchant-id</strong> - Cybersource Merchant ID found on EBC
+ * portal
+ */
 public class SignatureGenerator {
 
 	private MerchantConfig merchantConfig;
 	private String signatureParameterBase64Encoded;
 	private String httpMethod;
-	private String merchantSecertKey;
+	private String merchantSecretKey;
 	private String merchantId;
 	private String portfolioId;
 	private boolean useMetaKey;
 
 	/**
-	 * @param merchantConfig-contains
-	 *            all information of merchant.
-	 * @throws InvalidKeyException
-	 *             - if key is not valid.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm is not available.
+	 * @param merchantConfig-contains all information of merchant.
+	 * @throws InvalidKeyException      - if key is not valid.
+	 * @throws NoSuchAlgorithmException - if algorithm is not available.
 	 */
-	public SignatureGenerator(MerchantConfig merchantConfig) throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
+	public SignatureGenerator(MerchantConfig merchantConfig)
+			throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
 		this.merchantConfig = merchantConfig;
 		this.httpMethod = merchantConfig.getRequestType();
-		this.merchantSecertKey = merchantConfig.getMerchantSecretKey();
+		this.merchantSecretKey = merchantConfig.getMerchantSecretKey();
 		this.merchantId = merchantConfig.getMerchantID();
-		this.useMetaKey = merchantConfig.isUseMetaKeyEnabled();
-		if(this.useMetaKey)
-		{
+		this.useMetaKey = merchantConfig.isUseMetaKey();
+		if (this.useMetaKey) {
 			this.portfolioId = merchantConfig.getPortfolioID();
 		}
 	}
 
 	/**
 	 * @return generated signature.
-	 * @throws NoSuchAlgorithmException
-	 *             - if algorithm is not available.
-	 * @throws InvalidKeyException
-	 *             - if key is not valid.
+	 * @throws NoSuchAlgorithmException - if algorithm is not available.
+	 * @throws InvalidKeyException      - if key is not valid.
 	 */
 	public String signatureGeneration() throws NoSuchAlgorithmException, InvalidKeyException {
 
@@ -101,23 +112,15 @@ public class SignatureGenerator {
 
 		signatureString.append(GlobalLabelParameters.V_C_MERCHANTID);
 		signatureString.append(": ");
-		if(useMetaKey)
-		{
+		if (useMetaKey) {
 			signatureString.append(portfolioId);
-		}
-		else {
+		} else {
 			signatureString.append(merchantId);
 		}
 		signatureString.delete(0, 1);
 		String signatureStr = signatureString.toString();
 
-		/*
-		 * Signature string generated from above parameters is Signed with
-		 * SecretKey hased with SHA256 and base64 encoded. Secret Key is Base64
-		 * decoded before signing
-		 */
-
-		SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(merchantSecertKey), "HmacSHA256");
+		SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(merchantSecretKey), "HmacSHA256");
 		Mac aKeyId = Mac.getInstance("HmacSHA256");
 		aKeyId.init(secretKey);
 		aKeyId.update(signatureStr.getBytes());
@@ -129,8 +132,7 @@ public class SignatureGenerator {
 
 	/**
 	 * 
-	 * @param requestType
-	 *            - GET/PUT/POST
+	 * @param requestType - GET/PUT/POST/PATCH/DELETE
 	 * @return request target as per request type.
 	 */
 	public String getRequestTarget(String requestType) {

@@ -4,30 +4,26 @@ import java.io.File;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import com.cybersource.authsdk.log.Log4j;
-import com.cybersource.authsdk.util.Utility;
 
-/**
- * 
- * 
- *
- */
 public class Cache {
+	private static Logger logger = LogManager.getLogger(Cache.class);	
 	public static boolean isCache = false;
+	public static long lastModifiedTime;
+	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
+	
 	private boolean isTimeStamp;
 	private MerchantConfig merchantConfig;
-	public static long lastModifiedTime;
 	private Identity identity = new Identity();
-	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
 	private X509Certificate x509Certificate;
 	private RSAPrivateKey rsaPrivateKey;
 	private String merchantID;
 	private String accessToken;
 	private String refreshToken;
-	Logger logger;
 
 	public void setX509Certificate(X509Certificate x509Certificate) {
 		this.x509Certificate = x509Certificate;
@@ -37,8 +33,7 @@ public class Cache {
 		this.accessToken = accessToken;
 	}
 
-	public String getAccessToken()
-	{
+	public String getAccessToken() {
 		return accessToken;
 	}
 
@@ -46,8 +41,7 @@ public class Cache {
 		this.refreshToken = refreshToken;
 	}
 
-	public String getRefreshToken()
-	{
+	public String getRefreshToken() {
 		return refreshToken;
 	}
 
@@ -64,12 +58,11 @@ public class Cache {
 	}
 
 	/**
-	 * @param merchantConfig
-	 *            - contains all information for merchant.
+	 * @param merchantConfig - contains all information for merchant.
 	 */
 	public Cache(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
-		logger = Log4j.getInstance(this.merchantConfig);
+		logger = LogManager.getLogger(this.getClass());
 		this.merchantID = merchantConfig.getMerchantID();
 		if (cacheP12.isEmpty()) {
 			Cache.isCache = true;
@@ -79,9 +72,7 @@ public class Cache {
 	}
 
 	/**
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
-	 * 
+	 * @throws ConfigException - if some value is missing or wrong for merchant.
 	 */
 	public void setP12FileDetailsInCache() throws ConfigException {
 		if (cacheP12.isEmpty()) {
@@ -89,7 +80,7 @@ public class Cache {
 		} else {
 			isTimeStamp = isLastModifiedTimeP12();
 			if (isTimeStamp) {
-				retriveP12DataFromCache();
+				retrieveP12DataFromCache();
 			} else {
 				setUpP12Cache();
 			}
@@ -97,8 +88,7 @@ public class Cache {
 	}
 
 	/**
-	 * @throws ConfigException
-	 *             - if some value is missing or wrong for merchant.
+	 * @throws ConfigException - if some value is missing or wrong for merchant.
 	 */
 	public void setUpP12Cache() throws ConfigException {
 		identity.setLastModifiedDate(getLastModifiedFileP12());
@@ -109,10 +99,7 @@ public class Cache {
 		lastModifiedTime = merchantConfig.getKeyFile().lastModified();
 	}
 
-	/**
-	 * 
-	 */
-	public void retriveP12DataFromCache() {
+	public void retrieveP12DataFromCache() {
 		Identity tempIdentity = cacheP12.get(merchantID);
 		if (tempIdentity != null) {
 			x509Certificate = tempIdentity.getX509();
@@ -132,8 +119,7 @@ public class Cache {
 			} else {
 				return false;
 			}
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -141,13 +127,14 @@ public class Cache {
 	/**
 	 * @return value for last modified.
 	 */
+	@SuppressWarnings("null")
 	public long getLastModifiedFileP12() {
 		File f;
 		try {
 			f = new File(merchantConfig.getKeyFile().getAbsolutePath());
 			return f.lastModified();
 		} catch (Exception e) {
-			Utility.log(logger, e);
+			logger.error(e);
 			return (Long) null;
 		}
 	}

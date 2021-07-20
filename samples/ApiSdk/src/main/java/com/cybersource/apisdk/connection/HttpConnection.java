@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.cybersource.apisdk.masking.Masking;
@@ -27,6 +27,7 @@ import com.cybersource.authsdk.util.Utility;
  *
  */
 public class HttpConnection implements Connection, Headers {
+	private static Logger logger = LogManager.getLogger(HttpConnection.class);
 
 	private MerchantConfig merchantConfig;
 	private PayloadDigest digestPayLoad;
@@ -34,7 +35,6 @@ public class HttpConnection implements Connection, Headers {
 	private String requestType;
 	private String requestId;
 	private String url;
-	private Logger logger;
 	private String merchantId;
 	private String digestMessageBody;
 	private String requestHost;
@@ -44,17 +44,15 @@ public class HttpConnection implements Connection, Headers {
 	 * @param merchantConfig
 	 * @param logger
 	 */
-	public HttpConnection(MerchantConfig merchantConfig, Logger logger) {
-
+	public HttpConnection(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
 		this.digestPayLoad = new PayloadDigest(merchantConfig);
 		this.requestType = merchantConfig.getRequestType();
-		this.logger = logger;
 		this.requestHost = merchantConfig.getRequestHost();
 		this.merchantId = merchantConfig.getMerchantID();
 		if (requestType.equalsIgnoreCase(GlobalLabelParameters.GET)) {
 			this.requestId = Utility.retrieveGetIDFromRequestTarget(merchantConfig.getRequestTarget());
-			Utility.log(logger, "GET_ID : " , requestId, Level.INFO);
+			logger.info("GET_ID : {}", requestId);
 		}
 		
 	}
@@ -65,11 +63,11 @@ public class HttpConnection implements Connection, Headers {
 	@Override
 	public void setHeaderData(String merchantId) {
 		try {
-			Utility.log(logger, GlobalLabelParameters.V_C_MERCHANTID , " : ".concat(merchantId) , Level.INFO);
+			logger.info("{} : {}", GlobalLabelParameters.V_C_MERCHANTID, merchantId);
 			con.setRequestProperty(GlobalLabelParameters.V_C_MERCHANTID, merchantId);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.MERCHANTID_NOT_SET,"", Level.FATAL);
-			Utility.log(logger, e);
+			logger.fatal(GlobalLabelParameters.MERCHANTID_NOT_SET);
+			logger.error(e);
 		}
 	}
 
@@ -79,16 +77,12 @@ public class HttpConnection implements Connection, Headers {
 	@Override
 	public void openConnection() {
 		try {
-			url = merchantConfig.getUrl();
+			url = "https://" + merchantConfig.getRequestHost() + merchantConfig.getRequestTarget();
 			URL urlObj = new URL(url);
-			con = (HttpURLConnection) urlObj.openConnection();
-			/* Creating Time out. */
-			int timeoutInMS = merchantConfig.getTimeout() * 1000;
-			con.setConnectTimeout(timeoutInMS);
-			con.setReadTimeout(timeoutInMS);
+			con = (HttpURLConnection) urlObj.openConnection();			
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.URL_NOT_SET ,url, Level.ERROR);
-			Utility.log(logger, e);
+			logger.error(GlobalLabelParameters.URL_NOT_SET);
+			logger.error(e);
 		}
 	}
 
@@ -107,12 +101,11 @@ public class HttpConnection implements Connection, Headers {
 	@Override
 	public void setContentType() {
 		try {
-			Utility.log(logger,
-					GlobalLabelParameters.CONTENT_TYPE , " : ".concat(GlobalLabelParameters.APPLICATION_JSON), Level.INFO);
+			logger.info("{} : {}", GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 			con.setRequestProperty(GlobalLabelParameters.CONTENT_TYPE, GlobalLabelParameters.APPLICATION_JSON);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.CONTENT_TYPE_NOT_SET,"", Level.FATAL);
-			Utility.log(logger, e);
+			logger.fatal(GlobalLabelParameters.CONTENT_TYPE_NOT_SET);
+			logger.error(e);
 		}
 	}
 
@@ -121,8 +114,7 @@ public class HttpConnection implements Connection, Headers {
 	 */
 	@Override
 	public void maskingPayload(String serverResponse) {
-		Utility.log(logger,
-				"Response Message : " ,Masking.prepareMasking(serverResponse, this.logger), Level.INFO);
+		logger.info("Response Message : {}", serverResponse);
 	}
 
 	/**
@@ -132,7 +124,6 @@ public class HttpConnection implements Connection, Headers {
 	public void endConnection() {
 		con.disconnect();
 		con = null;
-
 	}
 
 	/**
@@ -141,12 +132,11 @@ public class HttpConnection implements Connection, Headers {
 	@Override
 	public void setUserAgent() {
 		try {
-			Utility.log(logger,
-					GlobalLabelParameters.USERAGENT , " : " .concat(GlobalLabelParameters.USER_AGENT_VALUE), Level.INFO);
+			logger.info("{} : {}", GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
 			con.setRequestProperty(GlobalLabelParameters.USERAGENT, GlobalLabelParameters.USER_AGENT_VALUE);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.USER_AGENT_ERROR,"", Level.FATAL);
-			Utility.log(logger, e);
+			logger.fatal(GlobalLabelParameters.USER_AGENT_ERROR);
+			logger.error(e);
 		}
 	}
 
@@ -161,23 +151,22 @@ public class HttpConnection implements Connection, Headers {
 
 			con.setRequestProperty(GlobalLabelParameters.SIGNATURE, signatureHeaderValue);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.SIG_SET_ERROR,null, Level.FATAL);
-			Utility.log(logger, e);
+			logger.fatal(GlobalLabelParameters.SIG_SET_ERROR);
+			logger.error(e);
 		}
-
 	}
+	
 	/**
 	 * set Request Method.
 	 */
-
 	@Override
 	public void setRequestMethod(String method) {
 		try {
-			Utility.log(logger, GlobalLabelParameters.REQUEST_TYPE , ": ".concat(method) , Level.INFO);
+			logger.info("{} : {}", GlobalLabelParameters.REQUEST_TYPE, method);
 			con.setRequestMethod(method);
 		} catch (Exception e) {
-			Utility.log(logger, GlobalLabelParameters.SIG_SET_ERROR,"", Level.FATAL);
-			Utility.log(logger, e);
+			logger.fatal(GlobalLabelParameters.INVALID_REQUEST_TYPE);
+			logger.error(e);
 		}
 	}
 
@@ -234,17 +223,15 @@ public class HttpConnection implements Connection, Headers {
         Response responseObj=new Response();
         responseObj.setResponseCode(String.valueOf(responseCode));
         responseObj.setVcCorelationId(con.getHeaderField(GlobalLabelParameters.V_C_CORRELATION_ID));
-		Utility.log(logger, GlobalLabelParameters.DATE.concat(" : "),PropertiesUtil.getNewDate(), Level.INFO);
-		Utility.log(logger, GlobalLabelParameters.HOST.concat(" : "),requestHost, Level.INFO);
+        
+        logger.info("{} : {}", GlobalLabelParameters.DATE, PropertiesUtil.getNewDate());
+        logger.info("{} : {}", GlobalLabelParameters.HOST, requestHost);
 		if (requestType.equalsIgnoreCase(GlobalLabelParameters.POST)) {
-			Utility.log(logger, GlobalLabelParameters.DIGEST , " : "
-					+ Masking.prepareMasking(this.digestMessageBody, logger), Level.INFO);
+			logger.info("{} : {}", GlobalLabelParameters.DIGEST, this.digestMessageBody);
 		}
-		Utility.log(logger, GlobalLabelParameters.RESPONSE_CODE+" : " , responseObj.getResponseCode(),
-				Level.INFO);
-		Utility.logResponseCodeMessage(responseCode, logger);
-		Utility.log(logger, GlobalLabelParameters.V_C_CORRELATION_ID + " : " , responseObj.getVcCorelationId(),
-				Level.INFO);
+		
+		logger.info("{} : {}", GlobalLabelParameters.RESPONSE_CODE, responseObj.getResponseCode());
+		logger.info("{} : {}", GlobalLabelParameters.V_C_CORRELATION_ID, responseObj.getVcCorelationId());
 
 		StringBuilder response = new StringBuilder();
 
@@ -264,11 +251,10 @@ public class HttpConnection implements Connection, Headers {
 		if (response != null) {
 			maskingPayload(response.toString());
 			/* Set Response Message */
-			String resp=Masking.prepareMasking(response.toString(), logger);
+			String resp = Masking.prepareMasking(response.toString());
 			responseObj.setResponseMessage(resp);
 		}
 
 		return responseObj;
 	}
-
 }
