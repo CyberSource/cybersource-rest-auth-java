@@ -228,7 +228,6 @@ public class MerchantConfig {
 	public MerchantConfig(Properties _props) throws ConfigException {
 		if (_props != null) {
 			this.setProps(_props);
-			this.setMerchantID(this.getProps().getProperty("merchantID"));
 			setMerchantDetails();
 		}
 	}
@@ -251,16 +250,17 @@ public class MerchantConfig {
 		boolean isMerchantDetailStatus = false;
 
 		checkAuthenticationType();
-		isMerchantId = checkMerchantId();
 
 		if (getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
+			isMerchantId = checkMerchantId();
 			isCheckMerchantSecretKey = checkMerchantSecretKey();
 			isCheckMerchantKeyId = checkMerchantKeyId();
 		} else if (getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			/*
 			 * JWE is not supported as an authentication mechanism
 			 */
-//			 || authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWE)) {	
+//			 || authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWE)) {
+			isMerchantId = checkMerchantId();
 			isGetKeyAlias = checkKeyAlias();
 			isCheckKeyPassword = checkKeyPassword();
 			isCheckKeyFile = checkKeyFile();
@@ -377,31 +377,32 @@ public class MerchantConfig {
 
 	public void setMerchantDetails() throws ConfigException {
 		this.setAuthenticationType(this.getProps().getProperty("authenticationType"));
-		this.setMerchantID(this.getProps().getProperty("merchantID"));
 		this.setUseMetaKey(Boolean.valueOf(this.getProps().getOrDefault("useMetaKey", false).toString()));
 		this.setEnableClientCert(Boolean.valueOf(this.getProps().getOrDefault("enableClientCert", false).toString()));
 
 		if (this.isUseMetaKey()) {
-			this.setPortfolioID(this.getProps().getProperty("portfolioID"));
-			if (StringUtils.isEmpty(this.getPortfolioID())) {
+			if(this.getProps().getProperty("portfolioID") == null || StringUtils.isEmpty(this.getProps().getProperty("portfolioID")))
+			{
+				logger.error("ConfigException : Portfolio ID is mandatory");
 				throw new ConfigException("Portfolio ID is mandatory");
 			}
+			this.setPortfolioID(this.getProps().getProperty("portfolioID"));
 		}
 
 		if (this.isEnableClientCert()) {
-			if (this.getProps().getProperty("clientCertFile") == null) {
+			if (this.getProps().getProperty("clientCertFile") == null || StringUtils.isEmpty(this.getProps().getProperty("clientCertFile"))) {
 				logger.error("ConfigException : Client Certificate is mandatory");
 				throw new ConfigException("Client Cert is mandatory");
 			}
 			this.setClientCertFile(this.getProps().getProperty("clientCertFile"));
 
-			if (this.getProps().getProperty("clientCertPassword") == null) {
+			if (this.getProps().getProperty("clientCertPassword") == null || StringUtils.isEmpty(this.getProps().getProperty("clientCertPassword"))) {
 				logger.error("ConfigException : Client Certificate Password is mandatory");
 				throw new ConfigException("Client Cert Password is mandatory");
 			}
 			this.setClientCertPassword(this.getProps().getProperty("clientCertPassword"));
 
-			if (this.getProps().getProperty("clientCertDirectory") == null) {
+			if (this.getProps().getProperty("clientCertDirectory") == null || StringUtils.isEmpty(this.getProps().getProperty("clientCertDirectory"))) {
 				logger.error("ConfigException : Client Certificate Directory is mandatory");
 				throw new ConfigException("Client Cert Directory is mandatory");
 			}
@@ -415,6 +416,12 @@ public class MerchantConfig {
 				this.setKeysDirectory(GlobalLabelParameters.DEF_KEY_DIRECTORY_PATH);
 			}
 			this.setKeysDirectory(this.getProps().getProperty("keysDirectory").trim());
+
+			if (this.getProps().getProperty("merchantID") == null) {
+				logger.error("ConfigException : Merchant ID is mandatory");
+				throw new ConfigException("Merchant Id is mandatory");
+			}
+			this.setMerchantID(this.getProps().getProperty("merchantID").trim());
 
 			if (this.getProps().getProperty("keyAlias") == null) {
 				logger.error(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
@@ -434,6 +441,12 @@ public class MerchantConfig {
 		} else if (this.getAuthenticationType() != null
 				&& this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			/* HTTP Signature Authentication */
+			if (this.getProps().getProperty("merchantID") == null) {
+				logger.error("ConfigException : Merchant ID is mandatory");
+				throw new ConfigException("Merchant Id is mandatory");
+			}
+			this.setMerchantID(this.getProps().getProperty("merchantID").trim());
+
 			if (this.getProps().getProperty("merchantKeyId") == null) {
 				logger.error("ConfigException : Merchant Key ID is mandatory");
 				throw new ConfigException("Merchant KeyId is mandatory");
@@ -448,13 +461,13 @@ public class MerchantConfig {
 		} else if (this.getAuthenticationType() != null
 				&& this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.OAUTH)) {
 			/* OAuth Authentication */
-			if (this.getProps().getProperty("accessToken") == null) {
+			if (this.getProps().getProperty("accessToken") == null || StringUtils.isEmpty(this.getProps().getProperty("accessToken"))) {
 				logger.error("ConfigException : Access Token is mandatory for OAuth");
 				throw new ConfigException("Access Token is mandatory for OAuth");
 			}
 			this.setAccessToken(this.getProps().getProperty("accessToken"));
 
-			if (this.getProps().getProperty("refreshToken") == null) {
+			if (this.getProps().getProperty("refreshToken") == null || StringUtils.isEmpty(this.getProps().getProperty("refreshToken"))) {
 				logger.error("ConfigException : Refresh Token is mandatory for OAuth");
 				throw new ConfigException("Refresh Token is mandatory for OAuth");
 			}
@@ -462,13 +475,13 @@ public class MerchantConfig {
 		} else if (this.getAuthenticationType() != null
 				&& this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH)) {
 			/* Mutual Auth Authentication */
-			if (this.getProps().getProperty("clientId") == null) {
+			if (this.getProps().getProperty("clientId") == null || StringUtils.isEmpty(this.getProps().getProperty("clientId"))) {
 				logger.error("ConfigException : Client ID is mandatory to generate OAuth");
 				throw new ConfigException("Client Id is mandatory to generate OAuth");
 			}
 			this.setClientId(this.getProps().getProperty("clientId"));
 
-			if (this.getProps().getProperty("clientSecret") == null) {
+			if (this.getProps().getProperty("clientSecret") == null || StringUtils.isEmpty(this.getProps().getProperty("clientSecret"))) {
 				logger.error("ConfigException : Client Secret is mandatory to generate OAuth");
 				throw new ConfigException("Client Secret is mandatory to generate OAuth");
 			}
@@ -493,7 +506,7 @@ public class MerchantConfig {
 		this.setSolutionId(this.getProps().getProperty("solutionId"));
 
 		/* Run Environment. */
-		if (this.getProps().getProperty("runEnvironment") == null) {
+		if (this.getProps().getProperty("runEnvironment") == null || StringUtils.isEmpty(this.getProps().getProperty("runEnvironment"))) {
 			logger.error("ConfigException : Run Environment is mandatory");
 			throw new ConfigException("Run Environment is mandatory");
 		} else {
