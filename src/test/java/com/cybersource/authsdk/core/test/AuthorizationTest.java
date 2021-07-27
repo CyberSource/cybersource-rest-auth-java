@@ -101,7 +101,7 @@ public class AuthorizationTest {
 
 		authorization = new Authorization();
 		String token = authorization.getToken(merchantConfig);
-
+		System.out.println(token);
 		Assert.assertNotNull(token);
 	}
 
