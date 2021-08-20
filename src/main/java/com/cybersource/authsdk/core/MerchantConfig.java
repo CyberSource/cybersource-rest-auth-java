@@ -217,6 +217,11 @@ public class MerchantConfig {
 	private int userDefinedWriteTimeout;
 
 	/***
+	 * User Defined Keep Alive Duration
+	 */
+	private int userDefinedKeepAliveDuration;
+
+	/***
 	 * Flag to indicate if merchant details have been set properly
 	 */
 	public boolean merchantDetailsSet = false;
@@ -527,6 +532,11 @@ public class MerchantConfig {
 		if(this.getUserDefinedWriteTimeout() <= 0)
 		{
 			logger.warn("Provided Write Timeout Value is Incorrect, Defaulting to 0");
+		}
+		this.setUserDefinedKeepAliveDuration(Integer.valueOf(this.getProps().getProperty("userDefinedKeepAliveDuration", "0")));
+		if(this.getUserDefinedKeepAliveDuration() <= 0)
+		{
+			logger.warn("Provided Keep Alive Duration Value is Incorrect, Defaulting to 0");
 		}
 
 		try {
@@ -945,6 +955,14 @@ public class MerchantConfig {
 
 	public void setUserDefinedWriteTimeout(int timeout) {
 		this.userDefinedWriteTimeout = timeout;
+	}
+
+	public int getUserDefinedKeepAliveDuration() {
+		return userDefinedKeepAliveDuration;
+	}
+
+	public void setUserDefinedKeepAliveDuration(int duration) {
+		this.userDefinedKeepAliveDuration = duration;
 	}
 
 }
