@@ -83,6 +83,18 @@
             "pattern": "[-.A-Za-z0-9 ]+",
             "replacement": "xxxxx",
             "disableMask": false
+        },
+        {
+            "tagName": "prefix",
+            "pattern": "(\\p{N}{6})(\\p{N}*)",
+            "replacement": "$1xxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "bin",
+            "pattern": "(\\p{N}{6})(\\p{N}*)",
+            "replacement": "$1xxxxx",
+            "disableMask": false
         }
     ],
     "authenticationSchemes": [
