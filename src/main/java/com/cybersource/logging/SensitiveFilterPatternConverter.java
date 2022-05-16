@@ -104,7 +104,6 @@ public class SensitiveFilterPatternConverter extends LogEventPatternConverter {
 	}
 
 	public static String maskSensitiveXmlString(String str) {
-		str=str.replaceAll(" ", "");
 		for (int i = 0; i < tagPatterns.length; i++) {
 			str = tagPatterns[i].matcher(str).replaceAll(tagReplacements[i]);
 		}
@@ -112,7 +111,6 @@ public class SensitiveFilterPatternConverter extends LogEventPatternConverter {
 	}
 
 	public static String maskAuthenticationDataInString(String str) {
-		str=str.replaceAll(" ", "");
 		for (int i = 0; i < authPatterns.length; i++) {
 			str = str.replaceAll(authPatterns[i].toString(), authReplacements[i]);
 		}

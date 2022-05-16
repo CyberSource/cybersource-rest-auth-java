@@ -8,13 +8,13 @@
         },
         {
             "tagName": "number",
-            "pattern": "(\\p{N}+)(\\p{N}{4})",
+            "pattern": "(\\s*\\p{N}\\s*)+(\\p{N}{4})(\\s*)",
             "replacement": "xxxxx$2",
             "disableMask": false
         },
         {
             "tagName": "cardNumber",
-            "pattern": "(\\p{N}+)(\\p{N}{4})",
+            "pattern": "(\\s*\\p{N}\\s*)+(\\p{N}{4})(\\s*)",
             "replacement": "xxxxx$2",
             "disableMask": false
         },
@@ -32,7 +32,7 @@
         },
         {
             "tagName": "account",
-            "pattern": "(\\p{N}+)(\\p{N}{4})",
+            "pattern": "(\\s*\\p{N}\\s*)+(\\p{N}{4})(\\s*)",
             "replacement": "xxxxx$2",
             "disableMask": false
         },
@@ -86,14 +86,14 @@
         },
         {
             "tagName": "prefix",
-            "pattern": "(\\p{N}{6})(\\p{N}*)",
-            "replacement": "$1xxxxx",
+            "pattern": "(\\s*)(\\p{N}{4})(\\s*)(\\p{N}{2})(\\s*\\p{N}*\\s*)",
+            "replacement": "$2$4xxxxx",
             "disableMask": false
         },
         {
             "tagName": "bin",
-            "pattern": "(\\p{N}{6})(\\p{N}*)",
-            "replacement": "$1xxxxx",
+            "pattern": "(\\s*)(\\p{N}{4})(\\s*)(\\p{N}{2})(\\s*\\p{N}*\\s*)",
+            "replacement": "$2$4xxxxx",
             "disableMask": false
         }
     ],
