@@ -16,6 +16,8 @@ public class MerchantConfig {
 	private static Logger logger = LogManager.getLogger(MerchantConfig.class);
 	
 	private Properties props;
+	
+	private Map<String, String> defaultHeaders;
 
 	/* Authentication related parameters */
 
@@ -58,6 +60,11 @@ public class MerchantConfig {
 	 */
 	private String runEnvironment;
 
+	/***
+	 * Optional Intermediate Environment to run against
+	 */
+	private String intermediateHost;
+	
 	/***
 	 * ID to capture developer partner identification
 	 * <p>
@@ -234,6 +241,14 @@ public class MerchantConfig {
 		if (_props != null) {
 			this.setProps(_props);
 			setMerchantDetails();
+		}
+	}
+	
+	public MerchantConfig(Properties _props, Map<String, String> defaultHeaders) throws ConfigException {
+		if (_props != null) {
+			this.setProps(_props);
+			setMerchantDetails();
+			setDefaultHeaders(defaultHeaders);
 		}
 	}
 
@@ -516,6 +531,11 @@ public class MerchantConfig {
 			throw new ConfigException("Run Environment is mandatory");
 		} else {
 			this.setRunEnvironment(this.getProps().getProperty("runEnvironment").trim());
+		}
+		
+		/* Intermediate Host Environment. */
+		if (StringUtils.isNotBlank(this.getProps().getProperty("intermediateHost"))) {
+			this.setIntermediateHost(this.getProps().getProperty("intermediateHost").trim());
 		}
 
 		this.setUserDefinedConnectionTimeout(Integer.valueOf(this.getProps().getProperty("userDefinedConnectionTimeout", "0")));
@@ -845,6 +865,14 @@ public class MerchantConfig {
 		this.runEnvironment = runEnvironment;
 	}
 
+	public String getIntermediateHost() {
+		return intermediateHost;
+	}
+
+	public void setIntermediateHost(String intermediateHost) {
+		this.intermediateHost = intermediateHost;
+	}
+	
 	public File getKeyFile() {
 		return keyFile;
 	}
@@ -963,6 +991,14 @@ public class MerchantConfig {
 
 	public void setUserDefinedKeepAliveDuration(int duration) {
 		this.userDefinedKeepAliveDuration = duration;
+	}
+	
+	public Map<String, String> getDefaultHeaders() {
+		return defaultHeaders;
+	}
+
+	public void setDefaultHeaders(Map<String, String> defaultHeaders) {
+		this.defaultHeaders = defaultHeaders;
 	}
 
 }
