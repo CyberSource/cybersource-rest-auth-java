@@ -177,6 +177,12 @@ public class MerchantConfig {
 	private String clientCertDirectory;
 
 	/***
+	 * Path to client JWE pem file directory
+	 */
+
+	private String pemFileDirectory;
+
+	/***
 	 * Password to access the client certificate file
 	 */
 	private String clientCertPassword;
@@ -399,7 +405,9 @@ public class MerchantConfig {
 		this.setAuthenticationType(this.getProps().getProperty("authenticationType"));
 		this.setUseMetaKey(Boolean.valueOf(this.getProps().getOrDefault("useMetaKey", false).toString()));
 		this.setEnableClientCert(Boolean.valueOf(this.getProps().getOrDefault("enableClientCert", false).toString()));
-
+		if (null != this.getProps().get("jwePEMFileDirectory")) {
+			this.setPemFileDirectory((String) this.getProps().get("jwePEMFileDirectory"));
+		}
 		if (this.isUseMetaKey()) {
 			if(this.getProps().getProperty("portfolioID") == null || StringUtils.isEmpty(this.getProps().getProperty("portfolioID")))
 			{
@@ -1001,4 +1009,11 @@ public class MerchantConfig {
 		this.defaultHeaders = defaultHeaders;
 	}
 
+	public String getPemFileDirectory() {
+		return pemFileDirectory;
+	}
+
+	public void setPemFileDirectory(String pemFileDirectory) {
+		this.pemFileDirectory = pemFileDirectory;
+	}
 }
