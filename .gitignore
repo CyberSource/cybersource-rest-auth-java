@@ -2,8 +2,8 @@
 /samples/Cybersource-Authentication-SampleCode/target/
 /samples/SampleCode/target/
 target
-/.idea
 .classpath
 .project
 .settings/*
+.idea
 *.iml

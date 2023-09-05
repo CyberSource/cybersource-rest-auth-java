@@ -8,7 +8,7 @@
 	<groupId>com.cybersource</groupId>
 	<artifactId>AuthenticationSdk</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.27-SNAPSHOT</version>
+	<version>0.0.28-SNAPSHOT</version>
 	<name>CyberSource Authentication SDK</name>
 	<licenses>
 		<license>
@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15to18</artifactId>
-			<version>1.70</version>
+			<version>1.74</version>
 		</dependency>
 
 
@@ -220,7 +220,7 @@
 		<java.version>1.7</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<log4j.version>2.17.1</log4j.version>
+		<log4j.version>2.20.0</log4j.version>
 	</properties>
 	<profiles />
 
