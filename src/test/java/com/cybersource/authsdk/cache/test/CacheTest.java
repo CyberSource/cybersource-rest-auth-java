@@ -129,16 +129,4 @@ public class CacheTest {
 		cache.setP12FileDetailsInCache();
 		Assert.assertNotNull(cacheP12);
 	}
-
-	@Test
-	public void getLastModifiedFileP12Test() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setKeyFilename(null);
-
-		thrown.expect(Exception.class);
-
-		cache = new Cache(merchantConfig);
-		cache.getLastModifiedFileP12();
-	}
 }

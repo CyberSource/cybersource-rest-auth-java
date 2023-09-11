@@ -1,6 +1,11 @@
 package com.cybersource.authsdk.cache;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,13 +14,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
 
 public class Cache {
 	private static Logger logger = LogManager.getLogger(Cache.class);	
 	public static boolean isCache = false;
 	public static long lastModifiedTime;
 	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
-	
+
+	public static ConcurrentHashMap<String, CachedPEMObject> cachePEM = new ConcurrentHashMap<>();
+
 	private boolean isTimeStamp;
 	private MerchantConfig merchantConfig;
 	private Identity identity = new Identity();
@@ -91,7 +100,7 @@ public class Cache {
 	 * @throws ConfigException - if some value is missing or wrong for merchant.
 	 */
 	public void setUpP12Cache() throws ConfigException {
-		identity.setLastModifiedDate(getLastModifiedFileP12());
+		identity.setLastModifiedDate(getLastModifiedFileTime(merchantConfig.getKeyFile().getAbsolutePath()));
 		identity.setX509(x509Certificate);
 		identity.setRsaPrivateKey(rsaPrivateKey);
 		String tempMerchantID = merchantConfig.getMerchantID();
@@ -124,14 +133,35 @@ public class Cache {
 		}
 	}
 
+	public CachedPEMObject getCachedPEMObject() throws IOException {
+		if (cachePEM.isEmpty()) {
+			setUpPEMCache();
+		} else {
+			CachedPEMObject cachedPEMObject = cachePEM.get("privateKeyFromPEMFile");
+			if (cachedPEMObject.getLastModifiedTimeStamp() != getLastModifiedFileTime(merchantConfig.getPemFileDirectory())) {
+				setUpPEMCache();
+			}
+		}
+		return cachePEM.get("privateKeyFromPEMFile");
+	}
+
+	private void setUpPEMCache() throws IOException {
+		String pemString = new String(Files.readAllBytes(Paths.get(merchantConfig.getPemFileDirectory())), StandardCharsets.ISO_8859_1);
+		PemReader pemReader = new PemReader(new StringReader(pemString));
+		PemObject pemObject = pemReader.readPemObject();
+		long lastModifiedTime = getLastModifiedFileTime(merchantConfig.getPemFileDirectory());
+		CachedPEMObject cachedPEMObject = new CachedPEMObject(pemObject, lastModifiedTime);
+		cachePEM.put("privateKeyFromPEMFile", cachedPEMObject);
+	}
+
 	/**
 	 * @return value for last modified.
 	 */
 	@SuppressWarnings("null")
-	public long getLastModifiedFileP12() {
+	public long getLastModifiedFileTime(String path) {
 		File f;
 		try {
-			f = new File(merchantConfig.getKeyFile().getAbsolutePath());
+			f = new File(path);
 			return f.lastModified();
 		} catch (Exception e) {
 			logger.error(e);
