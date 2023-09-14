@@ -105,19 +105,19 @@ public class HttpSignatureToken implements TokenGenerator {
 		String requestHeader = null;
 		switch (requestType) {
 		case GlobalLabelParameters.GET:
-			requestHeader = "host date (request-target)" + " " + "v-c-merchant-id";
+			requestHeader = "host date request-target" + " " + "v-c-merchant-id";
 			break;
 		case GlobalLabelParameters.DELETE:
-			requestHeader = "host date (request-target)" + " " + "v-c-merchant-id";
+			requestHeader = "host date request-target" + " " + "v-c-merchant-id";
 			break;
 		case GlobalLabelParameters.POST:
-			requestHeader = "host date (request-target) digest v-c-merchant-id";
+			requestHeader = "host date request-target digest v-c-merchant-id";
 			break;
 		case GlobalLabelParameters.PUT:
-			requestHeader = "host date (request-target) digest v-c-merchant-id";
+			requestHeader = "host date request-target digest v-c-merchant-id";
 			break;
 		case GlobalLabelParameters.PATCH:
-			requestHeader = "host date (request-target) digest v-c-merchant-id";
+			requestHeader = "host date request-target digest v-c-merchant-id";
 			break;
 		default:
 			return requestHeader;
