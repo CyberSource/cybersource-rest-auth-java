@@ -27,7 +27,7 @@ import com.cybersource.authsdk.util.PropertiesUtil;
  * <strong>date</strong> - HTTP-date with format as defined by
  * <strong>RFC7231</strong>
  * <p>
- * <strong>(request-target)</strong> - Should be in format of httpMethod: path
+ * <strong>request-target</strong> - Should be in format of httpMethod: path
  * <p>
  * 
  * <pre>
@@ -83,7 +83,7 @@ public class SignatureGenerator {
 		signatureString.append(": ");
 		signatureString.append(PropertiesUtil.getNewDate());
 		signatureString.append('\n');
-		signatureString.append("(request-target)");
+		signatureString.append("request-target");
 		signatureString.append(": ");
 
 		String requestTarget = null;
