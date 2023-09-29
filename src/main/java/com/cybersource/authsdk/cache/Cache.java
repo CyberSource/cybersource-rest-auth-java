@@ -132,7 +132,7 @@ public class Cache {
 		}
 	}
 
-	public PrivateKey getCachedPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public PrivateKey getJWECachedPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		if (cachePEM.isEmpty()) {
 			setUpPEMCache();
 		} else {

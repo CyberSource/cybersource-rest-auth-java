@@ -33,7 +33,7 @@ public class JWEUtility {
 
     public static String decryptJWEUsingPEM(MerchantConfig merchantConfig, String jweBase64Data) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, ParseException, JOSEException {
         Cache cache = new Cache(merchantConfig);
-        PrivateKey privateKey =  cache.getCachedPrivateKey();
+        PrivateKey privateKey =  cache.getJWECachedPrivateKey();
         JWEDecrypter jweDecrypter = new RSADecrypter(privateKey);
         EncryptedJWT encryptedJWT = EncryptedJWT.parse(jweBase64Data);
         encryptedJWT.decrypt(jweDecrypter);
