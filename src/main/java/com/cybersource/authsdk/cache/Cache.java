@@ -2,20 +2,18 @@ package com.cybersource.authsdk.cache;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemReader;
+import com.cybersource.authsdk.util.JWEUtility;
 
 public class Cache {
 	private static Logger logger = LogManager.getLogger(Cache.class);	
@@ -23,11 +21,12 @@ public class Cache {
 	public static long lastModifiedTime;
 	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
 
-	public static ConcurrentHashMap<String, CachedPEMObject> cachePEM = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<String, CachedJWEPrivateKey> cachePEM = new ConcurrentHashMap<>();
 
 	private boolean isTimeStamp;
 	private MerchantConfig merchantConfig;
 	private Identity identity = new Identity();
+	private CachedJWEPrivateKey cachedJWEPrivateKey = new CachedJWEPrivateKey();
 	private X509Certificate x509Certificate;
 	private RSAPrivateKey rsaPrivateKey;
 	private String merchantID;
@@ -133,27 +132,28 @@ public class Cache {
 		}
 	}
 
-	public CachedPEMObject getCachedPEMObject() throws IOException {
+	public PrivateKey getCachedPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		if (cachePEM.isEmpty()) {
 			setUpPEMCache();
 		} else {
-			CachedPEMObject cachedPEMObject = cachePEM.get("privateKeyFromPEMFile");
-			if (cachedPEMObject.getLastModifiedTimeStamp() != getLastModifiedFileTime(merchantConfig.getPemFileDirectory())) {
+			CachedJWEPrivateKey cachedJWEPrivateKey = cachePEM.get("privateKeyFromPEMFile");
+			if (cachedJWEPrivateKey.getLastModifiedTimeStamp() != getLastModifiedFileTime(merchantConfig.getPemFileDirectory())) {
 				setUpPEMCache();
 			}
 		}
-		return cachePEM.get("privateKeyFromPEMFile");
+		CachedJWEPrivateKey cachedJWEPrivateKey = cachePEM.get("privateKeyFromPEMFile");
+		return cachedJWEPrivateKey.getPrivateKey();
 	}
-
-	private void setUpPEMCache() throws IOException {
-		String pemString = new String(Files.readAllBytes(Paths.get(merchantConfig.getPemFileDirectory())), StandardCharsets.ISO_8859_1);
-		PemReader pemReader = new PemReader(new StringReader(pemString));
-		PemObject pemObject = pemReader.readPemObject();
+	
+	private void setUpPEMCache() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		PrivateKey privateKey = JWEUtility.readPemFileToGetPrivateKey(merchantConfig.getPemFileDirectory());
 		long lastModifiedTime = getLastModifiedFileTime(merchantConfig.getPemFileDirectory());
-		CachedPEMObject cachedPEMObject = new CachedPEMObject(pemObject, lastModifiedTime);
-		cachePEM.put("privateKeyFromPEMFile", cachedPEMObject);
+		cachedJWEPrivateKey.setLastModifiedTimeStamp(lastModifiedTime);
+		cachedJWEPrivateKey.setPrivateKey(privateKey);
+		cachePEM.put("privateKeyFromPEMFile", cachedJWEPrivateKey);
 	}
 
+	
 	/**
 	 * @return value for last modified.
 	 */

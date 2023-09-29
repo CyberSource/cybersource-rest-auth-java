@@ -405,8 +405,8 @@ public class MerchantConfig {
 		this.setAuthenticationType(this.getProps().getProperty("authenticationType"));
 		this.setUseMetaKey(Boolean.valueOf(this.getProps().getOrDefault("useMetaKey", false).toString()));
 		this.setEnableClientCert(Boolean.valueOf(this.getProps().getOrDefault("enableClientCert", false).toString()));
-		if (null != this.getProps().get("jwePEMFileDirectory")) {
-			this.setPemFileDirectory((String) this.getProps().get("jwePEMFileDirectory"));
+		if (null != this.getProps().getProperty("jwePEMFileDirectory")) {
+			this.setPemFileDirectory((String) this.getProps().getProperty("jwePEMFileDirectory"));
 		}
 		if (this.isUseMetaKey()) {
 			if(this.getProps().getProperty("portfolioID") == null || StringUtils.isEmpty(this.getProps().getProperty("portfolioID")))
