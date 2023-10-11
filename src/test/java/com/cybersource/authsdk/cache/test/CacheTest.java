@@ -131,14 +131,11 @@ public class CacheTest {
 	}
 
 	@Test
-	public void getLastModifiedFileP12Test() throws Exception {
+	public void testGetLastModifiedTimeThrowsExceptionWhenPathIsNULL() throws Exception {
 		merchantProp = UtilityHelpers.getMerchantProperties();
 		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setKeyFilename(null);
-
+		Cache cache = new Cache(merchantConfig);
 		thrown.expect(Exception.class);
-
-		cache = new Cache(merchantConfig);
-		cache.getLastModifiedFileP12();
+		cache.getLastModifiedFileTime(null);
 	}
 }
