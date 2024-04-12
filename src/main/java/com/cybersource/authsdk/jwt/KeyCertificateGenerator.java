@@ -50,7 +50,7 @@ public class KeyCertificateGenerator {
 				array.add(merchantKeyAlias);
 
 			}
-			merchantKeyAlias = keyAliasValidator(array, merchantConfig.getKeyPass());
+			merchantKeyAlias = keyAliasValidator(array, merchantConfig.getKeyAlias());
 
 			try {
 				PrivateKeyEntry e = (PrivateKeyEntry) merchantKeyStore.getEntry(merchantKeyAlias,
