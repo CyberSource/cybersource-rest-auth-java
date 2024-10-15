@@ -70,7 +70,7 @@ public class MLEUtility {
             jweObject.encrypt(new RSAEncrypter((RSAPublicKey) x509Certificate.getPublicKey()));
             return jweObject.serialize();
         } catch (JOSEException e) {
-            throw new MLEException("Failed to encode payload", e);
+            throw new MLEException("Failed to encrypt payload", e);
         }
     }
 
