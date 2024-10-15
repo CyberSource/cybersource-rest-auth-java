@@ -53,7 +53,7 @@ public class MLEUtility {
         } catch (KeyStoreException e) {
             throw new MLEException("Failed to instantiate keystore", e);
         } catch (Exception e) {
-            throw new MLEException("Some error occurred while encoding the request payload", e);
+            throw new MLEException("Some error occurred while loading certificate for MLE", e);
         }
         throw new MLEException("No certificate found for MLE");
     }
