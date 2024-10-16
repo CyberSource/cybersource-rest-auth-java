@@ -239,6 +239,14 @@ public class MerchantConfig {
 	 */
 	public boolean merchantDetailsSet = false;
 
+	/***
+	 *  MLE Feature
+	 */
+	private boolean isMLE;
+	
+	private Map<String, Boolean> mapToControlMLEonAPI;
+	
+	 private String mleKeyAlias;
 	public MerchantConfig() throws ConfigException {
 
 	}
@@ -586,7 +594,15 @@ public class MerchantConfig {
 		} else {
 			this.setRetryEnabled(false);
 		}
-
+		this.setMLE(Boolean.parseBoolean(this.getProps().getProperty("isMLE")));
+		this.setMleKeyAlias((String) this.getProps().getOrDefault("mleKeyAlias", "CyberSource_SJC_US"));
+		if (this.getProps().containsKey("mapToControlMLEonAPI")) {
+			try {
+				this.setMapToControlMLEonAPI((Map<String, Boolean>) this.getProps().get("mapToControlMLEonAPI"));
+			} catch (ClassCastException e) {
+				logger.warn("Unable to initialise MLE control Map from config");
+			}
+		}
 		this.setRetryDelay(Long.valueOf(this.getProps().getProperty("retryDelay", "0")));
 		this.setMerchantDetailsSet(true);
 	}
@@ -1015,5 +1031,29 @@ public class MerchantConfig {
 
 	public void setPemFileDirectory(String pemFileDirectory) {
 		this.pemFileDirectory = pemFileDirectory;
+	}
+
+	public boolean isMLE() {
+		return isMLE;
+	}
+
+	public void setMLE(boolean MLE) {
+		isMLE = MLE;
+	}
+
+	public Map<String, Boolean> getMapToControlMLEonAPI() {
+		return mapToControlMLEonAPI;
+	}
+
+	public void setMapToControlMLEonAPI(Map<String, Boolean> mapToControlMLEonAPI) {
+		this.mapToControlMLEonAPI = mapToControlMLEonAPI;
+	}
+
+	public String getMleKeyAlias() {
+		return mleKeyAlias;
+	}
+
+	public void setMleKeyAlias(String mleKeyAlias) {
+		this.mleKeyAlias = mleKeyAlias;
 	}
 }

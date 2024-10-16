@@ -23,9 +23,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
 public class MLEUtility {
+    public static boolean checkIsMLEForAPI(MerchantConfig merchantConfig, boolean isMLESupportedByCybsForApi, String operationId) {
+        boolean isMLEForAPI = isMLESupportedByCybsForApi && merchantConfig.isMLE();
+        if (merchantConfig.getMapToControlMLEonAPI() != null && merchantConfig.getMapToControlMLEonAPI().containsKey(operationId)) {
+            isMLEForAPI = merchantConfig.getMapToControlMLEonAPI().get(operationId);
+        }
+        return isMLEForAPI;
+    }
+
     public static JSONObject encodeRequest(MerchantConfig merchantConfig, String payload) throws MLEException {
+        if (payload.equals("{}")) {
+            return new JSONObject();
+        }
         X509Certificate certificate = getCertificate(merchantConfig);
         Map<String, Object> customHeaders = new HashMap<>();
         customHeaders.put("iat", ZonedDateTime.now().toInstant().getEpochSecond());
@@ -36,18 +46,18 @@ public class MLEUtility {
     private static X509Certificate getCertificate(MerchantConfig merchantConfig) throws MLEException {
         try {
             KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
-            merchantKeyStore.load(Files.newInputStream(Paths.get(merchantConfig.getKeysDirectory(), 
+            merchantKeyStore.load(Files.newInputStream(Paths.get(merchantConfig.getKeysDirectory(),
                     merchantConfig.getKeyFilename() + GlobalLabelParameters.P12_EXTENSION)), merchantConfig.getKeyPass().toCharArray());
             Enumeration<String> enumKeyStore = merchantKeyStore.aliases();
             while (enumKeyStore.hasMoreElements()) {
                 String merchantKeyAlias = enumKeyStore.nextElement();
-                if (merchantKeyAlias.contains("CyberSource_SJC_US")) {
+                if (merchantKeyAlias.contains(merchantConfig.getMleKeyAlias())) {
                     Certificate certificate = merchantKeyStore.getCertificate(merchantKeyAlias);
                     return (X509Certificate) certificate;
                 }
             }
         } catch (IOException e) {
-            throw  new MLEException("Failed to load p12 in keystore from p12 file", e);
+            throw new MLEException("Certificate with alias " + merchantConfig.getMleKeyAlias() + " not found in " + merchantConfig.getKeyFilename() + ".p12", e);
         } catch (CertificateException e) {
             throw new MLEException("Failed to load certificates in keystore", e);
         } catch (KeyStoreException e) {
