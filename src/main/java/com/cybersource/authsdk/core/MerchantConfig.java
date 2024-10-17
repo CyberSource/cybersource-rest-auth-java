@@ -595,7 +595,7 @@ public class MerchantConfig {
 			this.setRetryEnabled(false);
 		}
 		this.setMLE(Boolean.parseBoolean(this.getProps().getProperty("isMLE")));
-		this.setMleKeyAlias((String) this.getProps().getOrDefault("mleKeyAlias", "CyberSource_SJC_US"));
+		this.setMleKeyAlias(((String) this.getProps().getOrDefault("mleKeyAlias", "CyberSource_SJC_US")).trim());
 		if (this.getProps().containsKey("mapToControlMLEonAPI")) {
 			try {
 				this.setMapToControlMLEonAPI((Map<String, Boolean>) this.getProps().get("mapToControlMLEonAPI"));
@@ -603,6 +603,7 @@ public class MerchantConfig {
 				logger.warn("Unable to initialise MLE control Map from config");
 			}
 		}
+		validateMLEConfiguration();
 		this.setRetryDelay(Long.valueOf(this.getProps().getProperty("retryDelay", "0")));
 		this.setMerchantDetailsSet(true);
 	}
@@ -629,6 +630,16 @@ public class MerchantConfig {
 			logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
 			logger.error(GlobalLabelParameters.AUTH_ERROR);
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
+		}
+	}
+	
+	private void validateMLEConfiguration() throws ConfigException {
+		boolean mleConfigured = this.isMLE;
+		if (this.mapToControlMLEonAPI != null) {
+			mleConfigured = mleConfigured || this.mapToControlMLEonAPI.values().stream().anyMatch(value -> value);
+		}
+		if (mleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
+			throw new ConfigException("MLE is only supported in JWT auth type");
 		}
 	}
 
