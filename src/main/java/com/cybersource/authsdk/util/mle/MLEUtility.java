@@ -6,6 +6,8 @@ import com.cybersource.authsdk.util.Utility;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import net.minidev.json.JSONObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.IOException;
@@ -18,12 +20,15 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class MLEUtility {
+    private static final Logger logger = LogManager.getLogger(MLEUtility.class);
+
     public static boolean checkIsMLEForAPI(MerchantConfig merchantConfig, boolean isMLESupportedByCybsForApi, String operationId) {
         boolean isMLEForAPI = isMLESupportedByCybsForApi && merchantConfig.isMLE();
         if (merchantConfig.getMapToControlMLEonAPI() != null && merchantConfig.getMapToControlMLEonAPI().containsKey(operationId)) {
@@ -53,7 +58,10 @@ public class MLEUtility {
                 String merchantKeyAlias = enumKeyStore.nextElement();
                 if (merchantKeyAlias.contains(merchantConfig.getMleKeyAlias())) {
                     Certificate certificate = merchantKeyStore.getCertificate(merchantKeyAlias);
-                    return (X509Certificate) certificate;
+                    if (certificate instanceof X509Certificate) {
+                        validateCertificateExpiry((X509Certificate) certificate);
+                        return (X509Certificate) certificate;
+                    }
                 }
             }
         } catch (IOException e) {
@@ -69,6 +77,10 @@ public class MLEUtility {
     }
 
     private static String encryptAttributeWithAlgo(String content, X509Certificate x509Certificate, Map<String, Object> customHeaders) throws MLEException {
+        String serialNumber = Utility.extractSerialNumber(x509Certificate);
+        if (serialNumber == null) {
+            throw new MLEException("No serial number found in certificate for MLE");
+        }
         JWEObject jweObject = new JWEObject(
                 new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A256GCM)
                         .contentType("JWT")
@@ -88,5 +100,18 @@ public class MLEUtility {
         JSONObject json = new JSONObject();
         json.put("encryptedRequest", jweToken);
         return json;
+    }
+
+    private static void validateCertificateExpiry(X509Certificate certificate) throws MLEException {
+        if (certificate.getNotAfter() == null) {
+            throw new MLEException("Certificate is not valid");
+        } else if (certificate.getNotAfter().before(new Date())) {
+            throw new MLEException("Certificate required for MLE has been expired on : " + certificate.getNotAfter());
+        } else {
+            long timeToExpire = certificate.getNotAfter().getTime() - new Date().getTime();
+            if (timeToExpire < GlobalLabelParameters.CERTIFICATE_EXPIRY_DATE_WARNING_DAYS * 24 * 60 * 60) {
+                logger.warn("Certificate for MLE is expiring on : {}", certificate.getNotAfter());
+            }
+        }
     }
 }

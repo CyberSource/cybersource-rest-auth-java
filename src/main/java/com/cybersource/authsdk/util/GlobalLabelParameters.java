@@ -1,6 +1,5 @@
 package com.cybersource.authsdk.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -108,5 +107,5 @@ public class GlobalLabelParameters {
 	public static final String CACHE_BEGIN = " Empty Cache :: Adding Data";
 	public static final String CACHE_EXTRACT = " Data present in Cache :: Extracting Data";
 	public static final String CACHE_EXTEND = " New Data present:: Inserting Data in Cache";
-
+	public static final Long CERTIFICATE_EXPIRY_DATE_WARNING_DAYS = 90L;
 }
