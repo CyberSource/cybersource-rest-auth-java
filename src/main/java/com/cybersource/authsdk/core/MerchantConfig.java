@@ -639,6 +639,7 @@ public class MerchantConfig {
 			mleConfigured = mleConfigured || this.mapToControlMLEonAPI.values().stream().anyMatch(value -> value);
 		}
 		if (mleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
+			logger.error("MLE is only supported in JWT auth type");
 			throw new ConfigException("MLE is only supported in JWT auth type");
 		}
 	}

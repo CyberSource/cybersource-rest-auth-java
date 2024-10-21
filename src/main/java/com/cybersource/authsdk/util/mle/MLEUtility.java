@@ -38,7 +38,7 @@ public class MLEUtility {
     }
 
     public static JSONObject encodeRequest(MerchantConfig merchantConfig, String payload) throws MLEException {
-        if (payload.equals("{}")) {
+        if (payload == null || payload.equals("{}")) {
             return new JSONObject();
         }
         X509Certificate certificate = getCertificate(merchantConfig);
@@ -71,7 +71,7 @@ public class MLEUtility {
         } catch (KeyStoreException e) {
             throw new MLEException("Failed to instantiate keystore", e);
         } catch (Exception e) {
-            throw new MLEException("Some error occurred while loading certificate for MLE", e);
+            throw new MLEException("Error occurred while loading certificate for MLE: " + e.getMessage(), e);
         }
         throw new MLEException("No certificate found for MLE");
     }
