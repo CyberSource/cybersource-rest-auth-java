@@ -13,6 +13,16 @@ public class Identity {
 	private RSAPrivateKey rsaPrivateKey;
 	private long lastModifiedDate;
 
+	private X509Certificate mleCert;
+
+	public X509Certificate getMleCert() {
+		return mleCert;
+	}
+
+	public void setMleCert(X509Certificate mleCert) {
+		this.mleCert = mleCert;
+	}
+
 	public long getLastModifiedDate() {
 		return lastModifiedDate;
 	}

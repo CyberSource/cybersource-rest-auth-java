@@ -1,5 +1,6 @@
 package com.cybersource.authsdk.util.mle;
 
+import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
@@ -10,7 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyStore;
@@ -51,8 +54,18 @@ public class MLEUtility {
     private static X509Certificate getCertificate(MerchantConfig merchantConfig) throws MLEException {
         try {
             KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
-            merchantKeyStore.load(Files.newInputStream(Paths.get(merchantConfig.getKeysDirectory(),
-                    merchantConfig.getKeyFilename() + GlobalLabelParameters.P12_EXTENSION)), merchantConfig.getKeyPass().toCharArray());
+//            merchantKeyStore.load(Files.newInputStream(Paths.get(merchantConfig.getKeysDirectory(),
+//                    merchantConfig.getKeyFilename() + GlobalLabelParameters.P12_EXTENSION)), merchantConfig.getKeyPass().toCharArray());
+
+            Cache cache = new Cache(merchantConfig);
+            cache.setP12FileDetailsInCache();
+            cache.retrieveP12DataFromCache();
+            X509Certificate mleCert = cache.getMleCert();
+            byte[] certBytes = mleCert.getEncoded();
+            InputStream certStream = new ByteArrayInputStream(certBytes);
+
+            merchantKeyStore.load(certStream, merchantConfig.getKeyPass().toCharArray());
+
             Enumeration<String> enumKeyStore = merchantKeyStore.aliases();
             while (enumKeyStore.hasMoreElements()) {
                 String merchantKeyAlias = enumKeyStore.nextElement();

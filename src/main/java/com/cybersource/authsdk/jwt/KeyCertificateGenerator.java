@@ -40,6 +40,7 @@ public class KeyCertificateGenerator {
 			KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
 			merchantKeyStore.load(new FileInputStream(merchantConfig.getKeyFile()),
 					merchantConfig.getKeyPass().toCharArray());
+
 			String merchantKeyAlias = null;
 			Enumeration<String> enumKeyStore = merchantKeyStore.aliases();
 			ArrayList<String> array = new ArrayList<String>();
@@ -51,6 +52,38 @@ public class KeyCertificateGenerator {
 
 			}
 			merchantKeyAlias = keyAliasValidator(array, merchantConfig.getKeyAlias());
+
+			try {
+				PrivateKeyEntry e = (PrivateKeyEntry) merchantKeyStore.getEntry(merchantKeyAlias,
+						new PasswordProtection(merchantConfig.getKeyPass().toCharArray()));
+				return (X509Certificate) e.getCertificate();
+			} catch (UnrecoverableEntryException var5) {
+				return null;
+			}
+
+		} else {
+			return null;
+		}
+	}
+
+	public X509Certificate initializeMLECertificate(MerchantConfig merchantConfig) throws CertificateException,
+			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
+
+		if (merchantConfig != null && merchantConfig.getKeyAlias() != null ) {
+			KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
+			merchantKeyStore.load(new FileInputStream(merchantConfig.getKeyFile()),
+					merchantConfig.getKeyPass().toCharArray());
+			String merchantKeyAlias = null;
+			Enumeration<String> enumKeyStore = merchantKeyStore.aliases();
+			ArrayList<String> array = new ArrayList<String>();
+
+			while (enumKeyStore.hasMoreElements()) {
+
+				merchantKeyAlias = (String) enumKeyStore.nextElement();
+				array.add(merchantKeyAlias);
+
+			}
+			merchantKeyAlias = keyAliasValidator(array, "CyberSource_SJC_US");
 
 			try {
 				PrivateKeyEntry e = (PrivateKeyEntry) merchantKeyStore.getEntry(merchantKeyAlias,

@@ -26,6 +26,7 @@ public class JwtSignatureToken implements TokenGenerator {
 	private RSAPrivateKey rsaPrivateKey = null;
 	private X509Certificate x509Certificate = null;
 	private String signature;
+	private X509Certificate mleCert = null;
 
 	/**
 	 * @param merchantConfig - list of parameters required for JWT token.
@@ -63,6 +64,7 @@ public class JwtSignatureToken implements TokenGenerator {
 				if (Cache.isCache) {
 					rsaPrivateKey = newKeyCertGen.initializePrivateKey(merchantConfig);
 					x509Certificate = newKeyCertGen.initializeCertificate(merchantConfig);
+					mleCert = newKeyCertGen.initializeMLECertificate(merchantConfig);
 					logger.info(GlobalLabelParameters.CACHE_BEGIN);
 					setUpCache();
 					Cache.isCache = false;
@@ -73,10 +75,12 @@ public class JwtSignatureToken implements TokenGenerator {
 						cache.retrieveP12DataFromCache();
 						rsaPrivateKey = cache.getRsaPrivateKey();
 						x509Certificate = cache.getX509Certificate();
+						mleCert = cache.getMleCert();
 					} else {
 						logger.info(GlobalLabelParameters.CACHE_EXTEND);
 						rsaPrivateKey = newKeyCertGen.initializePrivateKey(merchantConfig);
 						x509Certificate = newKeyCertGen.initializeCertificate(merchantConfig);
+						mleCert = newKeyCertGen.initializeMLECertificate(merchantConfig);
 						setUpCache();
 					}
 				}
@@ -148,5 +152,6 @@ public class JwtSignatureToken implements TokenGenerator {
 		cache.setX509Certificate(x509Certificate);
 		cache.setRsaPrivateKey(rsaPrivateKey);
 		cache.setP12FileDetailsInCache();
+		cache.setMleCert(mleCert);
 	}
 }

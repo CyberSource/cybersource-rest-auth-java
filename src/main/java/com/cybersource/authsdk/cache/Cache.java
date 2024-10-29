@@ -32,6 +32,7 @@ public class Cache {
 	private String merchantID;
 	private String accessToken;
 	private String refreshToken;
+	private X509Certificate mleCert;
 
 	public void setX509Certificate(X509Certificate x509Certificate) {
 		this.x509Certificate = x509Certificate;
@@ -63,6 +64,14 @@ public class Cache {
 
 	public X509Certificate getX509Certificate() {
 		return x509Certificate;
+	}
+
+	public X509Certificate getMleCert() {
+		return mleCert;
+	}
+
+	public void setMleCert(X509Certificate mleCert) {
+		this.mleCert = mleCert;
 	}
 
 	/**
@@ -102,6 +111,7 @@ public class Cache {
 		identity.setLastModifiedDate(getLastModifiedFileTime(merchantConfig.getKeyFile().getAbsolutePath()));
 		identity.setX509(x509Certificate);
 		identity.setRsaPrivateKey(rsaPrivateKey);
+		identity.setMleCert(mleCert);
 		String tempMerchantID = merchantConfig.getMerchantID();
 		cacheP12.put(tempMerchantID, identity);
 		lastModifiedTime = merchantConfig.getKeyFile().lastModified();
@@ -112,6 +122,7 @@ public class Cache {
 		if (tempIdentity != null) {
 			x509Certificate = tempIdentity.getX509();
 			rsaPrivateKey = tempIdentity.getRsaPrivateKey();
+			mleCert = tempIdentity.getMleCert();
 		}
 	}
 
@@ -168,4 +179,6 @@ public class Cache {
 			return (Long) null;
 		}
 	}
+
+
 }
