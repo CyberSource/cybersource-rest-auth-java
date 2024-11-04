@@ -33,10 +33,25 @@ public class MLEUtility {
     private static final Logger logger = LogManager.getLogger(MLEUtility.class);
 
     public static boolean checkIsMLEForAPI(MerchantConfig merchantConfig, boolean isMLESupportedByCybsForApi, String operationId) {
-        boolean isMLEForAPI = isMLESupportedByCybsForApi && merchantConfig.isMLE();
-        if (merchantConfig.getMapToControlMLEonAPI() != null && merchantConfig.getMapToControlMLEonAPI().containsKey(operationId)) {
-            isMLEForAPI = merchantConfig.getMapToControlMLEonAPI().get(operationId);
+
+        //isMLE for an api is false by default.
+        //It takes into account if the end-user wants to use MLE for an MLE-enabled API
+        boolean isMLEForAPI = false;
+
+        //isMLEEnabledForApi checks if the API has MLE enabled.
+        boolean isMLEEnabledForApi = isMLESupportedByCybsForApi && merchantConfig.isMLE();
+
+        //Control the MLE only from map
+        if (merchantConfig.getMapToControlMLEonAPI() != null &&
+                merchantConfig.getMapToControlMLEonAPI().containsKey(operationId)) {
+            if (merchantConfig.getMapToControlMLEonAPI().get(operationId)) {
+                isMLEForAPI = isMLEEnabledForApi;
+            }
+            if (!merchantConfig.getMapToControlMLEonAPI().get(operationId)) {
+                isMLEForAPI = false;
+            }
         }
+
         return isMLEForAPI;
     }
 
