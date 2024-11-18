@@ -23,6 +23,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -32,30 +33,34 @@ import java.util.Map;
 public class MLEUtility {
     private static final Logger logger = LogManager.getLogger(MLEUtility.class);
 
-    public static boolean checkIsMLEForAPI(MerchantConfig merchantConfig, boolean isMLESupportedByCybsForApi, String operationId) {
+    public static boolean checkIsMLEForAPI(MerchantConfig merchantConfig, boolean isMLESupportedByCybsForApi, String operationIds) {
 
-        //isMLE for an api is false by default.
-        //It takes into account if the end-user wants to use MLE for an MLE-enabled API
+    	//isMLE for an api is false by default
         boolean isMLEForAPI = false;
-
-        //isMLEEnabledForApi checks if the API has MLE enabled.
-        boolean isMLEEnabledForApi = isMLESupportedByCybsForApi && merchantConfig.isMLE();
-
+        
+        //check here useMLEGlobally True or False
+        //if API is part of MLE then check for useMLEGlobally global parameter
+        if (isMLESupportedByCybsForApi == true && merchantConfig.isMLE() == true) {
+          isMLEForAPI = true;
+        }
+        
+        //operationIds are array as there are multiple public function for apiCallFunction such as apiCall,apiCallAsync ..
+        String[] operationArray = Arrays.stream(operationIds.split(",")).map(String::trim).toArray(String[]::new);
+        
         //Control the MLE only from map
-        if (merchantConfig.getMapToControlMLEonAPI() != null &&
-                merchantConfig.getMapToControlMLEonAPI().containsKey(operationId)) {
-            if (merchantConfig.getMapToControlMLEonAPI().get(operationId)) {
-                isMLEForAPI = isMLEEnabledForApi;
-            }
-            if (!merchantConfig.getMapToControlMLEonAPI().get(operationId)) {
-                isMLEForAPI = false;
-            }
+        if (merchantConfig.getMapToControlMLEonAPI() != null && !merchantConfig.getMapToControlMLEonAPI().isEmpty() ) {
+        	for (String operationId : operationArray) {
+        		if(merchantConfig.getMapToControlMLEonAPI().containsKey(operationId)) {
+        			isMLEForAPI = merchantConfig.getMapToControlMLEonAPI().get(operationId);
+        			break;
+        		}
+        	}
         }
 
         return isMLEForAPI;
     }
 
-    public static JSONObject encodeRequest(MerchantConfig merchantConfig, String payload) throws MLEException {
+    public static JSONObject encryptRequestPayload(MerchantConfig merchantConfig, String payload) throws MLEException {
         if (payload == null || payload.equals("{}")) {
             return new JSONObject();
         }
