@@ -28,9 +28,9 @@ public class Cache {
 
 	private boolean isTimeStamp;
 	private MerchantConfig merchantConfig;
+
 	private Identity identity = new Identity();
 	private CachedJWEPrivateKey cachedJWEPrivateKey = new CachedJWEPrivateKey();
-	private String merchantID;
 	private String accessToken;
 	private String refreshToken;
 
@@ -49,6 +49,10 @@ public class Cache {
 	public String getRefreshToken() {
 		return refreshToken;
 	}
+	
+	public void setMerchantConfig(MerchantConfig merchantConfig) {
+		this.merchantConfig = merchantConfig;
+	}
 
 	/**
 	 * @param merchantConfig - contains all information for merchant.
@@ -56,7 +60,6 @@ public class Cache {
 	public Cache(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
 		logger = LogManager.getLogger(this.getClass());
-		this.merchantID = merchantConfig.getMerchantID();
 		if (cacheP12.isEmpty()) {
 			Cache.isCache = true;
 		} else {
@@ -65,6 +68,9 @@ public class Cache {
 	}
 
 
+
+	public Cache() {
+	}
 
 	/**
 	 * @throws Exception 

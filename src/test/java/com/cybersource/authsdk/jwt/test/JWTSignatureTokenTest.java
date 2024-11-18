@@ -198,7 +198,7 @@ public class JWTSignatureTokenTest {
 
 		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
 		jwtSignatureToken.generateSignature();
-		Cache.lastModifiedTime = 1528;
+//		Cache.lastModifiedTime = 1528;
 		String token1 = jwtSignatureToken.generateSignature();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token1);

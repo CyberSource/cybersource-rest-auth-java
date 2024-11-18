@@ -662,11 +662,13 @@ public class MerchantConfig {
 				}
 			}
 		}	
-		//if mle=true then check for auth Type
+		//if MLE=true then check for auth Type
 		if (mleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			logger.error("MLE is only supported in JWT auth type");
 			throw new ConfigException("MLE is only supported in JWT auth type");
-		}		
+		}
+		//check the p12 file and set the keyFile to get the mleCert
+		checkKeyFile();
 	}
 
 	/**
