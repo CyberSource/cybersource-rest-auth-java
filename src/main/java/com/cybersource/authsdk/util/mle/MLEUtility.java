@@ -40,7 +40,7 @@ public class MLEUtility {
         
         //check here useMLEGlobally True or False
         //if API is part of MLE then check for useMLEGlobally global parameter
-        if (isMLESupportedByCybsForApi == true && merchantConfig.isMLE() == true) {
+        if (isMLESupportedByCybsForApi == true && merchantConfig.isUseMLEGlobally() == true) {
           isMLEForAPI = true;
         }
         

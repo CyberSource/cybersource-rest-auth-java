@@ -247,7 +247,7 @@ public class MerchantConfig {
 	/***
 	 *  MLE Feature
 	 */
-	private boolean isMLE;
+	private boolean useMLEGlobally;
 	
 	private Map<String, Boolean> mapToControlMLEonAPI;
 	
@@ -604,8 +604,9 @@ public class MerchantConfig {
 		} else {
 			this.setRetryEnabled(false);
 		}
-		this.setMLE(Boolean.parseBoolean(this.getProps().getProperty("isMLE")));
-		this.setMleKeyAlias(((String) this.getProps().getOrDefault("mleKeyAlias", "CyberSource_SJC_US")).trim());
+		//MLE Params
+		this.setUseMLEGlobally(Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally")));
+		this.setMleKeyAlias(((String) this.getProps().getOrDefault("mleKeyAlias", GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT)).trim());
 		if (this.getProps().containsKey("mapToControlMLEonAPI")) {
 			try {
 				this.setMapToControlMLEonAPI((Map<String, Boolean>) this.getProps().get("mapToControlMLEonAPI"));
@@ -614,6 +615,7 @@ public class MerchantConfig {
 			}
 		}
 		validateMLEConfiguration();
+		
 		this.setRetryDelay(Long.valueOf(this.getProps().getProperty("retryDelay", "0")));
 		this.setMerchantDetailsSet(true);
 	}
@@ -644,24 +646,22 @@ public class MerchantConfig {
 	}
 	
 	private void validateMLEConfiguration() throws ConfigException {
-		boolean mleConfigured = this.isMLE;
-//		if (this.mapToControlMLEonAPI != null) {
-//			mleConfigured = mleConfigured || this.mapToControlMLEonAPI.values().stream().anyMatch(value -> value);
-//		}
+		
+		boolean mleConfigured = this.useMLEGlobally;
 
-		if (this.mapToControlMLEonAPI != null) {
+		if (this.mapToControlMLEonAPI != null && !this.mapToControlMLEonAPI.isEmpty()) {
 			for (boolean value : this.mapToControlMLEonAPI.values()) {
 				if (value) {
 					mleConfigured = true;
 					break;
 				}
 			}
-		}
-
+		}	
+		//if mle=true then check for auth Type
 		if (mleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			logger.error("MLE is only supported in JWT auth type");
 			throw new ConfigException("MLE is only supported in JWT auth type");
-		}
+		}		
 	}
 
 	/**
@@ -1073,12 +1073,12 @@ public class MerchantConfig {
 		this.pemFileDirectory = pemFileDirectory;
 	}
 
-	public boolean isMLE() {
-		return isMLE;
+	public boolean isUseMLEGlobally() {
+		return useMLEGlobally;
 	}
 
-	public void setMLE(boolean MLE) {
-		isMLE = MLE;
+	public void setUseMLEGlobally(boolean useMLEGlobally) {
+		this.useMLEGlobally = useMLEGlobally;
 	}
 
 	public Map<String, Boolean> getMapToControlMLEonAPI() {
