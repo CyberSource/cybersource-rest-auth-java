@@ -75,7 +75,7 @@ public class Cache {
 	 */
 	private void setUpP12Cache() throws Exception {
 		KeyCertificateGenerator newKeyCertGen = new KeyCertificateGenerator();
-		X509Certificate jwtX509Certificate = newKeyCertGen.initializeCertificate(merchantConfig);
+		X509Certificate jwtX509Certificate = newKeyCertGen.initializeCertificateOfMerchantForJWT(merchantConfig);
 		RSAPrivateKey jwtRsaPrivateKey = newKeyCertGen.initializePrivateKey(merchantConfig);
 		X509Certificate mleX509Certificate = newKeyCertGen.initializeMLECertificate(merchantConfig);
 		

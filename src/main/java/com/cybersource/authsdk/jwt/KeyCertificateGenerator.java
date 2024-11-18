@@ -33,46 +33,48 @@ public class KeyCertificateGenerator {
 	 *                                  merchant.
 	 * @throws Exception                - if some other exception will happen.
 	 */
-	public X509Certificate initializeCertificate(MerchantConfig merchantConfig) throws CertificateException,
-			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
-
-		if (merchantConfig != null && merchantConfig.getKeyAlias() != null && merchantConfig.getKeyFile() != null) {
-			KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
-			merchantKeyStore.load(new FileInputStream(merchantConfig.getKeyFile()),
-					merchantConfig.getKeyPass().toCharArray());
-
-			String merchantKeyAlias = null;
-			Enumeration<String> enumKeyStore = merchantKeyStore.aliases();
-			ArrayList<String> array = new ArrayList<String>();
-
-			while (enumKeyStore.hasMoreElements()) {
-
-				merchantKeyAlias = (String) enumKeyStore.nextElement();
-				array.add(merchantKeyAlias);
-
-			}
-			merchantKeyAlias = keyAliasValidator(array, merchantConfig.getKeyAlias());
-
-			try {
-				PrivateKeyEntry e = (PrivateKeyEntry) merchantKeyStore.getEntry(merchantKeyAlias,
-						new PasswordProtection(merchantConfig.getKeyPass().toCharArray()));
-				return (X509Certificate) e.getCertificate();
-			} catch (UnrecoverableEntryException var5) {
-				return null;
-			}
-
-		} else {
-			return null;
-		}
+	public X509Certificate initializeCertificateOfMerchantForJWT(MerchantConfig merchantConfig) throws CertificateException,
+	NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
+		return initializeCertForGivenKeyAliasFromP12(merchantConfig, merchantConfig.getKeyAlias());	
 	}
-
+	
+	/**
+	 * @param merchantConfig -contains merchant information.
+	 * @return certificate which will be used for mle to encrypt request payload.
+	 ** @throws CertificateException     - if certificate is missing or wrong.
+	 * @throws NoSuchAlgorithmException - if algorithm is not available.
+	 * @throws IOException              - if file is not found.
+	 * @throws KeyStoreException        - if file is not available in key store or
+	 *                                  wrong.
+	 * @throws ConfigException          - if some values is missing or wrong for
+	 *                                  merchant.
+	 * @throws Exception                - if some other exception will happen.
+	 */
 	public X509Certificate initializeMLECertificate(MerchantConfig merchantConfig) throws CertificateException,
+	NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
+		return initializeCertForGivenKeyAliasFromP12(merchantConfig, merchantConfig.getMleKeyAlias());
+	}
+	
+	/**
+	 * @param merchantConfig -contains merchant information.
+	 * @return certificate which will be used to generate token.
+	 ** @throws CertificateException     - if certificate is missing or wrong.
+	 * @throws NoSuchAlgorithmException - if algorithm is not available.
+	 * @throws IOException              - if file is not found.
+	 * @throws KeyStoreException        - if file is not available in key store or
+	 *                                  wrong.
+	 * @throws ConfigException          - if some values is missing or wrong for
+	 *                                  merchant.
+	 * @throws Exception                - if some other exception will happen.
+	 */
+	private X509Certificate initializeCertForGivenKeyAliasFromP12(MerchantConfig merchantConfig, String keyAlias) throws CertificateException,
 			NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
 
-		if (merchantConfig != null && merchantConfig.getKeyAlias() != null ) {
+		if (merchantConfig != null && keyAlias != null && merchantConfig.getKeyFile() != null) {
 			KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
 			merchantKeyStore.load(new FileInputStream(merchantConfig.getKeyFile()),
 					merchantConfig.getKeyPass().toCharArray());
+
 			String merchantKeyAlias = null;
 			Enumeration<String> enumKeyStore = merchantKeyStore.aliases();
 			ArrayList<String> array = new ArrayList<String>();
@@ -83,7 +85,7 @@ public class KeyCertificateGenerator {
 				array.add(merchantKeyAlias);
 
 			}
-			merchantKeyAlias = keyAliasValidator(array, "CyberSource_SJC_US");
+			merchantKeyAlias = keyAliasValidator(array,keyAlias);
 
 			try {
 				PrivateKeyEntry e = (PrivateKeyEntry) merchantKeyStore.getEntry(merchantKeyAlias,
@@ -97,13 +99,14 @@ public class KeyCertificateGenerator {
 			return null;
 		}
 	}
-
+	
+	
 	/**
 	 * @param array      -list of keyAlias.
-	 * @param merchantID -Id of merchant.
+	 * @param keyAlias -Id of merchant.
 	 * @return merchantKeyalias for merchant.
 	 */
-	private static String keyAliasValidator(ArrayList<String> array, String merchantID) {
+	private static String keyAliasValidator(ArrayList<String> array, String keyAlias) {
 		int size = array.size();
 		String tempKeyAlias, merchantKeyAlias, result;
 		StringTokenizer str;
@@ -116,7 +119,7 @@ public class KeyCertificateGenerator {
 					str = new StringTokenizer(tempKeyAlias, "=");
 					while (str.hasMoreElements()) {
 						result = str.nextToken();
-						if (result.equalsIgnoreCase(merchantID)) {
+						if (result.equalsIgnoreCase(keyAlias)) {
 							return merchantKeyAlias;
 						}
 					}
