@@ -12,7 +12,6 @@ public class Identity {
 	private X509Certificate x509;
 	private RSAPrivateKey rsaPrivateKey;
 	private long lastModifiedDate;
-
 	private X509Certificate mleCert;
 
 	public X509Certificate getMleCert() {
