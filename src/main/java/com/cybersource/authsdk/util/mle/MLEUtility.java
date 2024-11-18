@@ -5,8 +5,10 @@ import com.cybersource.authsdk.cache.Identity;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
+import com.google.gson.Gson;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSAEncrypter;
+
 import net.minidev.json.JSONObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,10 +55,12 @@ public class MLEUtility {
         return isMLEForAPI;
     }
 
-    public static JSONObject encryptRequestPayload(MerchantConfig merchantConfig, String payload) throws MLEException {
-        if (payload == null || payload.equals("{}")) {
-            return new JSONObject();
+    public static JSONObject encryptRequestPayload(MerchantConfig merchantConfig, Object localVarPostBody) throws MLEException {
+    	
+    	if (localVarPostBody == null) {
+            return null;
         }
+    	String payload = new Gson().toJson(localVarPostBody);
         X509Certificate mleCertificate = getCertificate(merchantConfig);
         Map<String, Object> customHeaders = new HashMap<>();
         customHeaders.put("iat", ZonedDateTime.now().toInstant().getEpochSecond());
