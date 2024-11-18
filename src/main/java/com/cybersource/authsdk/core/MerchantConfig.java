@@ -65,6 +65,11 @@ public class MerchantConfig {
 	 */
 	private String intermediateHost;
 	
+	/**
+	 * Default DeveloperId to be sent with API call
+	 */
+	private String defaultDeveloperId;
+	
 	/***
 	 * ID to capture developer partner identification
 	 * <p>
@@ -553,6 +558,11 @@ public class MerchantConfig {
 		if (StringUtils.isNotBlank(this.getProps().getProperty("intermediateHost"))) {
 			this.setIntermediateHost(this.getProps().getProperty("intermediateHost").trim());
 		}
+		
+		/* Set Default DeveloperId */
+		if (StringUtils.isNotBlank(this.getProps().getProperty("defaultDeveloperId"))) {
+			this.setDefaultDeveloperId(this.getProps().getProperty("defaultDeveloperId").trim());
+		}
 
 		this.setUserDefinedConnectionTimeout(Integer.valueOf(this.getProps().getProperty("userDefinedConnectionTimeout", "0")));
 		if(this.getUserDefinedConnectionTimeout() <= 0)
@@ -919,6 +929,14 @@ public class MerchantConfig {
 		this.intermediateHost = intermediateHost;
 	}
 	
+	public String getDefaultDeveloperId() {
+		return defaultDeveloperId;
+	}
+
+	public void setDefaultDeveloperId(String defaultDeveloperId) {
+		this.defaultDeveloperId = defaultDeveloperId;
+	}
+
 	public File getKeyFile() {
 		return keyFile;
 	}
