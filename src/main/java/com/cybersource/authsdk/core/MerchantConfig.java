@@ -251,7 +251,8 @@ public class MerchantConfig {
 	
 	private Map<String, Boolean> mapToControlMLEonAPI;
 	
-	 private String mleKeyAlias;
+	private String mleKeyAlias;
+	
 	public MerchantConfig() throws ConfigException {
 
 	}
@@ -606,7 +607,11 @@ public class MerchantConfig {
 		}
 		//MLE Params
 		this.setUseMLEGlobally(Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally")));
-		this.setMleKeyAlias(((String) this.getProps().getOrDefault("mleKeyAlias", GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT)).trim());
+		if(!StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
+			this.setMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
+		}else {
+			this.setMleKeyAlias(GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
+		}
 		if (this.getProps().containsKey("mapToControlMLEonAPI")) {
 			try {
 				this.setMapToControlMLEonAPI((Map<String, Boolean>) this.getProps().get("mapToControlMLEonAPI"));
