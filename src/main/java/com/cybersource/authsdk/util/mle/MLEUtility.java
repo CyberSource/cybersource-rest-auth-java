@@ -61,11 +61,14 @@ public class MLEUtility {
             return null;
         }
     	String payload = new Gson().toJson(localVarPostBody);
+    	logger.debug("LOG_REQUEST_BEFORE_MLE: " + payload);
         X509Certificate mleCertificate = getCertificate(merchantConfig);
         Map<String, Object> customHeaders = new HashMap<>();
         customHeaders.put("iat", ZonedDateTime.now().toInstant().getEpochSecond());
         String encryptedPayload = encryptAttributeWithAlgo(payload, mleCertificate, customHeaders);
-        return createJsonObject(encryptedPayload);
+        JSONObject mleRequest= createJsonObject(encryptedPayload);
+        logger.debug("LOG_REQUEST_AFTER_MLE: " + new Gson().toJson(mleRequest));
+        return mleRequest;
     }
 
     private static X509Certificate getCertificate(MerchantConfig merchantConfig) throws MLEException {
