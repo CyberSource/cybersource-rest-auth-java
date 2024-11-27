@@ -607,7 +607,7 @@ public class MerchantConfig {
 		}
 		//MLE Params
 		this.setUseMLEGlobally(Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally")));
-		if(!StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
+		if(null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
 			this.setMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
 		}else {
 			this.setMleKeyAlias(GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
