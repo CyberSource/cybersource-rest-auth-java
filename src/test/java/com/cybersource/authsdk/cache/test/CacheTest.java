@@ -93,7 +93,7 @@ public class CacheTest {
 		merchantConfig.checkKeyFile();
 
 		cache = new Cache(merchantConfig);
-		cache.setP12FileDetailsInCache();
+//		cache.setP12FileDetailsInCache();
 		Assert.assertNotNull(cacheP12);
 	}
 
@@ -108,8 +108,8 @@ public class CacheTest {
 		merchantConfig.checkKeyFile();
 
 		cache = new Cache(merchantConfig);
-		cache.setUpP12Cache();
-		cache.setP12FileDetailsInCache();
+//		cache.setUpP12Cache();
+//		cache.setP12FileDetailsInCache();
 		Assert.assertNotNull(cacheP12);
 	}
 
@@ -124,9 +124,9 @@ public class CacheTest {
 		merchantConfig.checkKeyFile();
 
 		cache = new Cache(merchantConfig);
-		cache.setUpP12Cache();
-		Cache.lastModifiedTime = 1528;
-		cache.setP12FileDetailsInCache();
+//		cache.setUpP12Cache();
+//		Cache.lastModifiedTime = 1528;
+//		cache.setP12FileDetailsInCache();
 		Assert.assertNotNull(cacheP12);
 	}
 

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.cache.Cache;
+import com.cybersource.authsdk.cache.Identity;
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.core.TokenGenerator;
@@ -55,31 +56,10 @@ public class JwtSignatureToken implements TokenGenerator {
 	 * @throws Exception - if some exception will occur.
 	 */
 	public String generateSignature() throws Exception {
-		KeyCertificateGenerator newKeyCertGen = new KeyCertificateGenerator();
-
 		try {
 			if (merchantConfig != null) {
 				/* Generating private key. */
-				if (Cache.isCache) {
-					rsaPrivateKey = newKeyCertGen.initializePrivateKey(merchantConfig);
-					x509Certificate = newKeyCertGen.initializeCertificate(merchantConfig);
-					logger.info(GlobalLabelParameters.CACHE_BEGIN);
-					setUpCache();
-					Cache.isCache = false;
-				} else {
-					boolean lastModified = cache.isLastModifiedTimeP12();
-					if (lastModified) {
-						logger.info(GlobalLabelParameters.CACHE_EXTRACT);
-						cache.retrieveP12DataFromCache();
-						rsaPrivateKey = cache.getRsaPrivateKey();
-						x509Certificate = cache.getX509Certificate();
-					} else {
-						logger.info(GlobalLabelParameters.CACHE_EXTEND);
-						rsaPrivateKey = newKeyCertGen.initializePrivateKey(merchantConfig);
-						x509Certificate = newKeyCertGen.initializeCertificate(merchantConfig);
-						setUpCache();
-					}
-				}
+				getKeysForJWTFromCache();
 
 				/* Generating certificate. */
 				String encryptedSigMessage = "";
@@ -141,12 +121,10 @@ public class JwtSignatureToken implements TokenGenerator {
 		return signature;
 	}
 
-	/**
-	 * @throws ConfigException - if some value is missing or wrong for merchant.
-	 */
-	private void setUpCache() throws ConfigException {
-		cache.setX509Certificate(x509Certificate);
-		cache.setRsaPrivateKey(rsaPrivateKey);
-		cache.setP12FileDetailsInCache();
+	private void getKeysForJWTFromCache() throws ConfigException, Exception {
+		Identity p12Keys = cache.getMerchantP12KeysFromCache();
+		rsaPrivateKey = p12Keys.getRsaPrivateKey();
+		x509Certificate = p12Keys.getX509();
 	}
+
 }

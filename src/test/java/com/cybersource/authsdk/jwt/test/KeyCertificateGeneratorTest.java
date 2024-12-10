@@ -96,7 +96,7 @@ public class KeyCertificateGeneratorTest {
 		merchantConfig.validateMerchantDetails();
 
 		keyCertificateGenerator = new KeyCertificateGenerator();
-		X509Certificate certificate = keyCertificateGenerator.initializeCertificate(merchantConfig);
+		X509Certificate certificate = keyCertificateGenerator.initializeCertificateOfMerchantForJWT(merchantConfig);
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(certificate);
 		} else {

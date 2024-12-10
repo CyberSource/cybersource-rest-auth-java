@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.cybersource.authsdk.util.Utility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,19 +78,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			logger.error("Payload Content or Public Certificate is null or empty");
 			return null;
 		}
-		String serialNumber = null;
-		String serialNumberPrefix = "SERIALNUMBER=";
-		String principal = x509Certificate.getSubjectDN().getName().toUpperCase();
-		int beg = principal.indexOf(serialNumberPrefix);
-		if (beg >= 0) {
-			int end = principal.indexOf(",", beg);
-			if (end == -1) {
-				end = principal.length();
-			}
-			serialNumber = principal.substring(beg + serialNumberPrefix.length(), end);
-		} else {
-			serialNumber = x509Certificate.getSerialNumber().toString();
-		}
+		String serialNumber = Utility.extractSerialNumber(x509Certificate);
 		List<com.nimbusds.jose.util.Base64> x5cBase64List = new ArrayList<Base64>();
 		try {
 			x5cBase64List.add(com.nimbusds.jose.util.Base64.encode(x509Certificate.getEncoded()));
@@ -155,19 +144,7 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			logger.error("Payload Content or Public Certificate or Private Key is null or empty");
 			return null;
 		}
-		String serialNumber = null;
-		String serialNumberPrefix = "SERIALNUMBER=";
-		String principal = x509Certificate.getSubjectDN().getName().toUpperCase();
-		int beg = principal.indexOf(serialNumberPrefix);
-		if (beg >= 0) {
-			int end = principal.indexOf(",", beg);
-			if (end == -1) {
-				end = principal.length();
-			}
-			serialNumber = principal.substring(beg + serialNumberPrefix.length(), end);
-		} else {
-			serialNumber = x509Certificate.getSerialNumber().toString();
-		}
+		String serialNumber = Utility.extractSerialNumber(x509Certificate);
 		List<com.nimbusds.jose.util.Base64> x5cBase64List = new ArrayList<Base64>();
 		try {
 			x5cBase64List.add(com.nimbusds.jose.util.Base64.encode(x509Certificate.getEncoded()));

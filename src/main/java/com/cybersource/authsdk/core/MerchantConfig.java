@@ -244,6 +244,15 @@ public class MerchantConfig {
 	 */
 	public boolean merchantDetailsSet = false;
 
+	/***
+	 *  MLE Feature
+	 */
+	private boolean useMLEGlobally;
+	
+	private Map<String, Boolean> mapToControlMLEonAPI;
+	
+	private String mleKeyAlias;
+	
 	public MerchantConfig() throws ConfigException {
 
 	}
@@ -596,7 +605,22 @@ public class MerchantConfig {
 		} else {
 			this.setRetryEnabled(false);
 		}
-
+		//MLE Params
+		this.setUseMLEGlobally(Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally")));
+		if(null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
+			this.setMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
+		}else {
+			this.setMleKeyAlias(GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
+		}
+		if (this.getProps().containsKey("mapToControlMLEonAPI")) {
+			try {
+				this.setMapToControlMLEonAPI((Map<String, Boolean>) this.getProps().get("mapToControlMLEonAPI"));
+			} catch (ClassCastException e) {
+				logger.warn("Unable to initialise MLE control Map from config");
+			}
+		}
+		validateMLEConfiguration();
+		
 		this.setRetryDelay(Long.valueOf(this.getProps().getProperty("retryDelay", "0")));
 		this.setMerchantDetailsSet(true);
 	}
@@ -624,6 +648,27 @@ public class MerchantConfig {
 			logger.error(GlobalLabelParameters.AUTH_ERROR);
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 		}
+	}
+	
+	private void validateMLEConfiguration() throws ConfigException {
+		
+		boolean mleConfigured = this.useMLEGlobally;
+
+		if (this.mapToControlMLEonAPI != null && !this.mapToControlMLEonAPI.isEmpty()) {
+			for (boolean value : this.mapToControlMLEonAPI.values()) {
+				if (value) {
+					mleConfigured = true;
+					break;
+				}
+			}
+		}	
+		//if MLE=true then check for auth Type
+		if (mleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
+			logger.error("MLE is only supported in JWT auth type");
+			throw new ConfigException("MLE is only supported in JWT auth type");
+		}
+		//check the p12 file and set the keyFile to get the mleCert
+		checkKeyFile();
 	}
 
 	/**
@@ -1033,5 +1078,29 @@ public class MerchantConfig {
 
 	public void setPemFileDirectory(String pemFileDirectory) {
 		this.pemFileDirectory = pemFileDirectory;
+	}
+
+	public boolean isUseMLEGlobally() {
+		return useMLEGlobally;
+	}
+
+	public void setUseMLEGlobally(boolean useMLEGlobally) {
+		this.useMLEGlobally = useMLEGlobally;
+	}
+
+	public Map<String, Boolean> getMapToControlMLEonAPI() {
+		return mapToControlMLEonAPI;
+	}
+
+	public void setMapToControlMLEonAPI(Map<String, Boolean> mapToControlMLEonAPI) {
+		this.mapToControlMLEonAPI = mapToControlMLEonAPI;
+	}
+
+	public String getMleKeyAlias() {
+		return mleKeyAlias;
+	}
+
+	public void setMleKeyAlias(String mleKeyAlias) {
+		this.mleKeyAlias = mleKeyAlias;
 	}
 }

@@ -1,5 +1,6 @@
 package com.cybersource.authsdk.util;
 
+import java.security.cert.X509Certificate;
 import java.util.StringTokenizer;
 
 public class Utility {
@@ -41,5 +42,22 @@ public class Utility {
 			}
 		}
 		return temp;
+	}
+
+	public static String extractSerialNumber(X509Certificate x509Certificate) {
+		String serialNumber = null;
+		String serialNumberPrefix = "SERIALNUMBER=";
+		String principal = x509Certificate.getSubjectDN().getName().toUpperCase();
+		int beg = principal.indexOf(serialNumberPrefix);
+		if (beg >= 0) {
+			int end = principal.indexOf(",", beg);
+			if (end == -1) {
+				end = principal.length();
+			}
+			serialNumber = principal.substring(beg + serialNumberPrefix.length(), end);
+		} else {
+			serialNumber = x509Certificate.getSerialNumber().toString();
+		}
+		return serialNumber;
 	}
 }
