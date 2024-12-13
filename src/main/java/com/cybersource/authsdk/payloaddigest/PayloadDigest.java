@@ -21,7 +21,12 @@ public class PayloadDigest {
 	 */
 	public PayloadDigest(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
+	} //used only for methods being called in Test classes
+
+	public PayloadDigest(String requestData) {
+		this.messageBody = requestData;
 	}
+
 
 	/**
 	 * @return generated digest from requestBody
@@ -55,8 +60,12 @@ public class PayloadDigest {
 	 * @return generated payLoad from request body.
 	 */
 	private String payloadGeneration() {
-		messageBody = merchantConfig.getRequestData();
-		return messageBody;
+		if(messageBody != null) {
+			return messageBody;
+		}else{
+			messageBody = merchantConfig.getRequestData();
+			return messageBody;
+		}
 	}
 
 	/**
