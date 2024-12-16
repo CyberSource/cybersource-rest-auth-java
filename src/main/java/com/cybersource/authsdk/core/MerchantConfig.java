@@ -276,8 +276,8 @@ public class MerchantConfig {
 	 * @return true or false as per validation
 	 * @throws ConfigException if some value is missing for merchant.
 	 */
-	public boolean validateMerchantDetails(String requestType ) throws ConfigException {
-		boolean isRequestType = checkRequestType(requestType);
+	public boolean validateMerchantDetails(String requestTypeData ) throws ConfigException {
+		boolean isRequestType = checkRequestType(requestTypeData);
 
 		boolean isMerchantId = true;
 		boolean isCheckMerchantSecretKey = false;
@@ -332,16 +332,16 @@ public class MerchantConfig {
 	 * @return true if valid request type else return false.
 	 * @throws ConfigException if some value is missing or wrong for merchant.
 	 */
-	public boolean checkRequestType(String requestType) throws ConfigException {
+	public boolean checkRequestType(String requestTypeData) throws ConfigException {
 //		String requestTypeCheck = this.getRequestType();
-		if (requestType.equalsIgnoreCase(GlobalLabelParameters.PUT)
-				|| requestType.equalsIgnoreCase(GlobalLabelParameters.GET)
-				|| requestType.equalsIgnoreCase(GlobalLabelParameters.POST)
-				|| requestType.equalsIgnoreCase(GlobalLabelParameters.DELETE)
-				|| requestType.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+		if (requestTypeData.equalsIgnoreCase(GlobalLabelParameters.PUT)
+				|| requestTypeData.equalsIgnoreCase(GlobalLabelParameters.GET)
+				|| requestTypeData.equalsIgnoreCase(GlobalLabelParameters.POST)
+				|| requestTypeData.equalsIgnoreCase(GlobalLabelParameters.DELETE)
+				|| requestTypeData.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 			return true;
 		} else {
-			logger.error("ConfigException : " + GlobalLabelParameters.INVALID_REQUEST_TYPE + " : " + this.requestType);
+			logger.error("ConfigException : " + GlobalLabelParameters.INVALID_REQUEST_TYPE + " : " + requestTypeData);
 			throw new ConfigException(GlobalLabelParameters.INVALID_REQUEST_TYPE);
 		}
 	}
@@ -780,7 +780,7 @@ public class MerchantConfig {
 		return requestHost;
 	}
 
-	private void setRequestHost(String requestHost) {
+	public void setRequestHost(String requestHost) {
 		this.requestHost = requestHost;
 	}
 

@@ -21,7 +21,7 @@ public class PayloadDigest {
 	 */
 	public PayloadDigest(MerchantConfig merchantConfig) {
 		this.merchantConfig = merchantConfig;
-	} //used only for methods being called in Test classes
+	}
 
 	public PayloadDigest(String requestData) {
 		this.messageBody = requestData;
