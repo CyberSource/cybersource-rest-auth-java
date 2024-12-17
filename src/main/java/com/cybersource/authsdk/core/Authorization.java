@@ -22,5 +22,5 @@ public class Authorization {
 	 */
 	public String getToken(MerchantConfig merchantConfig, String method, String requestData) throws ConfigException {
 		return TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, method).getToken(requestData);
-	} //
+	}
 }

@@ -41,7 +41,7 @@ public class MerchantConfig {
 	/***
 	 * The host (specified by name) serving the API
 	 */
-	private String requestHost; //
+	private String requestHost;
 
 	/***
 	 * Data to be sent in the request
@@ -415,7 +415,7 @@ public class MerchantConfig {
 		return true;
 	}
 
-	private void setMerchantDetails() throws ConfigException {   //problems only in test classes
+	private void setMerchantDetails() throws ConfigException {
 		this.setAuthenticationType(this.getProps().getProperty("authenticationType"));
 		this.setUseMetaKey(Boolean.valueOf(this.getProps().getOrDefault("useMetaKey", false).toString()));
 		this.setEnableClientCert(Boolean.valueOf(this.getProps().getOrDefault("enableClientCert", false).toString()));

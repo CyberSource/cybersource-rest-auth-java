@@ -20,11 +20,11 @@ public class TokenGeneratorFactory {
 		if (authType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			return new HttpSignatureToken(merchantConfig, method);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			return new JwtSignatureToken(merchantConfig, jwtRequestBody);
+			return new JwtSignatureToken(merchantConfig, jwtRequestBody, method);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.OAUTH)) {
 			return new OAuthToken(merchantConfig);
 		} else {
 			return null;
 		}
-	} //
+	}
 }

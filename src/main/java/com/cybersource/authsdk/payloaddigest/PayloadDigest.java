@@ -13,15 +13,15 @@ public class PayloadDigest {
 	private static Logger logger = LogManager.getLogger(PayloadDigest.class);
 
 	private String bluePrint = null, messageBody = null;
-	private MerchantConfig merchantConfig = null;
+//	private MerchantConfig merchantConfig = null;
 	private String sha256 = GlobalLabelParameters.SHA_256;
 
-	/**
-	 * @param merchantConfig - contains all information for merchant
-	 */
-	public PayloadDigest(MerchantConfig merchantConfig) {
-		this.merchantConfig = merchantConfig;
-	}
+//	/**
+//	 * @param merchantConfig - contains all information for merchant
+//	 */
+//	public PayloadDigest(MerchantConfig merchantConfig) {
+//		this.merchantConfig = merchantConfig;
+//	}
 
 	public PayloadDigest(String requestData) {
 		this.messageBody = requestData;
@@ -60,13 +60,8 @@ public class PayloadDigest {
 	 * @return generated payLoad from request body.
 	 */
 	private String payloadGeneration() {
-		if(messageBody != null) {
 			return messageBody;
-		}else{
-			messageBody = merchantConfig.getRequestData();
-			return messageBody;
-		}
-	} //
+	}
 
 	/**
 	 * @return payLoad generated.

@@ -32,27 +32,40 @@ public class JwtSignatureToken implements TokenGenerator {
 	 * @param merchantConfig - list of parameters required for JWT token.
 	 * @param requestBody    - user information to be sent.
 	 */
-	public JwtSignatureToken(MerchantConfig merchantConfig, String requestBody) {
+//	public JwtSignatureToken(MerchantConfig merchantConfig, String requestBody) {
+//
+//		this.merchantConfig = merchantConfig;
+//		this.requestBody = requestBody;
+//		this.jwtMethod = merchantConfig.getRequestType();
+//		this.cache = new Cache(this.merchantConfig);
+//	}
+
+	public JwtSignatureToken(MerchantConfig merchantConfig, String requestBody, String reqVerb) {
 
 		this.merchantConfig = merchantConfig;
 		this.requestBody = requestBody;
-		this.jwtMethod = merchantConfig.getRequestType();
+		this.jwtMethod = reqVerb;
 		this.cache = new Cache(this.merchantConfig);
 	}
 
+//	@Override
+//	public String getToken() {
+//		try {
+//			signature = generateSignature();
+//		} catch (Exception e) {
+//			signature = null;
+//		}
+//		return signature;
+//	}
+
 	@Override
-	public String getToken() {
+	public String getToken(String requestData) {
 		try {
 			signature = generateSignature();
 		} catch (Exception e) {
 			signature = null;
 		}
 		return signature;
-	}
-
-	@Override
-	public String getToken(String requestData) {
-		return "";
 	}
 
 	/**

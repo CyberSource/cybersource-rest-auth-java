@@ -21,8 +21,19 @@ public class OAuthToken implements TokenGenerator {
 		this.merchantConfig = merchantConfig;
 	}
 
+//	@Override
+//	public String getToken() {
+//		try {
+//			this.accessToken = getAccessToken();
+//		} catch (Exception e) {
+//			logger.error("Error retrieving access token\n{}", e);
+//			this.accessToken = null;
+//		}
+//		return this.accessToken;
+//	}
+
 	@Override
-	public String getToken() {
+	public String getToken(String requestData) {
 		try {
 			this.accessToken = getAccessToken();
 		} catch (Exception e) {
@@ -30,11 +41,6 @@ public class OAuthToken implements TokenGenerator {
 			this.accessToken = null;
 		}
 		return this.accessToken;
-	}
-
-	@Override
-	public String getToken(String requestData) {
-		return "";
 	}
 
 	/**
