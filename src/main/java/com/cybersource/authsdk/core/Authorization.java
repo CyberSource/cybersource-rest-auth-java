@@ -20,7 +20,7 @@ public class Authorization {
 	 * @throws ConfigException - if some value will be wrong or missing for
 	 *                         merchant.
 	 */
-	public String getToken(MerchantConfig merchantConfig) throws ConfigException {
-		return TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody).getToken();
-	}
+	public String getToken(MerchantConfig merchantConfig, String method, String requestData) throws ConfigException {
+		return TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, method).getToken(requestData);
+	} //
 }

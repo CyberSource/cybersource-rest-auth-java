@@ -7,4 +7,6 @@ public interface TokenGenerator {
 	 */
 	public String getToken();
 
+	public String getToken(String requestData);
+
 }

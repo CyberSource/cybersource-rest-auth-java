@@ -50,6 +50,11 @@ public class JwtSignatureToken implements TokenGenerator {
 		return signature;
 	}
 
+	@Override
+	public String getToken(String requestData) {
+		return "";
+	}
+
 	/**
 	 * 
 	 * @return the generated signature.

@@ -13,12 +13,12 @@ public class TokenGeneratorFactory {
 	 * @return token - may be generated as HTTP signature or JWT
 	 * @throws ConfigException if some value is missing or wrong for merchant
 	 */
-	public static TokenGenerator getAuthToken(MerchantConfig merchantConfig, String jwtRequestBody)
+	public static TokenGenerator getAuthToken(MerchantConfig merchantConfig, String jwtRequestBody, String method)
 			throws ConfigException {
 		String authType = merchantConfig.getAuthenticationType();
 
 		if (authType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			return new HttpSignatureToken(merchantConfig);
+			return new HttpSignatureToken(merchantConfig, method);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			return new JwtSignatureToken(merchantConfig, jwtRequestBody);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.OAUTH)) {
@@ -26,5 +26,5 @@ public class TokenGeneratorFactory {
 		} else {
 			return null;
 		}
-	}
+	} //
 }

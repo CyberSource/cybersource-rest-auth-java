@@ -66,7 +66,7 @@ public class PayloadDigest {
 			messageBody = merchantConfig.getRequestData();
 			return messageBody;
 		}
-	}
+	} //
 
 	/**
 	 * @return payLoad generated.

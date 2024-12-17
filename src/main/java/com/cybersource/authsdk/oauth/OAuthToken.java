@@ -32,6 +32,11 @@ public class OAuthToken implements TokenGenerator {
 		return this.accessToken;
 	}
 
+	@Override
+	public String getToken(String requestData) {
+		return "";
+	}
+
 	/**
 	 *
 	 * @return the passed Access Token.

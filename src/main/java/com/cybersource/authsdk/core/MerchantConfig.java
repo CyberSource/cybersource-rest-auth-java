@@ -24,7 +24,7 @@ public class MerchantConfig {
 	/***
 	 * Request URL or path of the resource. Required for signature generation
 	 */
-	private String requestTarget;
+	private String requestTarget; //
 
 	/***
 	 * Type of authentication mechanism. Can be `http_signature` or `jwt`
@@ -34,19 +34,19 @@ public class MerchantConfig {
 	/***
 	 * HTTP verb for the request. Required for signature and JWT generation
 	 */
-	private String requestType;
+	private String requestType; //
 
 	/* Network related parameters */
 
 	/***
 	 * The host (specified by name) serving the API
 	 */
-	private String requestHost;
+	private String requestHost; //
 
 	/***
 	 * Data to be sent in the request
 	 */
-	private String requestData;
+	private String requestData; //
 
 	/* Common parameters for HTTP and JWT. */
 
