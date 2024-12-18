@@ -54,18 +54,6 @@ public class SignatureGenerator {
 	 * @throws InvalidKeyException      - if key is not valid.
 	 * @throws NoSuchAlgorithmException - if algorithm is not available.
 	 */
-//	public SignatureGenerator(MerchantConfig merchantConfig)
-//			throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
-//		this.merchantConfig = merchantConfig;
-//		this.httpMethod = merchantConfig.getRequestType();
-//		this.merchantSecretKey = merchantConfig.getMerchantSecretKey();
-//		this.merchantId = merchantConfig.getMerchantID();
-//		this.useMetaKey = merchantConfig.isUseMetaKey();
-//		if (this.useMetaKey) {
-//			this.portfolioId = merchantConfig.getPortfolioID();
-//		}
-//	}
-
 	public SignatureGenerator(MerchantConfig merchantConfig, String method)
 			throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
 		this.merchantConfig = merchantConfig;
@@ -83,64 +71,6 @@ public class SignatureGenerator {
 	 * @throws NoSuchAlgorithmException - if algorithm is not available.
 	 * @throws InvalidKeyException      - if key is not valid.
 	 */
-//	public String signatureGeneration() throws NoSuchAlgorithmException, InvalidKeyException {
-//
-//		StringBuilder signatureString = new StringBuilder();
-//		signatureString.append('\n');
-//		signatureString.append(GlobalLabelParameters.HOST.toLowerCase());
-//		signatureString.append(": ");
-//		signatureString.append(merchantConfig.getRequestHost());
-//		signatureString.append('\n');
-//		signatureString.append(GlobalLabelParameters.DATE.toLowerCase());
-//		signatureString.append(": ");
-//		signatureString.append(PropertiesUtil.getNewDate());
-//		signatureString.append('\n');
-//		signatureString.append("request-target");
-//		signatureString.append(": ");
-//
-//		String requestTarget = null;
-//		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.GET)) {
-//			requestTarget = getRequestTarget(GlobalLabelParameters.GET);
-//		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST)) {
-//			requestTarget = getRequestTarget(GlobalLabelParameters.POST);
-//		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
-//			requestTarget = getRequestTarget(GlobalLabelParameters.PUT);
-//		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-//			requestTarget = getRequestTarget(GlobalLabelParameters.DELETE);
-//		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
-//			requestTarget = getRequestTarget(GlobalLabelParameters.PATCH);
-//		}
-//		signatureString.append(requestTarget);
-//		signatureString.append('\n');
-//
-//		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST)
-//				|| httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT)
-//				|| (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH))) {
-//			signatureString.append(GlobalLabelParameters.DIGEST.toLowerCase());
-//			signatureString.append(": ");
-//			signatureString.append(new PayloadDigest(merchantConfig).getDigest());
-//			signatureString.append('\n');
-//		}
-//
-//		signatureString.append(GlobalLabelParameters.V_C_MERCHANTID);
-//		signatureString.append(": ");
-//		if (useMetaKey) {
-//			signatureString.append(portfolioId);
-//		} else {
-//			signatureString.append(merchantId);
-//		}
-//		signatureString.delete(0, 1);
-//		String signatureStr = signatureString.toString();
-//
-//		SecretKeySpec secretKey = new SecretKeySpec(Base64.getDecoder().decode(merchantSecretKey), "HmacSHA256");
-//		Mac aKeyId = Mac.getInstance("HmacSHA256");
-//		aKeyId.init(secretKey);
-//		aKeyId.update(signatureStr.getBytes());
-//		byte[] aHeaders = aKeyId.doFinal();
-//		signatureParameterBase64Encoded = Base64.getEncoder().encodeToString(aHeaders);
-//		secretKey = null;
-//		return signatureParameterBase64Encoded;
-//	}
 
 	public String signatureGeneration(String requestData) throws NoSuchAlgorithmException, InvalidKeyException {
 

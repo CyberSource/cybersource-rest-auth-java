@@ -40,13 +40,6 @@ public class HttpSignatureToken implements TokenGenerator {
 	/**
 	 * @param merchantConfig - merchant configuration information
 	 */
-//	public HttpSignatureToken(MerchantConfig merchantConfig) {
-//		this.merchantConfigSigHead = merchantConfig;
-//		this.merchantkeyId = merchantConfig.getMerchantKeyId();
-//		this.httpMethod = merchantConfig.getRequestType();
-//		merchantConfig.getMerchantSecretKey();
-//		merchantConfig.getMerchantID();
-//	}
 
 	public HttpSignatureToken(MerchantConfig merchantConfig, String method) {
 		this.merchantConfigSigHead = merchantConfig;
@@ -59,20 +52,10 @@ public class HttpSignatureToken implements TokenGenerator {
 	/**
 	 * Method to get Token.
 	 */
-//	@Override
-//	public String getToken() {
-//		String signature = null;
-//		try {
-//			signature = signatureHeader();
-//		} catch (NoSuchAlgorithmException e) {
-//			logger.error(e);
-//		} catch (InvalidKeyException e) {
-//			logger.error(e);
-//		} catch (ConfigException e) {
-//			logger.error(e);
-//		}
-//		return signature;
-//	}
+	@Override
+	public String getToken() {
+		return " ";
+	}
 
 	@Override
 	public String getToken(String requestData) {
@@ -96,27 +79,6 @@ public class HttpSignatureToken implements TokenGenerator {
 	 * @throws InvalidKeyException      if key is not valid
 	 * @throws NoSuchAlgorithmException if algorithm is not available
 	 */
-//	private String signatureHeader() throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
-//
-//		signatureHeader = new StringBuilder();
-//		signatureHeader.append("keyid=\"" + merchantkeyId + "\"");
-//		signatureHeader.append(", algorithm=\"HmacSHA256\"");
-//
-//		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.GET))
-//			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.GET) + "\"");
-//		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.DELETE))
-//			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.DELETE) + "\"");
-//		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST))
-//			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.POST) + "\"");
-//		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH))
-//			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PATCH) + "\"");
-//		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT))
-//			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PUT) + "\"");
-//
-//		String signatureValue = new SignatureGenerator(merchantConfigSigHead).signatureGeneration();
-//		signatureHeader.append(", signature=\"" + signatureValue + "\"");
-//		return signatureHeader.toString();
-//	}
 
 	private String signatureHeader(String requestData) throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
 
