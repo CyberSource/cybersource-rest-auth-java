@@ -34,7 +34,6 @@ public class MerchantConfig {
 	/***
 	 * HTTP verb for the request. Required for signature and JWT generation
 	 */
-	private String requestType; //
 
 	/* Network related parameters */
 
@@ -46,7 +45,6 @@ public class MerchantConfig {
 	/***
 	 * Data to be sent in the request
 	 */
-	private String requestData; //
 
 	/* Common parameters for HTTP and JWT. */
 
@@ -784,14 +782,6 @@ public class MerchantConfig {
 		this.requestHost = requestHost;
 	}
 
-	public String getRequestType() {
-		return requestType;
-	}
-
-	private void setRequestType(String requestType) {
-		this.requestType = requestType;
-	}
-
 	public boolean isRetryEnabled() {
 		return retryEnabled;
 	}
@@ -910,14 +900,6 @@ public class MerchantConfig {
 
 	private void setProxyPassword(String proxyPassword) {
 		this.proxyPassword = proxyPassword;
-	}
-
-	public String getRequestData() {
-		return this.requestData;
-	}
-
-	private void setRequestData(String requestData) {
-		this.requestData = requestData;
 	}
 
 	public String getRunEnvironment() {
