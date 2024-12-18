@@ -41,10 +41,10 @@ public class HttpSignatureToken implements TokenGenerator {
 	 * @param merchantConfig - merchant configuration information
 	 */
 
-	public HttpSignatureToken(MerchantConfig merchantConfig, String method) {
+	public HttpSignatureToken(MerchantConfig merchantConfig, String reqVerb) {
 		this.merchantConfigSigHead = merchantConfig;
 		this.merchantkeyId = merchantConfig.getMerchantKeyId();
-		this.httpMethod = method;
+		this.httpMethod = reqVerb;
 		merchantConfig.getMerchantSecretKey();
 		merchantConfig.getMerchantID();
 	}

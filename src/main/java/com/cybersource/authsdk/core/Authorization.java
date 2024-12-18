@@ -26,14 +26,14 @@ public class Authorization {
 	 * @throws ConfigException - if some value will be wrong or missing for
 	 *                         merchant.
 	 */
-	public String getToken(MerchantConfig merchantConfig, String method, String requestData) throws ConfigException, NullPointerException {
+	public String getToken(MerchantConfig merchantConfig, String reqVerb, String requestData) throws ConfigException, NullPointerException {
 		String authType = merchantConfig.getAuthenticationType();
 		if (authType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			 return Objects.requireNonNull(TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, method)).getToken(requestData);
+			 return Objects.requireNonNull(TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, reqVerb)).getToken(requestData);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			return Objects.requireNonNull(TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, method)).getToken();
+			return Objects.requireNonNull(TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, reqVerb)).getToken();
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.OAUTH)) {
-			return Objects.requireNonNull(TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, method)).getToken();
+			return Objects.requireNonNull(TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, reqVerb)).getToken();
 		}else{
 			throw new ConfigException("Unsupported authentication type: " + authType);
 		}
