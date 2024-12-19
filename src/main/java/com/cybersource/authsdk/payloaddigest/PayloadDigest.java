@@ -13,20 +13,11 @@ public class PayloadDigest {
 	private static Logger logger = LogManager.getLogger(PayloadDigest.class);
 
 	private String bluePrint = null, messageBody = null;
-//	private MerchantConfig merchantConfig = null;
 	private String sha256 = GlobalLabelParameters.SHA_256;
 
-//	/**
-//	 * @param merchantConfig - contains all information for merchant
-//	 */
-//	public PayloadDigest(MerchantConfig merchantConfig) {
-//		this.merchantConfig = merchantConfig;
-//	}
-
 	public PayloadDigest(String requestData) {
-		this.messageBody = requestData;
+			this.messageBody = requestData;
 	}
-
 
 	/**
 	 * @return generated digest from requestBody
@@ -37,7 +28,7 @@ public class PayloadDigest {
 		 * This method return Digest value which is SHA-256 hash of payload that is
 		 * BASE64 encoded
 		 */
-		String messageBody = payloadGeneration();
+		String messageBody = this.messageBody;
 		MessageDigest digestString;
 		byte[] digestBytes = null;
 		try {
@@ -59,15 +50,11 @@ public class PayloadDigest {
 	 * 
 	 * @return generated payLoad from request body.
 	 */
-	private String payloadGeneration() {
-			return messageBody;
-	}
 
 	/**
 	 * @return payLoad generated.
 	 */
 	public String getPayLoad() {
-		payloadGeneration();
 		return messageBody;
 	}
 
