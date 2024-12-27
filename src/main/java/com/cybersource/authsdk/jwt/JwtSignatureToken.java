@@ -52,7 +52,7 @@ public class JwtSignatureToken implements TokenGenerator {
 	}
 
 	@Override
-	public String getToken(String requestData) {
+	public String getToken(String requestData, String reqTarget) {
 		return " ";
 	}
 

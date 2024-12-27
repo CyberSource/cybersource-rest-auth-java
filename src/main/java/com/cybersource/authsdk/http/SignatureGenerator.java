@@ -72,7 +72,7 @@ public class SignatureGenerator {
 	 * @throws InvalidKeyException      - if key is not valid.
 	 */
 
-	public String signatureGeneration(String requestData) throws NoSuchAlgorithmException, InvalidKeyException {
+	public String signatureGeneration(String requestData, String reqTarget) throws NoSuchAlgorithmException, InvalidKeyException {
 
 		StringBuilder signatureString = new StringBuilder();
 		signatureString.append('\n');
@@ -89,15 +89,15 @@ public class SignatureGenerator {
 
 		String requestTarget = null;
 		if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.GET)) {
-			requestTarget = getRequestTarget(GlobalLabelParameters.GET);
+			requestTarget = getRequestTarget(GlobalLabelParameters.GET, reqTarget);
 		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.POST)) {
-			requestTarget = getRequestTarget(GlobalLabelParameters.POST);
+			requestTarget = getRequestTarget(GlobalLabelParameters.POST, reqTarget);
 		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT)) {
-			requestTarget = getRequestTarget(GlobalLabelParameters.PUT);
+			requestTarget = getRequestTarget(GlobalLabelParameters.PUT, reqTarget);
 		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-			requestTarget = getRequestTarget(GlobalLabelParameters.DELETE);
+			requestTarget = getRequestTarget(GlobalLabelParameters.DELETE, reqTarget);
 		} else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
-			requestTarget = getRequestTarget(GlobalLabelParameters.PATCH);
+			requestTarget = getRequestTarget(GlobalLabelParameters.PATCH, reqTarget);
 		}
 		signatureString.append(requestTarget);
 		signatureString.append('\n');
@@ -136,28 +136,28 @@ public class SignatureGenerator {
 	 * @param requestType - GET/PUT/POST/PATCH/DELETE
 	 * @return request target as per request type.
 	 */
-	public String getRequestTarget(String requestType) {
+	public String getRequestTarget(String requestType, String reqTarget) {
 		String requestTarget;
 		switch (requestType) {
 		case GlobalLabelParameters.POST:
 			requestTarget = GlobalLabelParameters.POST.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ reqTarget;
 			break;
 		case GlobalLabelParameters.GET:
 			requestTarget = GlobalLabelParameters.GET.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ reqTarget;
 			break;
 		case GlobalLabelParameters.PUT:
 			requestTarget = GlobalLabelParameters.PUT.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ reqTarget;
 			break;
 		case GlobalLabelParameters.DELETE:
 			requestTarget = GlobalLabelParameters.DELETE.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ reqTarget;
 			break;
 		case GlobalLabelParameters.PATCH:
 			requestTarget = GlobalLabelParameters.PATCH.toLowerCase() + GlobalLabelParameters.SPACE
-					+ merchantConfig.getRequestTarget();
+					+ reqTarget;
 			break;
 		default:
 			requestTarget = null;

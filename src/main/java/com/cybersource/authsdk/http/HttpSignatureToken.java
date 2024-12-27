@@ -58,10 +58,10 @@ public class HttpSignatureToken implements TokenGenerator {
 	}
 
 	@Override
-	public String getToken(String requestData) {
+	public String getToken(String requestData, String reqTarget) {
 		String signature = null;
 		try {
-			signature = signatureHeader(requestData);
+			signature = signatureHeader(requestData, reqTarget);
 		} catch (NoSuchAlgorithmException e) {
 			logger.error(e);
 		} catch (InvalidKeyException e) {
@@ -80,7 +80,7 @@ public class HttpSignatureToken implements TokenGenerator {
 	 * @throws NoSuchAlgorithmException if algorithm is not available
 	 */
 
-	private String signatureHeader(String requestData) throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
+	private String signatureHeader(String requestData, String reqtarget) throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
 
 		signatureHeader = new StringBuilder();
 		signatureHeader.append("keyid=\"" + merchantkeyId + "\"");
@@ -97,7 +97,7 @@ public class HttpSignatureToken implements TokenGenerator {
 		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT))
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PUT) + "\"");
 
-		String signatureValue = new SignatureGenerator(merchantConfigSigHead, httpMethod).signatureGeneration(requestData);
+		String signatureValue = new SignatureGenerator(merchantConfigSigHead, httpMethod).signatureGeneration(requestData, reqtarget);
 		signatureHeader.append(", signature=\"" + signatureValue + "\"");
 		return signatureHeader.toString();
 	}

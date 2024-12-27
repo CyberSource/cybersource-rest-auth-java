@@ -26,10 +26,10 @@ public class Authorization {
 	 * @throws ConfigException - if some value will be wrong or missing for
 	 *                         merchant.
 	 */
-	public String getToken(MerchantConfig merchantConfig, String reqVerb, String requestData) throws ConfigException, NullPointerException {
+	public String getToken(MerchantConfig merchantConfig, String reqVerb, String requestData, String reqTarget) throws ConfigException, NullPointerException {
 		String authType = merchantConfig.getAuthenticationType();
 		if (authType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
-			 return Objects.requireNonNull(TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, reqVerb)).getToken(requestData);
+			 return Objects.requireNonNull(TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, reqVerb)).getToken(requestData, reqTarget);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			return Objects.requireNonNull(TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody, reqVerb)).getToken();
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.OAUTH)) {

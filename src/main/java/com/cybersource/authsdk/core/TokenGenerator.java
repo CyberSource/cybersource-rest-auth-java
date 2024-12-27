@@ -7,6 +7,6 @@ public interface TokenGenerator {
 //	 */
 	public String getToken();
 
-	public String getToken(String requestData);
+	public String getToken(String requestData, String reqTarget);
 
 }

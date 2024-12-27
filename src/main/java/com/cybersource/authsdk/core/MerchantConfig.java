@@ -22,11 +22,6 @@ public class MerchantConfig {
 	/* Authentication related parameters */
 
 	/***
-	 * Request URL or path of the resource. Required for signature generation
-	 */
-	private String requestTarget; //
-
-	/***
 	 * Type of authentication mechanism. Can be `http_signature` or `jwt`
 	 */
 	private String authenticationType;
@@ -756,14 +751,6 @@ public class MerchantConfig {
 
 	private void setMerchantID(String merchantID) {
 		this.merchantID = merchantID;
-	}
-
-	public String getRequestTarget() {
-		return requestTarget;
-	}
-
-	private void setRequestTarget(String requestTarget) {
-		this.requestTarget = requestTarget;
 	}
 
 	public String getAuthenticationType() {
