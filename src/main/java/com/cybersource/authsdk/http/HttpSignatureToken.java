@@ -36,17 +36,21 @@ public class HttpSignatureToken implements TokenGenerator {
 	private StringBuilder signatureHeader;
 	private String merchantkeyId = null;
 	private String httpMethod = null;
+	private String requestData = null;
+	private String requestTarget = null;
+	private String date=null;
 
 	/**
 	 * @param merchantConfig - merchant configuration information
 	 */
 
-	public HttpSignatureToken(MerchantConfig merchantConfig, String reqVerb) {
+	public HttpSignatureToken(MerchantConfig merchantConfig,String reqData, String reqVerb, String reqTarget, String date) {
 		this.merchantConfigSigHead = merchantConfig;
 		this.merchantkeyId = merchantConfig.getMerchantKeyId();
 		this.httpMethod = reqVerb;
-		merchantConfig.getMerchantSecretKey();
-		merchantConfig.getMerchantID();
+		this.requestData = reqData;
+		this.requestTarget = reqTarget;
+		this.date= date;
 	}
 
 	/**
@@ -54,14 +58,9 @@ public class HttpSignatureToken implements TokenGenerator {
 	 */
 	@Override
 	public String getToken() {
-		return " ";
-	}
-
-	@Override
-	public String getToken(String requestData, String reqTarget) {
 		String signature = null;
 		try {
-			signature = signatureHeader(requestData, reqTarget);
+			signature = signatureHeader();
 		} catch (NoSuchAlgorithmException e) {
 			logger.error(e);
 		} catch (InvalidKeyException e) {
@@ -80,7 +79,7 @@ public class HttpSignatureToken implements TokenGenerator {
 	 * @throws NoSuchAlgorithmException if algorithm is not available
 	 */
 
-	private String signatureHeader(String requestData, String reqtarget) throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
+	private String signatureHeader() throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
 
 		signatureHeader = new StringBuilder();
 		signatureHeader.append("keyid=\"" + merchantkeyId + "\"");
@@ -97,7 +96,7 @@ public class HttpSignatureToken implements TokenGenerator {
 		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT))
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PUT) + "\"");
 
-		String signatureValue = new SignatureGenerator(merchantConfigSigHead, httpMethod).signatureGeneration(requestData, reqtarget);
+		String signatureValue = new SignatureGenerator(merchantConfigSigHead, httpMethod).signatureGeneration(this.requestData, this.requestTarget, this.date);
 		signatureHeader.append(", signature=\"" + signatureValue + "\"");
 		return signatureHeader.toString();
 	}

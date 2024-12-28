@@ -72,7 +72,7 @@ public class SignatureGenerator {
 	 * @throws InvalidKeyException      - if key is not valid.
 	 */
 
-	public String signatureGeneration(String requestData, String reqTarget) throws NoSuchAlgorithmException, InvalidKeyException {
+	public String signatureGeneration(String requestData, String reqTarget, String date) throws NoSuchAlgorithmException, InvalidKeyException {
 
 		StringBuilder signatureString = new StringBuilder();
 		signatureString.append('\n');
@@ -82,7 +82,7 @@ public class SignatureGenerator {
 		signatureString.append('\n');
 		signatureString.append(GlobalLabelParameters.DATE.toLowerCase());
 		signatureString.append(": ");
-		signatureString.append(PropertiesUtil.getNewDate());
+		signatureString.append(date);
 		signatureString.append('\n');
 		signatureString.append("request-target");
 		signatureString.append(": ");
