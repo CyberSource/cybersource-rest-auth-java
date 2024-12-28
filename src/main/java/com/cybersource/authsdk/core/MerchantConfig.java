@@ -584,7 +584,7 @@ public class MerchantConfig {
 				throw new ConfigException(GlobalLabelParameters.DEPRECATED_ENVIRONMENT);
 			}
 				
-			this.requestHost = this.runEnvironment;		
+			this.requestHost = this.runEnvironment;
 		} catch (Exception e) {
 			logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
 			logger.error(GlobalLabelParameters.RUN_ENV_NULL_EMPTY);
@@ -661,7 +661,9 @@ public class MerchantConfig {
 			throw new ConfigException("MLE is only supported in JWT auth type");
 		}
 		//check the p12 file and set the keyFile to get the mleCert
-		checkKeyFile();
+		if(mleConfigured) {
+			checkKeyFile();
+		}
 	}
 
 	/**
@@ -757,7 +759,7 @@ public class MerchantConfig {
 		return this.authenticationType;
 	}
 
-	private void setAuthenticationType(String authenticationType) {
+	public void setAuthenticationType(String authenticationType) {
 		this.authenticationType = authenticationType;
 	}
 
@@ -765,7 +767,7 @@ public class MerchantConfig {
 		return requestHost;
 	}
 
-	public void setRequestHost(String requestHost) {
+	private void setRequestHost(String requestHost) {
 		this.requestHost = requestHost;
 	}
 
@@ -837,7 +839,7 @@ public class MerchantConfig {
 		return this.accessToken;
 	}
 
-	private void setAccessToken(String accessToken) {
+	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
 
@@ -845,7 +847,7 @@ public class MerchantConfig {
 		return this.refreshToken;
 	}
 
-	private void setRefreshToken(String refreshToken) {
+	public void setRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
 
