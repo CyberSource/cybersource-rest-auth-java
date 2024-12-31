@@ -16,7 +16,7 @@ public class Authorization {
 	 * @throws ConfigException - if some value will be wrong or missing for
 	 *                         merchant.
 	 */
-	public String getToken(MerchantConfig merchantConfig, String reqVerb, String requestData, String reqTarget, String date) throws ConfigException, NullPointerException {
+	public String getToken(MerchantConfig merchantConfig, String reqVerb, String requestData, String reqTarget, String date) throws ConfigException {
 		return TokenGeneratorFactory.getAuthToken(merchantConfig, requestData, reqVerb, reqTarget, date).getToken();
 	}
 }
