@@ -40,10 +40,13 @@ public class HttpSignatureToken implements TokenGenerator {
 	private String requestTarget = null;
 	private String date=null;
 
-	/**
-	 * @param merchantConfig - merchant configuration information
+	 /** 
+	 * @param merchantConfig
+	 * @param reqData
+	 * @param reqVerb
+	 * @param reqTarget
+	 * @param date
 	 */
-
 	public HttpSignatureToken(MerchantConfig merchantConfig,String reqData, String reqVerb, String reqTarget, String date) {
 		this.merchantConfigSigHead = merchantConfig;
 		this.merchantkeyId = merchantConfig.getMerchantKeyId();

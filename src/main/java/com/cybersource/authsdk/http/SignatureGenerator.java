@@ -28,7 +28,6 @@ import com.cybersource.authsdk.util.PropertiesUtil;
  * <strong>RFC7231</strong>
  * <p>
  * <strong>request-target</strong> - Should be in format of httpMethod: path
- * <p>
  * 
  * <pre>
  *                 Example : <strong><code>post /pts/v2/payments</code></strong>
@@ -51,8 +50,10 @@ public class SignatureGenerator {
 
 	/**
 	 * @param merchantConfig-contains all information of merchant.
+	 * @param method
 	 * @throws InvalidKeyException      - if key is not valid.
 	 * @throws NoSuchAlgorithmException - if algorithm is not available.
+	 * @throws ConfigException
 	 */
 	public SignatureGenerator(MerchantConfig merchantConfig, String method)
 			throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
@@ -65,13 +66,16 @@ public class SignatureGenerator {
 			this.portfolioId = merchantConfig.getPortfolioID();
 		}
 	}
-
+	
 	/**
+	 * 
+	 * @param requestData
+	 * @param reqTarget
+	 * @param date
 	 * @return generated signature.
 	 * @throws NoSuchAlgorithmException - if algorithm is not available.
 	 * @throws InvalidKeyException      - if key is not valid.
 	 */
-
 	public String signatureGeneration(String requestData, String reqTarget, String date) throws NoSuchAlgorithmException, InvalidKeyException {
 
 		StringBuilder signatureString = new StringBuilder();
@@ -134,6 +138,7 @@ public class SignatureGenerator {
 	/**
 	 * 
 	 * @param requestType - GET/PUT/POST/PATCH/DELETE
+	 * @param reqTarget
 	 * @return request target as per request type.
 	 */
 	public String getRequestTarget(String requestType, String reqTarget) {

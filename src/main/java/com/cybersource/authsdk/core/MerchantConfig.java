@@ -264,8 +264,10 @@ public class MerchantConfig {
 			setDefaultHeaders(defaultHeaders);
 		}
 	}
-
+	
 	/**
+	 * 
+	 * @param requestTypeData
 	 * @return true or false as per validation
 	 * @throws ConfigException if some value is missing for merchant.
 	 */

@@ -8,8 +8,12 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 public class TokenGeneratorFactory {
 
 	/**
-	 * @param merchantConfig - merchant configuration information
-	 * @param jwtRequestBody - request data to be sent
+	 * 
+	 * @param merchantConfig
+	 * @param requestBody
+	 * @param reqVerb
+	 * @param reqTarget
+	 * @param date
 	 * @return token - may be generated as HTTP signature or JWT
 	 * @throws ConfigException if some value is missing or wrong for merchant
 	 */
