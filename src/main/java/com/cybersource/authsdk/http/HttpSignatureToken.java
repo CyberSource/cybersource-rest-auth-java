@@ -36,16 +36,21 @@ public class HttpSignatureToken implements TokenGenerator {
 	private StringBuilder signatureHeader;
 	private String merchantkeyId = null;
 	private String httpMethod = null;
+	private String requestData = null;
+	private String requestTarget = null;
+	private String date=null;
 
 	/**
 	 * @param merchantConfig - merchant configuration information
 	 */
-	public HttpSignatureToken(MerchantConfig merchantConfig) {
+
+	public HttpSignatureToken(MerchantConfig merchantConfig,String reqData, String reqVerb, String reqTarget, String date) {
 		this.merchantConfigSigHead = merchantConfig;
 		this.merchantkeyId = merchantConfig.getMerchantKeyId();
-		this.httpMethod = merchantConfig.getRequestType();
-		merchantConfig.getMerchantSecretKey();
-		merchantConfig.getMerchantID();
+		this.httpMethod = reqVerb;
+		this.requestData = reqData;
+		this.requestTarget = reqTarget;
+		this.date= date;
 	}
 
 	/**
@@ -73,6 +78,7 @@ public class HttpSignatureToken implements TokenGenerator {
 	 * @throws InvalidKeyException      if key is not valid
 	 * @throws NoSuchAlgorithmException if algorithm is not available
 	 */
+
 	private String signatureHeader() throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
 
 		signatureHeader = new StringBuilder();
@@ -90,7 +96,7 @@ public class HttpSignatureToken implements TokenGenerator {
 		else if (httpMethod.equalsIgnoreCase(GlobalLabelParameters.PUT))
 			signatureHeader.append(", headers=\"" + getRequestHeaders(GlobalLabelParameters.PUT) + "\"");
 
-		String signatureValue = new SignatureGenerator(merchantConfigSigHead).signatureGeneration();
+		String signatureValue = new SignatureGenerator(merchantConfigSigHead, httpMethod).signatureGeneration(this.requestData, this.requestTarget, this.date);
 		signatureHeader.append(", signature=\"" + signatureValue + "\"");
 		return signatureHeader.toString();
 	}

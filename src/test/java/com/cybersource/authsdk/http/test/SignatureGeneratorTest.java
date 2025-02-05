@@ -2,22 +2,21 @@ package com.cybersource.authsdk.http.test;
 
 import java.util.Properties;
 
+import com.cybersource.authsdk.core.ConfigException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.http.SignatureGenerator;
-import com.cybersource.authsdk.test.resources.UtilityHelpers;
 
 public class SignatureGeneratorTest {
 
-	@Mock
-	SignatureGenerator signatureGenerator;
+
 	@Mock
 	MerchantConfig merchantConfig;
 
-	private Properties merchantProp;
+    private Properties props = new Properties();
 
 	private String requestJsonData = "{\r\n"
 			+ "  \"clientReferenceInformation\": {\r\n"
@@ -74,49 +73,38 @@ public class SignatureGeneratorTest {
 			+ "  }\r\n"
 			+ "}";
 
+
+    @Before
+    public void setUp() throws ConfigException {
+
+        props.setProperty("authenticationType", "http_signature");
+        props.setProperty("merchantID", "testrest");
+        props.setProperty("runEnvironment", "apitest.cybersource.com");
+        props.setProperty("merchantKeyId", "08c94330-f618-42a3-b09d-e1e43be5efda");
+        props.setProperty("merchantsecretKey", "yBJxy6LjM2TmcPGu+GaJrHtkke25fPpUX+UY6/L/1tE=");
+
+        merchantConfig = new MerchantConfig(props);
+    }
+
 	@Test
 	public void getSignatureParamTestForGet() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
 
-		String str = new SignatureGenerator(merchantConfig).signatureGeneration();
-
+		String str = new SignatureGenerator(merchantConfig, "GET").signatureGeneration( requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
 		Assert.assertNotNull(str);
 	}
 
 	@Test
 	public void getSignatureParamTestForPost() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestData(requestJsonData);
 
-		String str = new SignatureGenerator(merchantConfig).signatureGeneration();
+        String str = new SignatureGenerator(merchantConfig, "POST").signatureGeneration( requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
 		Assert.assertNotNull(str);
 	}
 
 	@Test
 	public void getSignatureParamTestForPut() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("PUT");
-		merchantConfig.setRequestData(requestJsonData);
 
-		String str = new SignatureGenerator(merchantConfig).signatureGeneration();
+        String str = new SignatureGenerator(merchantConfig, "PUT").signatureGeneration( requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
 		Assert.assertNotNull(str);
 	}
 
-	@Test
-	public void getRequestTargetForNUllTest() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("option");
-		merchantConfig.setRequestData(requestJsonData);
-
-		signatureGenerator = new SignatureGenerator(merchantConfig);
-
-		String str = signatureGenerator.getRequestTarget(merchantConfig.getRequestType());
-		Assert.assertNull(str);
-	}
 }

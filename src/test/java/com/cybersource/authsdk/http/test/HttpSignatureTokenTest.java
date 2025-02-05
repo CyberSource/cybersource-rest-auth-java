@@ -2,14 +2,14 @@ package com.cybersource.authsdk.http.test;
 
 import java.util.Properties;
 
+import com.cybersource.authsdk.core.ConfigException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.http.HttpSignatureToken;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.test.resources.UtilityHelpers;
 
 public class HttpSignatureTokenTest {
 
@@ -17,8 +17,20 @@ public class HttpSignatureTokenTest {
 	HttpSignatureToken signatureToken;
 	@Mock
 	MerchantConfig merchantConfig;
-	
-	private Properties merchantProp;
+
+    private Properties props = new Properties();
+
+    @Before
+    public void setUp() throws ConfigException {
+
+        props.setProperty("authenticationType", "http_signature");
+        props.setProperty("merchantID", "testrest");
+        props.setProperty("runEnvironment", "apitest.cybersource.com");
+        props.setProperty("merchantKeyId", "08c94330-f618-42a3-b09d-e1e43be5efda");
+        props.setProperty("merchantsecretKey", "yBJxy6LjM2TmcPGu+GaJrHtkke25fPpUX+UY6/L/1tE=");
+
+        merchantConfig = new MerchantConfig(props);
+    }
 
 	private String requestJsonData = "{\r\n"
 			+ "  \"clientReferenceInformation\": {\r\n"
@@ -77,12 +89,8 @@ public class HttpSignatureTokenTest {
 
 	@Test
 	public void getTokenTestForGet() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
-		merchantConfig.validateMerchantDetails();
-		
-		signatureToken = new HttpSignatureToken(merchantConfig);
+
+		signatureToken = new HttpSignatureToken(merchantConfig, "GET", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
@@ -94,57 +102,47 @@ public class HttpSignatureTokenTest {
 
 	@Test
 	public void getTokenTestForPost() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
 
-		merchantConfig.setRequestData(requestJsonData);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.validateMerchantDetails();
+		merchantConfig.validateMerchantDetails("POST");
 
-		signatureToken = new HttpSignatureToken(merchantConfig);
+        signatureToken = new HttpSignatureToken(merchantConfig, "POST", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
 
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
 		} else {
 			str = signatureToken.getToken();
-			Assert.assertNotNull(str);
+            Assert.assertNotNull(str);
 		}
 	}
 
 	@Test
 	public void getTokenTestForPut() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestData(requestJsonData);
-		merchantConfig.setRequestType("PUT");
-		
-		signatureToken = new HttpSignatureToken(merchantConfig);
+
+
+        signatureToken = new HttpSignatureToken(merchantConfig, "PUT", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
 
 		String str = null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
 		} else {
 			str = signatureToken.getToken();
-			Assert.assertNotNull(str);
+            Assert.assertNotNull(str);
 		}
 	}
 
 	@Test
 	public void getTokenTestForDelete() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestData(requestJsonData);
-		merchantConfig.setRequestType("DELETE");
-		
-		signatureToken = new HttpSignatureToken(merchantConfig);
+
+
+        signatureToken = new HttpSignatureToken(merchantConfig, "DELETE", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
 
 		String str=null;
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			Assert.assertNull(str);
 		} else {
 			str = signatureToken.getToken();
-			Assert.assertNotNull(str);
+            Assert.assertNotNull(str);
 		}
 	}
 }

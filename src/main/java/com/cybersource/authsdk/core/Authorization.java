@@ -1,18 +1,14 @@
 package com.cybersource.authsdk.core;
 
+import com.cybersource.authsdk.util.GlobalLabelParameters;
+
+import java.util.Objects;
+
 /**
  * This class calls for the generation of Signature message depending on the
  * authentication type.
  */
 public class Authorization {
-	private String jwtRequestBody = null;
-
-	/**
-	 * @param jwtrequestBody - not null and required values for JWT
-	 */
-	public void setJWTRequestBody(String jwtrequestBody) {
-		this.jwtRequestBody = jwtrequestBody;
-	}
 
 	/**
 	 * @param merchantConfig -contains merchant information.
@@ -20,7 +16,7 @@ public class Authorization {
 	 * @throws ConfigException - if some value will be wrong or missing for
 	 *                         merchant.
 	 */
-	public String getToken(MerchantConfig merchantConfig) throws ConfigException {
-		return TokenGeneratorFactory.getAuthToken(merchantConfig, jwtRequestBody).getToken();
+	public String getToken(MerchantConfig merchantConfig, String reqVerb, String requestData, String reqTarget, String date) throws ConfigException {
+		return TokenGeneratorFactory.getAuthToken(merchantConfig, requestData, reqVerb, reqTarget, date).getToken();
 	}
 }

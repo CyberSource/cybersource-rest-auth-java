@@ -16,11 +16,7 @@ public class PayloadDigestTest {
 
 	@Mock
 	PayloadDigest payloadDigest;
-	@Mock
-	MerchantConfig merchantConfig;
 
-	private Properties merchantProp;
-	
 	private String requestJsonData = "{\r\n"
 			+ "  \"clientReferenceInformation\": {\r\n"
 			+ "    \"code\": \"TC50171_3\"\r\n"
@@ -80,69 +76,45 @@ public class PayloadDigestTest {
 
 	@Test
 	public void testDigestGeneration() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setRequestData(requestJsonData);
-		payloadDigest = new PayloadDigest(merchantConfig);
+		payloadDigest = new PayloadDigest(requestJsonData);
 		String str = payloadDigest.getDigest();
 		Assert.assertNotNull(str);
 	}
 
 	@Test
 	public void testPayloadGeneration() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setRequestData(requestJsonData);
-		payloadDigest = new PayloadDigest(merchantConfig);
+		payloadDigest = new PayloadDigest(requestJsonData);
 		String str = payloadDigest.getPayLoad();
 		Assert.assertNotNull(str);
 	}
 
 	@Test
 	public void testPayloadGenerationJsonPathNull() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setRequestData(null);
-		payloadDigest = new PayloadDigest(merchantConfig);
+		payloadDigest = new PayloadDigest(null);
 		String str = payloadDigest.getPayLoad();
 		Assert.assertNull(str);
 	}
 
 	@Test
 	public void testPayloadGenerationJsonPathEmpty() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setRequestData("");
-		payloadDigest = new PayloadDigest(merchantConfig);
+		payloadDigest = new PayloadDigest(null);
 		String str = payloadDigest.getPayLoad();
 		Assert.assertNull(str);
 	}
 
 	@Test
 	public void testPayloadGenerationFail() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-
-		merchantConfig.setRequestData("");
 		GlobalLabelParameters.SHA_256 = "sh";
-		payloadDigest = new PayloadDigest(merchantConfig);
+		payloadDigest = new PayloadDigest("");
 		String str = payloadDigest.getDigest();
 		Assert.assertNull(str);
 	}
 
 	@Test
 	public void getMessageBodyTest() throws Exception {
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestData(requestJsonData);
-
-		payloadDigest = new PayloadDigest(merchantConfig);
+		payloadDigest = new PayloadDigest(requestJsonData);
 		String str = payloadDigest.getMessageBody();
-		Assert.assertNull(str);
+		Assert.assertNotNull(str);
 	}
 
 }

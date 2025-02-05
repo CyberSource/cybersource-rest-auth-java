@@ -2,22 +2,40 @@ package com.cybersource.authsdk.jwt.test;
 
 import java.util.Properties;
 
+import com.cybersource.authsdk.core.ConfigException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.JwtSignatureToken;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
-import com.cybersource.authsdk.test.resources.UtilityHelpers;
 
 public class JWTSignatureTokenTest {
 
 	@Mock
 	JwtSignatureToken jwtSignatureToken;
-	@Mock
-	MerchantConfig merchantConfig;
+    @Mock
+    MerchantConfig merchantConfig;
+
+    private Properties props = new Properties();
+
+    @Before
+    public void setUp() throws ConfigException {
+
+        props.setProperty("authenticationType", "jwt");
+        props.setProperty("merchantID", "testrest");
+        props.setProperty("runEnvironment", "apitest.cybersource.com");
+
+		props.setProperty("keyAlias", "testrest");
+		props.setProperty("keyPass", "testrest");
+		props.setProperty("keyFileName", "testrest");
+
+		props.setProperty("keysDirectory", "src/main/resources");
+
+        merchantConfig = new MerchantConfig(props);
+    }
 
 	private String requestJsonData = "{\r\n"
 			+ "  \"clientReferenceInformation\": {\r\n"
@@ -74,20 +92,17 @@ public class JWTSignatureTokenTest {
 			+ "  }\r\n"
 			+ "}";
 	private String testJsonDataEmpty = "";
-	private Properties merchantProp;
 
 	@Test
 	public void getTokenTestForGet() throws Exception {
 
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("GET");
-		merchantConfig.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		merchantConfig.validateMerchantDetails("GET");
+
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "GET");
 
 		String token = jwtSignatureToken.getToken();
-		
+
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token);
 		} else {
@@ -98,16 +113,12 @@ public class JWTSignatureTokenTest {
 	@Test
 	public void getTokenTestForPost() throws Exception {
 
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestData(requestJsonData);
-		merchantConfig.validateMerchantDetails();
+		merchantConfig.validateMerchantDetails("POST");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "POST");
 
 		String token = jwtSignatureToken.getToken();
+		System.out.println("token "  + token);
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token);
 		} else {
@@ -118,13 +129,9 @@ public class JWTSignatureTokenTest {
 	@Test
 	public void getTokenTestForPut() throws Exception {
 
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("PUT");
-		merchantConfig.setRequestData(requestJsonData);
-		merchantConfig.validateMerchantDetails();
+		merchantConfig.validateMerchantDetails("PUT");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "PUT");
 
 		String token = jwtSignatureToken.getToken();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -137,12 +144,10 @@ public class JWTSignatureTokenTest {
 	@Test
 	public void getTokenTestForDelete() throws Exception {
 
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("DELETE");
-		merchantConfig.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		merchantConfig.validateMerchantDetails("DELETE");
+
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, testJsonDataEmpty, "DELETE");
 
 		String token = jwtSignatureToken.getToken();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -155,13 +160,9 @@ public class JWTSignatureTokenTest {
 	@Test
 	public void getTokenTestForEmptyRequestBody() throws Exception {
 
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("PUT");
-		merchantConfig.setRequestData(testJsonDataEmpty);
-		merchantConfig.validateMerchantDetails();
+		merchantConfig.validateMerchantDetails("PUT");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, testJsonDataEmpty, "PUT");
 
 		String token = jwtSignatureToken.getToken();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -174,14 +175,10 @@ public class JWTSignatureTokenTest {
 	@Test
 	public void getTokenTestFail() throws Exception {
 
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestData(requestJsonData);
-		merchantConfig.setAuthenticationType("abc");
-		merchantConfig.validateMerchantDetails();
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		merchantConfig.setAuthenticationType("abc");
+
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "POST");
 
 		String token = jwtSignatureToken.getToken();
 		Assert.assertNull(token);
@@ -190,15 +187,10 @@ public class JWTSignatureTokenTest {
 	@Test
 	public void generateSignatureTest() throws Exception {
 
-		merchantProp = UtilityHelpers.getMerchantProperties();
-		merchantConfig = new MerchantConfig(merchantProp);
-		merchantConfig.setRequestType("POST");
-		merchantConfig.setRequestData(requestJsonData);
-		merchantConfig.validateMerchantDetails();
+		merchantConfig.validateMerchantDetails("POST");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, merchantConfig.getRequestData());
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "POST");
 		jwtSignatureToken.generateSignature();
-//		Cache.lastModifiedTime = 1528;
 		String token1 = jwtSignatureToken.generateSignature();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			Assert.assertNull(token1);

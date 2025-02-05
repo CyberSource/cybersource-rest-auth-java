@@ -22,11 +22,6 @@ public class MerchantConfig {
 	/* Authentication related parameters */
 
 	/***
-	 * Request URL or path of the resource. Required for signature generation
-	 */
-	private String requestTarget;
-
-	/***
 	 * Type of authentication mechanism. Can be `http_signature` or `jwt`
 	 */
 	private String authenticationType;
@@ -34,7 +29,6 @@ public class MerchantConfig {
 	/***
 	 * HTTP verb for the request. Required for signature and JWT generation
 	 */
-	private String requestType;
 
 	/* Network related parameters */
 
@@ -46,7 +40,6 @@ public class MerchantConfig {
 	/***
 	 * Data to be sent in the request
 	 */
-	private String requestData;
 
 	/* Common parameters for HTTP and JWT. */
 
@@ -242,7 +235,7 @@ public class MerchantConfig {
 	/***
 	 * Flag to indicate if merchant details have been set properly
 	 */
-	public boolean merchantDetailsSet = false;
+	private boolean merchantDetailsSet = false;
 
 	/***
 	 *  MLE Feature
@@ -276,8 +269,8 @@ public class MerchantConfig {
 	 * @return true or false as per validation
 	 * @throws ConfigException if some value is missing for merchant.
 	 */
-	public boolean validateMerchantDetails() throws ConfigException {
-		boolean isRequestType = checkRequestType();
+	public boolean validateMerchantDetails(String requestTypeData ) throws ConfigException {
+		boolean isRequestType = checkRequestType(requestTypeData);
 
 		boolean isMerchantId = true;
 		boolean isCheckMerchantSecretKey = false;
@@ -332,16 +325,16 @@ public class MerchantConfig {
 	 * @return true if valid request type else return false.
 	 * @throws ConfigException if some value is missing or wrong for merchant.
 	 */
-	public boolean checkRequestType() throws ConfigException {
-		String requestTypeCheck = this.getRequestType();
-		if (requestTypeCheck.equalsIgnoreCase(GlobalLabelParameters.PUT)
-				|| requestTypeCheck.equalsIgnoreCase(GlobalLabelParameters.GET)
-				|| requestTypeCheck.equalsIgnoreCase(GlobalLabelParameters.POST)
-				|| requestTypeCheck.equalsIgnoreCase(GlobalLabelParameters.DELETE)
-				|| requestTypeCheck.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
+	public boolean checkRequestType(String requestTypeData) throws ConfigException {
+//		String requestTypeCheck = this.getRequestType();
+		if (requestTypeData.equalsIgnoreCase(GlobalLabelParameters.PUT)
+				|| requestTypeData.equalsIgnoreCase(GlobalLabelParameters.GET)
+				|| requestTypeData.equalsIgnoreCase(GlobalLabelParameters.POST)
+				|| requestTypeData.equalsIgnoreCase(GlobalLabelParameters.DELETE)
+				|| requestTypeData.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
 			return true;
 		} else {
-			logger.error("ConfigException : " + GlobalLabelParameters.INVALID_REQUEST_TYPE + " : " + this.requestType);
+			logger.error("ConfigException : " + GlobalLabelParameters.INVALID_REQUEST_TYPE + " : " + requestTypeData);
 			throw new ConfigException(GlobalLabelParameters.INVALID_REQUEST_TYPE);
 		}
 	}
@@ -415,7 +408,7 @@ public class MerchantConfig {
 		return true;
 	}
 
-	public void setMerchantDetails() throws ConfigException {
+	private void setMerchantDetails() throws ConfigException {
 		this.setAuthenticationType(this.getProps().getProperty("authenticationType"));
 		this.setUseMetaKey(Boolean.valueOf(this.getProps().getOrDefault("useMetaKey", false).toString()));
 		this.setEnableClientCert(Boolean.valueOf(this.getProps().getOrDefault("enableClientCert", false).toString()));
@@ -591,7 +584,7 @@ public class MerchantConfig {
 				throw new ConfigException(GlobalLabelParameters.DEPRECATED_ENVIRONMENT);
 			}
 				
-			this.requestHost = this.runEnvironment;		
+			this.requestHost = this.runEnvironment;
 		} catch (Exception e) {
 			logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
 			logger.error(GlobalLabelParameters.RUN_ENV_NULL_EMPTY);
@@ -668,7 +661,9 @@ public class MerchantConfig {
 			throw new ConfigException("MLE is only supported in JWT auth type");
 		}
 		//check the p12 file and set the keyFile to get the mleCert
-		checkKeyFile();
+		if(mleConfigured) {
+			checkKeyFile();
+		}
 	}
 
 	/**
@@ -748,7 +743,7 @@ public class MerchantConfig {
 		return props;
 	}
 
-	public void setProps(Properties props) {
+	private void setProps(Properties props) {
 		this.props = props;
 	}
 
@@ -756,16 +751,8 @@ public class MerchantConfig {
 		return this.merchantID;
 	}
 
-	public void setMerchantID(String merchantID) {
+	private void setMerchantID(String merchantID) {
 		this.merchantID = merchantID;
-	}
-
-	public String getRequestTarget() {
-		return requestTarget;
-	}
-
-	public void setRequestTarget(String requestTarget) {
-		this.requestTarget = requestTarget;
 	}
 
 	public String getAuthenticationType() {
@@ -780,23 +767,15 @@ public class MerchantConfig {
 		return requestHost;
 	}
 
-	public void setRequestHost(String requestHost) {
+	private void setRequestHost(String requestHost) {
 		this.requestHost = requestHost;
-	}
-
-	public String getRequestType() {
-		return requestType;
-	}
-
-	public void setRequestType(String requestType) {
-		this.requestType = requestType;
 	}
 
 	public boolean isRetryEnabled() {
 		return retryEnabled;
 	}
 
-	public void setRetryEnabled(boolean retryEnabled) {
+	private void setRetryEnabled(boolean retryEnabled) {
 		this.retryEnabled = retryEnabled;
 	}
 
@@ -804,7 +783,7 @@ public class MerchantConfig {
 		return retryDelay;
 	}
 
-	public void setRetryDelay(long retryDelay) {
+	private void setRetryDelay(long retryDelay) {
 		this.retryDelay = retryDelay;
 	}
 
@@ -812,7 +791,7 @@ public class MerchantConfig {
 		return useMetaKey;
 	}
 
-	public void setUseMetaKey(boolean useMetaKey) {
+	private void setUseMetaKey(boolean useMetaKey) {
 		this.useMetaKey = useMetaKey;
 	}
 
@@ -820,7 +799,7 @@ public class MerchantConfig {
 		return this.portfolioID;
 	}
 
-	public void setPortfolioID(String portfolioID) {
+	private void setPortfolioID(String portfolioID) {
 		this.portfolioID = portfolioID;
 	}
 
@@ -828,7 +807,7 @@ public class MerchantConfig {
 		return this.keysDirectory;
 	}
 
-	public void setKeysDirectory(String keysDirectory) {
+	private void setKeysDirectory(String keysDirectory) {
 		this.keysDirectory = keysDirectory;
 	}
 
@@ -836,7 +815,7 @@ public class MerchantConfig {
 		return keyAlias;
 	}
 
-	public void setKeyAlias(String keyAlias) {
+	private void setKeyAlias(String keyAlias) {
 		this.keyAlias = keyAlias;
 	}
 
@@ -844,7 +823,7 @@ public class MerchantConfig {
 		return this.keyPass;
 	}
 
-	public void setKeyPass(String keyPass) {
+	private void setKeyPass(String keyPass) {
 		this.keyPass = keyPass;
 	}
 
@@ -852,7 +831,7 @@ public class MerchantConfig {
 		return this.keyFilename;
 	}
 
-	public void setKeyFilename(String keyFilename) {
+	private void setKeyFilename(String keyFilename) {
 		this.keyFilename = keyFilename;
 	}
 
@@ -876,7 +855,7 @@ public class MerchantConfig {
 		return useProxy;
 	}
 
-	public void setUseProxy(boolean useProxy) {
+	private void setUseProxy(boolean useProxy) {
 		this.useProxy = useProxy;
 	}
 
@@ -884,7 +863,7 @@ public class MerchantConfig {
 		return proxyAddress;
 	}
 
-	public void setProxyAddress(String proxyAddress) {
+	private void setProxyAddress(String proxyAddress) {
 		this.proxyAddress = proxyAddress;
 	}
 
@@ -892,7 +871,7 @@ public class MerchantConfig {
 		return this.proxyPort;
 	}
 
-	public void setProxyPort(int proxyPort) {
+	private void setProxyPort(int proxyPort) {
 		this.proxyPort = proxyPort;
 	}
 
@@ -900,7 +879,7 @@ public class MerchantConfig {
 		return this.proxyUser;
 	}
 
-	public void setProxyUser(String proxyUser) {
+	private void setProxyUser(String proxyUser) {
 		this.proxyUser = proxyUser;
 	}
 
@@ -908,23 +887,15 @@ public class MerchantConfig {
 		return this.proxyPassword != null ? this.proxyPassword : "";
 	}
 
-	public void setProxyPassword(String proxyPassword) {
+	private void setProxyPassword(String proxyPassword) {
 		this.proxyPassword = proxyPassword;
-	}
-
-	public String getRequestData() {
-		return this.requestData;
-	}
-
-	public void setRequestData(String requestData) {
-		this.requestData = requestData;
 	}
 
 	public String getRunEnvironment() {
 		return runEnvironment;
 	}
 
-	public void setRunEnvironment(String runEnvironment) {
+	private void setRunEnvironment(String runEnvironment) {
 		this.runEnvironment = runEnvironment;
 	}
 
@@ -932,7 +903,7 @@ public class MerchantConfig {
 		return intermediateHost;
 	}
 
-	public void setIntermediateHost(String intermediateHost) {
+	private void setIntermediateHost(String intermediateHost) {
 		this.intermediateHost = intermediateHost;
 	}
 	
@@ -940,7 +911,7 @@ public class MerchantConfig {
 		return defaultDeveloperId;
 	}
 
-	public void setDefaultDeveloperId(String defaultDeveloperId) {
+	private void setDefaultDeveloperId(String defaultDeveloperId) {
 		this.defaultDeveloperId = defaultDeveloperId;
 	}
 
@@ -948,7 +919,7 @@ public class MerchantConfig {
 		return keyFile;
 	}
 
-	public void setKeyFile(File keyFile) {
+	private void setKeyFile(File keyFile) {
 		this.keyFile = keyFile;
 	}
 
@@ -956,7 +927,7 @@ public class MerchantConfig {
 		return this.enableClientCert;
 	}
 
-	public void setEnableClientCert(boolean enableClientCert) {
+	private void setEnableClientCert(boolean enableClientCert) {
 		this.enableClientCert = enableClientCert;
 	}
 
@@ -964,7 +935,7 @@ public class MerchantConfig {
 		return this.clientId;
 	}
 
-	public void setClientId(String clientId) {
+	private void setClientId(String clientId) {
 		this.clientId = clientId;
 	}
 
@@ -972,7 +943,7 @@ public class MerchantConfig {
 		return this.clientSecret;
 	}
 
-	public void setClientSecret(String clientSecret) {
+	private void setClientSecret(String clientSecret) {
 		this.clientSecret = clientSecret;
 	}
 
@@ -980,7 +951,7 @@ public class MerchantConfig {
 		return this.clientCertFile;
 	}
 
-	public void setClientCertFile(String clientCertFile) {
+	private void setClientCertFile(String clientCertFile) {
 		this.clientCertFile = clientCertFile;
 	}
 
@@ -988,7 +959,7 @@ public class MerchantConfig {
 		return this.clientCertDirectory;
 	}
 
-	public void setClientCertDirectory(String clientCertDirectory) {
+	private void setClientCertDirectory(String clientCertDirectory) {
 		this.clientCertDirectory = clientCertDirectory;
 	}
 
@@ -996,7 +967,7 @@ public class MerchantConfig {
 		return this.clientCertPassword;
 	}
 
-	public void setClientCertPassword(String clientCertPassword) {
+	private void setClientCertPassword(String clientCertPassword) {
 		this.clientCertPassword = clientCertPassword;
 	}
 
@@ -1004,7 +975,7 @@ public class MerchantConfig {
 		return this.merchantDetailsSet;
 	}
 
-	public void setMerchantDetailsSet(boolean merchantDetailsSet) {
+	private void setMerchantDetailsSet(boolean merchantDetailsSet) {
 		this.merchantDetailsSet = merchantDetailsSet;
 	}
 
@@ -1012,7 +983,7 @@ public class MerchantConfig {
 		return merchantKeyId;
 	}
 
-	public void setMerchantKeyId(String merchantKeyId) {
+	private void setMerchantKeyId(String merchantKeyId) {
 		this.merchantKeyId = merchantKeyId;
 	}
 
@@ -1020,7 +991,7 @@ public class MerchantConfig {
 		return merchantSecretKey;
 	}
 
-	public void setMerchantSecretKey(String merchantsecretKey) {
+	private void setMerchantSecretKey(String merchantsecretKey) {
 		this.merchantSecretKey = merchantsecretKey;
 	}
 
@@ -1028,7 +999,7 @@ public class MerchantConfig {
 		return solutionId;
 	}
 
-	public void setSolutionId(String solutionId) {
+	private void setSolutionId(String solutionId) {
 		this.solutionId = solutionId;
 	}
 
@@ -1036,7 +1007,7 @@ public class MerchantConfig {
 		return userDefinedConnectionTimeout;
 	}
 
-	public void setUserDefinedConnectionTimeout(int timeout) {
+	private void setUserDefinedConnectionTimeout(int timeout) {
 		this.userDefinedConnectionTimeout = timeout;
 	}
 
@@ -1044,7 +1015,7 @@ public class MerchantConfig {
 		return userDefinedReadTimeout;
 	}
 
-	public void setUserDefinedReadTimeout(int timeout) {
+	private void setUserDefinedReadTimeout(int timeout) {
 		this.userDefinedReadTimeout = timeout;
 	}
 
@@ -1052,7 +1023,7 @@ public class MerchantConfig {
 		return userDefinedWriteTimeout;
 	}
 
-	public void setUserDefinedWriteTimeout(int timeout) {
+	private void setUserDefinedWriteTimeout(int timeout) {
 		this.userDefinedWriteTimeout = timeout;
 	}
 
@@ -1060,7 +1031,7 @@ public class MerchantConfig {
 		return userDefinedKeepAliveDuration;
 	}
 
-	public void setUserDefinedKeepAliveDuration(int duration) {
+	private void setUserDefinedKeepAliveDuration(int duration) {
 		this.userDefinedKeepAliveDuration = duration;
 	}
 	
@@ -1068,7 +1039,7 @@ public class MerchantConfig {
 		return defaultHeaders;
 	}
 
-	public void setDefaultHeaders(Map<String, String> defaultHeaders) {
+	private void setDefaultHeaders(Map<String, String> defaultHeaders) {
 		this.defaultHeaders = defaultHeaders;
 	}
 
@@ -1084,7 +1055,7 @@ public class MerchantConfig {
 		return useMLEGlobally;
 	}
 
-	public void setUseMLEGlobally(boolean useMLEGlobally) {
+	private void setUseMLEGlobally(boolean useMLEGlobally) {
 		this.useMLEGlobally = useMLEGlobally;
 	}
 
@@ -1092,7 +1063,7 @@ public class MerchantConfig {
 		return mapToControlMLEonAPI;
 	}
 
-	public void setMapToControlMLEonAPI(Map<String, Boolean> mapToControlMLEonAPI) {
+	private void setMapToControlMLEonAPI(Map<String, Boolean> mapToControlMLEonAPI) {
 		this.mapToControlMLEonAPI = mapToControlMLEonAPI;
 	}
 
@@ -1100,7 +1071,7 @@ public class MerchantConfig {
 		return mleKeyAlias;
 	}
 
-	public void setMleKeyAlias(String mleKeyAlias) {
+	private void setMleKeyAlias(String mleKeyAlias) {
 		this.mleKeyAlias = mleKeyAlias;
 	}
 }
