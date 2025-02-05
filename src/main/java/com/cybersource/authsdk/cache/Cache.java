@@ -135,7 +135,9 @@ public class Cache {
 
 	
 	/**
-	 * @return value for last modified.
+	 * 
+	 * @param path
+	 * @return
 	 */
 	@SuppressWarnings("null")
 	public long getLastModifiedFileTime(String path) {

@@ -11,10 +11,15 @@ import java.util.Objects;
 public class Authorization {
 
 	/**
+	 * 
 	 * @param merchantConfig -contains merchant information.
+	 * @param reqVerb
+	 * @param requestData
+	 * @param reqTarget
+	 * @param date
 	 * @return token generated as per http_signature or JWT.
 	 * @throws ConfigException - if some value will be wrong or missing for
-	 *                         merchant.
+	 *   merchant.
 	 */
 	public String getToken(MerchantConfig merchantConfig, String reqVerb, String requestData, String reqTarget, String date) throws ConfigException {
 		return TokenGeneratorFactory.getAuthToken(merchantConfig, requestData, reqVerb, reqTarget, date).getToken();
