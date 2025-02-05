@@ -1047,7 +1047,7 @@ public class MerchantConfig {
 		return pemFileDirectory;
 	}
 
-	private void setPemFileDirectory(String pemFileDirectory) {
+	public void setPemFileDirectory(String pemFileDirectory) {
 		this.pemFileDirectory = pemFileDirectory;
 	}
 
