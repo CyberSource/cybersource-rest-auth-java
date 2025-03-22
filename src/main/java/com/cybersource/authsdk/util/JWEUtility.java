@@ -17,10 +17,6 @@ import org.bouncycastle.util.io.pem.PemReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -31,6 +27,19 @@ import java.text.ParseException;
 
 public class JWEUtility {
 
+    public static String decryptJWEUsingPrivateKey(PrivateKey privateKey, String jweBase64Data) throws ParseException, JOSEException {
+        JWEDecrypter jweDecrypter = new RSADecrypter(privateKey);
+        EncryptedJWT encryptedJWT = EncryptedJWT.parse(jweBase64Data);
+        encryptedJWT.decrypt(jweDecrypter);
+        return encryptedJWT.getPayload().toString();
+    }
+
+    /**
+     * This method has been marked as Deprecated and will be removed in coming releases.
+     *
+     * @deprecated use {@link #decryptJWEUsingPrivateKey(PrivateKey, String)} instead.
+     */
+    @Deprecated
     public static String decryptJWEUsingPEM(MerchantConfig merchantConfig, String jweBase64Data) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, ParseException, JOSEException {
         Cache cache = new Cache(merchantConfig);
         PrivateKey privateKey =  cache.getJWECachedPrivateKey();
@@ -39,7 +48,16 @@ public class JWEUtility {
         encryptedJWT.decrypt(jweDecrypter);
         return encryptedJWT.getPayload().toString();
     }
-    
+
+    /**
+     * This method has been marked as Deprecated.
+     * It is expected for the end-user to read the private key
+     * from the PEM file / any other source and pass it to the SDK
+     * using the method {@link #decryptJWEUsingPrivateKey(PrivateKey, String)}
+     *
+     * @deprecated
+     */
+    @Deprecated
     public static PrivateKey readPemFileToGetPrivateKey(String pemFilepath)
 			throws FileNotFoundException, IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		PemReader pemReader = new PemReader(new FileReader(pemFilepath));
