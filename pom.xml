@@ -65,16 +65,12 @@
 		</profile>
 	</profiles>
 	<dependencies>
-
-
-		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15to18 -->
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15to18</artifactId>
-			<version>1.78</version>
+			<artifactId>bcprov-jdk18on</artifactId>
+			<version>1.81</version>
 		</dependency>
-
-
 
 		<dependency>
 			<groupId>com.nimbusds</groupId>
@@ -82,14 +78,11 @@
 			<version>10.0.2</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>asm</artifactId>
 			<version>1.0.2</version>
 		</dependency>
-
-
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -98,13 +91,11 @@
 			<type>pom</type>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -112,14 +103,11 @@
 			<version>${log4j.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-1.2-api</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
-
-
 
 		<dependency>
 			<groupId>net.minidev</groupId>
@@ -127,13 +115,11 @@
 			<version>2.5.2</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>2.0.9</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -141,13 +127,11 @@
 			<version>2.12.1</version>
 		</dependency>
 
-
-
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-lang3</artifactId>
-		    <version>3.14.0</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.14.0</version>
 		</dependency>
 
 		<dependency>
@@ -157,14 +141,12 @@
 			<scope>test</scope>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>2.18.3</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 
