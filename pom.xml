@@ -5,6 +5,8 @@
 	<packaging>jar</packaging>
 	<version>0.0.36</version>
 	<name>CyberSource Authentication SDK</name>
+	<url>https://developer.cybersource.com</url>
+	<description>Cybersource Rest Auth SDK</description>
 	<licenses>
 		<license>
 			<name>SDK License Agreement</name>
