@@ -28,11 +28,8 @@
 		<profile>
 		<id>release</id>
 			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
 			<build>
 				<plugins>
 					<plugin>
