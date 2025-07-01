@@ -42,7 +42,7 @@
 						<extensions>true</extensions>
 						<configuration>
 							<checksums>required</checksums>
-							<skipPublishing>true</skipPublishing>
+							<skipPublishing>false</skipPublishing>
 							<publishingServerId>sonatype-nexus-staging</publishingServerId>
 						</configuration>
 					</plugin>
