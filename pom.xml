@@ -43,7 +43,7 @@
 						<configuration>
 							<checksums>required</checksums>
 							<skipPublishing>true</skipPublishing>
-							<publishingServerId>central</publishingServerId>
+							<publishingServerId>sonatype-nexus-staging</publishingServerId>
 						</configuration>
 					</plugin>
 				<plugin>
