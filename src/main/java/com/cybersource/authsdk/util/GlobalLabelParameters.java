@@ -104,7 +104,7 @@ public class GlobalLabelParameters {
 	public static final String PROXY_HOST = "http.proxyHost";
 	public static final String PROXY_PORT = "http.proxyPort";
 	/* Cache logging.*/
-	public static final String CACHE_BEGIN = " Empty Cache :: Adding Data";
+	public static final String CACHE_BEGIN = " Missing Key in Cache :: Adding Data";
 	public static final String CACHE_EXTRACT = " Data present in Cache :: Extracting Data";
 	public static final String CACHE_EXTEND = " New Data present:: Inserting Data in Cache";
 	public static final Long CERTIFICATE_EXPIRY_DATE_WARNING_DAYS = 90L;

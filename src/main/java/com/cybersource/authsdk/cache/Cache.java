@@ -94,12 +94,12 @@ public class Cache {
 	}
 	
 	public Identity getMerchantP12KeysFromCache() throws Exception{
-		if (cacheP12.isEmpty()) {
+		if (cacheP12.isEmpty() || !cacheP12.containsKey(merchantConfig.getMerchantID())) {
 			logger.info(GlobalLabelParameters.CACHE_BEGIN);
 			setUpP12Cache();
 		} else {
 			Identity p12Keys = cacheP12.get(merchantConfig.getMerchantID());
-			if (p12Keys.getLastModifiedDate() != getLastModifiedFileTime(merchantConfig.getKeyFile().getAbsolutePath())) {
+			if (p12Keys==null || p12Keys.getLastModifiedDate() != getLastModifiedFileTime(merchantConfig.getKeyFile().getAbsolutePath())) {
 				logger.info(GlobalLabelParameters.CACHE_EXTEND);
 				setUpP12Cache();
 			}else {
