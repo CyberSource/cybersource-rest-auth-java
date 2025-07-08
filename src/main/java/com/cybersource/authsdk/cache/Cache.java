@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.KeyCertificateGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
