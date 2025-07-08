@@ -1,6 +1,7 @@
 package com.cybersource.authsdk.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PrettyPrintingMap;
+import com.cybersource.authsdk.util.Utility;
 
 public class MerchantConfig {
 	private static Logger logger = LogManager.getLogger(MerchantConfig.class);
@@ -245,6 +247,8 @@ public class MerchantConfig {
 	private Map<String, Boolean> mapToControlMLEonAPI;
 	
 	private String mleKeyAlias;
+	
+	private String mleForRequestPublicCertPath;
 	
 	public MerchantConfig() throws ConfigException {
 
@@ -607,6 +611,10 @@ public class MerchantConfig {
 		}else {
 			this.setMleKeyAlias(GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
 		}
+		if (null != this.getProps().getProperty("mleForRequestPublicCertPath") && !StringUtils.isEmpty(this.getProps().getProperty("mleForRequestPublicCertPath").trim()) ) {
+			this.setMleForRequestPublicCertPath(this.getProps().getProperty("mleForRequestPublicCertPath").trim());		
+		}
+		
 		if (this.getProps().containsKey("mapToControlMLEonAPI")) {
 			try {
 				this.setMapToControlMLEonAPI((Map<String, Boolean>) this.getProps().get("mapToControlMLEonAPI"));
@@ -647,7 +655,17 @@ public class MerchantConfig {
 	
 	private void validateMLEConfiguration() throws ConfigException {
 		
-		boolean mleConfigured = this.useMLEGlobally;
+		//verify the input path for mle Cert should be correct else throw error in both case mle=true/false
+		if(this.mleForRequestPublicCertPath !=null && !StringUtils.isEmpty(this.mleForRequestPublicCertPath))
+		{
+			try {
+				Utility.validatePathAndFile(this.mleForRequestPublicCertPath, "mleForRequestPublicCertPath");
+			} catch (IOException e) {
+				throw new ConfigException(e.getMessage());
+			}
+		}
+		
+		/*boolean mleConfigured = this.useMLEGlobally;
 
 		if (this.mapToControlMLEonAPI != null && !this.mapToControlMLEonAPI.isEmpty()) {
 			for (boolean value : this.mapToControlMLEonAPI.values()) {
@@ -664,6 +682,11 @@ public class MerchantConfig {
 		}
 		//check the p12 file and set the keyFile to get the mleCert
 		if(mleConfigured) {
+			checkKeyFile();
+		}*/
+		
+		//check the p12 file and set the keyFile to get the mleCert in case of JWT auth Type
+		if(!GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			checkKeyFile();
 		}
 	}
@@ -1075,5 +1098,13 @@ public class MerchantConfig {
 
 	private void setMleKeyAlias(String mleKeyAlias) {
 		this.mleKeyAlias = mleKeyAlias;
+	}
+
+	public String getMleForRequestPublicCertPath() {
+		return mleForRequestPublicCertPath;
+	}
+
+	public void setMleForRequestPublicCertPath(String mleForRequestPublicCertPath) {
+		this.mleForRequestPublicCertPath = mleForRequestPublicCertPath;
 	}
 }
