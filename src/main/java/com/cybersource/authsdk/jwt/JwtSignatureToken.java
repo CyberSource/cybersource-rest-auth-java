@@ -38,7 +38,7 @@ public class JwtSignatureToken implements TokenGenerator {
 		this.merchantConfig = merchantConfig;
 		this.requestBody = requestBody;
 		this.jwtMethod = reqVerb;
-		this.cache = new Cache(this.merchantConfig);
+		this.cache = new Cache();
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class JwtSignatureToken implements TokenGenerator {
 	}
 
 	private void getKeysForJWTFromCache() throws ConfigException, Exception {
-		Identity p12Keys = cache.getMerchantP12KeysFromCache();
+		Identity p12Keys = cache.getMerchantP12KeysFromCache(this.merchantConfig);
 		rsaPrivateKey = p12Keys.getRsaPrivateKey();
 		x509Certificate = p12Keys.getX509();
 	}
