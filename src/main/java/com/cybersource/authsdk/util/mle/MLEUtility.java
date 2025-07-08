@@ -73,10 +73,9 @@ public class MLEUtility {
 
     private static X509Certificate getCertificate(MerchantConfig merchantConfig) throws MLEException {
         //get the MLE cert
-    	cache.setMerchantConfig(merchantConfig);
     	X509Certificate mleCert = null;
     	try {
-    		Identity p12Keys = cache.getMerchantP12KeysFromCache();
+    		Identity p12Keys = cache.getMerchantP12KeysFromCache(merchantConfig);
     		mleCert = p12Keys.getMleCert();
     	}catch (IOException e) {
             throw new MLEException("Certificate with alias " + merchantConfig.getMleKeyAlias() + " not found in " + merchantConfig.getKeyFilename() + ".p12", e);

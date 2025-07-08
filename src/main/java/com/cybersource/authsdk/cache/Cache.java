@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.KeyCertificateGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
@@ -21,53 +20,10 @@ import com.cybersource.authsdk.util.JWEUtility;
 
 public class Cache {
 	private static Logger logger = LogManager.getLogger(Cache.class);	
-	public static boolean isCache = false;
+	
 	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
 
 	public static ConcurrentHashMap<String, CachedJWEPrivateKey> cachePEM = new ConcurrentHashMap<>();
-
-	private boolean isTimeStamp;
-	private MerchantConfig merchantConfig;
-
-	private Identity identity = new Identity();
-	private CachedJWEPrivateKey cachedJWEPrivateKey = new CachedJWEPrivateKey();
-	private String accessToken;
-	private String refreshToken;
-
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
-	public String getAccessToken() {
-		return accessToken;
-	}
-
-	public void setRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
-	}
-
-	public String getRefreshToken() {
-		return refreshToken;
-	}
-	
-	public void setMerchantConfig(MerchantConfig merchantConfig) {
-		this.merchantConfig = merchantConfig;
-	}
-
-	/**
-	 * @param merchantConfig - contains all information for merchant.
-	 */
-	public Cache(MerchantConfig merchantConfig) {
-		this.merchantConfig = merchantConfig;
-		logger = LogManager.getLogger(this.getClass());
-		if (cacheP12.isEmpty()) {
-			Cache.isCache = true;
-		} else {
-			Cache.isCache = false;
-		}
-	}
-
-
 
 	public Cache() {
 	}
@@ -79,12 +35,13 @@ public class Cache {
 	 * @throws NoSuchAlgorithmException 
 	 * @throws CertificateException 
 	 */
-	private void setUpP12Cache() throws Exception {
+	private void setUpP12Cache(MerchantConfig merchantConfig) throws Exception {
 		KeyCertificateGenerator newKeyCertGen = new KeyCertificateGenerator();
 		X509Certificate jwtX509Certificate = newKeyCertGen.initializeCertificateOfMerchantForJWT(merchantConfig);
 		RSAPrivateKey jwtRsaPrivateKey = newKeyCertGen.initializePrivateKey(merchantConfig);
 		X509Certificate mleX509Certificate = newKeyCertGen.initializeMLECertificate(merchantConfig);
 		
+		Identity identity = new Identity();
 		identity.setLastModifiedDate(getLastModifiedFileTime(merchantConfig.getKeyFile().getAbsolutePath()));
 		identity.setX509(jwtX509Certificate);
 		identity.setRsaPrivateKey(jwtRsaPrivateKey);
@@ -93,15 +50,15 @@ public class Cache {
 		cacheP12.put(tempMerchantID, identity);
 	}
 	
-	public Identity getMerchantP12KeysFromCache() throws Exception{
+	public Identity getMerchantP12KeysFromCache(MerchantConfig merchantConfig) throws Exception{
 		if (cacheP12.isEmpty() || !cacheP12.containsKey(merchantConfig.getMerchantID())) {
 			logger.info(GlobalLabelParameters.CACHE_BEGIN);
-			setUpP12Cache();
+			setUpP12Cache(merchantConfig);
 		} else {
 			Identity p12Keys = cacheP12.get(merchantConfig.getMerchantID());
 			if (p12Keys==null || p12Keys.getLastModifiedDate() != getLastModifiedFileTime(merchantConfig.getKeyFile().getAbsolutePath())) {
 				logger.info(GlobalLabelParameters.CACHE_EXTEND);
-				setUpP12Cache();
+				setUpP12Cache(merchantConfig);
 			}else {
 				logger.info(GlobalLabelParameters.CACHE_EXTRACT);
 			}
@@ -112,22 +69,23 @@ public class Cache {
 		return p12Keys;
 	}
 
-	public PrivateKey getJWECachedPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public PrivateKey getJWECachedPrivateKey(MerchantConfig merchantConfig) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		if (cachePEM.isEmpty()) {
-			setUpPEMCache();
+			setUpPEMCache(merchantConfig);
 		} else {
 			CachedJWEPrivateKey cachedJWEPrivateKey = cachePEM.get("privateKeyFromPEMFile");
 			if (cachedJWEPrivateKey.getLastModifiedTimeStamp() != getLastModifiedFileTime(merchantConfig.getPemFileDirectory())) {
-				setUpPEMCache();
+				setUpPEMCache(merchantConfig);
 			}
 		}
 		CachedJWEPrivateKey cachedJWEPrivateKey = cachePEM.get("privateKeyFromPEMFile");
 		return cachedJWEPrivateKey.getPrivateKey();
 	}
 	
-	private void setUpPEMCache() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	private void setUpPEMCache(MerchantConfig merchantConfig) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		PrivateKey privateKey = JWEUtility.readPemFileToGetPrivateKey(merchantConfig.getPemFileDirectory());
 		long lastModifiedTime = getLastModifiedFileTime(merchantConfig.getPemFileDirectory());
+		CachedJWEPrivateKey cachedJWEPrivateKey = new CachedJWEPrivateKey();
 		cachedJWEPrivateKey.setLastModifiedTimeStamp(lastModifiedTime);
 		cachedJWEPrivateKey.setPrivateKey(privateKey);
 		cachePEM.put("privateKeyFromPEMFile", cachedJWEPrivateKey);
