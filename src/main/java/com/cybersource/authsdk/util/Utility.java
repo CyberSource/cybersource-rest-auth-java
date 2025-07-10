@@ -136,4 +136,42 @@ public class Utility {
         }
     }
     
+    /**
+	 * Searches for a certificate that matches the given key alias from a collection of certificates.
+	 * The search looks for the alias in the certificate's subject DN (Distinguished Name),
+	 * specifically in the CN (Common Name) field.
+	 * 
+	 * @param certs Collection of X509 certificates to search through
+	 * @param keyAlias The key alias to search for
+	 * @return The matching X509Certificate, or null if no match is found
+	 */
+	public static X509Certificate searchCertificateByAlias(Collection<X509Certificate> certs, String keyAlias) {
+		if (certs == null || keyAlias == null || keyAlias.isEmpty()) {
+			return null;
+		}
+		
+		for (X509Certificate cert : certs) {
+			try {
+				String subjectDN = cert.getSubjectDN().getName();
+				
+				// Parse the subject DN to find CN field
+				String[] dnParts = subjectDN.split(",");
+				for (String part : dnParts) {
+					part = part.trim();
+					if (part.toUpperCase().startsWith("CN=")) {
+						String commonName = part.substring(3); // Remove "CN="
+						if (keyAlias.equalsIgnoreCase(commonName)) {
+							return cert;
+						}
+					}
+				}
+			} catch (Exception e) {
+				logger.warn("Error parsing certificate subject DN: " + e.getMessage());
+				// Continue with next certificate
+			}		
+		}
+		
+		return null;
+	}
+    
 }

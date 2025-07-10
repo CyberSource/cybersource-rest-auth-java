@@ -101,7 +101,7 @@ public class KeyCertificateGenerator {
 				X509Certificate certificate = (X509Certificate) merchantKeyStore.getCertificate(merchantKeyAlias);
 				return certificate;
 			} catch (Exception var5) {
-				throw new MLEException("No certificate found for MLE for given mleKeyAlias "+  merchantConfig.getMleKeyAlias() + " in p12 file " + merchantConfig.getKeyFilename() + ".p12");
+				throw new MLEException("No certificate found for Request MLE for given mleKeyAlias "+  merchantConfig.getMleKeyAlias() + " in p12 file " + merchantConfig.getKeyFilename() + ".p12");
 			}
 
 		} else {

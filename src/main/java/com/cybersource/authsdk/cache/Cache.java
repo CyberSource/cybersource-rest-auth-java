@@ -124,7 +124,14 @@ public class Cache {
 		if(cacheKey.endsWith("mleCertFromMerchantConfig")) {
 			try {
 				Collection<X509Certificate> certs = Utility.loadCertificatesFromPemFile(filePath);
-				mleCert = certs.iterator().next(); //first cert
+				//search the cert for given key alias
+				mleCert = Utility.searchCertificateByAlias(certs, merchantConfig.getMleKeyAlias());
+				if (mleCert == null) {
+					// If no certificate found for the specified alias, fall back to first certificate
+					String fileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
+					logger.warn("No certificate found for the specified mleKeyAlias '{}'. Using the first certificate from file {} as the MLE request certificate.", merchantConfig.getMleKeyAlias(), fileName);
+					mleCert = certs.iterator().next(); //first cert
+				}
 			}catch(Exception e) {
 				throw new MLEException("Error occurred while loading MLE certificate for Request from requestPublicCertPath in Merchant Config: " + e.getMessage(), e);
 			}
@@ -142,7 +149,12 @@ public class Cache {
 		if(cacheKey.endsWith("mleCertFromDefaultInSDK")) {
 			try {
 				Collection<X509Certificate> certs = Utility.loadCertificatesFromPemFile(filePath);
-				mleCert = certs.iterator().next(); //first cert
+				//search the cert for given key alias
+				mleCert = Utility.searchCertificateByAlias(certs, GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
+				if (mleCert == null) {
+					// If no certificate found for the specified alias, fall back to first certificate
+					mleCert = certs.iterator().next();
+				}
 			}catch(Exception e) {
 				throw new MLEException("Error occurred while loading MLE certificate for Request from default mle cert in SDK: " + e.getMessage(), e);
 			}
@@ -195,6 +207,5 @@ public class Cache {
 			return (Long) null;
 		}
 	}
-
-
+	
 }
