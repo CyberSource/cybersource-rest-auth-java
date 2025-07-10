@@ -5,18 +5,22 @@ import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.jwt.KeyCertificateGenerator;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.JWEUtility;
+import com.cybersource.authsdk.util.Utility;
+import com.cybersource.authsdk.util.mle.MLEException;
+import com.cybersource.authsdk.util.mle.MLEUtility;
 
 public class Cache {
 	private static Logger logger = LogManager.getLogger(Cache.class);	
@@ -24,6 +28,8 @@ public class Cache {
 	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
 
 	public static ConcurrentHashMap<String, CachedJWEPrivateKey> cachePEM = new ConcurrentHashMap<>();
+	
+	public static ConcurrentHashMap<String, Identity> cacheMLE = new ConcurrentHashMap<>();
 
 	public Cache() {
 	}
@@ -39,13 +45,13 @@ public class Cache {
 		KeyCertificateGenerator newKeyCertGen = new KeyCertificateGenerator();
 		X509Certificate jwtX509Certificate = newKeyCertGen.initializeCertificateOfMerchantForJWT(merchantConfig);
 		RSAPrivateKey jwtRsaPrivateKey = newKeyCertGen.initializePrivateKey(merchantConfig);
-		X509Certificate mleX509Certificate = newKeyCertGen.initializeMLECertificate(merchantConfig);
+		//X509Certificate mleX509Certificate = newKeyCertGen.initializeMLECertificate(merchantConfig);
 		
 		Identity identity = new Identity();
 		identity.setLastModifiedDate(getLastModifiedFileTime(merchantConfig.getKeyFile().getAbsolutePath()));
 		identity.setX509(jwtX509Certificate);
 		identity.setRsaPrivateKey(jwtRsaPrivateKey);
-		identity.setMleCert(mleX509Certificate);
+		//identity.setMleCert(mleX509Certificate);
 		String tempMerchantID = merchantConfig.getMerchantID();
 		cacheP12.put(tempMerchantID, identity);
 	}
@@ -67,6 +73,87 @@ public class Cache {
 		//return all three p12 file keys and certs
 		Identity p12Keys = cacheP12.get(merchantConfig.getMerchantID());
 		return p12Keys;
+	}
+	
+	
+	public X509Certificate getRequestMLECertFromCache(MerchantConfig merchantConfig) throws MLEException{
+		
+		String merchantId = merchantConfig.getMerchantID();
+		String identifier ="";
+    	
+		//1. First priority: get cert from merchantConfig.mleForRequestPublicCertPath if certPath is provided
+		if (!StringUtils.isEmpty(merchantConfig.getMleForRequestPublicCertPath())) {
+			identifier= "mleCertFromMerchantConfig";
+			String cacheKey = merchantId + "_" + identifier;
+			String filePath = merchantConfig.getMleForRequestPublicCertPath();
+			return getMLECertBasedOnCacheKey(merchantConfig, cacheKey, filePath);	
+		}
+
+		//2. Priority 2: if merchantConfig.mleForRequestPublicCertPath not provided by merchant then get mlecert from merchant p12 if provided and jwt auth type
+		else if(!GlobalLabelParameters.JWT.equalsIgnoreCase(merchantConfig.getAuthenticationType()) && merchantConfig.getKeyFile() != null) {
+			identifier= "mleCertFromP12";
+			String cacheKey = merchantId + "_" + identifier;
+			String filePath = merchantConfig.getKeyFile().getAbsolutePath();
+			return getMLECertBasedOnCacheKey(merchantConfig, cacheKey, filePath);
+		}
+
+		//3. Priority 3: get mlecert from default mle cert in SDK as per CAS or PROD env.
+		else {
+			identifier= "mleCertFromDefaultInSDK";
+			String cacheKey = merchantId + "_" + identifier;
+			String defaultMLECertPath = MLEUtility.getDefaultMLECertPath(merchantConfig.getRunEnvironment());
+			return getMLECertBasedOnCacheKey(merchantConfig, cacheKey, defaultMLECertPath);
+		}		
+	}
+
+	private X509Certificate getMLECertBasedOnCacheKey(MerchantConfig merchantConfig, String cacheKey, String filePath) throws MLEException {
+		if(!cacheMLE.containsKey(cacheKey)) {
+			setUpMLECache(merchantConfig, cacheKey, filePath);
+		}else {
+			Identity mleIdentity = cacheMLE.get(cacheKey);
+			if (mleIdentity==null || mleIdentity.getLastModifiedDate() != getLastModifiedFileTime(filePath)) {
+				setUpMLECache(merchantConfig, cacheKey, filePath);
+			}
+		}
+		return cacheMLE.get(cacheKey).getMleCert();
+	}
+
+	private void setUpMLECache(MerchantConfig merchantConfig, String cacheKey, String filePath) throws MLEException {
+		X509Certificate mleCert =null;
+		
+		if(cacheKey.endsWith("mleCertFromMerchantConfig")) {
+			try {
+				Collection<X509Certificate> certs = Utility.loadCertificatesFromPemFile(filePath);
+				mleCert = certs.iterator().next(); //first cert
+			}catch(Exception e) {
+				throw new MLEException("Error occurred while loading MLE certificate for Request from requestPublicCertPath in Merchant Config: " + e.getMessage(), e);
+			}
+		}
+		
+		if(cacheKey.endsWith("mleCertFromP12")) {
+			try {
+				KeyCertificateGenerator newKeyCertGen = new KeyCertificateGenerator();
+				mleCert = newKeyCertGen.initializeMLECertificate(merchantConfig);
+			}catch(Exception e) {
+				throw new MLEException("Error occurred while loading MLE certificate for Request from MerchantP12 in Merchant Config: " + e.getMessage(), e);
+			}
+		}
+		
+		if(cacheKey.endsWith("mleCertFromDefaultInSDK")) {
+			try {
+				Collection<X509Certificate> certs = Utility.loadCertificatesFromPemFile(filePath);
+				mleCert = certs.iterator().next(); //first cert
+			}catch(Exception e) {
+				throw new MLEException("Error occurred while loading MLE certificate for Request from default mle cert in SDK: " + e.getMessage(), e);
+			}
+		}
+		
+		//set the cache
+		Identity mleIdentity = new Identity();
+		mleIdentity.setLastModifiedDate(getLastModifiedFileTime(filePath));
+		mleIdentity.setMleCert(mleCert);
+		cacheMLE.put(cacheKey, mleIdentity);
+		
 	}
 
 	public PrivateKey getJWECachedPrivateKey(MerchantConfig merchantConfig) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
