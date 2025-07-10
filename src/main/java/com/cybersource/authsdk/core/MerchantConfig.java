@@ -240,7 +240,7 @@ public class MerchantConfig {
 	/***
 	 *  MLE Feature
 	 */
-	private boolean useMLEGlobally;
+	private boolean useMLEGloballyRequest;
 	
 	private Map<String, Boolean> mapToControlMLEonAPI;
 	
@@ -601,7 +601,15 @@ public class MerchantConfig {
 			this.setRetryEnabled(false);
 		}
 		//MLE Params
-		this.setUseMLEGlobally(Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally")));
+		String useMLEGloballyRequestValue = this.getProps().getProperty("useMLEGloballyRequest");
+		String useMLEGloballyValue = this.getProps().getProperty("useMLEGlobally");
+		boolean useMLE = false;
+		if (useMLEGloballyRequestValue != null) {
+			useMLE = Boolean.parseBoolean(useMLEGloballyRequestValue);
+		} else if (useMLEGloballyValue != null) {
+			useMLE = Boolean.parseBoolean(useMLEGloballyValue);
+		}
+		this.setUseMLEGloballyRequest(useMLE);
 		if(null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
 			this.setMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
 		}else {
@@ -647,7 +655,7 @@ public class MerchantConfig {
 	
 	private void validateMLEConfiguration() throws ConfigException {
 		
-		boolean mleConfigured = this.useMLEGlobally;
+		boolean mleConfigured = this.useMLEGloballyRequest;
 
 		if (this.mapToControlMLEonAPI != null && !this.mapToControlMLEonAPI.isEmpty()) {
 			for (boolean value : this.mapToControlMLEonAPI.values()) {
@@ -1053,12 +1061,12 @@ public class MerchantConfig {
 		this.pemFileDirectory = pemFileDirectory;
 	}
 
-	public boolean isUseMLEGlobally() {
-		return useMLEGlobally;
+	public boolean isUseMLEGloballyRequest() {
+		return useMLEGloballyRequest;
 	}
 
-	private void setUseMLEGlobally(boolean useMLEGlobally) {
-		this.useMLEGlobally = useMLEGlobally;
+	private void setUseMLEGloballyRequest(boolean useMLEGloballyRequest) {
+		this.useMLEGloballyRequest = useMLEGloballyRequest;
 	}
 
 	public Map<String, Boolean> getMapToControlMLEonAPI() {

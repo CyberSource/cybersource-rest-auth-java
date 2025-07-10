@@ -28,21 +28,32 @@ public class MLEUtility {
     private static final Logger logger = LogManager.getLogger(MLEUtility.class);
     private static Cache cache = new Cache();
 
-    public static boolean checkIsMLEForAPI(MerchantConfig merchantConfig, boolean isMLESupportedByCybsForApi, String operationIds) {
+    public static boolean checkIsMLEForAPI(MerchantConfig merchantConfig, String inboundMLEStatus, String operationIds) {
 
     	//isMLE for an api is false by default
         boolean isMLEForAPI = false;
-        
-        //check here useMLEGlobally True or False
-        //if API is part of MLE then check for useMLEGlobally global parameter
-        if (isMLESupportedByCybsForApi == true && merchantConfig.isUseMLEGlobally() == true) {
+        boolean isMLESupportedByCybsForApi = false;
+
+        if("optional".equalsIgnoreCase(inboundMLEStatus) || "mandatory".equalsIgnoreCase(inboundMLEStatus)) {
+            isMLESupportedByCybsForApi = true;
+        }
+
+        //check here useMLEGloballyRequest True or False
+        //if API is part of MLE then check for useMLEGloballyRequest global parameter
+        if (isMLESupportedByCybsForApi && merchantConfig.isUseMLEGloballyRequest()) {
           isMLEForAPI = true;
+        }
+
+        if("mandatory".equalsIgnoreCase(inboundMLEStatus) && merchantConfig.isUseMLEGloballyRequest() == false) {
+            isMLEForAPI = true;
+            logger.warn("MLE is required for this operation (mandatory), but the global MLE flag is disabled. Enabling MLE for this API call as required by CyberSource.");
         }
         
         //operationIds are array as there are multiple public function for apiCallFunction such as apiCall,apiCallAsync ..
         String[] operationArray = Arrays.stream(operationIds.split(",")).map(String::trim).toArray(String[]::new);
         
         //Control the MLE only from map
+        //Special Note: If API expect MLE request mandatory and map is saying to send non MLE request then API will throw an error from CyberSource
         if (merchantConfig.getMapToControlMLEonAPI() != null && !merchantConfig.getMapToControlMLEonAPI().isEmpty() ) {
         	for (String operationId : operationArray) {
         		if(merchantConfig.getMapToControlMLEonAPI().containsKey(operationId)) {
