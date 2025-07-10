@@ -1,11 +1,17 @@
 package com.cybersource.authsdk.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.logging.log4j.LogManager;
@@ -108,4 +114,26 @@ public class Utility {
             throw new IOException(pathType + " is not readable: " + path);
         }
     }
+    
+    /**
+     * Loads X509 certificates from a PEM file.
+     *
+     * @param certFilePath The file path to the PEM certificate file.
+     * @return The loaded X509Certificate(s) as a Collection.
+     * @throws CertificateException If the certificate cannot be parsed or is invalid.
+     * @throws IOException If the file cannot be read or does not exist.
+     */
+    public static Collection<X509Certificate> loadCertificatesFromPemFile(String certFilePath) throws CertificateException, IOException {
+        try (FileInputStream inStream = new FileInputStream(certFilePath)) {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            Collection<? extends java.security.cert.Certificate> certs = cf.generateCertificates(inStream);
+            // Cast to X509Certificate
+            List<X509Certificate> x509Certs = new ArrayList<>();
+            for (java.security.cert.Certificate cert : certs) {
+                x509Certs.add((X509Certificate) cert);
+            }
+            return x509Certs;
+        }
+    }
+    
 }
