@@ -90,7 +90,7 @@ public class Cache {
 		}
 
 		//2. Priority 2: if merchantConfig.mleForRequestPublicCertPath not provided by merchant then get mlecert from merchant p12 if provided and jwt auth type
-		else if(!GlobalLabelParameters.JWT.equalsIgnoreCase(merchantConfig.getAuthenticationType()) && merchantConfig.getKeyFile() != null) {
+		else if(GlobalLabelParameters.JWT.equalsIgnoreCase(merchantConfig.getAuthenticationType()) && merchantConfig.getKeyFile() != null) {
 			identifier= "mleCertFromP12";
 			String cacheKey = merchantId + "_" + identifier;
 			String filePath = merchantConfig.getKeyFile().getAbsolutePath();

@@ -686,7 +686,7 @@ public class MerchantConfig {
 		}*/
 		
 		//check the p12 file and set the keyFile to get the mleCert in case of JWT auth Type
-		if(!GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
+		if(GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			checkKeyFile();
 		}
 	}
