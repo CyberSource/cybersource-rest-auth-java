@@ -11,12 +11,14 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.cybersource.authsdk.util.mle.MLEException;
 import com.cybersource.authsdk.util.mle.MLEUtility;
 
 public class Utility {
@@ -173,5 +175,48 @@ public class Utility {
 		
 		return null;
 	}
+	/**
+	 * Validate the certificate expire and log in warning
+	 * @param certificate
+	 * @param keyAlias
+	 * @throws MLEException
+	 */
+	public static void validateCertificateExpiry(X509Certificate certificate, String keyAlias, String mleCacheKeyIdentifier) throws MLEException {
+        //Default Warn Message
+		String warnMessageForNotHaveExpiryDate = "Certificate don't have expiry date.";
+		String warnMessageForBeingExpiredCert = "Certificate with alias {} is going to expired on {} . Please update cert before that.";
+		String warnMessageForExpiredCert = "Certificate with alias {} is expired as of {} . Please update cert before that.";
+		
+		//override log error message based on mle identifier
+		if(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_CONFIG_CERT.equals(mleCacheKeyIdentifier)) {
+			warnMessageForNotHaveExpiryDate = "Certificate for Request MLE don't have expiry date from mleForRequestPublicCertPath in merchant config.";
+			warnMessageForBeingExpiredCert = "Certificate for Request MLE with alias {} is going to expired on {} . Please update cert file in mleForRequestPublicCertPath in merchant config before that.";
+			warnMessageForExpiredCert = "Certificate for Request MLE with alias {} is expired as of {} . Please update cert file in mleForRequestPublicCertPath in merchant config.";
+		}
+		if(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_P12_CERT.equals(mleCacheKeyIdentifier)) {
+			warnMessageForNotHaveExpiryDate = "Certificate for Request MLE don't have expiry date in p12 file.";
+			warnMessageForBeingExpiredCert = "Certificate for Request MLE with alias {} is going to expired on {} . Please update p12 file before that.";
+			warnMessageForExpiredCert = "Certificate for Request MLE with alias {} is expired as of {} . Please update p12 file.";
+		}
+		if(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_DEFAULT_CERT.equals(mleCacheKeyIdentifier)) {
+			warnMessageForNotHaveExpiryDate = "Certificate for Request MLE don't have expiry date in default mle cert in SDK.";
+			warnMessageForBeingExpiredCert = "Certificate for Request MLE with alias {} is going to expired on {} . Please update SDK version or provide Request MLE Cert in mleForRequestPublicCertPath param of merchant config before that.";
+			warnMessageForExpiredCert = "Certificate for Request MLE with alias {} is expired as of {} . Please update SDK version or provide Request MLE Cert in mleForRequestPublicCertPath param of merchant config.";
+		}
+		
+		if (certificate.getNotAfter() == null) {
+            //certificate do not have expire date
+        	logger.warn(warnMessageForNotHaveExpiryDate);
+        } else if (certificate.getNotAfter().before(new Date())) {
+        	//certificate is already expired
+        	logger.warn(warnMessageForExpiredCert, keyAlias, certificate.getNotAfter());
+            //throw new MLEException("Certificate required for MLE has been expired on : " + certificate.getNotAfter());
+        } else {
+            long timeToExpire = certificate.getNotAfter().getTime() - new Date().getTime();
+            if (timeToExpire < GlobalLabelParameters.CERTIFICATE_EXPIRY_DATE_WARNING_DAYS * 24 * 60 * 60) {
+            	logger.warn(warnMessageForBeingExpiredCert,keyAlias,certificate.getNotAfter());
+            }
+        }
+    }   
     
 }

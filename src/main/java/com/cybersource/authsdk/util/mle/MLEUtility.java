@@ -71,7 +71,6 @@ public class MLEUtility {
     	X509Certificate mleCert = null;
     	mleCert = cache.getRequestMLECertFromCache(merchantConfig);
     	if(null != mleCert) {
-    		validateCertificateExpiry(mleCert, merchantConfig.getMleKeyAlias());
     		return mleCert;
     	}else {
     		//throw MLE cert not found 
@@ -103,23 +102,7 @@ public class MLEUtility {
         JSONObject json = new JSONObject();
         json.put("encryptedRequest", jweToken);
         return json;
-    }
-
-    private static void validateCertificateExpiry(X509Certificate certificate, String keyAlias) throws MLEException {
-        if (certificate.getNotAfter() == null) {
-            //certificate do not have expire date
-        	logger.warn("Certificate for MLE don't have expiry date.");
-        } else if (certificate.getNotAfter().before(new Date())) {
-        	//certificate is already expired
-        	logger.warn("Certificate with MLE alias " + keyAlias + " is expired as of " + certificate.getNotAfter() + ". Please update p12 file.");
-            //throw new MLEException("Certificate required for MLE has been expired on : " + certificate.getNotAfter());
-        } else {
-            long timeToExpire = certificate.getNotAfter().getTime() - new Date().getTime();
-            if (timeToExpire < GlobalLabelParameters.CERTIFICATE_EXPIRY_DATE_WARNING_DAYS * 24 * 60 * 60) {
-            	logger.warn("Certificate for MLE with alias " + keyAlias + " is going to expired on " + certificate.getNotAfter() + ". Please update p12 file before that.");
-            }
-        }
-    }    
+    } 
     
     /**
      * Gets the default MLE certificate path based on the environment.

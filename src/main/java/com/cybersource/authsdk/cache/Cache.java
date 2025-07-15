@@ -79,31 +79,34 @@ public class Cache {
 	public X509Certificate getRequestMLECertFromCache(MerchantConfig merchantConfig) throws MLEException{
 		
 		String merchantId = merchantConfig.getMerchantID();
-		String identifier ="";
+		String identifier = "";
+		String cacheKey = "";
+		String filePath = "";
     	
 		//1. First priority: get cert from merchantConfig.mleForRequestPublicCertPath if certPath is provided
 		if (!StringUtils.isEmpty(merchantConfig.getMleForRequestPublicCertPath())) {
-			identifier= "mleCertFromMerchantConfig";
-			String cacheKey = merchantId + "_" + identifier;
-			String filePath = merchantConfig.getMleForRequestPublicCertPath();
-			return getMLECertBasedOnCacheKey(merchantConfig, cacheKey, filePath);	
+			identifier= GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_CONFIG_CERT;
+			cacheKey = merchantId + "_" + identifier;
+			filePath = merchantConfig.getMleForRequestPublicCertPath();	
 		}
 
 		//2. Priority 2: if merchantConfig.mleForRequestPublicCertPath not provided by merchant then get mlecert from merchant p12 if provided and jwt auth type
 		else if(GlobalLabelParameters.JWT.equalsIgnoreCase(merchantConfig.getAuthenticationType()) && merchantConfig.getKeyFile() != null) {
-			identifier= "mleCertFromP12";
-			String cacheKey = merchantId + "_" + identifier;
-			String filePath = merchantConfig.getKeyFile().getAbsolutePath();
-			return getMLECertBasedOnCacheKey(merchantConfig, cacheKey, filePath);
+			identifier= GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_P12_CERT;
+			cacheKey = merchantId + "_" + identifier;
+			filePath = merchantConfig.getKeyFile().getAbsolutePath();
 		}
 
 		//3. Priority 3: get mlecert from default mle cert in SDK as per CAS or PROD env.
 		else {
-			identifier= "mleCertFromDefaultInSDK";
-			String cacheKey = merchantId + "_" + identifier;
-			String defaultMLECertPath = MLEUtility.getDefaultMLECertPath(merchantConfig.getRunEnvironment());
-			return getMLECertBasedOnCacheKey(merchantConfig, cacheKey, defaultMLECertPath);
-		}		
+			identifier= GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_DEFAULT_CERT;
+			cacheKey = merchantId + "_" + identifier;
+			filePath = MLEUtility.getDefaultMLECertPath(merchantConfig.getRunEnvironment());
+		}
+		
+		X509Certificate mleCert = getMLECertBasedOnCacheKey(merchantConfig, cacheKey, filePath);
+		Utility.validateCertificateExpiry(mleCert, merchantConfig.getMleKeyAlias(), identifier);
+		return mleCert;
 	}
 
 	private X509Certificate getMLECertBasedOnCacheKey(MerchantConfig merchantConfig, String cacheKey, String filePath) throws MLEException {
@@ -121,7 +124,7 @@ public class Cache {
 	private void setUpMLECache(MerchantConfig merchantConfig, String cacheKey, String filePath) throws MLEException {
 		X509Certificate mleCert =null;
 		
-		if(cacheKey.endsWith("mleCertFromMerchantConfig")) {
+		if(cacheKey.endsWith(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_CONFIG_CERT)) {
 			try {
 				Collection<X509Certificate> certs = Utility.loadCertificatesFromPemFile(filePath);
 				//search the cert for given key alias
@@ -137,7 +140,7 @@ public class Cache {
 			}
 		}
 		
-		if(cacheKey.endsWith("mleCertFromP12")) {
+		if(cacheKey.endsWith(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_P12_CERT)) {
 			try {
 				KeyCertificateGenerator newKeyCertGen = new KeyCertificateGenerator();
 				mleCert = newKeyCertGen.initializeMLECertificate(merchantConfig);
@@ -146,7 +149,7 @@ public class Cache {
 			}
 		}
 		
-		if(cacheKey.endsWith("mleCertFromDefaultInSDK")) {
+		if(cacheKey.endsWith(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_DEFAULT_CERT)) {
 			try {
 				Collection<X509Certificate> certs = Utility.loadCertificatesFromPemFile(filePath);
 				//search the cert for given key alias
