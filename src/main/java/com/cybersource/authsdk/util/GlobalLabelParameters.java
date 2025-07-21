@@ -111,7 +111,5 @@ public class GlobalLabelParameters {
 	public static final String DEFAULT_MLE_ALIAS_FOR_CERT = "CyberSource_SJC_US";
 	public static final String MLE_CACHE_KEY_IDENTIFIER_FOR_CONFIG_CERT = "mleCertFromMerchantConfig";
 	public static final String MLE_CACHE_KEY_IDENTIFIER_FOR_P12_CERT = "mleCertFromP12";
-	public static final String MLE_CACHE_KEY_IDENTIFIER_FOR_DEFAULT_CERT = "mleCertFromDefaultInSDK";
-	
 	
 }

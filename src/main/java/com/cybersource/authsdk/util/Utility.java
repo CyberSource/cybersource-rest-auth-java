@@ -200,11 +200,6 @@ public class Utility {
 			warnMessageForBeingExpiredCert = "Certificate for Request MLE with alias {} is going to expired on {} . Please update p12 file before that.";
 			warnMessageForExpiredCert = "Certificate for Request MLE with alias {} is expired as of {} . Please update p12 file.";
 		}
-		if(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_DEFAULT_CERT.equals(mleCacheKeyIdentifier)) {
-			warnMessageForNotHaveExpiryDate = "Certificate for Request MLE don't have expiry date in default mle cert in SDK.";
-			warnMessageForBeingExpiredCert = "Certificate for Request MLE with alias {} is going to expired on {} . Please update SDK version or provide Request MLE Cert in mleForRequestPublicCertPath param of merchant config before that.";
-			warnMessageForExpiredCert = "Certificate for Request MLE with alias {} is expired as of {} . Please update SDK version or provide Request MLE Cert in mleForRequestPublicCertPath param of merchant config.";
-		}
 		
 		if (certificate.getNotAfter() == null) {
             //certificate do not have expire date

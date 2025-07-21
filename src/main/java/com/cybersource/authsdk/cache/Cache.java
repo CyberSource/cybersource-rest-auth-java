@@ -99,9 +99,8 @@ public class Cache {
 
 		//3. Priority 3: get mlecert from default mle cert in SDK as per CAS or PROD env.
 		else {
-			identifier= GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_DEFAULT_CERT;
-			cacheKey = merchantId + "_" + identifier;
-			filePath = MLEUtility.getDefaultMLECertPath(merchantConfig.getRunEnvironment());
+			logger.debug("The certificate to use for MLE for requests is not provided in the merchant configuration. Please ensure that the certificate path is provided.");
+			return null;
 		}
 		
 		X509Certificate mleCert = getMLECertBasedOnCacheKey(merchantConfig, cacheKey, filePath);
@@ -146,20 +145,6 @@ public class Cache {
 				mleCert = newKeyCertGen.initializeMLECertificate(merchantConfig);
 			}catch(Exception e) {
 				throw new MLEException("Error occurred while loading MLE certificate for Request from MerchantP12 in Merchant Config: " + e.getMessage(), e);
-			}
-		}
-		
-		if(cacheKey.endsWith(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_DEFAULT_CERT)) {
-			try {
-				Collection<X509Certificate> certs = Utility.loadCertificatesFromPemFile(filePath);
-				//search the cert for given key alias
-				mleCert = Utility.searchCertificateByAlias(certs, GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
-				if (mleCert == null) {
-					// If no certificate found for the specified alias, fall back to first certificate
-					mleCert = certs.iterator().next();
-				}
-			}catch(Exception e) {
-				throw new MLEException("Error occurred while loading MLE certificate for Request from default mle cert in SDK: " + e.getMessage(), e);
 			}
 		}
 		
