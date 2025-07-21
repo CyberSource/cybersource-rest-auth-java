@@ -41,8 +41,8 @@ public class JWEUtility {
      */
     @Deprecated
     public static String decryptJWEUsingPEM(MerchantConfig merchantConfig, String jweBase64Data) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, ParseException, JOSEException {
-        Cache cache = new Cache(merchantConfig);
-        PrivateKey privateKey =  cache.getJWECachedPrivateKey();
+        Cache cache = new Cache();
+        PrivateKey privateKey =  cache.getJWECachedPrivateKey(merchantConfig);
         JWEDecrypter jweDecrypter = new RSADecrypter(privateKey);
         EncryptedJWT encryptedJWT = EncryptedJWT.parse(jweBase64Data);
         encryptedJWT.decrypt(jweDecrypter);
