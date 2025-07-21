@@ -8,12 +8,13 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 public class TokenGeneratorFactory {
 
 	/**
+	 * Creates and returns an authentication token generator based on merchant configuration.
 	 * 
-	 * @param merchantConfig
-	 * @param requestBody
-	 * @param reqVerb
-	 * @param reqTarget
-	 * @param date
+	 * @param merchantConfig the merchant configuration containing authentication details
+	 * @param requestBody the request payload body
+	 * @param reqVerb the HTTP request method (GET, POST, PUT, etc.)
+	 * @param reqTarget the request target URL path
+	 * @param date the date string for the request
 	 * @return token - may be generated as HTTP signature or JWT
 	 * @throws ConfigException if some value is missing or wrong for merchant
 	 */

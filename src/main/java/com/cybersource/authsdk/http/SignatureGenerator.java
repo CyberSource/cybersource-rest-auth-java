@@ -49,11 +49,13 @@ public class SignatureGenerator {
 	private boolean useMetaKey;
 
 	/**
-	 * @param merchantConfig-contains all information of merchant.
-	 * @param method
-	 * @throws InvalidKeyException      - if key is not valid.
-	 * @throws NoSuchAlgorithmException - if algorithm is not available.
-	 * @throws ConfigException
+	 * Constructs a signature generator for HTTP signature authentication.
+	 * 
+	 * @param merchantConfig contains all information of merchant
+	 * @param method the HTTP request method
+	 * @throws InvalidKeyException if key is not valid.
+	 * @throws NoSuchAlgorithmException if algorithm is not available.
+	 * @throws ConfigException if merchant configuration is invalid
 	 */
 	public SignatureGenerator(MerchantConfig merchantConfig, String method)
 			throws InvalidKeyException, NoSuchAlgorithmException, ConfigException {
@@ -68,13 +70,14 @@ public class SignatureGenerator {
 	}
 	
 	/**
+	 * Generates the HTTP signature for the request.
 	 * 
-	 * @param requestData
-	 * @param reqTarget
-	 * @param date
+	 * @param requestData the request payload data
+	 * @param reqTarget the request target URL path
+	 * @param date the date string for the request
 	 * @return generated signature.
-	 * @throws NoSuchAlgorithmException - if algorithm is not available.
-	 * @throws InvalidKeyException      - if key is not valid.
+	 * @throws NoSuchAlgorithmException if algorithm is not available.
+	 * @throws InvalidKeyException if key is not valid.
 	 */
 	public String signatureGeneration(String requestData, String reqTarget, String date) throws NoSuchAlgorithmException, InvalidKeyException {
 
@@ -136,9 +139,10 @@ public class SignatureGenerator {
 	}
 
 	/**
+	 * Formats the request target based on the HTTP request type.
 	 * 
-	 * @param requestType - GET/PUT/POST/PATCH/DELETE
-	 * @param reqTarget
+	 * @param requestType the HTTP request type (GET/PUT/POST/PATCH/DELETE)
+	 * @param reqTarget the request target URL path
 	 * @return request target as per request type.
 	 */
 	public String getRequestTarget(String requestType, String reqTarget) {

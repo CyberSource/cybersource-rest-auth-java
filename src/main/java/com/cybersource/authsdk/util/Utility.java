@@ -30,12 +30,11 @@ public class Utility {
 	private static final Logger logger = LogManager.getLogger(Utility.class);
 
 	/**
-	 * Checks whether the authentication type is rightly entered with no typo
-	 * error.
+	 * Checks whether the authentication type is rightly entered with no typo error.
 	 * 
 	 * @param authenticationType
-	 *            : HTTP or JWT
-	 * @return -true if valid authentication type else return false.
+	 *            HTTP or JWT
+	 * @return true if valid authentication type else return false.
 	 */
 	public static boolean checkAuthenticationValidation(String authenticationType) {
 		boolean status = false;
@@ -85,9 +84,9 @@ public class Utility {
 	/**
      * Validates that the given file path exists and is not empty.
      *
-     * @param path     The file path to validate.
+     * @param filePath The file path to validate.
      * @param pathType A description of the path type (e.g., "Input file").
-     * @throws IOException              If the file does not exist.
+     * @throws IOException If the file does not exist.
      * @throws IllegalArgumentException If the path is null or empty.
      */
     public static void validatePathAndFile(String filePath, String pathType) throws IOException {
@@ -175,13 +174,16 @@ public class Utility {
 		
 		return null;
 	}
+	
 	/**
-	 * Validate the certificate expire and log in warning
-	 * @param certificate
-	 * @param keyAlias
-	 * @throws MLEException
-	 */
-	public static void validateCertificateExpiry(X509Certificate certificate, String keyAlias, String mleCacheKeyIdentifier) throws MLEException {
+     * Validate the certificate expiry and log a warning if expired or expiring soon.
+     *
+     * @param certificate The X509Certificate to check.
+     * @param keyAlias The alias of the key in the keystore.
+     * @param mleCacheKeyIdentifier Identifier for the MLE cache key.
+     * @throws MLEException if certificate validation fails.
+     */
+    public static void validateCertificateExpiry(X509Certificate certificate, String keyAlias, String mleCacheKeyIdentifier) throws MLEException {
         //Default Warn Message
 		String warnMessageForNotHaveExpiryDate = "Certificate don't have expiry date.";
 		String warnMessageForBeingExpiredCert = "Certificate with alias {} is going to expired on {} . Please update cert before that.";

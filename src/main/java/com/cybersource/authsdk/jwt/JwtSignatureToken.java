@@ -29,9 +29,11 @@ public class JwtSignatureToken implements TokenGenerator {
 	private String signature;
 
 	/**
-	 * @param merchantConfig - list of parameters required for JWT token.
-	 * @param requestBody    - user information to be sent.
-	 * @param reqVerb
+	 * Constructs a JWT signature token generator.
+	 * 
+	 * @param merchantConfig list of parameters required for JWT token
+	 * @param requestBody user information to be sent
+	 * @param reqVerb the HTTP request method
 	 */
 	public JwtSignatureToken(MerchantConfig merchantConfig, String requestBody, String reqVerb) {
 

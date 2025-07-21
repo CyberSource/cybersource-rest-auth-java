@@ -41,11 +41,13 @@ public class HttpSignatureToken implements TokenGenerator {
 	private String date=null;
 
 	 /** 
-	 * @param merchantConfig
-	 * @param reqData
-	 * @param reqVerb
-	 * @param reqTarget
-	 * @param date
+	 * Constructs an HTTP signature token generator.
+	 * 
+	 * @param merchantConfig the merchant configuration containing authentication details
+	 * @param reqData the request payload data
+	 * @param reqVerb the HTTP request method (GET, POST, PUT, etc.)
+	 * @param reqTarget the request target URL path
+	 * @param date the date string for the request
 	 */
 	public HttpSignatureToken(MerchantConfig merchantConfig,String reqData, String reqVerb, String reqTarget, String date) {
 		this.merchantConfigSigHead = merchantConfig;

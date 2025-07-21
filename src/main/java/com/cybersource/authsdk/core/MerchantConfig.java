@@ -270,8 +270,9 @@ public class MerchantConfig {
 	}
 	
 	/**
+	 * Validates merchant configuration details based on request type.
 	 * 
-	 * @param requestTypeData
+	 * @param requestTypeData the HTTP request type to validate
 	 * @return true or false as per validation
 	 * @throws ConfigException if some value is missing for merchant.
 	 */
@@ -328,6 +329,9 @@ public class MerchantConfig {
 	}
 
 	/**
+	 * Validates if the provided request type is supported.
+	 * 
+	 * @param requestTypeData the HTTP request type to validate (GET, POST, PUT, DELETE, PATCH)
 	 * @return true if valid request type else return false.
 	 * @throws ConfigException if some value is missing or wrong for merchant.
 	 */

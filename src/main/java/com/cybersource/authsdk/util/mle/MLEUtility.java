@@ -109,7 +109,7 @@ public class MLEUtility {
      * 
      * @param environment The environment (e.g., "apitest.cybersource.com" or "api.cybersource.com")
      * @return The absolute path to the default MLE certificate for the given environment
-     * @throws MLEException 
+     * @throws MLEException if the environment is invalid or certificate path cannot be determined
      */
     public static String getDefaultMLECertPath(String environment) throws MLEException {
         if (environment == null || environment.isEmpty()) {

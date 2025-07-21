@@ -195,9 +195,10 @@ public class Cache {
 
 	
 	/**
-	 * 
-	 * @param path
-	 * @return
+	 * Gets the last modified time of a file.
+	 *
+	 * @param path the file path to check
+	 * @return the last modified time in milliseconds
 	 */
 	@SuppressWarnings("null")
 	public long getLastModifiedFileTime(String path) {
