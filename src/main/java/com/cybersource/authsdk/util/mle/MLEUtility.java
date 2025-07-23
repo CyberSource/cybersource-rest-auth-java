@@ -59,7 +59,7 @@ public class MLEUtility {
     	// Handling special case : MLE Certificate is not currently available for HTTP Signature
         if(mleCertificate==null && GlobalLabelParameters.HTTP.equalsIgnoreCase(merchantConfig.getAuthenticationType())) {
 		    logger.debug("The certificate to use for MLE for requests is not provided in the merchant configuration. Please ensure that the certificate path is provided.");
-		    logger.debug("Currently, MLE for requests using HTTP Signature as authentication is not supported by Cybersource. By default, the SDK will fall back to non-encrypted requests.");        	
+		    logger.warn("Currently, MLE for requests using HTTP Signature as authentication is not supported by Cybersource. By default, the SDK will fall back to non-encrypted requests.");        	
 		    return localVarPostBody;
         }
         
