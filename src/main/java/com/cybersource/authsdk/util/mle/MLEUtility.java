@@ -32,21 +32,18 @@ public class MLEUtility {
 
     	//isMLE for an api is false by default
         boolean isMLEForAPI = false;
-        boolean isMLESupportedByCybsForApi = false;
+        boolean isMLESupportedByCybsForApi = false; //no need?
 
         if("optional".equalsIgnoreCase(inboundMLEStatus) || "mandatory".equalsIgnoreCase(inboundMLEStatus)) {
             isMLESupportedByCybsForApi = true;
         }
 
-        //check here useMLEGloballyRequest True or False
-        //if API is part of MLE then check for useMLEGloballyRequest global parameter
-        if (isMLESupportedByCybsForApi && merchantConfig.isUseMLEGloballyRequest()) {
-          isMLEForAPI = true;
+        if ("optional".equalsIgnoreCase(inboundMLEStatus) && merchantConfig.isEnableRequestMLEForOptionalApisGlobally()) {
+            isMLEForAPI = true;
         }
 
-        if("mandatory".equalsIgnoreCase(inboundMLEStatus) && merchantConfig.isUseMLEGloballyRequest() == false) {
-            isMLEForAPI = true;
-            logger.warn("MLE is required for this operation (mandatory), but the global MLE flag is disabled. Enabling MLE for this API call as required by CyberSource.");
+        if ("mandatory".equalsIgnoreCase(inboundMLEStatus)) {
+            isMLEForAPI = !merchantConfig.isDisableRequestMLEForMandatoryApisGlobally();
         }
         
         //operationIds are array as there are multiple public function for apiCallFunction such as apiCall,apiCallAsync ..
