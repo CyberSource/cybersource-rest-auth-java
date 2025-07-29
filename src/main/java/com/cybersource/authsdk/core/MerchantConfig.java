@@ -615,6 +615,9 @@ public class MerchantConfig {
 
 		this.setEnableRequestMLEForOptionalApisGlobally(useMLE);
 
+		boolean disableRequestMLEForMandatoryApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("disableRequestMLEForMandatoryApisGlobally"));
+		this.setDisableRequestMLEForMandatoryApisGlobally(disableRequestMLEForMandatoryApisGloballyValue);
+
 		if(null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
 			this.setMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
 		}else {
