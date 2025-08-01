@@ -32,11 +32,6 @@ public class MLEUtility {
 
     	//isMLE for an api is false by default
         boolean isMLEForAPI = false;
-        boolean isMLESupportedByCybsForApi = false; //no need?
-
-        if("optional".equalsIgnoreCase(inboundMLEStatus) || "mandatory".equalsIgnoreCase(inboundMLEStatus)) {
-            isMLESupportedByCybsForApi = true;
-        }
 
         if ("optional".equalsIgnoreCase(inboundMLEStatus) && merchantConfig.isEnableRequestMLEForOptionalApisGlobally()) {
             isMLEForAPI = true;
