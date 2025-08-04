@@ -242,7 +242,12 @@ public class MerchantConfig {
 	/***
 	 *  MLE Feature
 	 */
-	private boolean useMLEGlobally;
+	private boolean useMLEGlobally =false;
+
+	private boolean enableRequestMLEForOptionalApisGlobally= false;
+
+	private boolean disableRequestMLEForMandatoryApisGlobally =false;
+
 	
 	private Map<String, Boolean> mapToControlMLEonAPI;
 	
@@ -609,7 +614,18 @@ public class MerchantConfig {
 			this.setRetryEnabled(false);
 		}
 		//MLE Params
-		this.setUseMLEGlobally(Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally")));
+		boolean enableRequestMLEForOptionalApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally"));
+		boolean useMLEGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally"));
+
+		boolean useMLE = false;
+
+		useMLE = enableRequestMLEForOptionalApisGloballyValue || useMLEGloballyValue;
+
+		this.setEnableRequestMLEForOptionalApisGlobally(useMLE);
+
+		boolean disableRequestMLEForMandatoryApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("disableRequestMLEForMandatoryApisGlobally"));
+		this.setDisableRequestMLEForMandatoryApisGlobally(disableRequestMLEForMandatoryApisGloballyValue);
+
 		if(null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
 			this.setMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
 		}else {
@@ -658,6 +674,18 @@ public class MerchantConfig {
 	}
 	
 	private void validateMLEConfiguration() throws ConfigException {
+
+		// Fetch raw property values
+		String enableRequestMLEForOptionalApisGloballyStr = this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally");
+		String useMLEGloballyStr = this.getProps().getProperty("useMLEGlobally");
+
+		// Only validate if both are set (not null and not empty)
+		if (StringUtils.isNotBlank(enableRequestMLEForOptionalApisGloballyStr) && StringUtils.isNotBlank(useMLEGloballyStr)) {
+			if (Boolean.parseBoolean(enableRequestMLEForOptionalApisGloballyStr) != Boolean.parseBoolean(useMLEGloballyStr)) {
+				logger.error("Both 'enableRequestMLEForOptionalApisGlobally' and 'useMLEGlobally' are set but have different values.");
+				throw new ConfigException("Conflicting values for 'enableRequestMLEForOptionalApisGlobally' and 'useMLEGlobally'. They must be the same.");
+			}
+		}
 		
 		//verify the input path for mle Cert should be correct else throw error in both case mle=true/false
 		if(this.mleForRequestPublicCertPath !=null && !StringUtils.isEmpty(this.mleForRequestPublicCertPath))
@@ -669,7 +697,8 @@ public class MerchantConfig {
 			}
 		}
 		
-		/*boolean mleConfigured = this.useMLEGlobally;
+		/*
+		boolean mleConfigured = this.enableRequestMLEForOptionalApisGlobally;
 
 		if (this.mapToControlMLEonAPI != null && !this.mapToControlMLEonAPI.isEmpty()) {
 			for (boolean value : this.mapToControlMLEonAPI.values()) {
@@ -1080,12 +1109,20 @@ public class MerchantConfig {
 		this.pemFileDirectory = pemFileDirectory;
 	}
 
-	public boolean isUseMLEGlobally() {
-		return useMLEGlobally;
+	public boolean isEnableRequestMLEForOptionalApisGlobally() {
+		return enableRequestMLEForOptionalApisGlobally;
 	}
 
-	private void setUseMLEGlobally(boolean useMLEGlobally) {
-		this.useMLEGlobally = useMLEGlobally;
+	private void setEnableRequestMLEForOptionalApisGlobally(boolean enableRequestMLEForOptionalApisGlobally) {
+		this.enableRequestMLEForOptionalApisGlobally = enableRequestMLEForOptionalApisGlobally;
+	}
+
+	public boolean isDisableRequestMLEForMandatoryApisGlobally() {
+    	return disableRequestMLEForMandatoryApisGlobally;
+	}
+
+	private void setDisableRequestMLEForMandatoryApisGlobally(boolean disableRequestMLEForMandatoryApisGlobally) {
+    	this.disableRequestMLEForMandatoryApisGlobally = disableRequestMLEForMandatoryApisGlobally;
 	}
 
 	public Map<String, Boolean> getMapToControlMLEonAPI() {
