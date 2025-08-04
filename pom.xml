@@ -3,7 +3,7 @@
 	<groupId>com.cybersource</groupId>
 	<artifactId>AuthenticationSdk</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.37-SNAPSHOT</version>
+	<version>0.0.38-SNAPSHOT</version>
 	<name>CyberSource Authentication SDK</name>
 	<url>https://developer.cybersource.com</url>
 	<description>Cybersource Rest Auth SDK</description>
@@ -130,7 +130,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.14.0</version>
+			<version>3.18.0</version>
 		</dependency>
 
 		<dependency>
