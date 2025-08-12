@@ -341,6 +341,23 @@ public class MerchantConfig {
 		}
 	}
 	
+	public MerchantConfig(Properties _props, Map<String, String> defaultHeaders, PrivateKey responseMlePrivateKey) throws ConfigException {
+		if (_props != null) {
+			this.setProps(_props);
+			this.setResponseMlePrivateKey(responseMlePrivateKey);
+			setMerchantDetails();
+			setDefaultHeaders(defaultHeaders);
+		}
+	}
+	
+	public MerchantConfig(Properties _props, PrivateKey responseMlePrivateKey) throws ConfigException {
+		if (_props != null) {
+			this.setProps(_props);
+			this.setResponseMlePrivateKey(responseMlePrivateKey);
+			setMerchantDetails();
+		}
+	}
+	
 	/**
 	 * Validates merchant configuration details based on request type.
 	 * 
