@@ -2,6 +2,7 @@ package com.cybersource.authsdk.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -292,6 +293,34 @@ public class MerchantConfig {
 	 * Parameter to pass the request MLE public certificate path.
 	 */
 	private String mleForRequestPublicCertPath;
+	
+	/**
+	 * Flag to enable MLE (Message Level Encryption) for response body for all APIs in SDK to get MLE Response(encrypted response) if supported by API. 
+	 */
+	private boolean enableResponseMleGlobally;
+	
+	/**
+	 * Parameter to pass the KID value for the MLE response public certificate. This value will be provided in the merchant portal when retrieving the MLE response certificate.
+	 */
+	private String responseMleKID;
+	
+	/**
+	 * Path to the private key file used for Response MLE decryption by the SDK.
+	 * Supported formats: .p12, .key, .pem, etc.
+	 */
+	private String responseMlePrivateKeyFilePath;
+	
+	/**
+	 * Password for the private key file used in Response MLE decryption by the SDK.
+	 * Required for .p12 files or encrypted private keys.
+	 */
+	private String responseMlePrivateKeyFilePassword;
+	
+	/**
+	 * PrivateKey instance used for Response MLE decryption by the SDK.
+	 * Optional — either provide this object directly or specify the private key file path via configuration.
+	 */
+	private PrivateKey responseMlePrivateKey;
 	
 	public MerchantConfig() throws ConfigException {
 
@@ -1188,5 +1217,45 @@ public class MerchantConfig {
 
 	public void setMleForRequestPublicCertPath(String mleForRequestPublicCertPath) {
 		this.mleForRequestPublicCertPath = mleForRequestPublicCertPath;
+	}
+
+	public boolean isEnableResponseMleGlobally() {
+		return enableResponseMleGlobally;
+	}
+
+	public void setEnableResponseMleGlobally(boolean enableResponseMleGlobally) {
+		this.enableResponseMleGlobally = enableResponseMleGlobally;
+	}
+
+	public String getResponseMleKID() {
+		return responseMleKID;
+	}
+
+	public void setResponseMleKID(String responseMleKID) {
+		this.responseMleKID = responseMleKID;
+	}
+
+	public String getResponseMlePrivateKeyFilePath() {
+		return responseMlePrivateKeyFilePath;
+	}
+
+	public void setResponseMlePrivateKeyFilePath(String responseMlePrivateKeyFilePath) {
+		this.responseMlePrivateKeyFilePath = responseMlePrivateKeyFilePath;
+	}
+
+	public String getResponseMlePrivateKeyFilePassword() {
+		return responseMlePrivateKeyFilePassword;
+	}
+
+	public void setResponseMlePrivateKeyFilePassword(String responseMlePrivateKeyFilePassword) {
+		this.responseMlePrivateKeyFilePassword = responseMlePrivateKeyFilePassword;
+	}
+
+	public PrivateKey getResponseMlePrivateKey() {
+		return responseMlePrivateKey;
+	}
+
+	public void setResponseMlePrivateKey(PrivateKey responseMlePrivateKey) {
+		this.responseMlePrivateKey = responseMlePrivateKey;
 	}
 }
