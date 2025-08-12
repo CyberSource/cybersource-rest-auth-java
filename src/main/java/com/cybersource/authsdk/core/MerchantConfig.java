@@ -239,20 +239,58 @@ public class MerchantConfig {
 	 */
 	private boolean merchantDetailsSet = false;
 
-	/***
-	 *  MLE Feature
+	
+	//MLE Params for Request Body
+	/**
+	 * Deprecated flag to enable MLE for request. This flag is now known as "enableRequestMLEForOptionalApisGlobally"
 	 */
 	private boolean useMLEGlobally =false;
-
+	
+	/**
+	 * Flag to enable MLE (Message Level Encryption) for request body to all APIs in SDK which have optional support for MLE. 
+	 * This means the API can send both non-encrypted and encrypted requests.
+	 */
 	private boolean enableRequestMLEForOptionalApisGlobally= false;
 
+	/**
+	 * Flag to disable MLE (Message Level Encryption) for request body to APIs in SDK which have mandatory MLE requirement when sending calls.
+	 */
 	private boolean disableRequestMLEForMandatoryApisGlobally =false;
-
 	
+	/**
+	 * Map to control MLE (Message Level Encryption) settings for individual API functions. This overrides global MLE configuration for specific APIs.
+	 * The key is the function name of the API in the SDK, and the value is a String in the format "requestMLE::responseMLE" separated by "::",
+	 * where the first boolean value controls MLE for the request and the second boolean value controls MLE for the response.
+	 * Use "true" to enable or "false" to disable MLE for that specific component.
+	 * 
+	 * Valid Examples:
+	 * mapToControlMLEonAPI.put("apiFunctionName1", "true::true") - enables MLE for both request and response for apiFunctionName1
+	 * mapToControlMLEonAPI.put("apiFunctionName2", "false::false") - disables MLE for both request and response for apiFunctionName2
+	 * mapToControlMLEonAPI.put("apiFunctionName3", "true::false") - enables request MLE only, disables response MLE for apiFunctionName3
+	 * mapToControlMLEonAPI.put("apiFunctionName4", "false::true") - disables request MLE, enables response MLE only for apiFunctionName4
+	 * mapToControlMLEonAPI.put("apiFunctionName5", "false") - disables request MLE only. Since the "::" separator is not included, mleForResponse will use the default value set by the global flag
+	 * mapToControlMLEonAPI.put("apiFunctionName6", "true") - enables request MLE only. Since the "::" separator is not included, mleForResponse will use the default value set by the global flag
+	 * mapToControlMLEonAPI.put("apiFunctionName7", "::true") - enables response MLE only. Because the value before "::" is missing, the SDK will use the default request MLE value from the global flag
+	 * mapToControlMLEonAPI.put("apiFunctionName8", "true::") - enables request MLE only. Since the value after the "::" separator is missing, mleForResponse will use the default value
+	 * 
+	 * Invalid Examples (will be ignored or cause errors):
+	 * mapToControlMLEonAPI.put("apiFunctionName9", "::") - both values empty, will use global defaults
+	 * mapToControlMLEonAPI.put("apiFunctionName10", "invalid::true") - invalid first value, may cause parsing error
+	 * mapToControlMLEonAPI.put("apiFunctionName11", "true::invalid") - invalid second value, may cause parsing error
+	 * mapToControlMLEonAPI.put("apiFunctionName12", "true::true::false") - multiple separators not allowed
+	 * mapToControlMLEonAPI.put("apiFunctionName13", "") - empty string not allowed
+	 */
 	private Map<String, Boolean> mapToControlMLEonAPI;
 	
-	private String mleKeyAlias;
+	/**
+	 * Optional parameter. User can pass a custom requestMleKeyAlias to fetch from the certificate.
+	 * Older flag "mleKeyAlias" is deprecated and will be used as alias/another name for requestMleKeyAlias.
+	 */
+	private String requestMleKeyAlias;
 	
+	/**
+	 * Parameter to pass the request MLE public certificate path.
+	 */
 	private String mleForRequestPublicCertPath;
 	
 	public MerchantConfig() throws ConfigException {
@@ -626,11 +664,14 @@ public class MerchantConfig {
 		boolean disableRequestMLEForMandatoryApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("disableRequestMLEForMandatoryApisGlobally"));
 		this.setDisableRequestMLEForMandatoryApisGlobally(disableRequestMLEForMandatoryApisGloballyValue);
 
-		if(null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
-			this.setMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
+		if(null != this.getProps().getProperty("requestMleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("requestMleKeyAlias").trim())) {
+			this.setRequestMleKeyAlias((String)this.getProps().getProperty("requestMleKeyAlias").trim());
+		}else if((null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim()))) {
+			this.setRequestMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
 		}else {
-			this.setMleKeyAlias(GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
+			this.setRequestMleKeyAlias(GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
 		}
+		
 		if (null != this.getProps().getProperty("mleForRequestPublicCertPath") && !StringUtils.isEmpty(this.getProps().getProperty("mleForRequestPublicCertPath").trim()) ) {
 			this.setMleForRequestPublicCertPath(this.getProps().getProperty("mleForRequestPublicCertPath").trim());		
 		}
@@ -1133,12 +1174,12 @@ public class MerchantConfig {
 		this.mapToControlMLEonAPI = mapToControlMLEonAPI;
 	}
 
-	public String getMleKeyAlias() {
-		return mleKeyAlias;
+	public String getRequestMleKeyAlias() {
+		return requestMleKeyAlias;
 	}
 
-	private void setMleKeyAlias(String mleKeyAlias) {
-		this.mleKeyAlias = mleKeyAlias;
+	private void setRequestMleKeyAlias(String requestMleKeyAlias) {
+		this.requestMleKeyAlias = requestMleKeyAlias;
 	}
 
 	public String getMleForRequestPublicCertPath() {

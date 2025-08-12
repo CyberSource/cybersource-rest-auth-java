@@ -80,7 +80,7 @@ public class KeyCertificateGenerator {
 	 */
 	public X509Certificate initializeMLECertificate(MerchantConfig merchantConfig) throws CertificateException,
 	NoSuchAlgorithmException, IOException, KeyStoreException, ConfigException, Exception {
-		if (merchantConfig != null && merchantConfig.getMleKeyAlias() != null && merchantConfig.getKeyFile() != null) {
+		if (merchantConfig != null && merchantConfig.getRequestMleKeyAlias() != null && merchantConfig.getKeyFile() != null) {
 			KeyStore merchantKeyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
 			merchantKeyStore.load(new FileInputStream(merchantConfig.getKeyFile()),
 					merchantConfig.getKeyPass().toCharArray());
@@ -95,13 +95,13 @@ public class KeyCertificateGenerator {
 				array.add(merchantKeyAlias);
 
 			}
-			merchantKeyAlias = keyAliasValidator(array,merchantConfig.getMleKeyAlias());
+			merchantKeyAlias = keyAliasValidator(array,merchantConfig.getRequestMleKeyAlias());
 
 			try {
 				X509Certificate certificate = (X509Certificate) merchantKeyStore.getCertificate(merchantKeyAlias);
 				return certificate;
 			} catch (Exception var5) {
-				throw new MLEException("No certificate found for Request MLE for given mleKeyAlias "+  merchantConfig.getMleKeyAlias() + " in p12 file " + merchantConfig.getKeyFilename() + ".p12");
+				throw new MLEException("No certificate found for Request MLE for given requestMleKeyAlias "+  merchantConfig.getRequestMleKeyAlias() + " in p12 file " + merchantConfig.getKeyFilename() + ".p12");
 			}
 
 		} else {

@@ -104,7 +104,7 @@ public class Cache {
 		}
 		
 		X509Certificate mleCert = getMLECertBasedOnCacheKey(merchantConfig, cacheKey, filePath);
-		Utility.validateCertificateExpiry(mleCert, merchantConfig.getMleKeyAlias(), identifier);
+		Utility.validateCertificateExpiry(mleCert, merchantConfig.getRequestMleKeyAlias(), identifier);
 		return mleCert;
 	}
 
@@ -127,11 +127,11 @@ public class Cache {
 			try {
 				Collection<X509Certificate> certs = Utility.loadCertificatesFromPemFile(filePath);
 				//search the cert for given key alias
-				mleCert = Utility.searchCertificateByAlias(certs, merchantConfig.getMleKeyAlias());
+				mleCert = Utility.searchCertificateByAlias(certs, merchantConfig.getRequestMleKeyAlias());
 				if (mleCert == null) {
 					// If no certificate found for the specified alias, fall back to first certificate
 					String fileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
-					logger.warn("No certificate found for the specified mleKeyAlias '{}'. Using the first certificate from file {} as the MLE request certificate.", merchantConfig.getMleKeyAlias(), fileName);
+					logger.warn("No certificate found for the specified requestMleKeyAlias '{}'. Using the first certificate from file {} as the MLE request certificate.", merchantConfig.getRequestMleKeyAlias(), fileName);
 					mleCert = certs.iterator().next(); //first cert
 				}
 			}catch(Exception e) {
