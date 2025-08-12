@@ -297,7 +297,7 @@ public class MerchantConfig {
 	/**
 	 * Flag to enable MLE (Message Level Encryption) for response body for all APIs in SDK to get MLE Response(encrypted response) if supported by API. 
 	 */
-	private boolean enableResponseMleGlobally;
+	private boolean enableResponseMleGlobally=false;
 	
 	/**
 	 * Parameter to pass the KID value for the MLE response public certificate. This value will be provided in the merchant portal when retrieving the MLE response certificate.
@@ -729,6 +729,23 @@ public class MerchantConfig {
 				logger.warn("Unable to initialise MLE control Map from config");
 			}
 		}
+		
+		//set mle response configs
+		boolean enableResponseMleGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("enableResponseMleGlobally"));
+		this.setEnableResponseMleGlobally(enableResponseMleGloballyValue);
+		
+		if (null != this.getProps().getProperty("responseMleKID") && !StringUtils.isEmpty(this.getProps().getProperty("responseMleKID").trim())) {
+		    this.setResponseMleKID(this.getProps().getProperty("responseMleKID").trim());
+		}
+		
+		if (null != this.getProps().getProperty("responseMlePrivateKeyFilePath") && !StringUtils.isEmpty(this.getProps().getProperty("responseMlePrivateKeyFilePath").trim())) {
+		    this.setResponseMlePrivateKeyFilePath(this.getProps().getProperty("responseMlePrivateKeyFilePath").trim());
+		}
+		
+		if (null != this.getProps().getProperty("responseMlePrivateKeyFilePassword") && !StringUtils.isEmpty(this.getProps().getProperty("responseMlePrivateKeyFilePassword"))) {
+		    this.setResponseMlePrivateKeyFilePassword(this.getProps().getProperty("responseMlePrivateKeyFilePassword"));
+		}
+        
 		validateMLEConfiguration();
 		
 		this.setRetryDelay(Long.valueOf(this.getProps().getProperty("retryDelay", "0")));
@@ -809,6 +826,8 @@ public class MerchantConfig {
 		if(GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			checkKeyFile();
 		}
+		
+		//ToDo- validate the MLE Response Config
 	}
 
 	/**
