@@ -826,8 +826,37 @@ public class MerchantConfig {
 		if(GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			checkKeyFile();
 		}
-		
-		//ToDo- validate the MLE Response Config
+        
+		// Validate MLE Response Configuration
+		if (this.enableResponseMleGlobally) {
+			//validate for Auth type- Currently responseMLE feature will be enabled for JWT auth type only
+			if (!GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
+				logger.error("Response MLE is only supported for JWT auth type");
+				throw new ConfigException("Response MLE is only supported for JWT auth type");
+			}
+			
+			// Check if either private key object or private key file path is provided
+			if (this.responseMlePrivateKey == null && StringUtils.isEmpty(this.responseMlePrivateKeyFilePath)) {
+				logger.error("ConfigException : Response MLE is enabled but no private key provided. Either set responseMlePrivateKey object or provide responseMlePrivateKeyFilePath.");
+				throw new ConfigException("Response MLE is enabled but no private key provided. Either set responseMlePrivateKey object or provide responseMlePrivateKeyFilePath.");
+			}
+			
+			// If private key file path is provided, validate the file exists
+			if (StringUtils.isNotEmpty(this.responseMlePrivateKeyFilePath)) {
+				try {
+					Utility.validatePathAndFile(this.responseMlePrivateKeyFilePath, "responseMlePrivateKeyFilePath");
+				} catch (IOException e) {
+					logger.error("ConfigException : Invalid responseMlePrivateKeyFilePath - " + e.getMessage());
+					throw new ConfigException("Invalid responseMlePrivateKeyFilePath - " + e.getMessage());
+				}
+			}
+			    
+			   
+//			if (StringUtils.isEmpty(this.responseMleKID)) {
+//				logger.error("ConfigException : Response MLE is enabled but responseMleKID is not provided.");
+//				throw new ConfigException("Response MLE is enabled but responseMleKID is not provided.");
+//			} // Validate responseMleKID is provided when response MLE is enabled
+		}
 	}
 
 	/**
