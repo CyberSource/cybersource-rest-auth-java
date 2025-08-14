@@ -75,6 +75,33 @@ public class MLEUtility {
         logger.debug("LOG_REQUEST_AFTER_MLE: " + new Gson().toJson(mleRequest));
         return mleRequest;
     }
+    
+    public static boolean checkIsResponseMLEForAPI(MerchantConfig merchantConfig, String operationIds) {
+
+    	//isMLE for response for an api is false by default
+        boolean isResponseMLEForAPI = false;
+
+        if (merchantConfig.isEnableResponseMleGlobally()) {
+            isResponseMLEForAPI = true;
+        }
+
+        
+        //operationIds are array as there are multiple public function for apiCallFunction such as apiCall,apiCallAsync ..
+        String[] operationArray = Arrays.stream(operationIds.split(",")).map(String::trim).toArray(String[]::new);
+        
+        //Control the Response MLE only from map
+        //Special Note: If API expect MLE Response mandatory and map is saying to receive non MLE response then API might throw an error from CyberSource
+        if (merchantConfig.getInternalMapToControlResponseMLEonAPI() != null && !merchantConfig.getInternalMapToControlResponseMLEonAPI().isEmpty() ) {
+        	for (String operationId : operationArray) {
+        		if(merchantConfig.getInternalMapToControlResponseMLEonAPI().containsKey(operationId)) {
+        			isResponseMLEForAPI = merchantConfig.getInternalMapToControlResponseMLEonAPI().get(operationId);
+        			break;
+        		}
+        	}
+        }
+
+        return isResponseMLEForAPI;
+    }
 
     private static X509Certificate getCertificate(MerchantConfig merchantConfig) throws MLEException {
     	X509Certificate mleCert = null;
