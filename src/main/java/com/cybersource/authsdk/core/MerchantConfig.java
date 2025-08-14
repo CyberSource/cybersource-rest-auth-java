@@ -920,6 +920,12 @@ public class MerchantConfig {
 					throw new ConfigException("Invalid responseMlePrivateKeyFilePath - " + e.getMessage());
 				}
 			}
+			
+			// Validate responseMleKID is provided when response MLE is enabled
+			if (StringUtils.isEmpty(this.responseMleKID)) {
+				logger.error("ConfigException : Response MLE is enabled but responseMleKID is not provided.");
+				throw new ConfigException("Response MLE is enabled but responseMleKID is not provided.");
+			} 
 		}
 	}
 
