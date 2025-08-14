@@ -63,6 +63,16 @@ public class Utility {
 		}
 		return temp;
 	}
+	
+	/**
+     * Helper method to validate if a string represents a valid boolean value.
+     * 
+     * @param value the string to validate
+     * @return true if the string is "true" or "false" (case-insensitive), false otherwise
+     */
+    public static boolean isValidBooleanString(String value) {
+        return "true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value);
+    }
 
 	public static String extractSerialNumber(X509Certificate x509Certificate) {
 		String serialNumber = null;

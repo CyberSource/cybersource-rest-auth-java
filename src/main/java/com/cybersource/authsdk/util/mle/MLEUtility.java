@@ -41,10 +41,10 @@ public class MLEUtility {
         
         //Control the MLE only from map
         //Special Note: If API expect MLE request mandatory and map is saying to send non MLE request then API will throw an error from CyberSource
-        if (merchantConfig.getMapToControlMLEonAPI() != null && !merchantConfig.getMapToControlMLEonAPI().isEmpty() ) {
+        if (merchantConfig.getInternalMapToControlRequestMLEonAPI() != null && !merchantConfig.getInternalMapToControlRequestMLEonAPI().isEmpty() ) {
         	for (String operationId : operationArray) {
-        		if(merchantConfig.getMapToControlMLEonAPI().containsKey(operationId)) {
-        			isMLEForAPI = merchantConfig.getMapToControlMLEonAPI().get(operationId);
+        		if(merchantConfig.getInternalMapToControlRequestMLEonAPI().containsKey(operationId)) {
+        			isMLEForAPI = merchantConfig.getInternalMapToControlRequestMLEonAPI().get(operationId);
         			break;
         		}
         	}
