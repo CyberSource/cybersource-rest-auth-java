@@ -18,6 +18,8 @@ import com.cybersource.authsdk.core.TokenGenerator;
 import com.cybersource.authsdk.jwtsecurity.JWTCryptoProcessorImpl;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 
+import net.minidev.json.JSONObject;
+
 public class JwtSignatureToken implements TokenGenerator {
 	private static Logger logger = LogManager.getLogger(JwtSignatureToken.class);
 	
@@ -27,6 +29,7 @@ public class JwtSignatureToken implements TokenGenerator {
 	private RSAPrivateKey rsaPrivateKey = null;
 	private X509Certificate x509Certificate = null;
 	private String signature;
+	private boolean isResponseMLEForApi;
 
 	/**
 	 * Constructs a JWT signature token generator.
@@ -35,12 +38,13 @@ public class JwtSignatureToken implements TokenGenerator {
 	 * @param requestBody user information to be sent
 	 * @param reqVerb the HTTP request method
 	 */
-	public JwtSignatureToken(MerchantConfig merchantConfig, String requestBody, String reqVerb) {
+	public JwtSignatureToken(MerchantConfig merchantConfig, String requestBody, String reqVerb, boolean isResponseMLEForApi) {
 
 		this.merchantConfig = merchantConfig;
 		this.requestBody = requestBody;
 		this.jwtMethod = reqVerb;
 		this.cache = new Cache();
+		this.isResponseMLEForApi = isResponseMLEForApi;
 	}
 
 	@Override
@@ -75,18 +79,24 @@ public class JwtSignatureToken implements TokenGenerator {
 
 				String claimSet = null;
 				String method = jwtMethod;
-				if (method.equalsIgnoreCase(GlobalLabelParameters.GET)
-						|| method.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
-					claimSet = "{\n            \"iat\":\"" + ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT)
-							+ "\"\n} \n\n";
+				
+				JSONObject claimSetJson = new JSONObject();
+
+				if (method.equalsIgnoreCase(GlobalLabelParameters.GET) || method.equalsIgnoreCase(GlobalLabelParameters.DELETE)) {
+					claimSetJson.put("iat", ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
 				} else if (method.equalsIgnoreCase(GlobalLabelParameters.POST)
 						|| method.equalsIgnoreCase(GlobalLabelParameters.PUT)
 						|| method.equalsIgnoreCase(GlobalLabelParameters.PATCH)) {
-					claimSet = "{\n            \"digest\":\"" + encryptedSigMessage
-							+ "\",\n            \"digestAlgorithm\":\"SHA-256\",\n            \"iat\":\""
-							+ ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT) + "\"\n} \n\n";
-
+					claimSetJson.put("digest", encryptedSigMessage);
+					claimSetJson.put("digestAlgorithm", "SHA-256");
+					claimSetJson.put("iat", ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
 				}
+				
+				if(this.isResponseMLEForApi) {
+					claimSetJson.put("v-c-response-mle-kid", merchantConfig.getResponseMleKID());
+				}
+				claimSet = claimSetJson.toJSONString();
+				
 				/* Preparing the Signature Header. */
 				HashMap<String, Object> customHeaders = new HashMap<String, Object>();
 				if (merchantConfig.getMerchantID() != null) {
