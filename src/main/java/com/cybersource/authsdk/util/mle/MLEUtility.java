@@ -58,7 +58,7 @@ public class MLEUtility {
             return null;
         }
     	
-    	X509Certificate mleCertificate = getCertificate(merchantConfig);        
+    	X509Certificate mleCertificate = getRequestMleCertificate(merchantConfig);        
     	// Handling special case : MLE Certificate is not currently available for HTTP Signature
         if(mleCertificate==null && GlobalLabelParameters.HTTP.equalsIgnoreCase(merchantConfig.getAuthenticationType())) {
 		    logger.debug("The certificate to use for MLE for requests is not provided in the merchant configuration. Please ensure that the certificate path is provided.");
@@ -103,7 +103,7 @@ public class MLEUtility {
         return isResponseMLEForAPI;
     }
 
-    private static X509Certificate getCertificate(MerchantConfig merchantConfig) throws MLEException {
+    private static X509Certificate getRequestMleCertificate(MerchantConfig merchantConfig) throws MLEException {
     	X509Certificate mleCert = null;
     	mleCert = cache.getRequestMLECertFromCache(merchantConfig);
     	if(null != mleCert) {
