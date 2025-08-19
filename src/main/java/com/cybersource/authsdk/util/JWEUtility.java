@@ -37,6 +37,14 @@ public class JWEUtility {
     /**
      * This method has been marked as Deprecated and will be removed in coming releases.
      *
+     * @param merchantConfig the merchant configuration containing JWE decryption details
+     * @param jweBase64Data the base64 encoded JWE data to decrypt
+     * @return the decrypted payload as a string
+     * @throws NoSuchAlgorithmException if the algorithm is not available
+     * @throws IOException if an I/O error occurs
+     * @throws InvalidKeySpecException if the key specification is invalid
+     * @throws ParseException if the JWE cannot be parsed
+     * @throws JOSEException if a JOSE processing error occurs
      * @deprecated use {@link #decryptJWEUsingPrivateKey(PrivateKey, String)} instead.
      */
     @Deprecated
@@ -55,6 +63,12 @@ public class JWEUtility {
      * from the PEM file / any other source and pass it to the SDK
      * using the method {@link #decryptJWEUsingPrivateKey(PrivateKey, String)}
      *
+     * @param pemFilepath the path to the PEM file containing the private key
+     * @return the private key read from the PEM file
+     * @throws FileNotFoundException if the PEM file is not found
+     * @throws IOException if an I/O error occurs while reading the file
+     * @throws NoSuchAlgorithmException if the RSA algorithm is not available
+     * @throws InvalidKeySpecException if the key specification is invalid
      * @deprecated
      */
     @Deprecated

@@ -18,6 +18,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import com.cybersource.authsdk.core.ConfigException;
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.cybersource.authsdk.util.mle.MLEException;
 
 public class KeyCertificateGenerator {
 
@@ -100,7 +101,7 @@ public class KeyCertificateGenerator {
 				X509Certificate certificate = (X509Certificate) merchantKeyStore.getCertificate(merchantKeyAlias);
 				return certificate;
 			} catch (Exception var5) {
-				return null;
+				throw new MLEException("No certificate found for Request MLE for given mleKeyAlias "+  merchantConfig.getMleKeyAlias() + " in p12 file " + merchantConfig.getKeyFilename() + ".p12");
 			}
 
 		} else {

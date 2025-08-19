@@ -109,5 +109,7 @@ public class GlobalLabelParameters {
 	public static final String CACHE_EXTEND = " New Data present:: Inserting Data in Cache";
 	public static final Long CERTIFICATE_EXPIRY_DATE_WARNING_DAYS = 90L;
 	public static final String DEFAULT_MLE_ALIAS_FOR_CERT = "CyberSource_SJC_US";
+	public static final String MLE_CACHE_KEY_IDENTIFIER_FOR_CONFIG_CERT = "mleCertFromMerchantConfig";
+	public static final String MLE_CACHE_KEY_IDENTIFIER_FOR_P12_CERT = "mleCertFromP12";
 	
 }
