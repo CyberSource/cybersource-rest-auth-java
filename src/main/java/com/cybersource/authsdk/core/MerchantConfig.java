@@ -622,6 +622,7 @@ public class MerchantConfig {
 		useMLE = enableRequestMLEForOptionalApisGloballyValue || useMLEGloballyValue;
 
 		this.setEnableRequestMLEForOptionalApisGlobally(useMLE);
+		this.useMLEGlobally=useMLEGloballyValue;
 
 		boolean disableRequestMLEForMandatoryApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("disableRequestMLEForMandatoryApisGlobally"));
 		this.setDisableRequestMLEForMandatoryApisGlobally(disableRequestMLEForMandatoryApisGloballyValue);
@@ -1107,6 +1108,11 @@ public class MerchantConfig {
 
 	public void setPemFileDirectory(String pemFileDirectory) {
 		this.pemFileDirectory = pemFileDirectory;
+	}
+
+	public boolean isUseMLEGlobally() {
+		System.out.println("useMLEGlobally" +  useMLEGlobally);
+		return useMLEGlobally;
 	}
 
 	public boolean isEnableRequestMLEForOptionalApisGlobally() {
