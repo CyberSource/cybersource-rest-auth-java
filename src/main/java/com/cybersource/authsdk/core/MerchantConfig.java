@@ -911,6 +911,12 @@ public class MerchantConfig {
 				throw new ConfigException("Response MLE is enabled but no private key provided. Either set responseMlePrivateKey object or provide responseMlePrivateKeyFilePath.");
 			}
 			
+			//Check both private key object or private key file path should not be provided
+			if (this.responseMlePrivateKey != null && StringUtils.isNotEmpty(this.responseMlePrivateKeyFilePath)) {
+			    logger.error("ConfigException : Both responseMlePrivateKey object and responseMlePrivateKeyFilePath are provided. Please provide only one of them for response mle private key.");
+			    throw new ConfigException("Both responseMlePrivateKey object and responseMlePrivateKeyFilePath are provided. Please provide only one of them for response mle private key..");
+			}
+			
 			// If private key file path is provided, validate the file exists
 			if (StringUtils.isNotEmpty(this.responseMlePrivateKeyFilePath)) {
 				try {
