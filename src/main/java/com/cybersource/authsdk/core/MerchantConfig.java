@@ -131,7 +131,7 @@ public class MerchantConfig {
 	/***
 	 * Certificate file object
 	 */
-	private File keyFile;
+	private volatile File keyFile;
 
 	/* OAuth2.0 Authentication related parameters */
 
@@ -686,13 +686,10 @@ public class MerchantConfig {
 
 	/**
 	 * @return true if key file is available else return false.
-	 * @throws ConfigException if some value is missing or wrong for merchant.
-	 */
-	public boolean checkKeyFile() throws ConfigException {
+     */
+	public boolean checkKeyFile() {
 		File newFile = null;
-
-		this.setKeyFile(null);
-
+		boolean isKeyFileValid = true;
 		if (this.getKeyFilename() == null || this.getKeyFilename().isEmpty()) {
 			logger.error(GlobalLabelParameters.KEY_FILE_EMPTY);
 			if (this.getMerchantID() != null) {
@@ -708,6 +705,10 @@ public class MerchantConfig {
 
 		if (!newFile.isDirectory()) {
 			logger.error(GlobalLabelParameters.KEY_FILE_DIRECTORY_NOT_FOUND + " : " + this.keysDirectory);
+			isKeyFileValid = false;
+		}
+		if (!isKeyFileValid) {
+			this.setKeyFile(null);
 			return false;
 		}
 		try {
@@ -717,24 +718,28 @@ public class MerchantConfig {
 				logger.error(GlobalLabelParameters.KEY_FILE_NOT_FOUND + " : "
 						+ this.keysDirectory.concat("/").concat(this.getKeyFilename())
 						+ GlobalLabelParameters.P12_EXTENSION);
-				return false;
+				isKeyFileValid = false;
 			}
 
 			logger.info(GlobalLabelParameters.KEY_FILE + " : "
 					+ this.keysDirectory.concat("/").concat(this.getKeyFilename())
 					+ GlobalLabelParameters.P12_EXTENSION);
 		} catch (Exception e) {
-			return false;
+			isKeyFileValid = false;
 		}
 		boolean isRead = newFile.canRead();
 
 		if (isRead) {
-			this.setKeyFile(newFile);
-			return true;
+			isKeyFileValid = true;
 		} else {
 			logger.info(GlobalLabelParameters.FILE_NOT_READ + " : " + this.keysDirectory.concat(this.getKeyFilename()));
-			return false;
 		}
+		if (isKeyFileValid) {
+			this.setKeyFile(newFile);
+		} else {
+			this.setKeyFile(null);
+		}
+		return isKeyFileValid;
 	}
 
 	/*
