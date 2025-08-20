@@ -121,6 +121,37 @@ public class Cache {
 	}
 
 	private void setUpMLECache(MerchantConfig merchantConfig, String cacheKey, String filePath) throws MLEException {
+		if(cacheKey.endsWith(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_RESPONSE_PRIVATE_KEY)) {
+			String password = merchantConfig.getResponseMlePrivateKeyFilePassword();
+			PrivateKey mlePrivateKey = null;
+		    try {
+		        String fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
+		        // Case 1 - PKCS#12 formats (.p12, .pfx)
+		        if ("p12".equals(fileExtension) || "pfx".equals(fileExtension)) {
+		            mlePrivateKey = Utility.readPrivateKeyFromP12(filePath, password.toCharArray());
+		        }
+		        // Case 2 - PEM-based formats (.pem, .key, .p8) - handles PKCS#1 and PKCS#8, encrypted and unencrypted
+		        else if ("pem".equals(fileExtension) || "key".equals(fileExtension) || "p8".equals(fileExtension)) {
+		            mlePrivateKey = Utility.loadPrivateKeyFromPemFile(filePath, password.toCharArray());
+		        }
+		        else {
+		            throw new MLEException("Unsupported Response MLE Private Key file format: " + fileExtension + 
+		                ". Supported formats are: .p12, .pfx, .pem, .key, .p8");
+		        }
+		        
+		        // Cache the private key
+		        Identity mleIdentity = new Identity();
+		        mleIdentity.setLastModifiedDate(getLastModifiedFileTime(filePath));
+		        mleIdentity.setRsaPrivateKey((RSAPrivateKey) mlePrivateKey);
+		        cacheMLE.put(cacheKey, mleIdentity);
+		        
+		    } catch (Exception e) {
+		    	logger.error("Error loading MLE response private key from: " + filePath + ". Error: " + e.getMessage());
+		        throw new MLEException("Error loading MLE response private key from: " + filePath + ". Error: " + e.getMessage());
+		    }
+		    return;
+		}
+		
 		X509Certificate mleCert =null;
 		
 		if(cacheKey.endsWith(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_CONFIG_CERT)) {
@@ -176,6 +207,23 @@ public class Cache {
 		cachedJWEPrivateKey.setLastModifiedTimeStamp(lastModifiedTime);
 		cachedJWEPrivateKey.setPrivateKey(privateKey);
 		cachePEM.put("privateKeyFromPEMFile", cachedJWEPrivateKey);
+	}
+	
+	public PrivateKey getMleResponsePrivateKeyFromFilePath(MerchantConfig merchantConfig) throws MLEException {
+		String merchantId = merchantConfig.getMerchantID();
+		String identifier = GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_RESPONSE_PRIVATE_KEY;
+		String cacheKey = merchantId + "_" + identifier;
+		String mleResponsePrivateKeyFilePath = merchantConfig.getResponseMlePrivateKeyFilePath();
+		
+		if(!cacheMLE.containsKey(cacheKey)) {
+			setUpMLECache(merchantConfig, cacheKey, mleResponsePrivateKeyFilePath);
+		}else {
+			Identity mleIdentity = cacheMLE.get(cacheKey);
+			if (mleIdentity==null || mleIdentity.getLastModifiedDate() != getLastModifiedFileTime(mleResponsePrivateKeyFilePath)) {
+				setUpMLECache(merchantConfig, cacheKey, mleResponsePrivateKeyFilePath);
+			}
+		}
+		return cacheMLE.get(cacheKey).getRsaPrivateKey();
 	}
 
 	
