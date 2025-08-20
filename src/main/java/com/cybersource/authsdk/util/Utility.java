@@ -2,24 +2,40 @@ package com.cybersource.authsdk.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMEncryptedKeyPair;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8DecryptorProviderBuilder;
+import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
+import org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfo;
 
 import com.cybersource.authsdk.util.mle.MLEException;
-import com.cybersource.authsdk.util.mle.MLEUtility;
 
 public class Utility {
 	private enum validationType {
@@ -224,6 +240,79 @@ public class Utility {
             	logger.warn(warnMessageForBeingExpiredCert,keyAlias,certificate.getNotAfter());
             }
         }
-    }   
+    }
+    
+    public static PrivateKey readPrivateKeyFromP12(String p12FilePath, char[] password) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException 
+    {
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        
+        try (FileInputStream fis = new FileInputStream(p12FilePath)) {
+            keyStore.load(fis, password);
+        }
+        
+        Enumeration<String> aliases = keyStore.aliases();
+        
+        if (!aliases.hasMoreElements()) {
+            throw new RuntimeException("Keystore is empty - no aliases found");
+        }
+        
+        while (aliases.hasMoreElements()) {
+            String alias = aliases.nextElement();
+            // First check if this alias contains a key entry (not just a certificate)
+            if (keyStore.isKeyEntry(alias)) {
+            	try {
+                     PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, password);
+                     
+                     // Additional null check - getKey() returns null if no private key found
+                     if (privateKey != null) {
+                         return privateKey;
+                     }
+                } catch (UnrecoverableKeyException e) {
+                     // This could happen with wrong password or corrupted key
+                     // System.err.println("Could not recover key for alias: " + alias + " - " + e.getMessage());
+                     continue; // Try next alias
+                }
+            }
+        }
+        
+        throw new RuntimeException("No private key found in the P12 file");
+    }
+    
+    public static PrivateKey loadPrivateKeyFromPemFile(String keyFilePath, char[] password) throws Exception {
+	    Security.addProvider(new BouncyCastleProvider());
+	    try (FileReader keyReader = new FileReader(keyFilePath);
+	        PEMParser pemParser = new PEMParser(keyReader)) {
+	        Object object = pemParser.readObject();
+	        JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
+
+	        if (object instanceof PEMKeyPair) {
+	            // Unencrypted PKCS#1 key
+	            return converter.getKeyPair((PEMKeyPair) object).getPrivate();
+	        } else if (object instanceof PEMEncryptedKeyPair) {
+	            // Encrypted PKCS#1 key
+	            if (password == null) {
+	                throw new IllegalArgumentException("Private key is password protected, but no password was provided.");
+	            }
+	            JcePEMDecryptorProviderBuilder decProvBuilder = new JcePEMDecryptorProviderBuilder();
+	            PEMEncryptedKeyPair encKeyPair = (PEMEncryptedKeyPair) object;
+	            PEMKeyPair decryptedKeyPair = encKeyPair.decryptKeyPair(decProvBuilder.build(password));
+	            return converter.getKeyPair(decryptedKeyPair).getPrivate();
+	        } else if (object instanceof PrivateKeyInfo) {
+	            // Unencrypted PKCS#8 key
+	            return converter.getPrivateKey((PrivateKeyInfo) object);
+	        } else if (object instanceof PKCS8EncryptedPrivateKeyInfo) {
+	            // Encrypted PKCS#8 key
+	            if (password == null) {
+	                throw new IllegalArgumentException("Private key is password protected, but no password was provided.");
+	            }
+	            PKCS8EncryptedPrivateKeyInfo encPrivKeyInfo = (PKCS8EncryptedPrivateKeyInfo) object;
+	            JceOpenSSLPKCS8DecryptorProviderBuilder decryptorBuilder = new JceOpenSSLPKCS8DecryptorProviderBuilder();
+	            PrivateKeyInfo pkInfo = encPrivKeyInfo.decryptPrivateKeyInfo(decryptorBuilder.build(password));
+	            return converter.getPrivateKey(pkInfo);
+	        } else {
+	            throw new IllegalArgumentException("Unsupported PEM object: " + object.getClass());
+	        }
+	    }
+	}
     
 }
