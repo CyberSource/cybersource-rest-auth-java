@@ -3,16 +3,22 @@ package com.cybersource.authsdk.util.mle;
 import com.cybersource.authsdk.cache.Cache;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
+import com.cybersource.authsdk.util.JWEUtility;
 import com.cybersource.authsdk.util.Utility;
 import com.google.gson.Gson;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 
 import net.minidev.json.JSONObject;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.text.ParseException;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -102,7 +108,78 @@ public class MLEUtility {
 
         return isResponseMLEForAPI;
     }
+    
+    public static boolean checkIsMleEncryptedResponse(String responseBody) {
+    	if (responseBody == null || responseBody.trim().isEmpty()) {
+    		return false;
+    	}
+    	try {
+			Gson gson = new Gson();
+			JSONObject jsonObject = gson.fromJson(responseBody, JSONObject.class);
+			// Check if the JSON object has exactly one key
+			if (jsonObject.size() != 1) {
+				return false;
+			}
+			// Check if the key is "encryptedResponse" and the value is a string
+			if (jsonObject.containsKey("encryptedResponse")) {
+				Object value = jsonObject.get("encryptedResponse");
+				return value instanceof String;
+			}
+			return false;
+		} catch (Exception e) {
+			// If JSON parsing fails, it's not a valid JSON thus not a MLE response
+			return false;
+		}
+    }
+    
+    public static String decryptMleResponsePayload(MerchantConfig merchantConfig, String mleResponseBody) throws MLEException {
 
+    	if(!checkIsMleEncryptedResponse(mleResponseBody)) {
+    		throw new MLEException("response body is not MLE encrypted.");
+    	}
+    	
+    	PrivateKey mlePrivateKey = getMleResponsePrivateKey(merchantConfig);
+    	String jweResponseToken = getResponseMleToken(mleResponseBody);
+    	if(StringUtils.isEmpty(jweResponseToken)) {
+    		// when mle token is empty or null then fall back to non mle encrypted response
+    		return mleResponseBody;
+    	}
+    		
+		try {
+			logger.debug("LOG_NETWORK_RESPONSE_BEFORE_MLE_DECRYPTION: " + mleResponseBody);
+			String decryptedResponse = JWEUtility.decryptJWEUsingPrivateKey(mlePrivateKey, jweResponseToken);
+			logger.debug("LOG_NETWORK_RESPONSE_AFTER_MLE_DECRYPTION: " + decryptedResponse);
+			return decryptedResponse;
+		} catch (ParseException e) {
+			throw new MLEException("MLE Response token ParseException:  "+ e.getMessage());
+		}
+		catch (JOSEException e) {
+			throw new MLEException("MLE Response decryption JOSEException:  "+ e.getMessage());
+		}
+    	
+    }
+
+    private static String getResponseMleToken(String mleResponseBody) {
+    	try {
+            Gson gson = new Gson();
+            JSONObject jsonObject = gson.fromJson(mleResponseBody, JSONObject.class);
+            return (String) jsonObject.get("encryptedResponse");
+        } catch (Exception e) {
+            logger.error("Failed to extract Response MLE token: " + e.getMessage());
+            return null;
+        }	
+    }
+    
+    private static PrivateKey getMleResponsePrivateKey(MerchantConfig merchantConfig) throws MLEException {
+    	//first priority - if privateKey is given in merchant config return that
+    	if(null != merchantConfig.getResponseMlePrivateKey()) {
+    		return merchantConfig.getResponseMlePrivateKey();
+    	}
+    	//second priority - get the privateKey from merchantConfig.responseMlePrivateKeyFilePath
+    	PrivateKey responseMlePrivateKey = cache.getMleResponsePrivateKeyFromFilePath(merchantConfig);
+    	return responseMlePrivateKey;	
+    }
+    
     private static X509Certificate getRequestMleCertificate(MerchantConfig merchantConfig) throws MLEException {
     	X509Certificate mleCert = null;
     	mleCert = cache.getRequestMLECertFromCache(merchantConfig);
