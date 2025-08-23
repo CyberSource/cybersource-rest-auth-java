@@ -244,7 +244,7 @@ public class Utility {
     
     public static PrivateKey readPrivateKeyFromP12(String p12FilePath, char[] password) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException 
     {
-        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        KeyStore keyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
         
         try (FileInputStream fis = new FileInputStream(p12FilePath)) {
             keyStore.load(fis, password);
