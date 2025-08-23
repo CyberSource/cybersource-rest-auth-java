@@ -318,7 +318,7 @@ public class MerchantConfig {
 	 * Password for the private key file used in Response MLE decryption by the SDK.
 	 * Required for .p12 files or encrypted private keys.
 	 */
-	private String responseMlePrivateKeyFilePassword;
+	private char[] responseMlePrivateKeyFilePassword;
 	
 	/**
 	 * PrivateKey instance used for Response MLE decryption by the SDK.
@@ -751,7 +751,7 @@ public class MerchantConfig {
 		}
 		
 		if (null != this.getProps().getProperty("responseMlePrivateKeyFilePassword") && !StringUtils.isEmpty(this.getProps().getProperty("responseMlePrivateKeyFilePassword"))) {
-		    this.setResponseMlePrivateKeyFilePassword(this.getProps().getProperty("responseMlePrivateKeyFilePassword"));
+		    this.setResponseMlePrivateKeyFilePassword(this.getProps().getProperty("responseMlePrivateKeyFilePassword").toCharArray());
 		}
         
 		validateMLEConfiguration();
@@ -1487,11 +1487,11 @@ public class MerchantConfig {
 		this.responseMlePrivateKeyFilePath = responseMlePrivateKeyFilePath;
 	}
 
-	public String getResponseMlePrivateKeyFilePassword() {
+	public char[] getResponseMlePrivateKeyFilePassword() {
 		return responseMlePrivateKeyFilePassword;
 	}
 
-	public void setResponseMlePrivateKeyFilePassword(String responseMlePrivateKeyFilePassword) {
+	public void setResponseMlePrivateKeyFilePassword(char[] responseMlePrivateKeyFilePassword) {
 		this.responseMlePrivateKeyFilePassword = responseMlePrivateKeyFilePassword;
 	}
 

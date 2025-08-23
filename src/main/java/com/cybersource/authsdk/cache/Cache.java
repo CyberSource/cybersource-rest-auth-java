@@ -122,17 +122,17 @@ public class Cache {
 
 	private void setUpMLECache(MerchantConfig merchantConfig, String cacheKey, String filePath) throws MLEException {
 		if(cacheKey.endsWith(GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_RESPONSE_PRIVATE_KEY)) {
-			String password = merchantConfig.getResponseMlePrivateKeyFilePassword();
+			char[] password = merchantConfig.getResponseMlePrivateKeyFilePassword();
 			PrivateKey mlePrivateKey = null;
 		    try {
 		        String fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
 		        // Case 1 - PKCS#12 formats (.p12, .pfx)
 		        if ("p12".equals(fileExtension) || "pfx".equals(fileExtension)) {
-		            mlePrivateKey = Utility.readPrivateKeyFromP12(filePath, password.toCharArray());
+		            mlePrivateKey = Utility.readPrivateKeyFromP12(filePath, password);
 		        }
 		        // Case 2 - PEM-based formats (.pem, .key, .p8) - handles PKCS#1 and PKCS#8, encrypted and unencrypted
 		        else if ("pem".equals(fileExtension) || "key".equals(fileExtension) || "p8".equals(fileExtension)) {
-		            mlePrivateKey = Utility.loadPrivateKeyFromPemFile(filePath, password.toCharArray());
+		            mlePrivateKey = Utility.loadPrivateKeyFromPemFile(filePath, password);
 		        }
 		        else {
 		            throw new MLEException("Unsupported Response MLE Private Key file format: " + fileExtension + 
