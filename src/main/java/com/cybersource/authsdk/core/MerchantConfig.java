@@ -1,6 +1,10 @@
 package com.cybersource.authsdk.core;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -231,6 +235,11 @@ public class MerchantConfig {
 	 * User Defined Keep Alive Duration
 	 */
 	private int userDefinedKeepAliveDuration;
+
+	/***
+	 * User Defined Idle Connection Count
+	 */
+	private int userDefinedMaxIdleConnections;
 
 	/***
 	 * Flag to indicate if merchant details have been set properly
@@ -582,6 +591,17 @@ public class MerchantConfig {
 		}
 
 		try {
+			int maxIdleCount = Integer.parseInt(this.getProps().getProperty("userDefinedMaxIdleConnections", "5"));
+			if (maxIdleCount <= 0) {
+				logger.warn("Max Idle Connections Value is less than or equal to 0. Defaulting to 5");
+				maxIdleCount = 5;
+			}
+			this.setUserDefinedMaxIdleConnections(maxIdleCount);
+		} catch (NumberFormatException e) {
+			logger.warn("Max Idle Connections Value is not a number. Defaulting to 5");
+			this.setUserDefinedMaxIdleConnections(5);
+		}
+		try {
 			if (GlobalLabelParameters.OLD_RUN_ENVIRONMENT_CONSTANTS.contains(this.runEnvironment.toUpperCase())) {
 				throw new ConfigException(GlobalLabelParameters.DEPRECATED_ENVIRONMENT);
 			}
@@ -740,6 +760,48 @@ public class MerchantConfig {
 			this.setKeyFile(null);
 		}
 		return isKeyFileValid;
+	}
+
+	public String generateApiClientConfigHash() {
+		StringBuilder builder = new StringBuilder();
+		
+		// Proxy settings
+		builder.append("useProxy=").append(isUseProxyEnabled()).append(";");
+		if (isUseProxyEnabled()) {
+			builder.append("proxyAddress=").append(getProxyAddress() != null ? getProxyAddress() : "").append(";");
+			builder.append("proxyPort=").append(getProxyPort()).append(";");
+			builder.append("proxyUser=").append(getProxyUser() != null ? getProxyUser() : "").append(";");
+			builder.append("proxyPassword=").append(getProxyPassword() != null ? getProxyPassword() : "").append(";");
+		}
+		
+		// SSL/TLS settings
+		builder.append("enableClientCert=").append(isEnableClientCert()).append(";");
+		if (isEnableClientCert()) {
+			builder.append("clientCertFile=").append(getClientCertFile() != null ? getClientCertFile() : "").append(";");
+			builder.append("clientCertDirectory=").append(getClientCertDirectory() != null ? getClientCertDirectory() : "").append(";");
+			builder.append("clientCertPassword=").append(getClientCertPassword() != null ? getClientCertPassword() : "").append(";");
+		}
+		
+		// Timeout settings
+		builder.append("connectionTimeout=").append(getUserDefinedConnectionTimeout()).append(";");
+		builder.append("readTimeout=").append(getUserDefinedReadTimeout()).append(";");
+		builder.append("writeTimeout=").append(getUserDefinedWriteTimeout()).append(";");
+		builder.append("keepAliveDuration=").append(getUserDefinedKeepAliveDuration()).append(";");
+		builder.append("maxIdleConnections=").append(getUserDefinedMaxIdleConnections()).append(";");
+		
+		// Environment settings
+		builder.append("runEnvironment=").append(getRunEnvironment() != null ? getRunEnvironment() : "").append(";");
+		builder.append("intermediateHost=").append(getIntermediateHost() != null ? getIntermediateHost() : "").append(";");
+		builder.append("requestHost=").append(getRequestHost() != null ? getRequestHost() : "").append(";");
+		
+		// Generate a hash of the string using SHA-256
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			byte[] hash = digest.digest(builder.toString().getBytes(StandardCharsets.UTF_8));
+			return Base64.getEncoder().encodeToString(hash);
+		} catch (NoSuchAlgorithmException e) {
+			return String.valueOf(builder.toString().hashCode());
+		}
 	}
 
 	/*
@@ -1080,5 +1142,13 @@ public class MerchantConfig {
 
 	private void setMleKeyAlias(String mleKeyAlias) {
 		this.mleKeyAlias = mleKeyAlias;
+	}
+
+	public int getUserDefinedMaxIdleConnections() {
+		return userDefinedMaxIdleConnections;
+	}
+
+	public void setUserDefinedMaxIdleConnections(int userDefinedMaxIdleConnections) {
+		this.userDefinedMaxIdleConnections = userDefinedMaxIdleConnections;
 	}
 }
