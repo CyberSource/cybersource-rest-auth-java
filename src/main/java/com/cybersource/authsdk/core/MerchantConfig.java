@@ -291,7 +291,7 @@ public class MerchantConfig {
 	 * Optional parameter. User can pass a custom requestMleKeyAlias to fetch from the certificate.
 	 * Older flag "mleKeyAlias" is deprecated and will be used as alias/another name for requestMleKeyAlias.
 	 */
-	private String requestMleKeyAlias;
+	private String requestMleKeyAlias = GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT;
 	
 	/**
 	 * Parameter to pass the request MLE public certificate path.
