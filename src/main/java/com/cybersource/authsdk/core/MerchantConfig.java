@@ -250,6 +250,7 @@ public class MerchantConfig {
 	/**
 	 * Flag to enable MLE (Message Level Encryption) for request body to all APIs in SDK which have optional support for MLE. 
 	 * This means the API can send both non-encrypted and encrypted requests.
+	 * Older flag "useMLEGlobally" is deprecated and will be used as alias/another name for enableRequestMLEForOptionalApisGlobally.
 	 */
 	private boolean enableRequestMLEForOptionalApisGlobally= false;
 
