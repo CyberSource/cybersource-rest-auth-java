@@ -771,15 +771,15 @@ public class MerchantConfig {
 			builder.append("proxyAddress=").append(getProxyAddress() != null ? getProxyAddress() : "").append(";");
 			builder.append("proxyPort=").append(getProxyPort()).append(";");
 			builder.append("proxyUser=").append(getProxyUser() != null ? getProxyUser() : "").append(";");
-			builder.append("proxyPassword=").append(getProxyPassword() != null ? getProxyPassword() : "").append(";");
+			builder.append("proxyPassword=").append(getProxyPassword()).append(";");
 		}
 		
 		// SSL/TLS settings
 		builder.append("enableClientCert=").append(isEnableClientCert()).append(";");
 		if (isEnableClientCert()) {
-			builder.append("clientCertFile=").append(getClientCertFile() != null ? getClientCertFile() : "").append(";");
-			builder.append("clientCertDirectory=").append(getClientCertDirectory() != null ? getClientCertDirectory() : "").append(";");
-			builder.append("clientCertPassword=").append(getClientCertPassword() != null ? getClientCertPassword() : "").append(";");
+			builder.append("clientCertFile=").append(getClientCertFile()).append(";");
+			builder.append("clientCertDirectory=").append(getClientCertDirectory()).append(";");
+			builder.append("clientCertPassword=").append(getClientCertPassword()).append(";");
 		}
 		
 		// Timeout settings
@@ -790,9 +790,9 @@ public class MerchantConfig {
 		builder.append("maxIdleConnections=").append(getUserDefinedMaxIdleConnections()).append(";");
 		
 		// Environment settings
-		builder.append("runEnvironment=").append(getRunEnvironment() != null ? getRunEnvironment() : "").append(";");
+		builder.append("runEnvironment=").append(getRunEnvironment()).append(";");
 		builder.append("intermediateHost=").append(getIntermediateHost() != null ? getIntermediateHost() : "").append(";");
-		builder.append("requestHost=").append(getRequestHost() != null ? getRequestHost() : "").append(";");
+		builder.append("requestHost=").append(getRequestHost()).append(";");
 		
 		// Generate a hash of the string using SHA-256
 		try {
