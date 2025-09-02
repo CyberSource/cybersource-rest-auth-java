@@ -1,7 +1,6 @@
 package com.cybersource.authsdk.util.mle;
 
 import com.cybersource.authsdk.cache.Cache;
-import com.cybersource.authsdk.cache.Identity;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.Utility;
@@ -12,14 +11,10 @@ import com.nimbusds.jose.crypto.RSAEncrypter;
 import net.minidev.json.JSONObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,21 +23,24 @@ public class MLEUtility {
     private static final Logger logger = LogManager.getLogger(MLEUtility.class);
     private static Cache cache = new Cache();
 
-    public static boolean checkIsMLEForAPI(MerchantConfig merchantConfig, boolean isMLESupportedByCybsForApi, String operationIds) {
+    public static boolean checkIsMLEForAPI(MerchantConfig merchantConfig, String inboundMLEStatus, String operationIds) {
 
     	//isMLE for an api is false by default
         boolean isMLEForAPI = false;
-        
-        //check here useMLEGlobally True or False
-        //if API is part of MLE then check for useMLEGlobally global parameter
-        if (isMLESupportedByCybsForApi == true && merchantConfig.isUseMLEGlobally() == true) {
-          isMLEForAPI = true;
+
+        if ("optional".equalsIgnoreCase(inboundMLEStatus) && merchantConfig.isEnableRequestMLEForOptionalApisGlobally()) {
+            isMLEForAPI = true;
+        }
+
+        if ("mandatory".equalsIgnoreCase(inboundMLEStatus)) {
+            isMLEForAPI = !merchantConfig.isDisableRequestMLEForMandatoryApisGlobally();
         }
         
         //operationIds are array as there are multiple public function for apiCallFunction such as apiCall,apiCallAsync ..
         String[] operationArray = Arrays.stream(operationIds.split(",")).map(String::trim).toArray(String[]::new);
         
         //Control the MLE only from map
+        //Special Note: If API expect MLE request mandatory and map is saying to send non MLE request then API will throw an error from CyberSource
         if (merchantConfig.getMapToControlMLEonAPI() != null && !merchantConfig.getMapToControlMLEonAPI().isEmpty() ) {
         	for (String operationId : operationArray) {
         		if(merchantConfig.getMapToControlMLEonAPI().containsKey(operationId)) {
@@ -55,14 +53,21 @@ public class MLEUtility {
         return isMLEForAPI;
     }
 
-    public static JSONObject encryptRequestPayload(MerchantConfig merchantConfig, Object localVarPostBody) throws MLEException {
-    	
+    public static Object encryptRequestPayload(MerchantConfig merchantConfig, Object localVarPostBody) throws MLEException {
     	if (localVarPostBody == null) {
             return null;
         }
+    	
+    	X509Certificate mleCertificate = getCertificate(merchantConfig);        
+    	// Handling special case : MLE Certificate is not currently available for HTTP Signature
+        if(mleCertificate==null && GlobalLabelParameters.HTTP.equalsIgnoreCase(merchantConfig.getAuthenticationType())) {
+		    logger.debug("The certificate to use for MLE for requests is not provided in the merchant configuration. Please ensure that the certificate path is provided.");
+		    logger.warn("Currently, MLE for requests using HTTP Signature as authentication is not supported by Cybersource. By default, the SDK will fall back to non-encrypted requests.");        	
+		    return localVarPostBody;
+        }
+        
     	String payload = new Gson().toJson(localVarPostBody);
-    	logger.debug("LOG_REQUEST_BEFORE_MLE: " + payload);
-        X509Certificate mleCertificate = getCertificate(merchantConfig);
+        logger.debug("LOG_REQUEST_BEFORE_MLE: " + payload); 
         Map<String, Object> customHeaders = new HashMap<>();
         customHeaders.put("iat", ZonedDateTime.now().toInstant().getEpochSecond());
         String encryptedPayload = encryptAttributeWithAlgo(payload, mleCertificate, customHeaders);
@@ -72,30 +77,19 @@ public class MLEUtility {
     }
 
     private static X509Certificate getCertificate(MerchantConfig merchantConfig) throws MLEException {
-        //get the MLE cert
     	X509Certificate mleCert = null;
-    	try {
-    		Identity p12Keys = cache.getMerchantP12KeysFromCache(merchantConfig);
-    		mleCert = p12Keys.getMleCert();
-    	}catch (IOException e) {
-            throw new MLEException("Certificate with alias " + merchantConfig.getMleKeyAlias() + " not found in " + merchantConfig.getKeyFilename() + ".p12", e);
-        } catch (CertificateException e) {
-            throw new MLEException("Failed to load certificates in keystore", e);
-        } catch (KeyStoreException e) {
-            throw new MLEException("Failed to instantiate keystore", e);
-        } catch (Exception e) {
-            throw new MLEException("Error occurred while loading certificate for MLE: " + e.getMessage(), e);
-        }
-    	
+    	mleCert = cache.getRequestMLECertFromCache(merchantConfig);
     	if(null != mleCert) {
-    		validateCertificateExpiry(mleCert, merchantConfig.getMleKeyAlias());
     		return mleCert;
-    	}else {
-    		//throw MLE cert not found
-        	throw new MLEException("No certificate found for MLE for given mleKeyAlias "+  merchantConfig.getMleKeyAlias() + " in p12 file " + merchantConfig.getKeyFilename() + ".p12");
     	}
-    	
-    	
+    	else if(GlobalLabelParameters.HTTP.equalsIgnoreCase(merchantConfig.getAuthenticationType())){
+    		//handle the special case when authType= http_Signature and mleCert=null
+    		//Handling special case : MLE Certificate is not currently available for HTTP Signature
+    		return null;
+    	}else {
+    		//throw MLE cert not found 
+        	throw new MLEException("No certificate found for MLE Request");
+    	}
     }
 
     private static String encryptAttributeWithAlgo(String content, X509Certificate x509Certificate, Map<String, Object> customHeaders) throws MLEException {
@@ -122,21 +116,6 @@ public class MLEUtility {
         JSONObject json = new JSONObject();
         json.put("encryptedRequest", jweToken);
         return json;
-    }
-
-    private static void validateCertificateExpiry(X509Certificate certificate, String keyAlias) throws MLEException {
-        if (certificate.getNotAfter() == null) {
-            //certificate do not have expire date
-        	logger.warn("Certificate for MLE don't have expiry date.");
-        } else if (certificate.getNotAfter().before(new Date())) {
-        	//certificate is already expired
-        	logger.warn("Certificate with MLE alias " + keyAlias + " is expired as of " + certificate.getNotAfter() + ". Please update p12 file.");
-            //throw new MLEException("Certificate required for MLE has been expired on : " + certificate.getNotAfter());
-        } else {
-            long timeToExpire = certificate.getNotAfter().getTime() - new Date().getTime();
-            if (timeToExpire < GlobalLabelParameters.CERTIFICATE_EXPIRY_DATE_WARNING_DAYS * 24 * 60 * 60) {
-            	logger.warn("Certificate for MLE with alias " + keyAlias + " is going to expired on " + certificate.getNotAfter() + ". Please update p12 file before that.");
-            }
-        }
-    }
+    } 
+    
 }

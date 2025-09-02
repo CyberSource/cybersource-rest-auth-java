@@ -1,6 +1,7 @@
 package com.cybersource.authsdk.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.PrettyPrintingMap;
+import com.cybersource.authsdk.util.Utility;
 
 public class MerchantConfig {
 	private static Logger logger = LogManager.getLogger(MerchantConfig.class);
@@ -240,11 +242,18 @@ public class MerchantConfig {
 	/***
 	 *  MLE Feature
 	 */
-	private boolean useMLEGlobally;
+	private boolean useMLEGlobally =false;
+
+	private boolean enableRequestMLEForOptionalApisGlobally= false;
+
+	private boolean disableRequestMLEForMandatoryApisGlobally =false;
+
 	
 	private Map<String, Boolean> mapToControlMLEonAPI;
 	
 	private String mleKeyAlias;
+	
+	private String mleForRequestPublicCertPath;
 	
 	public MerchantConfig() throws ConfigException {
 
@@ -266,8 +275,9 @@ public class MerchantConfig {
 	}
 	
 	/**
+	 * Validates merchant configuration details based on request type.
 	 * 
-	 * @param requestTypeData
+	 * @param requestTypeData the HTTP request type to validate
 	 * @return true or false as per validation
 	 * @throws ConfigException if some value is missing for merchant.
 	 */
@@ -324,6 +334,9 @@ public class MerchantConfig {
 	}
 
 	/**
+	 * Validates if the provided request type is supported.
+	 * 
+	 * @param requestTypeData the HTTP request type to validate (GET, POST, PUT, DELETE, PATCH)
 	 * @return true if valid request type else return false.
 	 * @throws ConfigException if some value is missing or wrong for merchant.
 	 */
@@ -601,12 +614,27 @@ public class MerchantConfig {
 			this.setRetryEnabled(false);
 		}
 		//MLE Params
-		this.setUseMLEGlobally(Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally")));
+		boolean enableRequestMLEForOptionalApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally"));
+		boolean useMLEGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally"));
+
+		boolean useMLE = false;
+
+		useMLE = enableRequestMLEForOptionalApisGloballyValue || useMLEGloballyValue;
+
+		this.setEnableRequestMLEForOptionalApisGlobally(useMLE);
+
+		boolean disableRequestMLEForMandatoryApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("disableRequestMLEForMandatoryApisGlobally"));
+		this.setDisableRequestMLEForMandatoryApisGlobally(disableRequestMLEForMandatoryApisGloballyValue);
+
 		if(null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
 			this.setMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
 		}else {
 			this.setMleKeyAlias(GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
 		}
+		if (null != this.getProps().getProperty("mleForRequestPublicCertPath") && !StringUtils.isEmpty(this.getProps().getProperty("mleForRequestPublicCertPath").trim()) ) {
+			this.setMleForRequestPublicCertPath(this.getProps().getProperty("mleForRequestPublicCertPath").trim());		
+		}
+		
 		if (this.getProps().containsKey("mapToControlMLEonAPI")) {
 			try {
 				this.setMapToControlMLEonAPI((Map<String, Boolean>) this.getProps().get("mapToControlMLEonAPI"));
@@ -646,8 +674,30 @@ public class MerchantConfig {
 	}
 	
 	private void validateMLEConfiguration() throws ConfigException {
+
+		// Fetch raw property values
+		String enableRequestMLEForOptionalApisGloballyStr = this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally");
+		String useMLEGloballyStr = this.getProps().getProperty("useMLEGlobally");
+
+		// Only validate if both are set (not null and not empty)
+		if (StringUtils.isNotBlank(enableRequestMLEForOptionalApisGloballyStr) && StringUtils.isNotBlank(useMLEGloballyStr)) {
+			if (Boolean.parseBoolean(enableRequestMLEForOptionalApisGloballyStr) != Boolean.parseBoolean(useMLEGloballyStr)) {
+				logger.error("Both 'enableRequestMLEForOptionalApisGlobally' and 'useMLEGlobally' are set but have different values.");
+				throw new ConfigException("Conflicting values for 'enableRequestMLEForOptionalApisGlobally' and 'useMLEGlobally'. They must be the same.");
+			}
+		}
 		
-		boolean mleConfigured = this.useMLEGlobally;
+		//verify the input path for mle Cert should be correct else throw error in both case mle=true/false
+		if(this.mleForRequestPublicCertPath !=null && !StringUtils.isEmpty(this.mleForRequestPublicCertPath))
+		{
+			try {
+				Utility.validatePathAndFile(this.mleForRequestPublicCertPath, "mleForRequestPublicCertPath");
+			} catch (IOException e) {
+				throw new ConfigException(e.getMessage());
+			}
+		}
+		
+		boolean mleConfigured = this.enableRequestMLEForOptionalApisGlobally;
 
 		if (this.mapToControlMLEonAPI != null && !this.mapToControlMLEonAPI.isEmpty()) {
 			for (boolean value : this.mapToControlMLEonAPI.values()) {
@@ -659,11 +709,12 @@ public class MerchantConfig {
 		}	
 		//if MLE=true then check for auth Type
 		if (mleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
-			logger.error("MLE is only supported in JWT auth type");
-			throw new ConfigException("MLE is only supported in JWT auth type");
+			logger.error("Request MLE is only supported in JWT auth type");
+			throw new ConfigException("Request MLE is only supported in JWT auth type");
 		}
-		//check the p12 file and set the keyFile to get the mleCert
-		if(mleConfigured) {
+		
+		//check the p12 file and set the keyFile to get the mleCert in case of JWT auth Type
+		if(GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			checkKeyFile();
 		}
 	}
@@ -1053,12 +1104,20 @@ public class MerchantConfig {
 		this.pemFileDirectory = pemFileDirectory;
 	}
 
-	public boolean isUseMLEGlobally() {
-		return useMLEGlobally;
+	public boolean isEnableRequestMLEForOptionalApisGlobally() {
+		return enableRequestMLEForOptionalApisGlobally;
 	}
 
-	private void setUseMLEGlobally(boolean useMLEGlobally) {
-		this.useMLEGlobally = useMLEGlobally;
+	private void setEnableRequestMLEForOptionalApisGlobally(boolean enableRequestMLEForOptionalApisGlobally) {
+		this.enableRequestMLEForOptionalApisGlobally = enableRequestMLEForOptionalApisGlobally;
+	}
+
+	public boolean isDisableRequestMLEForMandatoryApisGlobally() {
+    	return disableRequestMLEForMandatoryApisGlobally;
+	}
+
+	private void setDisableRequestMLEForMandatoryApisGlobally(boolean disableRequestMLEForMandatoryApisGlobally) {
+    	this.disableRequestMLEForMandatoryApisGlobally = disableRequestMLEForMandatoryApisGlobally;
 	}
 
 	public Map<String, Boolean> getMapToControlMLEonAPI() {
@@ -1075,5 +1134,13 @@ public class MerchantConfig {
 
 	private void setMleKeyAlias(String mleKeyAlias) {
 		this.mleKeyAlias = mleKeyAlias;
+	}
+
+	public String getMleForRequestPublicCertPath() {
+		return mleForRequestPublicCertPath;
+	}
+
+	public void setMleForRequestPublicCertPath(String mleForRequestPublicCertPath) {
+		this.mleForRequestPublicCertPath = mleForRequestPublicCertPath;
 	}
 }
