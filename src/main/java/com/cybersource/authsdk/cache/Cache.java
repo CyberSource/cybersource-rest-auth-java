@@ -147,7 +147,7 @@ public class Cache {
 		        
 		    } catch (Exception e) {
 		    	logger.error("Error loading MLE response private key from: " + filePath + ". Error: " + e.getMessage());
-		        throw new MLEException("Error loading MLE response private key from: " + filePath + ". Error: " + e.getMessage());
+		        throw new MLEException("Error loading MLE response private key from: " + filePath + ". Error: " + e.getMessage(),e);
 		    }
 		    return;
 		}

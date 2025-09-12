@@ -34,6 +34,7 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8DecryptorProviderBuilder;
 import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
 import org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfo;
+import org.bouncycastle.pkcs.PKCSException;
 
 import com.cybersource.authsdk.util.mle.MLEException;
 
@@ -305,10 +306,15 @@ public class Utility {
 	            if (password == null) {
 	                throw new IllegalArgumentException("Private key is password protected, but no password was provided.");
 	            }
-	            PKCS8EncryptedPrivateKeyInfo encPrivKeyInfo = (PKCS8EncryptedPrivateKeyInfo) object;
-	            JceOpenSSLPKCS8DecryptorProviderBuilder decryptorBuilder = new JceOpenSSLPKCS8DecryptorProviderBuilder();
-	            PrivateKeyInfo pkInfo = encPrivKeyInfo.decryptPrivateKeyInfo(decryptorBuilder.build(password));
-	            return converter.getPrivateKey(pkInfo);
+	            try {
+	                PKCS8EncryptedPrivateKeyInfo encPrivKeyInfo = (PKCS8EncryptedPrivateKeyInfo) object;
+	                JceOpenSSLPKCS8DecryptorProviderBuilder decryptorBuilder = new JceOpenSSLPKCS8DecryptorProviderBuilder();
+	                PrivateKeyInfo pkInfo = encPrivKeyInfo.decryptPrivateKeyInfo(decryptorBuilder.build(password));
+	                return converter.getPrivateKey(pkInfo);
+	            } catch (PKCSException e) {
+	                logger.error("Failed to decrypt PKCS#8 private key - incorrect password provided");
+	                throw new IllegalArgumentException("Password is incorrect for the encrypted private key. Error:" + e.getMessage(), e);
+	            }
 	        } else {
 	            throw new IllegalArgumentException("Unsupported PEM object: " + object.getClass());
 	        }
