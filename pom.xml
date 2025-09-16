@@ -3,7 +3,7 @@
 	<groupId>com.cybersource</groupId>
 	<artifactId>AuthenticationSdk</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.38-SNAPSHOT</version>
+	<version>0.0.39-SNAPSHOT</version>
 	<name>CyberSource Authentication SDK</name>
 	<url>https://developer.cybersource.com</url>
 	<description>Cybersource Rest Auth SDK</description>

@@ -863,7 +863,6 @@ public class MerchantConfig {
 			}
 		}
 		
-		/*
 		boolean mleConfigured = this.enableRequestMLEForOptionalApisGlobally;
 
 		if (this.mapToControlMLEonAPI != null && !this.mapToControlMLEonAPI.isEmpty()) {
@@ -876,13 +875,9 @@ public class MerchantConfig {
 		}	
 		//if MLE=true then check for auth Type
 		if (mleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
-			logger.error("MLE is only supported in JWT auth type");
-			throw new ConfigException("MLE is only supported in JWT auth type");
+			logger.error("Request MLE is only supported in JWT auth type");
+			throw new ConfigException("Request MLE is only supported in JWT auth type");
 		}
-		//check the p12 file and set the keyFile to get the mleCert
-		if(mleConfigured) {
-			checkKeyFile();
-		}*/
 		
 		//check the p12 file and set the keyFile to get the mleCert in case of JWT auth Type
 		if(GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
