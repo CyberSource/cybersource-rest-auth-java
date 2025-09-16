@@ -154,7 +154,15 @@ public class MLEUtility {
 			throw new MLEException("MLE Response token ParseException:  "+ e.getMessage());
 		}
 		catch (JOSEException e) {
-			throw new MLEException("MLE Response decryption JOSEException:  "+ e.getMessage());
+			if(e.getCause() != null && e.getCause() instanceof java.security.InvalidKeyException) {
+				Throwable rootCause = e.getCause().getCause();
+				if(rootCause instanceof javax.crypto.BadPaddingException && 
+				   rootCause.getMessage() != null && 
+				   rootCause.getMessage().contains("Padding error in decryption")) {
+					throw new MLEException("MLE Response decryption JOSEException: Invalid private key provided for MLE Response decryption", e);
+				}
+			}
+			throw new MLEException("MLE Response decryption JOSEException: " + e.getMessage(), e);
 		}
     	
     }
