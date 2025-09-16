@@ -863,18 +863,18 @@ public class MerchantConfig {
 			}
 		}
 		
-		boolean mleConfigured = this.enableRequestMLEForOptionalApisGlobally;
+		boolean requestMleConfigured = this.enableRequestMLEForOptionalApisGlobally;
 
-		if (this.mapToControlMLEonAPI != null && !this.mapToControlMLEonAPI.isEmpty()) {
-			for (boolean value : this.mapToControlMLEonAPI.values()) {
+		if (this.internalMapToControlRequestMLEonAPI != null && !this.internalMapToControlRequestMLEonAPI.isEmpty()) {
+			for (boolean value : this.internalMapToControlRequestMLEonAPI.values()) {
 				if (value) {
-					mleConfigured = true;
+					requestMleConfigured = true;
 					break;
 				}
 			}
 		}	
 		//if MLE=true then check for auth Type
-		if (mleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
+		if (requestMleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			logger.error("Request MLE is only supported in JWT auth type");
 			throw new ConfigException("Request MLE is only supported in JWT auth type");
 		}
