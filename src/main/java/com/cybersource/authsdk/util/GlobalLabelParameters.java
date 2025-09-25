@@ -111,5 +111,11 @@ public class GlobalLabelParameters {
 	public static final String DEFAULT_MLE_ALIAS_FOR_CERT = "CyberSource_SJC_US";
 	public static final String MLE_CACHE_KEY_IDENTIFIER_FOR_CONFIG_CERT = "mleCertFromMerchantConfig";
 	public static final String MLE_CACHE_KEY_IDENTIFIER_FOR_P12_CERT = "mleCertFromP12";
-	
+
+	/* New Constants */
+	public static final String DEFAULT_MAX_CONNECT_TIMEOUT_IN_SECONDS = "10";
+	public static final String DEFAULT_MAX_READ_TIMEOUT_IN_SECONDS = "10";
+	public static final String DEFAULT_MAX_WRITE_TIMEOUT_IN_SECONDS = "10";
+	public static final String DEFAULT_MAX_KEEP_ALIVE_DURATION_IN_SECONDS = "300";
+	public static final String DEFAULT_MAX_IDLE_CONNECTIONS = "5";
 }
