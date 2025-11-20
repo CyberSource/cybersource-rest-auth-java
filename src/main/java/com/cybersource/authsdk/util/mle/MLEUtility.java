@@ -14,7 +14,9 @@ import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.FileUtils;
 
+import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
@@ -228,6 +230,59 @@ public class MLEUtility {
         JSONObject json = new JSONObject();
         json.put("encryptedRequest", jweToken);
         return json;
-    } 
+    }
+
+    public static String validateAndAutoExtractResponseMleKid(MerchantConfig merchantConfig) throws Exception {
+        logger.debug("Validating responseMleKID for JWT token generation");
+        String cybsKid = null;
+        boolean p12File = false;
+        // File path validity
+        try {
+            Utility.validatePathAndFile(merchantConfig.getResponseMlePrivateKeyFilePath(), "responseMlePrivateKeyFilePath");
+            String extension = Utility.getFileExtension(merchantConfig.getResponseMlePrivateKeyFilePath());
+            if (extension.equalsIgnoreCase("p12") || extension.equalsIgnoreCase("pfx")) {
+                p12File = true;
+                logger.debug("Private key file is not a P12/PFX file, skipping auto-extraction");
+            }
+        } catch (IOException e) {
+            logger.debug("No valid response MLE private key file path provided, skipping validation");
+        }
+
+        if (p12File) {
+            logger.debug("P12/PFX file detected, checking if it is a CyberSource certificate");
+            try {
+                if (Utility.isP12GeneratedByCyberSource(merchantConfig.getResponseMlePrivateKeyFilePath(), merchantConfig.getResponseMlePrivateKeyFilePassword())) {
+                    logger.debug("Detected CyberSource P12 file, attempting to auto-extract responseMleKID");
+                    cybsKid = cache.getMLEKIdFromCache(merchantConfig);
+                } else {
+                    logger.debug("Private key file is not a CyberSource generated P12/PFX file, skipping auto-extraction");
+                }
+            } catch (MLEException e) {
+                logger.debug("Failed to validate CyberSource P12 and auto-extraction of responseMleKID: {}", e.getMessage());
+            }
+        } else {
+            logger.debug("Private key file is not a P12/PFX file, skipping auto-extraction");
+        }
+        if (cybsKid != null) {
+            logger.debug("Successfully auto-extracted responseMleKID from CyberSource P12 certificate");
+        }
+
+        String configuredKID = merchantConfig.getResponseMleKID();
+        if (cybsKid == null && configuredKID == null) {
+            throw new Exception("responseMleKID is required when response MLE is enabled. " +
+                            "Could not auto-extract from certificate and no manual configuration provided. " +
+                            "Please provide responseMleKID explicitly in your configuration."
+            );
+        } else if (cybsKid == null) {
+            logger.debug("Using manually configured responseMleKID");
+            return configuredKID;
+        } else if (configuredKID == null) {
+            logger.debug("Using auto-extracted responseMleKID from CyberSource certificate");
+            return cybsKid;
+        } else if (!cybsKid.equals(configuredKID)) {
+            logger.warn("Auto-extracted responseMleKID does not match manually configured responseMleKID. Using configured value as preference");
+        }
+        return configuredKID;
+    }
     
 }
