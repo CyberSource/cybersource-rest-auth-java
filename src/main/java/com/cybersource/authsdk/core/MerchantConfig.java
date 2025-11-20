@@ -243,11 +243,6 @@ public class MerchantConfig {
 	
 	//MLE Params for Request Body
 	/**
-	 * Deprecated flag to enable MLE for request. This flag is now known as "enableRequestMLEForOptionalApisGlobally"
-	 */
-	private boolean useMLEGlobally =false;
-	
-	/**
 	 * Flag to enable MLE (Message Level Encryption) for request body to all APIs in SDK which have optional support for MLE. 
 	 * This means the API can send both non-encrypted and encrypted requests.
 	 * Older flag "useMLEGlobally" is deprecated and will be used as alias/another name for enableRequestMLEForOptionalApisGlobally.
@@ -703,14 +698,13 @@ public class MerchantConfig {
 			this.setRetryEnabled(false);
 		}
 		//MLE Params
-		boolean enableRequestMLEForOptionalApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally"));
-		boolean useMLEGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally"));
-
-		boolean useMLE = false;
-
-		useMLE = enableRequestMLEForOptionalApisGloballyValue || useMLEGloballyValue;
-
-		this.setEnableRequestMLEForOptionalApisGlobally(useMLE);
+		if(null != this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally") && !StringUtils.isEmpty(this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally"))) {
+			this.setEnableRequestMLEForOptionalApisGlobally(Boolean.parseBoolean(this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally")));
+		} else if((null != this.getProps().getProperty("useMLEGlobally") && !StringUtils.isEmpty(this.getProps().getProperty("useMLEGlobally")))) {
+			this.setEnableRequestMLEForOptionalApisGlobally(Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally")));
+		} else {
+			this.setEnableRequestMLEForOptionalApisGlobally(false);
+		}
 
 		boolean disableRequestMLEForMandatoryApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("disableRequestMLEForMandatoryApisGlobally"));
 		this.setDisableRequestMLEForMandatoryApisGlobally(disableRequestMLEForMandatoryApisGloballyValue);
@@ -841,7 +835,7 @@ public class MerchantConfig {
 	
 	private void validateMLEConfiguration() throws ConfigException {
 
-		// Fetch raw property values
+		// Validate that both old and new flags are not set to different values
 		String enableRequestMLEForOptionalApisGloballyStr = this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally");
 		String useMLEGloballyStr = this.getProps().getProperty("useMLEGlobally");
 
