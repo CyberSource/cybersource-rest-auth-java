@@ -256,15 +256,15 @@ public class MLEUtility {
 
         if (p12File) {
             logger.debug("P12/PFX file detected, checking if it is a CyberSource certificate");
-            try {
-                CachedMLEKId cachedData = cache.getMLEKIdDataFromCache(merchantConfig);
-                if (cachedData.isCyberSourceP12()) {
+            CachedMLEKId cachedData = cache.getMLEKIdDataFromCache(merchantConfig);
+            if (cachedData != null) {
+                if (cachedData.getKid() != null) {
+                    // KID present means it's a CyberSource P12, use it
                     cybsKid = cachedData.getKid();
                 } else {
+                    // KID is null means either non-CyberSource P12 or extraction failed
                     logger.debug("Private key file is not a CyberSource generated P12/PFX file, skipping auto-extraction");
                 }
-            } catch (MLEException e) {
-                logger.debug("Failed to validate CyberSource P12 and auto-extraction of responseMleKID: {}", e.getMessage());
             }
         } else {
             logger.debug("Private key file is not a P12/PFX file, skipping auto-extraction");
