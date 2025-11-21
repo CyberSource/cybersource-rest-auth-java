@@ -78,7 +78,14 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			logger.error("Payload Content or Public Certificate is null or empty");
 			return null;
 		}
-		String serialNumber = Utility.extractSerialNumber(x509Certificate);
+		
+		String serialNumber = null;
+		try {
+			serialNumber = Utility.extractSerialNumber(x509Certificate);
+		} catch (IllegalArgumentException e) {
+			logger.warn("Failed to extract serial number from certificate: {}", e.getMessage());
+		}
+		
 		List<com.nimbusds.jose.util.Base64> x5cBase64List = new ArrayList<Base64>();
 		try {
 			x5cBase64List.add(com.nimbusds.jose.util.Base64.encode(x509Certificate.getEncoded()));
@@ -144,7 +151,14 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 			logger.error("Payload Content or Public Certificate or Private Key is null or empty");
 			return null;
 		}
-		String serialNumber = Utility.extractSerialNumber(x509Certificate);
+		
+		String serialNumber = null;
+		try {
+			serialNumber = Utility.extractSerialNumber(x509Certificate);
+		} catch (IllegalArgumentException e) {
+			logger.warn("Failed to extract serial number from certificate: {}", e.getMessage());
+		}
+		
 		List<com.nimbusds.jose.util.Base64> x5cBase64List = new ArrayList<Base64>();
 		try {
 			x5cBase64List.add(com.nimbusds.jose.util.Base64.encode(x509Certificate.getEncoded()));

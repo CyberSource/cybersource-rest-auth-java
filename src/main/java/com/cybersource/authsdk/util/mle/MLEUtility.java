@@ -1,6 +1,7 @@
 package com.cybersource.authsdk.util.mle;
 
 import com.cybersource.authsdk.cache.Cache;
+import com.cybersource.authsdk.cache.CachedMLEKId;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.JWEUtility;
@@ -206,14 +207,17 @@ public class MLEUtility {
     }
 
     private static String encryptAttributeWithAlgo(String content, X509Certificate x509Certificate, Map<String, Object> customHeaders) throws MLEException {
-        String serialNumber = Utility.extractSerialNumber(x509Certificate);
-        if (serialNumber == null) {
-            throw new MLEException("No serial number found in certificate for MLE");
+        String serialNumber = null;
+        try {
+            serialNumber = Utility.extractSerialNumber(x509Certificate);
+        } catch (IllegalArgumentException e) {
+            throw new MLEException("Failed to extract serial number from certificate for MLE: " + e.getMessage(), e);
         }
+        
         JWEObject jweObject = new JWEObject(
                 new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A256GCM)
                         .contentType("JWT")
-                        .keyID(Utility.extractSerialNumber(x509Certificate))
+                        .keyID(serialNumber)
                         .customParams(customHeaders)
                         .build(),
                 new Payload(content));
@@ -232,6 +236,10 @@ public class MLEUtility {
     }
 
     public static String validateAndAutoExtractResponseMleKid(MerchantConfig merchantConfig) throws Exception {
+        if (merchantConfig.getResponseMlePrivateKey() != null) {
+            logger.debug("responseMlePrivateKey is provided directly, using configured responseMleKID");
+            return merchantConfig.getResponseMleKID();
+        }
         logger.debug("Validating responseMleKID for JWT token generation");
         String cybsKid = null;
         boolean p12File = false;
@@ -241,18 +249,17 @@ public class MLEUtility {
             String extension = Utility.getFileExtension(merchantConfig.getResponseMlePrivateKeyFilePath());
             if (extension.equalsIgnoreCase("p12") || extension.equalsIgnoreCase("pfx")) {
                 p12File = true;
-                logger.debug("Private key file is not a P12/PFX file, skipping auto-extraction");
             }
         } catch (IOException e) {
-            logger.debug("No valid response MLE private key file path provided, skipping validation");
+            logger.debug("No valid private key file path provided, skipping auto-extraction");
         }
 
         if (p12File) {
             logger.debug("P12/PFX file detected, checking if it is a CyberSource certificate");
             try {
-                if (Utility.isP12GeneratedByCyberSource(merchantConfig.getResponseMlePrivateKeyFilePath(), merchantConfig.getResponseMlePrivateKeyFilePassword())) {
-                    logger.debug("Detected CyberSource P12 file, attempting to auto-extract responseMleKID");
-                    cybsKid = cache.getMLEKIdFromCache(merchantConfig);
+                CachedMLEKId cachedData = cache.getMLEKIdDataFromCache(merchantConfig);
+                if (cachedData.isCyberSourceP12()) {
+                    cybsKid = cachedData.getKid();
                 } else {
                     logger.debug("Private key file is not a CyberSource generated P12/PFX file, skipping auto-extraction");
                 }

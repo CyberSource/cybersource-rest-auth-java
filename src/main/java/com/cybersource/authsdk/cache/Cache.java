@@ -77,8 +77,7 @@ public class Cache {
 		Identity p12Keys = cacheP12.get(merchantConfig.getMerchantID());
 		return p12Keys;
 	}
-
-    public String getMLEKIdFromCache(MerchantConfig merchantConfig) throws MLEException {
+    public CachedMLEKId getMLEKIdDataFromCache(MerchantConfig merchantConfig) throws MLEException {
         String cacheKey = merchantConfig.getResponseMlePrivateKeyFilePath() + GlobalLabelParameters.RESPONSE_MLE_P12_PFX_CACHE_IDENTIFIER;
         String filePath = merchantConfig.getResponseMlePrivateKeyFilePath();
         if (!cacheMLEKId.containsKey(cacheKey)) {
@@ -91,8 +90,7 @@ public class Cache {
             }
         }
 
-        CachedMLEKId cachedMLEKId = cacheMLEKId.get(cacheKey);
-        return cachedMLEKId.getKid();
+        return cacheMLEKId.get(cacheKey);
     }
 
     private void setUpMLEKIdCache(MerchantConfig merchantConfig) throws MLEException {
@@ -103,11 +101,26 @@ public class Cache {
             if (merchantCert == null) {
                 throw new MLEException("No certificate found for Response MLE Private Key file with merchant ID alias " + merchantConfig.getMerchantID());
             }
-            String mleKID = Utility.extractSerialNumber(merchantCert);
+            
+            String mleKID = null;
+            try {
+                mleKID = Utility.extractSerialNumber(merchantCert);
+            } catch (IllegalArgumentException e) {
+                throw new MLEException("Failed to extract serial number from certificate for Response MLE: " + e.getMessage(), e);
+            }
+
+            // Check if this is a CyberSource-generated P12 file
+            boolean isCyberSourceP12 = false;
+            try {
+                isCyberSourceP12 = Utility.isP12GeneratedByCyberSource(filePath, merchantConfig.getResponseMlePrivateKeyFilePassword());
+            } catch (Exception e) {
+                logger.debug("Could not validate if P12 is CyberSource-generated: {}", e.getMessage());
+            }
 
             CachedMLEKId cachedMLEKId = new CachedMLEKId();
             cachedMLEKId.setKid(mleKID);
             cachedMLEKId.setLastModifiedTimeStamp(getLastModifiedFileTime(filePath));
+            cachedMLEKId.setCyberSourceP12(isCyberSourceP12);
             cacheMLEKId.put(cacheKey, cachedMLEKId);
         } catch (CertificateException | IOException | KeyStoreException e) {
             throw new MLEException("Error occurred while getting MLE KID from Response MLE Private Key file: " + e.getMessage(), e);

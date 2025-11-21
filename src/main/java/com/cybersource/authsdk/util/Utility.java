@@ -94,6 +94,11 @@ public class Utility {
     }
 
 	public static String extractSerialNumber(X509Certificate x509Certificate) {
+		if (x509Certificate == null) {
+			logger.error("X509Certificate cannot be null");
+			throw new IllegalArgumentException("X509Certificate cannot be null");
+		}
+		
 		String serialNumber = null;
 		String serialNumberPrefix = "SERIALNUMBER=";
 		String principal = x509Certificate.getSubjectDN().getName().toUpperCase();
@@ -107,6 +112,12 @@ public class Utility {
 		} else {
 			serialNumber = x509Certificate.getSerialNumber().toString();
 		}
+		
+		if (serialNumber == null || serialNumber.trim().isEmpty()) {
+			logger.error("No serial number found in certificate");
+			throw new IllegalArgumentException("No serial number found in certificate");
+		}
+		
 		return serialNumber;
 	}
 	
