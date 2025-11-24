@@ -2,6 +2,7 @@ package com.cybersource.authsdk.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -92,6 +94,11 @@ public class Utility {
     }
 
 	public static String extractSerialNumber(X509Certificate x509Certificate) {
+		if (x509Certificate == null) {
+			logger.error("X509Certificate cannot be null");
+			throw new IllegalArgumentException("X509Certificate cannot be null");
+		}
+		
 		String serialNumber = null;
 		String serialNumberPrefix = "SERIALNUMBER=";
 		String principal = x509Certificate.getSubjectDN().getName().toUpperCase();
@@ -105,6 +112,12 @@ public class Utility {
 		} else {
 			serialNumber = x509Certificate.getSerialNumber().toString();
 		}
+		
+		if (serialNumber == null || serialNumber.trim().isEmpty()) {
+			logger.error("No serial number found in certificate");
+			throw new IllegalArgumentException("No serial number found in certificate");
+		}
+		
 		return serialNumber;
 	}
 	
@@ -320,5 +333,123 @@ public class Utility {
 	        }
 	    }
 	}
-    
+
+    /**
+     * Retrieves a certificate by alias from a PKCS12 keystore.
+     *
+     * @param filePath The path to the PKCS12 (.p12) file
+     * @param password The password to unlock the keystore
+     * @param alias The certificate alias to search for
+     * @return The matching X509Certificate, or null if not found
+     * @throws CertificateException If there's an error parsing certificates
+     * @throws IOException If the file cannot be read
+     * @throws KeyStoreException If there's an error accessing the keystore
+     * @throws IllegalArgumentException If required parameters are invalid
+     */
+    public static X509Certificate getCertificateByAliasFromPKCS(String filePath, char[] password, String alias)
+            throws CertificateException, IOException, KeyStoreException {
+
+        // Validate input parameters
+        if (filePath == null || filePath.trim().isEmpty()) {
+            logger.error("PKCS12 file path cannot be null or empty");
+            throw new IllegalArgumentException("PKCS12 file path cannot be null or empty");
+        }
+
+        if (alias == null || alias.trim().isEmpty()) {
+            logger.error("Certificate alias cannot be null or empty");
+            throw new IllegalArgumentException("Certificate alias cannot be null or empty");
+        }
+
+        logger.debug("Attempting to load PKCS12 keystore from: {}", filePath);
+
+        KeyStore keyStore;
+        try {
+            keyStore = KeyStore.getInstance("PKCS12", new BouncyCastleProvider());
+        } catch (KeyStoreException e) {
+            logger.error("Failed to create PKCS12 keystore instance: {}", e.getMessage());
+            throw new KeyStoreException("Failed to create PKCS12 keystore instance", e);
+        }
+
+        try (FileInputStream fis = new FileInputStream(filePath)) {
+            // Load the keystore
+            try {
+                keyStore.load(fis, password);
+                logger.debug("Successfully loaded PKCS12 keystore from: {}", filePath);
+            } catch (NoSuchAlgorithmException e) {
+                logger.error("Algorithm not found while loading keystore: {}", e.getMessage());
+                throw new KeyStoreException("Algorithm not found while loading keystore", e);
+            } catch (IOException e) {
+                logger.error("Failed to load PKCS12 keystore - possibly incorrect password or corrupted file: {}", e.getMessage());
+                throw new IOException("Failed to load PKCS12 keystore from: " + filePath + ". Check password and file integrity.", e);
+            }
+
+            // Extract all certificates from the keystore
+            List<X509Certificate> certificates = new ArrayList<>();
+            Enumeration<String> aliases = keyStore.aliases();
+
+            if (!aliases.hasMoreElements()) {
+                logger.warn("PKCS12 keystore is empty - no certificates found in: {}", filePath);
+                return null;
+            }
+
+            while (aliases.hasMoreElements()) {
+                String currentAlias = aliases.nextElement();
+                try {
+                    Certificate cert = keyStore.getCertificate(currentAlias);
+                    if (cert instanceof X509Certificate) {
+                        certificates.add((X509Certificate) cert);
+                        logger.debug("Loaded certificate with alias: {}", currentAlias);
+                    } else if (cert != null) {
+                        logger.warn("Certificate with alias '{}' is not an X509 certificate, skipping", currentAlias);
+                    }
+                } catch (KeyStoreException e) {
+                    logger.warn("Failed to retrieve certificate for alias '{}': {}", currentAlias, e.getMessage());
+                }
+            }
+
+            if (certificates.isEmpty()) {
+                logger.error("No X509 certificates found in PKCS12 keystore: {}", filePath);
+                return null;
+            }
+
+            logger.debug("Found {} certificate(s) in keystore, searching for alias: {}", certificates.size(), alias);
+
+            // Search for the certificate matching the given alias
+            X509Certificate matchedCert = searchCertificateByAlias(certificates, alias);
+
+            if (matchedCert == null) {
+                logger.error("No certificate found with alias '{}' in PKCS12 keystore: {}", alias, filePath);
+                return null;
+            }
+
+            logger.debug("Successfully found certificate matching alias: {}", alias);
+            return matchedCert;
+
+        } catch (FileNotFoundException e) {
+            logger.error("PKCS12 file not found: {}", filePath);
+            throw new IOException("PKCS12 file not found: " + filePath, e);
+        } catch (IOException e) {
+            if (e.getMessage() != null && e.getMessage().contains("Failed to load PKCS12")) {
+                throw e;
+            }
+            logger.error("IO error while reading PKCS12 file {}: {}", filePath, e.getMessage());
+            throw new IOException("IO error while reading PKCS12 file: " + filePath, e);
+        }
+    }
+
+    public static boolean isP12GeneratedByCyberSource(String filePath, char[] password) {
+        try {
+            X509Certificate cyberSourceCert = getCertificateByAliasFromPKCS(filePath, password, GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
+            return cyberSourceCert != null;
+        } catch (CertificateException | IOException | KeyStoreException exception) {
+            logger.error("Error while checking if P12 is generated by CyberSource: {}", exception.getMessage());
+            return false;
+        }
+    }
+
+    public static String getFileExtension(String fileName) {
+        if (fileName == null) return "";
+        int dotIndex = fileName.lastIndexOf('.');
+        return dotIndex == -1 ? "" : fileName.substring(dotIndex + 1);
+    }
 }

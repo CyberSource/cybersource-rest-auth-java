@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
@@ -20,7 +21,7 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.JWEUtility;
 import com.cybersource.authsdk.util.Utility;
 import com.cybersource.authsdk.util.mle.MLEException;
-import com.cybersource.authsdk.util.mle.MLEUtility;
+
 
 public class Cache {
 	private static Logger logger = LogManager.getLogger(Cache.class);	
@@ -30,6 +31,8 @@ public class Cache {
 	public static ConcurrentHashMap<String, CachedJWEPrivateKey> cachePEM = new ConcurrentHashMap<>();
 	
 	public static ConcurrentHashMap<String, Identity> cacheMLE = new ConcurrentHashMap<>();
+
+    private static final ConcurrentHashMap<String, CachedMLEKId> cacheMLEKId = new ConcurrentHashMap<>();
 
 	public Cache() {
 	}
@@ -74,6 +77,60 @@ public class Cache {
 		Identity p12Keys = cacheP12.get(merchantConfig.getMerchantID());
 		return p12Keys;
 	}
+    public CachedMLEKId getMLEKIdDataFromCache(MerchantConfig merchantConfig) {
+        String cacheKey = merchantConfig.getResponseMlePrivateKeyFilePath() + GlobalLabelParameters.RESPONSE_MLE_P12_PFX_CACHE_IDENTIFIER;
+        String filePath = merchantConfig.getResponseMlePrivateKeyFilePath();
+        if (!cacheMLEKId.containsKey(cacheKey)) {
+            setUpMLEKIdCache(merchantConfig);
+        } else {
+            CachedMLEKId cachedMLEKId = cacheMLEKId.get(cacheKey);
+            if (cachedMLEKId == null || cachedMLEKId.getLastModifiedTimeStamp() != getLastModifiedFileTime(filePath)) {
+                logger.info("MLE KID cache outdated or file modified. Refreshing cache for: {}", filePath);
+                setUpMLEKIdCache(merchantConfig);
+            }
+        }
+
+        return cacheMLEKId.get(cacheKey);
+    }
+
+    private void setUpMLEKIdCache(MerchantConfig merchantConfig) {
+        String filePath = null;
+        String cacheKey = null;
+        try {
+            filePath = merchantConfig.getResponseMlePrivateKeyFilePath();
+            cacheKey = merchantConfig.getResponseMlePrivateKeyFilePath() + GlobalLabelParameters.RESPONSE_MLE_P12_PFX_CACHE_IDENTIFIER;
+            X509Certificate merchantCert = Utility.getCertificateByAliasFromPKCS(filePath, merchantConfig.getResponseMlePrivateKeyFilePassword(), merchantConfig.getMerchantID());
+            if (merchantCert == null) {
+                throw new MLEException("No certificate found for Response MLE Private Key file with merchant ID alias " + merchantConfig.getMerchantID());
+            }
+            
+            // Check if this is a CyberSource-generated P12 file
+            boolean isCyberSourceP12 = Utility.isP12GeneratedByCyberSource(filePath, merchantConfig.getResponseMlePrivateKeyFilePassword());
+
+            CachedMLEKId cachedMLEKId = new CachedMLEKId();
+            cachedMLEKId.setLastModifiedTimeStamp(getLastModifiedFileTime(filePath));
+            
+            if (isCyberSourceP12) {
+                String mleKID = null;
+                try {
+                    mleKID = Utility.extractSerialNumber(merchantCert);
+                } catch (IllegalArgumentException e) {
+                    throw new MLEException("Failed to extract serial number from certificate for Response MLE: " + e.getMessage(), e);
+                }
+                cachedMLEKId.setKid(mleKID);
+            }            
+            cacheMLEKId.put(cacheKey, cachedMLEKId);
+        } catch (Exception e) {
+            logger.error("Failed to load MLE KID from Response MLE Private Key file: {}. Error: {}", filePath, e.getMessage(), e);
+
+            if (cacheKey != null) {
+                CachedMLEKId failureMarker = new CachedMLEKId();
+                failureMarker.setKid(null);
+                failureMarker.setLastModifiedTimeStamp(0);
+                cacheMLEKId.put(cacheKey, failureMarker);
+            }
+        }
+    }
 	
 	
 	public X509Certificate getRequestMLECertFromCache(MerchantConfig merchantConfig) throws MLEException{

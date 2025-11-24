@@ -20,6 +20,8 @@ import com.cybersource.authsdk.util.GlobalLabelParameters;
 
 import net.minidev.json.JSONObject;
 
+import static com.cybersource.authsdk.util.mle.MLEUtility.validateAndAutoExtractResponseMleKid;
+
 public class JwtSignatureToken implements TokenGenerator {
 	private static Logger logger = LogManager.getLogger(JwtSignatureToken.class);
 	
@@ -93,7 +95,7 @@ public class JwtSignatureToken implements TokenGenerator {
 				}
 				
 				if(this.isResponseMLEForApi) {
-					claimSetJson.put("v-c-response-mle-kid", merchantConfig.getResponseMleKID());
+					claimSetJson.put("v-c-response-mle-kid", validateAndAutoExtractResponseMleKid(merchantConfig));
 				}
 				claimSet = claimSetJson.toJSONString();
 				

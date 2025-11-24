@@ -1,6 +1,7 @@
 package com.cybersource.authsdk.util.mle;
 
 import com.cybersource.authsdk.cache.Cache;
+import com.cybersource.authsdk.cache.CachedMLEKId;
 import com.cybersource.authsdk.core.MerchantConfig;
 import com.cybersource.authsdk.util.GlobalLabelParameters;
 import com.cybersource.authsdk.util.JWEUtility;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
@@ -205,14 +207,17 @@ public class MLEUtility {
     }
 
     private static String encryptAttributeWithAlgo(String content, X509Certificate x509Certificate, Map<String, Object> customHeaders) throws MLEException {
-        String serialNumber = Utility.extractSerialNumber(x509Certificate);
-        if (serialNumber == null) {
-            throw new MLEException("No serial number found in certificate for MLE");
+        String serialNumber = null;
+        try {
+            serialNumber = Utility.extractSerialNumber(x509Certificate);
+        } catch (IllegalArgumentException e) {
+            throw new MLEException("Failed to extract serial number from certificate for MLE: " + e.getMessage(), e);
         }
+        
         JWEObject jweObject = new JWEObject(
                 new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A256GCM)
                         .contentType("JWT")
-                        .keyID(Utility.extractSerialNumber(x509Certificate))
+                        .keyID(serialNumber)
                         .customParams(customHeaders)
                         .build(),
                 new Payload(content));
@@ -228,6 +233,62 @@ public class MLEUtility {
         JSONObject json = new JSONObject();
         json.put("encryptedRequest", jweToken);
         return json;
-    } 
+    }
+
+    public static String validateAndAutoExtractResponseMleKid(MerchantConfig merchantConfig) throws Exception {
+        if (merchantConfig.getResponseMlePrivateKey() != null) {
+            logger.debug("responseMlePrivateKey is provided directly, using configured responseMleKID");
+            return merchantConfig.getResponseMleKID();
+        }
+        logger.debug("Validating responseMleKID for JWT token generation");
+        String cybsKid = null;
+        boolean p12File = false;
+        // File path validity
+        try {
+            Utility.validatePathAndFile(merchantConfig.getResponseMlePrivateKeyFilePath(), "responseMlePrivateKeyFilePath");
+            String extension = Utility.getFileExtension(merchantConfig.getResponseMlePrivateKeyFilePath());
+            if (extension.equalsIgnoreCase("p12") || extension.equalsIgnoreCase("pfx")) {
+                p12File = true;
+            }
+        } catch (IOException e) {
+            logger.debug("No valid private key file path provided, skipping auto-extraction");
+        }
+
+        if (p12File) {
+            logger.debug("P12/PFX file detected, checking if it is a CyberSource certificate");
+            CachedMLEKId cachedData = cache.getMLEKIdDataFromCache(merchantConfig);
+            if (cachedData != null) {
+                if (cachedData.getKid() != null) {
+                    // KID present means it's a CyberSource P12, use it
+                    cybsKid = cachedData.getKid();
+                } else {
+                    // KID is null means either non-CyberSource P12 or extraction failed
+                    logger.debug("Private key file is not a CyberSource generated P12/PFX file, skipping auto-extraction");
+                }
+            }
+        } else {
+            logger.debug("Private key file is not a P12/PFX file, skipping auto-extraction");
+        }
+        if (cybsKid != null) {
+            logger.debug("Successfully auto-extracted responseMleKID from CyberSource P12 certificate");
+        }
+
+        String configuredKID = merchantConfig.getResponseMleKID();
+        if (cybsKid == null && configuredKID == null) {
+            throw new Exception("responseMleKID is required when response MLE is enabled. " +
+                            "Could not auto-extract from certificate and no manual configuration provided. " +
+                            "Please provide responseMleKID explicitly in your configuration."
+            );
+        } else if (cybsKid == null) {
+            logger.debug("Using manually configured responseMleKID");
+            return configuredKID;
+        } else if (configuredKID == null) {
+            logger.debug("Using auto-extracted responseMleKID from CyberSource certificate");
+            return cybsKid;
+        } else if (!cybsKid.equals(configuredKID)) {
+            logger.warn("Auto-extracted responseMleKID does not match manually configured responseMleKID. Using configured value as preference");
+        }
+        return configuredKID;
+    }
     
 }

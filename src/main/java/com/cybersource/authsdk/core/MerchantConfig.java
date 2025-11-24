@@ -912,21 +912,24 @@ public class MerchantConfig {
 			    logger.error("ConfigException : Both responseMlePrivateKey object and responseMlePrivateKeyFilePath are provided. Please provide only one of them for response mle private key.");
 			    throw new ConfigException("Both responseMlePrivateKey object and responseMlePrivateKeyFilePath are provided. Please provide only one of them for response mle private key..");
 			}
-			
+            String extension = null;
 			// If private key file path is provided, validate the file exists
 			if (StringUtils.isNotEmpty(this.responseMlePrivateKeyFilePath)) {
 				try {
 					Utility.validatePathAndFile(this.responseMlePrivateKeyFilePath, "responseMlePrivateKeyFilePath");
+                    extension = Utility.getFileExtension(this.responseMlePrivateKeyFilePath);
 				} catch (IOException e) {
 					logger.error("ConfigException : Invalid responseMlePrivateKeyFilePath - " + e.getMessage());
 					throw new ConfigException("Invalid responseMlePrivateKeyFilePath - " + e.getMessage());
 				}
 			}
-			
-			// Validate responseMleKID is provided when response MLE is enabled
-			if (StringUtils.isEmpty(this.responseMleKID)) {
-				logger.error("ConfigException : Response MLE is enabled but responseMleKID is not provided.");
-				throw new ConfigException("Response MLE is enabled but responseMleKID is not provided.");
+            boolean isP12 = "p12".equals(extension) || "pfx".equals(extension);
+
+            // Validate KID - only required for non-P12/PFX files
+            // P12/PFX files support auto-extraction of KID in MLEUtility.java
+			if (!isP12 && StringUtils.isEmpty(this.responseMleKID)) {
+				logger.error("ConfigException : responseMleKID is required when response MLE is enabled for non-P12/PFX files.");
+				throw new ConfigException("responseMleKID is required when response MLE is enabled for non-P12/PFX files.");
 			} 
 		}
 	}
