@@ -17,9 +17,9 @@ import com.cybersource.authsdk.util.Utility;
 
 public class MerchantConfig {
 	private static Logger logger = LogManager.getLogger(MerchantConfig.class);
-	
+
 	private Properties props;
-	
+
 	private Map<String, String> defaultHeaders;
 
 	/* Authentication related parameters */
@@ -60,12 +60,12 @@ public class MerchantConfig {
 	 * Optional Intermediate Environment to run against
 	 */
 	private String intermediateHost;
-	
+
 	/**
 	 * Default DeveloperId to be sent with API call
 	 */
 	private String defaultDeveloperId;
-	
+
 	/***
 	 * ID to capture developer partner identification
 	 * <p>
@@ -236,6 +236,11 @@ public class MerchantConfig {
 	private int userDefinedKeepAliveDuration;
 
 	/***
+	 * User Defined Max Idle Connections
+	 */
+	private int userDefinedMaxIdleConnections;
+
+	/***
 	 * Flag to indicate if merchant details have been set properly
 	 */
 	private boolean merchantDetailsSet = false;
@@ -337,7 +342,7 @@ public class MerchantConfig {
 			setMerchantDetails();
 		}
 	}
-	
+
 	public MerchantConfig(Properties _props, Map<String, String> defaultHeaders) throws ConfigException {
 		if (_props != null) {
 			this.setProps(_props);
@@ -365,7 +370,7 @@ public class MerchantConfig {
 	
 	/**
 	 * Validates merchant configuration details based on request type.
-	 * 
+	 *
 	 * @param requestTypeData the HTTP request type to validate
 	 * @return true or false as per validation
 	 * @throws ConfigException if some value is missing for merchant.
@@ -424,7 +429,7 @@ public class MerchantConfig {
 
 	/**
 	 * Validates if the provided request type is supported.
-	 * 
+	 *
 	 * @param requestTypeData the HTTP request type to validate (GET, POST, PUT, DELETE, PATCH)
 	 * @return true if valid request type else return false.
 	 * @throws ConfigException if some value is missing or wrong for merchant.
@@ -461,7 +466,7 @@ public class MerchantConfig {
 	 */
 	public boolean checkRunEvironment() throws ConfigException {
 		boolean runEnvironment = false;
-		
+
 		if (this.runEnvironment == null || this.runEnvironment.isEmpty()) {
 			logger.error("ConfigException : " + GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
 			throw new ConfigException(GlobalLabelParameters.RUN_ENVIRONMENT_ERR);
@@ -651,43 +656,59 @@ public class MerchantConfig {
 		} else {
 			this.setRunEnvironment(this.getProps().getProperty("runEnvironment").trim());
 		}
-		
+
 		/* Intermediate Host Environment. */
 		if (StringUtils.isNotBlank(this.getProps().getProperty("intermediateHost"))) {
 			this.setIntermediateHost(this.getProps().getProperty("intermediateHost").trim());
 		}
-		
+
 		/* Set Default DeveloperId */
 		if (StringUtils.isNotBlank(this.getProps().getProperty("defaultDeveloperId"))) {
 			this.setDefaultDeveloperId(this.getProps().getProperty("defaultDeveloperId").trim());
 		}
 
-		this.setUserDefinedConnectionTimeout(Integer.valueOf(this.getProps().getProperty("userDefinedConnectionTimeout", "0")));
-		if(this.getUserDefinedConnectionTimeout() <= 0)
-		{
-			logger.warn("Provided Connection Timeout Value is Incorrect, Defaulting to 0");
+		int tempValue;
+
+		tempValue = Integer.parseInt(this.getProps().getProperty("userDefinedConnectionTimeout", GlobalLabelParameters.DEFAULT_MAX_CONNECT_TIMEOUT_IN_SECONDS));
+		if(tempValue <= Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_CONNECT_TIMEOUT_IN_SECONDS)) {
+			logger.warn("Provided Connection Timeout Value is Incorrect, Defaulting to " + GlobalLabelParameters.DEFAULT_MAX_CONNECT_TIMEOUT_IN_SECONDS);
+			tempValue = Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_CONNECT_TIMEOUT_IN_SECONDS);
 		}
-		this.setUserDefinedReadTimeout(Integer.valueOf(this.getProps().getProperty("userDefinedReadTimeout", "0")));
-		if(this.getUserDefinedReadTimeout() <= 0)
-		{
-			logger.warn("Provided Read Timeout Value is Incorrect, Defaulting to 0");
+		this.setUserDefinedConnectionTimeout(tempValue);
+
+		tempValue = Integer.parseInt(this.getProps().getProperty("userDefinedReadTimeout", GlobalLabelParameters.DEFAULT_MAX_READ_TIMEOUT_IN_SECONDS));
+		if(tempValue <= Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_READ_TIMEOUT_IN_SECONDS)) {
+			logger.warn("Provided Read Timeout Value is Incorrect, Defaulting to " + GlobalLabelParameters.DEFAULT_MAX_READ_TIMEOUT_IN_SECONDS);
+			tempValue = Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_READ_TIMEOUT_IN_SECONDS);
 		}
-		this.setUserDefinedWriteTimeout(Integer.valueOf(this.getProps().getProperty("userDefinedWriteTimeout", "0")));
-		if(this.getUserDefinedWriteTimeout() <= 0)
-		{
-			logger.warn("Provided Write Timeout Value is Incorrect, Defaulting to 0");
+		this.setUserDefinedReadTimeout(tempValue);
+
+		tempValue = Integer.parseInt(this.getProps().getProperty("userDefinedWriteTimeout", GlobalLabelParameters.DEFAULT_MAX_WRITE_TIMEOUT_IN_SECONDS));
+		if(tempValue <= Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_WRITE_TIMEOUT_IN_SECONDS)) {
+			logger.warn("Provided Write Timeout Value is Incorrect, Defaulting to " + GlobalLabelParameters.DEFAULT_MAX_WRITE_TIMEOUT_IN_SECONDS);
+			tempValue = Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_WRITE_TIMEOUT_IN_SECONDS);
 		}
-		this.setUserDefinedKeepAliveDuration(Integer.valueOf(this.getProps().getProperty("userDefinedKeepAliveDuration", "0")));
-		if(this.getUserDefinedKeepAliveDuration() <= 0)
-		{
-			logger.warn("Provided Keep Alive Duration Value is Incorrect, Defaulting to 0");
+		this.setUserDefinedWriteTimeout(tempValue);
+
+		tempValue = Integer.parseInt(this.getProps().getProperty("userDefinedKeepAliveDuration", GlobalLabelParameters.DEFAULT_MAX_KEEP_ALIVE_DURATION_IN_SECONDS));
+		if(tempValue <= Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_KEEP_ALIVE_DURATION_IN_SECONDS)) {
+			logger.warn("Provided Keep Alive Duration Value is Incorrect, Defaulting to " + GlobalLabelParameters.DEFAULT_MAX_KEEP_ALIVE_DURATION_IN_SECONDS);
+			tempValue = Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_KEEP_ALIVE_DURATION_IN_SECONDS);
 		}
+		this.setUserDefinedKeepAliveDuration(tempValue);
+
+		tempValue = Integer.parseInt(this.getProps().getProperty("userDefinedMaxIdleConnections", GlobalLabelParameters.DEFAULT_MAX_IDLE_CONNECTIONS));
+		if (tempValue <= Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_IDLE_CONNECTIONS)) {
+			logger.warn("Provided Max Idle Connections Value is Incorrect, Defaulting to " + GlobalLabelParameters.DEFAULT_MAX_IDLE_CONNECTIONS);
+			tempValue = Integer.parseInt(GlobalLabelParameters.DEFAULT_MAX_IDLE_CONNECTIONS);
+		}
+		this.setUserDefinedMaxIdleConnections(tempValue);
 
 		try {
 			if (GlobalLabelParameters.OLD_RUN_ENVIRONMENT_CONSTANTS.contains(this.runEnvironment.toUpperCase())) {
 				throw new ConfigException(GlobalLabelParameters.DEPRECATED_ENVIRONMENT);
 			}
-				
+
 			this.requestHost = this.runEnvironment;
 		} catch (Exception e) {
 			logger.info(GlobalLabelParameters.BEGIN_TRANSACTION);
@@ -724,9 +745,9 @@ public class MerchantConfig {
 		}
 		
 		if (null != this.getProps().getProperty("mleForRequestPublicCertPath") && !StringUtils.isEmpty(this.getProps().getProperty("mleForRequestPublicCertPath").trim()) ) {
-			this.setMleForRequestPublicCertPath(this.getProps().getProperty("mleForRequestPublicCertPath").trim());		
+			this.setMleForRequestPublicCertPath(this.getProps().getProperty("mleForRequestPublicCertPath").trim());
 		}
-		
+
 		if (this.getProps().containsKey("mapToControlMLEonAPI")) {
 			try {
 				//handle the case when map is Map<String, Boolean>
@@ -756,7 +777,7 @@ public class MerchantConfig {
 		}
         
 		validateMLEConfiguration();
-		
+
 		this.setRetryDelay(Long.valueOf(this.getProps().getProperty("retryDelay", "0")));
 		this.setMerchantDetailsSet(true);
 	}
@@ -838,7 +859,7 @@ public class MerchantConfig {
 			throw new ConfigException(GlobalLabelParameters.AUTH_ERROR);
 		}
 	}
-	
+
 	private void validateMLEConfiguration() throws ConfigException {
 
 		// Fetch raw property values
@@ -852,7 +873,7 @@ public class MerchantConfig {
 				throw new ConfigException("Conflicting values for 'enableRequestMLEForOptionalApisGlobally' and 'useMLEGlobally'. They must be the same.");
 			}
 		}
-		
+
 		//verify the input path for mle Cert should be correct else throw error in both case mle=true/false
 		if(this.mleForRequestPublicCertPath !=null && !StringUtils.isEmpty(this.mleForRequestPublicCertPath))
 		{
@@ -872,13 +893,13 @@ public class MerchantConfig {
 					break;
 				}
 			}
-		}	
+		}
 		//if MLE=true then check for auth Type
 		if (requestMleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			logger.error("Request MLE is only supported in JWT auth type");
 			throw new ConfigException("Request MLE is only supported in JWT auth type");
 		}
-		
+
 		//check the p12 file and set the keyFile to get the mleCert in case of JWT auth Type
 		if(GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			checkKeyFile();
@@ -955,7 +976,7 @@ public class MerchantConfig {
 	 * @throws ConfigException if some value is missing or wrong for merchant.
 	 */
 	public boolean checkKeyFile() throws ConfigException {
-		File newFile = null;
+		File newFile;
 
 		this.setKeyFile(null);
 
@@ -1174,7 +1195,7 @@ public class MerchantConfig {
 	private void setIntermediateHost(String intermediateHost) {
 		this.intermediateHost = intermediateHost;
 	}
-	
+
 	public String getDefaultDeveloperId() {
 		return defaultDeveloperId;
 	}
@@ -1302,7 +1323,15 @@ public class MerchantConfig {
 	private void setUserDefinedKeepAliveDuration(int duration) {
 		this.userDefinedKeepAliveDuration = duration;
 	}
-	
+
+	public int getUserDefinedMaxIdleConnections() {
+		return userDefinedMaxIdleConnections;
+	}
+
+	public void setUserDefinedMaxIdleConnections(int userDefinedMaxIdleConnections) {
+		this.userDefinedMaxIdleConnections = userDefinedMaxIdleConnections;
+	}
+
 	public Map<String, String> getDefaultHeaders() {
 		return defaultHeaders;
 	}
@@ -1328,11 +1357,11 @@ public class MerchantConfig {
 	}
 
 	public boolean isDisableRequestMLEForMandatoryApisGlobally() {
-    	return disableRequestMLEForMandatoryApisGlobally;
+		return disableRequestMLEForMandatoryApisGlobally;
 	}
 
 	private void setDisableRequestMLEForMandatoryApisGlobally(boolean disableRequestMLEForMandatoryApisGlobally) {
-    	this.disableRequestMLEForMandatoryApisGlobally = disableRequestMLEForMandatoryApisGlobally;
+		this.disableRequestMLEForMandatoryApisGlobally = disableRequestMLEForMandatoryApisGlobally;
 	}
 
 	public Map<String, String> getMapToControlMLEonAPI() {
