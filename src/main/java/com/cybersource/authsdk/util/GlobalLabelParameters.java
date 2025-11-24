@@ -113,6 +113,7 @@ public class GlobalLabelParameters {
 	public static final String MLE_CACHE_KEY_IDENTIFIER_FOR_P12_CERT = "mleCertFromP12";
 	public static final String MLE_CACHE_KEY_IDENTIFIER_FOR_RESPONSE_PRIVATE_KEY = "mleResponsePrivateKeyFromFile";
     public static final String RESPONSE_MLE_P12_PFX_CACHE_IDENTIFIER = "responseMleP12Pfx";
+	public static final String PUBLIC_KEY_CACHE_IDENTIFIER = "FlexV2PublicKeys";
 
 	/* New Constants */
 	public static final String DEFAULT_MAX_CONNECT_TIMEOUT_IN_SECONDS = "10";

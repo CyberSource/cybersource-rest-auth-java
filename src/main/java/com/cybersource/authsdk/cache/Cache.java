@@ -24,7 +24,7 @@ import com.cybersource.authsdk.util.mle.MLEException;
 
 
 public class Cache {
-	private static Logger logger = LogManager.getLogger(Cache.class);	
+	private static Logger logger = LogManager.getLogger(Cache.class);
 	
 	public static ConcurrentHashMap<String, Identity> cacheP12 = new ConcurrentHashMap<>();
 
@@ -38,11 +38,7 @@ public class Cache {
 	}
 
 	/**
-	 * @throws Exception 
-	 * @throws IOException 
-	 * @throws KeyStoreException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws CertificateException 
+	 * @throws Exception
 	 */
 	private void setUpP12Cache(MerchantConfig merchantConfig) throws Exception {
 		KeyCertificateGenerator newKeyCertGen = new KeyCertificateGenerator();
