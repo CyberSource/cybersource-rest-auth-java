@@ -50,11 +50,12 @@ public class JwtSignatureToken implements TokenGenerator {
 	}
 
 	@Override
-	public String getToken() {
+	public String getToken() throws ConfigException {
 		try {
 			signature = generateSignature();
-		} catch (Exception e) {
+		} catch (ConfigException e) {
 			signature = null;
+			throw e;
 		}
 		return signature;
 	}
@@ -62,9 +63,9 @@ public class JwtSignatureToken implements TokenGenerator {
 	/**
 	 * 
 	 * @return the generated signature.
-	 * @throws Exception - if some exception will occur.
+	 * @throws ConfigException - if some exception will occur.
 	 */
-	public String generateSignature() throws Exception {
+	public String generateSignature() throws ConfigException {
 		try {
 			if (merchantConfig != null) {
 				/* Generating private key. */
@@ -132,6 +133,7 @@ public class JwtSignatureToken implements TokenGenerator {
 			logger.fatal(GlobalLabelParameters.JWT_SIG_FAILED);
 			logger.error(e);
 			signature = null;
+			throw new ConfigException(GlobalLabelParameters.JWT_SIG_FAILED + " " + e.getMessage());
 		}
 		return signature;
 	}

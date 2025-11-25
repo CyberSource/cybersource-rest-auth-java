@@ -111,13 +111,13 @@ public class Cache {
                 try {
                     mleKID = Utility.extractSerialNumber(merchantCert);
                 } catch (IllegalArgumentException e) {
-                    throw new MLEException("Failed to extract serial number from certificate for Response MLE: " + e.getMessage(), e);
+                    throw new MLEException("Failed to extract serial number from certificate for Response MLE: " + e.getMessage());
                 }
                 cachedMLEKId.setKid(mleKID);
             }            
             cacheMLEKId.put(cacheKey, cachedMLEKId);
         } catch (Exception e) {
-            logger.error("Failed to load MLE KID from Response MLE Private Key file: {}. Error: {}", filePath, e.getMessage(), e);
+            logger.error("Failed to load MLE KID from Response MLE Private Key file: {}. Error: {}", filePath, e.getMessage());
 
             if (cacheKey != null) {
                 CachedMLEKId failureMarker = new CachedMLEKId();
