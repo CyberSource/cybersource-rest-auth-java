@@ -7,3 +7,8 @@ target
 .settings/*
 .idea
 *.iml
+.git/
+.*/
+!/.github/
+!.gitignore
+.env

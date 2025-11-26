@@ -1,0 +1,15 @@
+certifi==2025.6.15
+cffi==1.17.1
+cryptography==45.0.4
+cybersource-rest-client-python @ file:///C:/work-repo/cybersource-sdk/cybersource-rest-client-python
+DateTime==5.5
+jwcrypto==1.5.6
+pycparser==2.22
+pycryptodome==3.23.0
+PyJWT==2.10.1
+pytz==2025.2
+setuptools==80.9.0
+six==1.17.0
+typing_extensions==4.14.0
+urllib3==2.5.0
+zope.interface==7.2
