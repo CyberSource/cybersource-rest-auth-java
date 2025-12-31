@@ -2,6 +2,7 @@ package com.cybersource.authsdk.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -244,22 +245,88 @@ public class MerchantConfig {
 	 */
 	private boolean merchantDetailsSet = false;
 
-	/***
-	 *  MLE Feature
+	
+	//MLE Params for Request Body
+	/**
+	 * Flag to enable MLE (Message Level Encryption) for request body to all APIs in SDK which have optional support for MLE. 
+	 * This means the API can send both non-encrypted and encrypted requests.
+	 * Older flag "useMLEGlobally" is deprecated and will be used as alias/another name for enableRequestMLEForOptionalApisGlobally.
 	 */
-	private boolean useMLEGlobally =false;
-
 	private boolean enableRequestMLEForOptionalApisGlobally= false;
 
+	/**
+	 * Flag to disable MLE (Message Level Encryption) for request body to APIs in SDK which have mandatory MLE requirement when sending calls.
+	 */
 	private boolean disableRequestMLEForMandatoryApisGlobally =false;
-
-
-	private Map<String, Boolean> mapToControlMLEonAPI;
-
-	private String mleKeyAlias;
-
+	
+	/**
+	 * Map to control MLE (Message Level Encryption) settings for individual API functions. This overrides global MLE configuration for specific APIs.
+	 * The key is the function name of the API in the SDK, and the value is a String in the format "requestMLE::responseMLE" separated by "::",
+	 * where the first boolean value controls MLE for the request and the second boolean value controls MLE for the response.
+	 * Use "true" to enable or "false" to disable MLE for that specific component.
+	 * 
+	 * Valid Examples:
+	 * mapToControlMLEonAPI.put("apiFunctionName1", "true::true") - enables MLE for both request and response for apiFunctionName1
+	 * mapToControlMLEonAPI.put("apiFunctionName2", "false::false") - disables MLE for both request and response for apiFunctionName2
+	 * mapToControlMLEonAPI.put("apiFunctionName3", "true::false") - enables request MLE only, disables response MLE for apiFunctionName3
+	 * mapToControlMLEonAPI.put("apiFunctionName4", "false::true") - disables request MLE, enables response MLE only for apiFunctionName4
+	 * mapToControlMLEonAPI.put("apiFunctionName5", "false") - disables request MLE only. Since the "::" separator is not included, mleForResponse will use the default value set by the global flag
+	 * mapToControlMLEonAPI.put("apiFunctionName6", "true") - enables request MLE only. Since the "::" separator is not included, mleForResponse will use the default value set by the global flag
+	 * mapToControlMLEonAPI.put("apiFunctionName7", "::true") - enables response MLE only. Because the value before "::" is missing, the SDK will use the default request MLE value from the global flag
+	 * mapToControlMLEonAPI.put("apiFunctionName8", "true::") - enables request MLE only. Since the value after the "::" separator is missing, mleForResponse will use the default value
+	 * 
+	 * Invalid Examples (will be ignored or cause errors):
+	 * mapToControlMLEonAPI.put("apiFunctionName9", "::") - both values empty, will use global defaults
+	 * mapToControlMLEonAPI.put("apiFunctionName10", "invalid::true") - invalid first value, may cause parsing error
+	 * mapToControlMLEonAPI.put("apiFunctionName11", "true::invalid") - invalid second value, may cause parsing error
+	 * mapToControlMLEonAPI.put("apiFunctionName12", "true::true::false") - multiple separators not allowed
+	 * mapToControlMLEonAPI.put("apiFunctionName13", "") - empty string not allowed
+	 */
+	private Map<String, String> mapToControlMLEonAPI;
+	
+	//both fields used for internal purpose only not exposed for merchants to set. Both sets from mapToControlMLEonAPI internally.
+	private Map<String, Boolean> internalMapToControlRequestMLEonAPI;
+	private Map<String, Boolean> internalMapToControlResponseMLEonAPI;
+	
+	/**
+	 * Optional parameter. User can pass a custom requestMleKeyAlias to fetch from the certificate.
+	 * Older flag "mleKeyAlias" is deprecated and will be used as alias/another name for requestMleKeyAlias.
+	 */
+	private String requestMleKeyAlias = GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT;
+	
+	/**
+	 * Parameter to pass the request MLE public certificate path.
+	 */
 	private String mleForRequestPublicCertPath;
-
+	
+	/**
+	 * Flag to enable MLE (Message Level Encryption) for response body for all APIs in SDK to get MLE Response(encrypted response) if supported by API. 
+	 */
+	private boolean enableResponseMleGlobally=false;
+	
+	/**
+	 * Parameter to pass the KID value for the MLE response public certificate. This value will be provided in the merchant portal when retrieving the MLE response certificate.
+	 */
+	private String responseMleKID;
+	
+	/**
+	 * Path to the private key file used for Response MLE decryption by the SDK.
+	 * Supported formats: .p12, .key, .pem, etc.
+	 */
+	private String responseMlePrivateKeyFilePath;
+	
+	/**
+	 * Password for the private key file used in Response MLE decryption by the SDK.
+	 * Required for .p12 files or encrypted private keys.
+	 */
+	private char[] responseMlePrivateKeyFilePassword;
+	
+	/**
+	 * PrivateKey instance used for Response MLE decryption by the SDK.
+	 * Optional — either provide this object directly or specify the private key file path via configuration.
+	 */
+	private PrivateKey responseMlePrivateKey;
+	
 	public MerchantConfig() throws ConfigException {
 
 	}
@@ -278,7 +345,24 @@ public class MerchantConfig {
 			setDefaultHeaders(defaultHeaders);
 		}
 	}
-
+	
+	public MerchantConfig(Properties _props, Map<String, String> defaultHeaders, PrivateKey responseMlePrivateKey) throws ConfigException {
+		if (_props != null) {
+			this.setProps(_props);
+			this.setResponseMlePrivateKey(responseMlePrivateKey);
+			setMerchantDetails();
+			setDefaultHeaders(defaultHeaders);
+		}
+	}
+	
+	public MerchantConfig(Properties _props, PrivateKey responseMlePrivateKey) throws ConfigException {
+		if (_props != null) {
+			this.setProps(_props);
+			this.setResponseMlePrivateKey(responseMlePrivateKey);
+			setMerchantDetails();
+		}
+	}
+	
 	/**
 	 * Validates merchant configuration details based on request type.
 	 *
@@ -635,38 +719,114 @@ public class MerchantConfig {
 			this.setRetryEnabled(false);
 		}
 		//MLE Params
-		boolean enableRequestMLEForOptionalApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally"));
-		boolean useMLEGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally"));
-
-		boolean useMLE = false;
-
-		useMLE = enableRequestMLEForOptionalApisGloballyValue || useMLEGloballyValue;
-
-		this.setEnableRequestMLEForOptionalApisGlobally(useMLE);
+		if(null != this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally") && !StringUtils.isEmpty(this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally"))) {
+			this.setEnableRequestMLEForOptionalApisGlobally(Boolean.parseBoolean(this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally")));
+		} else if((null != this.getProps().getProperty("useMLEGlobally") && !StringUtils.isEmpty(this.getProps().getProperty("useMLEGlobally")))) {
+			this.setEnableRequestMLEForOptionalApisGlobally(Boolean.parseBoolean(this.getProps().getProperty("useMLEGlobally")));
+		} else {
+			this.setEnableRequestMLEForOptionalApisGlobally(false);
+		}
 
 		boolean disableRequestMLEForMandatoryApisGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("disableRequestMLEForMandatoryApisGlobally"));
 		this.setDisableRequestMLEForMandatoryApisGlobally(disableRequestMLEForMandatoryApisGloballyValue);
 
-		if(null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim())) {
-			this.setMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
+		if(null != this.getProps().getProperty("requestMleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("requestMleKeyAlias").trim())) {
+			this.setRequestMleKeyAlias((String)this.getProps().getProperty("requestMleKeyAlias").trim());
+		}else if((null != this.getProps().getProperty("mleKeyAlias") && !StringUtils.isEmpty(this.getProps().getProperty("mleKeyAlias").trim()))) {
+			this.setRequestMleKeyAlias((String)this.getProps().getProperty("mleKeyAlias").trim());
 		}else {
-			this.setMleKeyAlias(GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
+			this.setRequestMleKeyAlias(GlobalLabelParameters.DEFAULT_MLE_ALIAS_FOR_CERT);
 		}
+		
 		if (null != this.getProps().getProperty("mleForRequestPublicCertPath") && !StringUtils.isEmpty(this.getProps().getProperty("mleForRequestPublicCertPath").trim()) ) {
 			this.setMleForRequestPublicCertPath(this.getProps().getProperty("mleForRequestPublicCertPath").trim());
 		}
 
 		if (this.getProps().containsKey("mapToControlMLEonAPI")) {
 			try {
-				this.setMapToControlMLEonAPI((Map<String, Boolean>) this.getProps().get("mapToControlMLEonAPI"));
-			} catch (ClassCastException e) {
-				logger.warn("Unable to initialise MLE control Map from config");
+				//handle the case when map is Map<String, Boolean>
+				Object map = this.getProps().get("mapToControlMLEonAPI");
+				map = convertBooleanToStringMapTypeValue(map);
+				this.setMapToControlMLEonAPI((Map<String, String>) map);
+			} catch (Exception e) {
+				logger.warn("Unable to initialise MLE control Map from config: " + e.getMessage());
+				throw new ConfigException("Unable to initialise MLE control Map from config: " + e.getMessage());
 			}
 		}
+		
+		//set mle response configs
+		boolean enableResponseMleGloballyValue = Boolean.parseBoolean(this.getProps().getProperty("enableResponseMleGlobally"));
+		this.setEnableResponseMleGlobally(enableResponseMleGloballyValue);
+		
+		if (null != this.getProps().getProperty("responseMleKID") && !StringUtils.isEmpty(this.getProps().getProperty("responseMleKID").trim())) {
+		    this.setResponseMleKID(this.getProps().getProperty("responseMleKID").trim());
+		}
+		
+		if (null != this.getProps().getProperty("responseMlePrivateKeyFilePath") && !StringUtils.isEmpty(this.getProps().getProperty("responseMlePrivateKeyFilePath").trim())) {
+		    this.setResponseMlePrivateKeyFilePath(this.getProps().getProperty("responseMlePrivateKeyFilePath").trim());
+		}
+		
+		if (null != this.getProps().getProperty("responseMlePrivateKeyFilePassword") && !StringUtils.isEmpty(this.getProps().getProperty("responseMlePrivateKeyFilePassword"))) {
+		    this.setResponseMlePrivateKeyFilePassword(this.getProps().getProperty("responseMlePrivateKeyFilePassword").toCharArray());
+		}
+        
 		validateMLEConfiguration();
 
 		this.setRetryDelay(Long.valueOf(this.getProps().getProperty("retryDelay", "0")));
 		this.setMerchantDetailsSet(true);
+	}
+
+	private Map<String, String> convertBooleanToStringMapTypeValue(Object map) throws Exception {
+		
+		if (map == null) {
+			throw new ConfigException("Unsupported null value to mapToControlMLEonAPI in merchantConfig. Expected Map<String, String> which corresponds to <'apiFunctionName','flagForRequestMLE::flagForResponseMLE'> as dataType for field.");
+        }
+        
+        if (!(map instanceof Map<?, ?>)) {
+            throw new ClassCastException("Unsupported datatype for field mapToControlMLEonAPI. Expected Map<String, String> which corresponds to <'apiFunctionName','flagForRequestMLE::flagForResponseMLE'> as dataType for field but got: " + map.getClass().getSimpleName());
+        }else {
+			// Check if the map is Map<String, Boolean> and convert to Map<String, String>
+			Map<?, ?> rawMap = (Map<?, ?>) map;
+			
+			// Check if it's Map<String, Boolean>
+			boolean isBooleanMapValue = true;
+			boolean isStringMapValue = true;
+			for (Map.Entry<?, ?> entry : rawMap.entrySet()) {
+			    // Check if key is String for both cases
+			    if (!(entry.getKey() instanceof String)) {
+			        isBooleanMapValue = false;
+			        isStringMapValue = false;
+			        break;
+			    }
+			    
+			    // Check value types separately
+			    if (!(entry.getValue() instanceof Boolean)) {
+			        isBooleanMapValue = false;
+			    }
+			    
+			    if (!(entry.getValue() instanceof String)) {
+			        isStringMapValue = false;
+			    }
+			}
+			
+			if (isStringMapValue) {
+			    // It's already Map<String, String> - use as is
+			    return (Map<String, String>) rawMap;
+			}else if (isBooleanMapValue) {
+			    // Convert Map<String, Boolean> to Map<String, String>
+			    Map<String, String> convertedMap = new HashMap<>();
+			    for (Map.Entry<?, ?> entry : rawMap.entrySet()) {
+			        String key = (String) entry.getKey();
+			        Boolean value = (Boolean) entry.getValue();
+			        convertedMap.put(key, value.toString());
+			    }
+			    return convertedMap;
+			}else {
+			    // Neither supported type - log error or throw exception
+			    logger.error("Unsupported map type combination for mapToControlMLEonAPI in merchantConfig. Expected Map<String, String> which corresponds to <'apiFunctionName','flagForRequestMLE::flagForResponseMLE'> as dataType for field.");
+			    throw new ConfigException("Unsupported map type combination for mapToControlMLEonAPI in merchantConfig. Expected Map<String, String> which corresponds to <'apiFunctionName','flagForRequestMLE::flagForResponseMLE'> as dataType for field.");
+			}
+		}
 	}
 
 	/**
@@ -696,7 +856,7 @@ public class MerchantConfig {
 
 	private void validateMLEConfiguration() throws ConfigException {
 
-		// Fetch raw property values
+		// Validate that both old and new flags are not set to different values
 		String enableRequestMLEForOptionalApisGloballyStr = this.getProps().getProperty("enableRequestMLEForOptionalApisGlobally");
 		String useMLEGloballyStr = this.getProps().getProperty("useMLEGlobally");
 
@@ -717,19 +877,19 @@ public class MerchantConfig {
 				throw new ConfigException(e.getMessage());
 			}
 		}
+		
+		boolean requestMleConfigured = this.enableRequestMLEForOptionalApisGlobally;
 
-		boolean mleConfigured = this.enableRequestMLEForOptionalApisGlobally;
-
-		if (this.mapToControlMLEonAPI != null && !this.mapToControlMLEonAPI.isEmpty()) {
-			for (boolean value : this.mapToControlMLEonAPI.values()) {
+		if (this.internalMapToControlRequestMLEonAPI != null && !this.internalMapToControlRequestMLEonAPI.isEmpty()) {
+			for (boolean value : this.internalMapToControlRequestMLEonAPI.values()) {
 				if (value) {
-					mleConfigured = true;
+					requestMleConfigured = true;
 					break;
 				}
 			}
 		}
 		//if MLE=true then check for auth Type
-		if (mleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
+		if (requestMleConfigured && !GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			logger.error("Request MLE is only supported in JWT auth type");
 			throw new ConfigException("Request MLE is only supported in JWT auth type");
 		}
@@ -737,6 +897,55 @@ public class MerchantConfig {
 		//check the p12 file and set the keyFile to get the mleCert in case of JWT auth Type
 		if(GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			checkKeyFile();
+		}
+		
+		// Validate MLE Response Configuration
+		boolean responseMleConfigured = this.enableResponseMleGlobally;
+		if (this.internalMapToControlResponseMLEonAPI != null && !this.internalMapToControlResponseMLEonAPI.isEmpty()) {
+			for (boolean value : this.internalMapToControlResponseMLEonAPI.values()) {
+				if (value) {
+					responseMleConfigured = true;
+					break;
+				}
+			}
+		}	
+		if (responseMleConfigured) {
+			//validate for Auth type- Currently responseMLE feature will be enabled for JWT auth type only
+			if (!GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
+				logger.error("Response MLE is only supported for JWT auth type");
+				throw new ConfigException("Response MLE is only supported for JWT auth type");
+			}
+			
+			// Check if either private key object or private key file path is provided
+			if (this.responseMlePrivateKey == null && StringUtils.isEmpty(this.responseMlePrivateKeyFilePath)) {
+				logger.error("ConfigException : Response MLE is enabled but no private key provided. Either set responseMlePrivateKey object or provide responseMlePrivateKeyFilePath.");
+				throw new ConfigException("Response MLE is enabled but no private key provided. Either set responseMlePrivateKey object or provide responseMlePrivateKeyFilePath.");
+			}
+			
+			//Check both private key object or private key file path should not be provided
+			if (this.responseMlePrivateKey != null && StringUtils.isNotEmpty(this.responseMlePrivateKeyFilePath)) {
+			    logger.error("ConfigException : Both responseMlePrivateKey object and responseMlePrivateKeyFilePath are provided. Please provide only one of them for response mle private key.");
+			    throw new ConfigException("Both responseMlePrivateKey object and responseMlePrivateKeyFilePath are provided. Please provide only one of them for response mle private key..");
+			}
+            String extension = null;
+			// If private key file path is provided, validate the file exists
+			if (StringUtils.isNotEmpty(this.responseMlePrivateKeyFilePath)) {
+				try {
+					Utility.validatePathAndFile(this.responseMlePrivateKeyFilePath, "responseMlePrivateKeyFilePath");
+                    extension = Utility.getFileExtension(this.responseMlePrivateKeyFilePath);
+				} catch (IOException e) {
+					logger.error("ConfigException : Invalid responseMlePrivateKeyFilePath - " + e.getMessage());
+					throw new ConfigException("Invalid responseMlePrivateKeyFilePath - " + e.getMessage());
+				}
+			}
+            boolean isP12 = "p12".equals(extension) || "pfx".equals(extension);
+
+            // Validate KID - only required for non-P12/PFX files
+            // P12/PFX files support auto-extraction of KID in MLEUtility.java
+			if (!isP12 && StringUtils.isEmpty(this.responseMleKID)) {
+				logger.error("ConfigException : responseMleKID is required when response MLE is enabled for non-P12/PFX files.");
+				throw new ConfigException("responseMleKID is required when response MLE is enabled for non-P12/PFX files.");
+			} 
 		}
 	}
 
@@ -1149,20 +1358,123 @@ public class MerchantConfig {
 		this.disableRequestMLEForMandatoryApisGlobally = disableRequestMLEForMandatoryApisGlobally;
 	}
 
-	public Map<String, Boolean> getMapToControlMLEonAPI() {
+	public Map<String, String> getMapToControlMLEonAPI() {
 		return mapToControlMLEonAPI;
 	}
 
-	private void setMapToControlMLEonAPI(Map<String, Boolean> mapToControlMLEonAPI) {
+	private void setMapToControlMLEonAPI(Map<String, String> mapToControlMLEonAPI) throws ConfigException {
+		//validate the map value format - allowed values are true::true, false::false, ::true, true::, ::false, false::, true
+		if (mapToControlMLEonAPI != null) {
+		    validateMapToControlMLEonAPIValues(mapToControlMLEonAPI);
+		}
 		this.mapToControlMLEonAPI = mapToControlMLEonAPI;
+		
+		// Populate internal maps from the main map
+		if (mapToControlMLEonAPI != null) {
+			// Initialize internal maps
+			internalMapToControlRequestMLEonAPI = new HashMap<>();
+			internalMapToControlResponseMLEonAPI = new HashMap<>();
+			for (Map.Entry<String, String> entry : mapToControlMLEonAPI.entrySet()) {
+			    String apiName = entry.getKey();
+			    String value = entry.getValue();
+			    
+			    if (value.contains("::")) {
+			        // Format: "requestMLE::responseMLE"
+			        String[] parts = value.split("::", -1);
+			        String requestMLE = parts[0];
+			        String responseMLE = parts[1];
+			        
+			        // Set request MLE value
+			        if (!requestMLE.isEmpty()) {
+			            internalMapToControlRequestMLEonAPI.put(apiName, Boolean.parseBoolean(requestMLE));
+			        }
+			        
+			        // Set response MLE value 
+			        if (!responseMLE.isEmpty()) {
+			            internalMapToControlResponseMLEonAPI.put(apiName, Boolean.parseBoolean(responseMLE));
+			        }
+			    } else {
+			        // Format: "true" or "false" - applies to request MLE only
+			        internalMapToControlRequestMLEonAPI.put(apiName, Boolean.parseBoolean(value));
+			    }
+			}
+			this.setInternalMapToControlRequestMLEonAPI(internalMapToControlRequestMLEonAPI);
+			this.setInternalMapToControlResponseMLEonAPI(internalMapToControlResponseMLEonAPI);
+		}
+    }
+    
+    public Map<String, Boolean> getInternalMapToControlRequestMLEonAPI() {
+		return internalMapToControlRequestMLEonAPI;
 	}
 
-	public String getMleKeyAlias() {
-		return mleKeyAlias;
+	private void setInternalMapToControlRequestMLEonAPI(Map<String, Boolean> internalMapToControlRequestMLEonAPI) {
+		this.internalMapToControlRequestMLEonAPI = internalMapToControlRequestMLEonAPI;
 	}
 
-	private void setMleKeyAlias(String mleKeyAlias) {
-		this.mleKeyAlias = mleKeyAlias;
+	public Map<String, Boolean> getInternalMapToControlResponseMLEonAPI() {
+		return internalMapToControlResponseMLEonAPI;
+	}
+
+	private void setInternalMapToControlResponseMLEonAPI(Map<String, Boolean> internalMapToControlResponseMLEonAPI) {
+		this.internalMapToControlResponseMLEonAPI = internalMapToControlResponseMLEonAPI;
+	}
+
+	/**
+     * Validates the map values for MLE control API configuration.
+     * Allowed formats: "true::true", "false::false", "::true", "true::", "::false", "false::", "true", "false"
+     * 
+     * @param mapToControlMLEonAPI the map to validate
+     * @throws ConfigException if any value in the map has invalid format
+     */
+    private void validateMapToControlMLEonAPIValues(Map<String, String> mapToControlMLEonAPI) throws ConfigException {
+        for (Map.Entry<String, String> entry : mapToControlMLEonAPI.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            
+            if (StringUtils.isEmpty(value)) {
+                logger.error("ConfigException : Invalid MLE control map value for key '" + key + "'. Value cannot be null or empty.");
+                throw new ConfigException("Invalid MLE control map value for key '" + key + "'. Value cannot be null or empty.");
+            }
+            
+            // Check if value contains "::" separator
+            if (value.contains("::")) {
+                String[] parts = value.split("::", -1); // -1 to include empty strings
+                
+                if (parts.length != 2) {
+                    logger.error("ConfigException : Invalid MLE control map value format for key '" + key + "'. Expected format: true/false for 'requestMLE::responseMLE' but got: '" + value + "'");
+                    throw new ConfigException("Invalid MLE control map value format for key '" + key + "'. Expected format: true/false for 'requestMLE::responseMLE' but got: '" + value + "'");
+                }
+                
+                String requestMLE = parts[0];
+                String responseMLE = parts[1];
+                
+                // Validate first part (request MLE) - can be empty, "true", or "false"
+                if (!requestMLE.isEmpty() && !Utility.isValidBooleanString(requestMLE)) {
+                    logger.error("ConfigException : Invalid request MLE value for key '" + key + "'. Expected 'true', 'false', or empty but got: '" + requestMLE + "'");
+                    throw new ConfigException("Invalid request MLE value for key '" + key + "'. Expected 'true', 'false', or empty but got: '" + requestMLE + "'");
+                }
+                
+                // Validate second part (response MLE) - can be empty, "true", or "false"
+                if (!responseMLE.isEmpty() && !Utility.isValidBooleanString(responseMLE)) {
+                    logger.error("ConfigException : Invalid response MLE value for key '" + key + "'. Expected 'true', 'false', or empty but got: '" + responseMLE + "'");
+                    throw new ConfigException("Invalid response MLE value for key '" + key + "'. Expected 'true', 'false', or empty but got: '" + responseMLE + "'");
+                }
+            } else {
+                // Value without "::" separator - should be "true" or "false"
+                if (!Utility.isValidBooleanString(value)) {
+                    logger.error("ConfigException : Invalid MLE control map value for key '" + key + "'. Expected 'true' or 'false' for requestMLE but got: '" + value + "'");
+                    throw new ConfigException("Invalid MLE control map value for key '" + key + "'. Expected 'true' or 'false' for requestMLE but got: '" + value + "'");
+                }
+            }
+        }
+    }
+	
+	public String getRequestMleKeyAlias() {
+		return requestMleKeyAlias;
+	}
+
+	private void setRequestMleKeyAlias(String requestMleKeyAlias) {
+		this.requestMleKeyAlias = requestMleKeyAlias;
 	}
 
 	public String getMleForRequestPublicCertPath() {
@@ -1171,5 +1483,45 @@ public class MerchantConfig {
 
 	public void setMleForRequestPublicCertPath(String mleForRequestPublicCertPath) {
 		this.mleForRequestPublicCertPath = mleForRequestPublicCertPath;
+	}
+
+	public boolean isEnableResponseMleGlobally() {
+		return enableResponseMleGlobally;
+	}
+
+	public void setEnableResponseMleGlobally(boolean enableResponseMleGlobally) {
+		this.enableResponseMleGlobally = enableResponseMleGlobally;
+	}
+
+	public String getResponseMleKID() {
+		return responseMleKID;
+	}
+
+	public void setResponseMleKID(String responseMleKID) {
+		this.responseMleKID = responseMleKID;
+	}
+
+	public String getResponseMlePrivateKeyFilePath() {
+		return responseMlePrivateKeyFilePath;
+	}
+
+	public void setResponseMlePrivateKeyFilePath(String responseMlePrivateKeyFilePath) {
+		this.responseMlePrivateKeyFilePath = responseMlePrivateKeyFilePath;
+	}
+
+	public char[] getResponseMlePrivateKeyFilePassword() {
+		return responseMlePrivateKeyFilePassword;
+	}
+
+	public void setResponseMlePrivateKeyFilePassword(char[] responseMlePrivateKeyFilePassword) {
+		this.responseMlePrivateKeyFilePassword = responseMlePrivateKeyFilePassword;
+	}
+
+	public PrivateKey getResponseMlePrivateKey() {
+		return responseMlePrivateKey;
+	}
+
+	public void setResponseMlePrivateKey(PrivateKey responseMlePrivateKey) {
+		this.responseMlePrivateKey = responseMlePrivateKey;
 	}
 }

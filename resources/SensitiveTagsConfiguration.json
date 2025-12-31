@@ -95,6 +95,18 @@
             "pattern": "(\\s*)(\\p{N}{4})(\\s*)(\\p{N}{2})(\\s*\\p{N}*\\s*)",
             "replacement": "$2$4xxxxx",
             "disableMask": false
+        },
+        {
+            "tagName": "encryptedRequest",
+            "pattern": "[^\"]+",
+            "replacement": "xxxxxxxxxx",
+            "disableMask": false
+        },
+        {
+            "tagName": "encryptedResponse",
+            "pattern": "[^\"]+",
+            "replacement": "xxxxxxxxxx",
+            "disableMask": false
         }
     ],
     "authenticationSchemes": [

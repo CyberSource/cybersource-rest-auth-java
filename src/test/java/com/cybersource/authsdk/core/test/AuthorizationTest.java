@@ -152,7 +152,7 @@ public class AuthorizationTest {
         merchantConfig.validateMerchantDetails("POST");
 
         authorization = new Authorization();
-        String token = authorization.getToken(merchantConfig, "POST", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
+        String token = authorization.getToken(merchantConfig, "POST", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z", false);
 
         Assert.assertNotNull(token);
     }
@@ -185,7 +185,7 @@ public class AuthorizationTest {
         merchantConfig.validateMerchantDetails("POST");
 
         authorization = new Authorization();
-        String token = authorization.getToken(merchantConfig, "abc", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
+        String token = authorization.getToken(merchantConfig, "abc", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z",false);
 
         Assert.assertNull(token);
     }
@@ -201,7 +201,7 @@ public class AuthorizationTest {
 
         MerchantConfig merchantConfig = new MerchantConfig(props);
         Authorization authorization = new Authorization();
-        String token = authorization.getToken(merchantConfig, "GET", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z");
+        String token = authorization.getToken(merchantConfig, "GET", requestJsonData, "/v2/payments", "2023-10-10T10:10:10Z",false);
 
         Assert.assertNotNull(token);
     }
