@@ -99,7 +99,7 @@ public class JWTSignatureTokenTest {
 
 		merchantConfig.validateMerchantDetails("GET");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "GET");
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "GET",false);
 
 		String token = jwtSignatureToken.getToken();
 
@@ -115,7 +115,7 @@ public class JWTSignatureTokenTest {
 
 		merchantConfig.validateMerchantDetails("POST");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "POST");
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "POST", false);
 
 		String token = jwtSignatureToken.getToken();
 		System.out.println("token "  + token);
@@ -131,7 +131,7 @@ public class JWTSignatureTokenTest {
 
 		merchantConfig.validateMerchantDetails("PUT");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "PUT");
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "PUT",false);
 
 		String token = jwtSignatureToken.getToken();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -147,7 +147,7 @@ public class JWTSignatureTokenTest {
 
 		merchantConfig.validateMerchantDetails("DELETE");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, testJsonDataEmpty, "DELETE");
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, testJsonDataEmpty, "DELETE",false);
 
 		String token = jwtSignatureToken.getToken();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -162,7 +162,7 @@ public class JWTSignatureTokenTest {
 
 		merchantConfig.validateMerchantDetails("PUT");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, testJsonDataEmpty, "PUT");
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, testJsonDataEmpty, "PUT",false);
 
 		String token = jwtSignatureToken.getToken();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
@@ -178,7 +178,7 @@ public class JWTSignatureTokenTest {
 
 		merchantConfig.setAuthenticationType("abc");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "POST");
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "POST",false);
 
 		String token = jwtSignatureToken.getToken();
 		Assert.assertNull(token);
@@ -189,7 +189,7 @@ public class JWTSignatureTokenTest {
 
 		merchantConfig.validateMerchantDetails("POST");
 
-		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "POST");
+		jwtSignatureToken = new JwtSignatureToken(merchantConfig, requestJsonData, "POST",false);
 		jwtSignatureToken.generateSignature();
 		String token1 = jwtSignatureToken.generateSignature();
 		if (merchantConfig.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
