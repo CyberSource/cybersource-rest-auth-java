@@ -22,23 +22,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.cybersource.authsdk.util.Utility;
+import com.nimbusds.jose.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nimbusds.jose.EncryptionMethod;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JOSEObject;
-import com.nimbusds.jose.JWEAlgorithm;
-import com.nimbusds.jose.JWEDecrypter;
-import com.nimbusds.jose.JWEEncrypter;
-import com.nimbusds.jose.JWEHeader;
-import com.nimbusds.jose.JWEObject;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
@@ -158,20 +147,13 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		} catch (IllegalArgumentException e) {
 			logger.warn("Failed to extract serial number from certificate: {}", e.getMessage());
 		}
-		
-		List<com.nimbusds.jose.util.Base64> x5cBase64List = new ArrayList<Base64>();
-		try {
-			x5cBase64List.add(com.nimbusds.jose.util.Base64.encode(x509Certificate.getEncoded()));
-		} catch (CertificateEncodingException e) {
-			logger.error("CertificateEncodingException : Payload cannot be signed or encrypted\n" + e);
-			return null;
-		}
+
 		RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) privateKey;
 		Payload payload = new Payload(content);
 
-		JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).customParams(customHeaders).keyID(serialNumber)
-				.x509CertChain(x5cBase64List).build();
+		JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(serialNumber).type(JOSEObjectType.JWT).customParams(customHeaders).build();
 		JWSObject jwsObject = new JWSObject(jwsHeader, payload);
+
 		try {
 			RSASSASigner signer = new RSASSASigner(rsaPrivateKey);
 			jwsObject.sign(signer);
