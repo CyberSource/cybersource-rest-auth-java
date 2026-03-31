@@ -69,6 +69,7 @@ public class GlobalLabelParameters {
 	public static final String AUTH_ERROR = "Invalid Authentication Type in cybs.properties :: ";
 	public static final String KEY_ALIAS_NULL_EMPTY = "KeyAlias Empty/Null. Assigning merchantID value :: ";
 	public static final String KEY_ALIAS_MISMATCH = "KeyAlias Mismatch. Assigning merchantID value ";
+	public static final String KEY_ALIAS_MISMATCH_USE_METAKEY = "KeyAlias Mismatch. Assigning portfolioID value ";
 	public static final String KEY_PASSWORD_EMPTY_NULL = "KeyPassword Empty/Null. Assigning merchantID value";
 	public static final String REQUEST_JSON_ERROR = "Request Json File missing. File Path :: ";
 	public static final String REQUEST_JSON_MIS_NULL = "Request Json File Missing/Null";

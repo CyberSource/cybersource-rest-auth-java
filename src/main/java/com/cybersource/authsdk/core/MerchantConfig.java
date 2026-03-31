@@ -505,9 +505,14 @@ public class MerchantConfig {
 		if (this.getKeyAlias() == null || this.getKeyAlias().isEmpty()) {
 			logger.error(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
 			this.setKeyAlias(this.getMerchantID());
-		} else if (!this.useMetaKey && !this.getKeyAlias().equalsIgnoreCase(this.getMerchantID())) {
+		}
+		if (!this.useMetaKey && !this.getKeyAlias().equalsIgnoreCase(this.getMerchantID())) {
 			this.setKeyAlias(this.getMerchantID());
 			logger.error(GlobalLabelParameters.KEY_ALIAS_MISMATCH);
+		}
+		if (this.useMetaKey && !this.getKeyAlias().equalsIgnoreCase(this.getPortfolioID())) {
+			this.setKeyAlias(this.getPortfolioID());
+			logger.error(GlobalLabelParameters.KEY_ALIAS_MISMATCH_USE_METAKEY);
 		}
 		return true;
 	}

@@ -25,7 +25,7 @@ public class TokenGeneratorFactory {
 		if (authType.equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			return new HttpSignatureToken(merchantConfig, requestBody, reqVerb, reqTarget, date);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			return new JwtSignatureToken(merchantConfig, requestBody, reqVerb, isResponseMLEForApi);
+			return new JwtSignatureToken(merchantConfig, requestBody, reqVerb, reqTarget, isResponseMLEForApi);
 		} else if (authType.equalsIgnoreCase(GlobalLabelParameters.OAUTH)) {
 			return new OAuthToken(merchantConfig);
 		} else {
