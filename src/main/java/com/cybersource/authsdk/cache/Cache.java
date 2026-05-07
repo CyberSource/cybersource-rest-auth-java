@@ -95,9 +95,10 @@ public class Cache {
         try {
             filePath = merchantConfig.getResponseMlePrivateKeyFilePath();
             cacheKey = merchantConfig.getResponseMlePrivateKeyFilePath() + GlobalLabelParameters.RESPONSE_MLE_P12_PFX_CACHE_IDENTIFIER;
-            X509Certificate merchantCert = Utility.getCertificateByAliasFromPKCS(filePath, merchantConfig.getResponseMlePrivateKeyFilePassword(), merchantConfig.getMerchantID());
+            String responseMleKeyAlias = merchantConfig.isUseMetaKey() ? merchantConfig.getPortfolioID() : merchantConfig.getMerchantID();
+            X509Certificate merchantCert = Utility.getCertificateByAliasFromPKCS(filePath, merchantConfig.getResponseMlePrivateKeyFilePassword(), responseMleKeyAlias);
             if (merchantCert == null) {
-                throw new MLEException("No certificate found for Response MLE Private Key file with merchant ID alias " + merchantConfig.getMerchantID());
+                throw new MLEException("No certificate found for Response MLE Private Key file with alias " + responseMleKeyAlias);
             }
             
             // Check if this is a CyberSource-generated P12 file
@@ -144,7 +145,7 @@ public class Cache {
 		}
 
 		//2. Priority 2: if merchantConfig.mleForRequestPublicCertPath not provided by merchant then get mlecert from merchant p12 if provided and jwt auth type
-		else if(GlobalLabelParameters.JWT.equalsIgnoreCase(merchantConfig.getAuthenticationType()) && merchantConfig.getKeyFile() != null) {
+		else if(GlobalLabelParameters.JWT.equalsIgnoreCase(merchantConfig.getAuthenticationType()) && merchantConfig.getKeyFile() != null && !merchantConfig.isSharedSecretKeyType()) {
 			identifier= GlobalLabelParameters.MLE_CACHE_KEY_IDENTIFIER_FOR_P12_CERT;
 			cacheKey = merchantId + "_" + identifier;
 			filePath = merchantConfig.getKeyFile().getAbsolutePath();

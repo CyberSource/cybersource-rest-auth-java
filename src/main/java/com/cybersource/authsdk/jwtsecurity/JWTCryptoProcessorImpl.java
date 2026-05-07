@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
@@ -554,5 +555,46 @@ public class JWTCryptoProcessorImpl implements CryptoProcessor {
 		}
 		byte[] bodyDigestBytes = messageDigest.digest(jsonBody.getBytes());
 		return java.util.Base64.getEncoder().encodeToString(bodyDigestBytes);
+	}
+
+	/**
+	 * Signs a JWT payload using HMAC-SHA256 (symmetric / shared secret key).
+	 * <p>
+	 * Used when {@code jwtKeyType = SHARED_SECRET} in merchant configuration.
+	 *
+	 * @param content        the payload JSON string to sign
+	 * @param secretKeyBytes the Base64-decoded shared secret key bytes
+	 * @param keyId          the key ID to set in the JWS header (merchantKeyId)
+	 * @param customHeaders  optional custom header parameters (may be null or empty)
+	 * @return serialized JWS compact string (header.payload.signature)
+	 * @throws JOSEException if HMAC signing fails
+	 */
+	public String signWithHmac(String content, byte[] secretKeyBytes, String keyId,
+			Map<String, Object> customHeaders) throws JOSEException {
+		if (isNullOrEmpty(content) || secretKeyBytes == null || secretKeyBytes.length == 0) {
+			logger.error("Payload Content or Secret Key is null or empty");
+			return null;
+		}
+
+		Payload payload = new Payload(content);
+
+		JWSHeader.Builder headerBuilder = new JWSHeader.Builder(JWSAlgorithm.HS256)
+				.keyID(keyId)
+				.type(JOSEObjectType.JWT);
+		if (customHeaders != null && !customHeaders.isEmpty()) {
+			headerBuilder.customParams(customHeaders);
+		}
+
+		JWSObject jwsObject = new JWSObject(headerBuilder.build(), payload);
+
+		MACSigner signer = new MACSigner(secretKeyBytes);
+		jwsObject.sign(signer);
+
+		if (!jwsObject.getState().equals(JWSObject.State.SIGNED)) {
+			logger.error("HMAC JWT payload signing failed.");
+			return null;
+		}
+
+		return jwsObject.serialize();
 	}
 }
