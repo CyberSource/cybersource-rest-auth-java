@@ -34,13 +34,11 @@ _Note: Support for building the SDK with Maven has been made. Please see the res
 The Authentication SDK works for POST and GET requests.
 It works with any one of the two authentication mechanisms, which are HTTP signature and JWT token.
 
-> **⚠️ HTTP Signature Deprecation Notice:** HTTP Signature authentication is being deprecated. **JWT with Shared Secret** is the recommended migration path — it uses the same `merchantKeyId` and `merchantsecretKey` credentials, requires only two property changes, and enables MLE (Message Level Encryption) support that HTTP Signature does not provide.
-
 ## Configuration
 
 To set your API credentials for an API request,Configure the following information in `cybs.properties` file:
 
-### For HTTP Signature authentication (⚠️ Deprecated — migrate to JWT with Shared Secret)
+### For HTTP Signature authentication
 
 	```
 	authenticationType  = http_Signature
@@ -55,7 +53,7 @@ To set your API credentials for an API request,Configure the following informati
 	useMetaKey          = false
 	```
 
-### For JWT authentication (with P12 certificate)
+### For JWT authentication
 
 	```
 	authenticationType  = Jwt
@@ -72,82 +70,32 @@ To set your API credentials for an API request,Configure the following informati
 	useMetaKey          = false
 	```
 
-### For JWT authentication with Shared Secret (Recommended migration from HTTP Signature)
-
-Uses the **same** `merchantKeyId` and `merchantsecretKey` credentials as HTTP Signature. Only two properties change:
-
-	```
-	authenticationType  = jwt
-	jwtKeyType          = SHARED_SECRET
-	merchantID          = testrest
-	runEnvironment      = apitest.cybersource.com
-	merchantKeyId       = 08c94330-f618-42a3-b09d-e1e43be5efda
-	merchantsecretKey   = yBJxy6LjM2TmcPGu+GaJrHtkke25fPpUX+UY6/L/1tE=
-	enableLog           = true
-	logDirectory        = log
-	logMaximumSize      = 5M
-	logFilename         = cybs
-	useMetaKey          = false
-	```
-
 ### For using MetaKey
 
-MetaKey can be used for HTTP Signature, JWT (P12), and JWT with Shared Secret authentication.
+MetaKey can be used for HTTP Signature and JWT authentication.
 
-#### For HTTP Signature Authentication (⚠️ Deprecated)
+#### For HTTP Signature Authentication
 
 	```
 	authenticationType  = http_Signature
-	merchantID          = <transacting merchantID>
-	merchantKeyId       = <MetaKey Portfolio KeyId>
-	merchantsecretKey   = <MetaKey Portfolio Shared Secret Key>
+	merchantID          = <child merchantID>
+	merchantKeyId       = <MetaKey merchantKeyId>
+	merchantsecretKey   = <MetaKey merchantsecretKey>
 	useMetaKey          = true
 	portfolioID         = <Portfolio ID>
 	```
 
-#### For JWT Authentication (P12)
+#### For JWT Authentication
 
 	```
 	authenticationType  = Jwt
-	merchantID          = <transacting merchantID>
-	keyAlias            = <Portfolio ID>
-	keyPassword         = <MetaKey Portfolio P12 File Password>
-	keyFileName         = <MetaKey Portfolio P12 File Name>
+	merchantID          = <child merchantID>
+	keyAlias            = <keyAlias>
+	keyPassword         = <keyPassword>
+	keyFileName         = <keyFileName>
 	keysDirectory       = <keysDirectory>
 	useMetaKey          = true
 	```
-
-#### For JWT Authentication with Shared Secret (Recommended)
-
-	```
-	authenticationType  = jwt
-	jwtKeyType          = SHARED_SECRET
-	merchantID          = <transacting merchantID>
-	merchantKeyId       = <MetaKey Portfolio KeyId>
-	merchantsecretKey   = <MetaKey Portfolio Shared Secret Key>
-	useMetaKey          = true
-	portfolioID         = <Portfolio ID>
-	```
-
-#### Response MLE with MetaKey
-
-When Response MLE is enabled (`enableResponseMleGlobally=true`) and MetaKey is in use (`useMetaKey=true`), the Response MLE configuration must use the **portfolio's** response MLE key — not the transacting merchant's. Specifically:
-
-- `responseMlePrivateKeyFilePath` (or the `responseMlePrivateKey` object) must point to the **portfolio's** response MLE private key.
-- `responseMleKID` — the KID value associated with the **portfolio's** response MLE certificate.
-  - **Optional** when `responseMlePrivateKeyFilePath` points to a CyberSource-generated P12 file (SDK auto-fetches from P12).
-  - **Required** when using PEM format files (`.pem`, `.key`, `.p8`) or when providing `responseMlePrivateKey` object directly.
-
-	```
-	enableResponseMleGlobally          = true
-	responseMlePrivateKeyFilePath      = /path/to/portfolio/response/mle/private/key.p12
-	responseMlePrivateKeyFilePassword  = portfolio_private_key_password
-	// responseMleKID is optional when using a CyberSource-generated P12 file (auto-fetched from P12)
-	// Required when using PEM files or responseMlePrivateKey object
-	// responseMleKID                  = <Portfolio Response MLE KID>
-	```
-
-> **Important:** The response MLE private key (and KID, if applicable) must belong to the portfolio (parent account), since in MetaKey mode the portfolio is the transaction submitter and the response is encrypted using the portfolio's MLE certificate.
 
 ### Switching between the sandbox environment and the production environment
 

@@ -144,9 +144,10 @@ public class JwtSignatureToken implements TokenGenerator {
 	public String generateSignature() throws ConfigException {
 		try {
 			if (merchantConfig != null) {
-				/* Validate HTTP verb before attempting to sign */
-				merchantConfig.checkRequestType(this.jwtMethod);
+				/* Generating private key. */
+				getKeysForJWTFromCache();
 
+				/* Generating certificate. */
 				String encryptedSigMessage = "";
 
 				if (requestBody != null && !requestBody.isEmpty()) {
@@ -162,16 +163,7 @@ public class JwtSignatureToken implements TokenGenerator {
 				JWTCryptoProcessorImpl jwtCryptoProcessor = new JWTCryptoProcessorImpl();
 
 				if (GlobalLabelParameters.JWT.equalsIgnoreCase(authType)) {
-					if (merchantConfig.isSharedSecretKeyType()) {
-						/* JWT with SHARED_SECRET — sign with HMAC-SHA256 (symmetric) */
-						byte[] secretKeyBytes = java.util.Base64.getDecoder().decode(merchantConfig.getMerchantSecretKey());
-						String merchantKeyId = merchantConfig.getMerchantKeyId();
-						signature = jwtCryptoProcessor.signWithHmac(claimSet, secretKeyBytes, merchantKeyId, customHeaders);
-					} else {
-						/* JWT with P12 (default) — sign with RS256 (asymmetric) */
-						getKeysForJWTFromCache();
-						signature = jwtCryptoProcessor.sign(claimSet, rsaPrivateKey, x509Certificate, customHeaders);
-					}
+					signature = jwtCryptoProcessor.sign(claimSet, rsaPrivateKey, x509Certificate, customHeaders);
 				}
 
 				/*

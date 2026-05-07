@@ -104,8 +104,8 @@ public class PayloadDigestTest {
 
 	@Test
 	public void testPayloadGenerationFail() throws Exception {
-		/* Null payload triggers NullPointerException in digestGeneration(), which is caught and returns null */
-		payloadDigest = new PayloadDigest(null);
+		GlobalLabelParameters.SHA_256 = "sh";
+		payloadDigest = new PayloadDigest("");
 		String str = payloadDigest.getDigest();
 		Assert.assertNull(str);
 	}

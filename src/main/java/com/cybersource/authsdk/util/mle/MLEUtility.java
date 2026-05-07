@@ -202,9 +202,7 @@ public class MLEUtility {
     		return null;
     	}else {
     		//throw MLE cert not found 
-        	throw new MLEException("No certificate found for MLE Request. "
-        			+ "Please provide the Request MLE certificate file path via 'mleForRequestPublicCertPath' in merchant configuration. "
-        			+ "This is required when using jwtKeyType=SHARED_SECRET or when the P12 file does not contain the MLE certificate.");
+        	throw new MLEException("No certificate found for MLE Request");
     	}
     }
 

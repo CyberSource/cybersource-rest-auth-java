@@ -112,19 +112,6 @@ public class MerchantConfig {
 	/* JWT Authentication related parameters */
 
 	/***
-	 * Key type for JWT authentication.
-	 * <p>
-	 * Determines which credentials are used for JWT signing:
-	 * <ul>
-	 *   <li>{@code P12} (default) — asymmetric signing (RS256) using a .p12 certificate file.
-	 *       Requires: {@code keysDirectory}, {@code keyFileName}, {@code keyAlias}, {@code keyPass}.</li>
-	 *   <li>{@code SHARED_SECRET} — symmetric signing (HS256) using a shared secret key.
-	 *       Requires: {@code merchantKeyId}, {@code merchantSecretKey}.</li>
-	 * </ul>
-	 */
-	private String jwtKeyType = GlobalLabelParameters.JWT_KEY_TYPE_P12;
-
-	/***
 	 * Directory where .p12 certificate is stored
 	 */
 	private String keysDirectory;
@@ -339,11 +326,6 @@ public class MerchantConfig {
 	 * Optional — either provide this object directly or specify the private key file path via configuration.
 	 */
 	private PrivateKey responseMlePrivateKey;
-
-	/**
-	 * Flag to indicate if this instance is being used as part of an SDK integration.
-	 */
-	private boolean isSDK;
 	
 	public MerchantConfig() throws ConfigException {
 
@@ -413,17 +395,9 @@ public class MerchantConfig {
 			 */
 //			 || authenticationType.equalsIgnoreCase(GlobalLabelParameters.JWE)) {
 			isMerchantId = checkMerchantId();
-			checkJwtKeyType();
-			if (isSharedSecretKeyType()) {
-				/* JWT with SHARED_SECRET — validate symmetric key fields */
-				isCheckMerchantKeyId = checkMerchantKeyId();
-				isCheckMerchantSecretKey = checkMerchantSecretKey();
-			} else {
-				/* JWT with P12 (default) — validate certificate fields */
-				isGetKeyAlias = checkKeyAlias();
-				isCheckKeyPassword = checkKeyPassword();
-				isCheckKeyFile = checkKeyFile();
-			}
+			isGetKeyAlias = checkKeyAlias();
+			isCheckKeyPassword = checkKeyPassword();
+			isCheckKeyFile = checkKeyFile();
 		}
 
 		isCheckRunEnvironment = checkRunEvironment();
@@ -432,13 +406,8 @@ public class MerchantConfig {
 			isMerchantDetailStatus = isMerchantId && isCheckMerchantSecretKey && isCheckMerchantKeyId
 					&& isCheckLogMaxSize && isCheckRunEnvironment && isRequestType && this.isMerchantDetailsSet();
 		} else if (this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
-			if (isSharedSecretKeyType()) {
-				isMerchantDetailStatus = isMerchantId && isCheckMerchantSecretKey && isCheckMerchantKeyId
-						&& isCheckLogMaxSize && isCheckRunEnvironment && isRequestType && this.isMerchantDetailsSet();
-			} else {
-				isMerchantDetailStatus = isMerchantId && isGetKeyAlias && isCheckKeyPassword && isCheckKeyFile
-						&& isCheckLogMaxSize && isCheckRunEnvironment && isRequestType && this.isMerchantDetailsSet();
-			}
+			isMerchantDetailStatus = isMerchantId && isGetKeyAlias && isCheckKeyPassword && isCheckKeyFile
+					&& isCheckLogMaxSize && isCheckRunEnvironment && isRequestType && this.isMerchantDetailsSet();
 		} else if (this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.OAUTH)
 				|| this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.MUTUALAUTH)) {
 			isMerchantDetailStatus = isCheckLogMaxSize && isCheckRunEnvironment && isRequestType;
@@ -550,7 +519,6 @@ public class MerchantConfig {
 
 	private void setMerchantDetails() throws ConfigException {
 		this.setAuthenticationType(this.getProps().getProperty("authenticationType"));
-		this.setSDK(Boolean.valueOf(this.getProps().getOrDefault("isSDK", false).toString()));
 		this.setUseMetaKey(Boolean.valueOf(this.getProps().getOrDefault("useMetaKey", false).toString()));
 		this.setEnableClientCert(Boolean.valueOf(this.getProps().getOrDefault("enableClientCert", false).toString()));
 		if (null != this.getProps().getProperty("jwePEMFileDirectory")) {
@@ -588,11 +556,10 @@ public class MerchantConfig {
 		if (this.getAuthenticationType() != null
 				&& this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.JWT)) {
 			/* JWT Authentication */
-
-			/* Read jwtKeyType — defaults to P12 for backward compatibility */
-			String jwtKeyTypeProp = this.getProps().getProperty("jwtKeyType", GlobalLabelParameters.JWT_KEY_TYPE_P12).trim();
-			this.setJwtKeyType(jwtKeyTypeProp);
-			checkJwtKeyType();
+			if (this.getProps().getProperty("keysDirectory") == null) {
+				this.setKeysDirectory(GlobalLabelParameters.DEF_KEY_DIRECTORY_PATH);
+			}
+			this.setKeysDirectory(this.getProps().getProperty("keysDirectory").trim());
 
 			if (this.getProps().getProperty("merchantID") == null) {
 				logger.error("ConfigException : Merchant ID is mandatory");
@@ -600,42 +567,21 @@ public class MerchantConfig {
 			}
 			this.setMerchantID(this.getProps().getProperty("merchantID").trim());
 
-			if (isSharedSecretKeyType()) {
-				/* JWT with Shared Secret (symmetric / HS256) — uses merchantKeyId + merchantsecretKey */
-				if (this.getProps().getProperty("merchantKeyId") == null) {
-					logger.error("ConfigException : Merchant Key ID is mandatory for JWT with SHARED_SECRET");
-					throw new ConfigException("Merchant KeyId is mandatory for JWT with SHARED_SECRET");
-				}
-				this.setMerchantKeyId(this.getProps().getProperty("merchantKeyId").trim());
-
-				if (this.getProps().getProperty("merchantsecretKey") == null) {
-					logger.error("ConfigException : Merchant Secret Key is mandatory for JWT with SHARED_SECRET");
-					throw new ConfigException("Merchant SecretKey is mandatory for JWT with SHARED_SECRET");
-				}
-				this.setMerchantSecretKey(this.getProps().getProperty("merchantsecretKey").trim());
-			} else {
-				/* JWT with P12 (asymmetric / RS256) — uses certificate file */
-				if (this.getProps().getProperty("keysDirectory") == null) {
-					this.setKeysDirectory(GlobalLabelParameters.DEF_KEY_DIRECTORY_PATH);
-				}
-				this.setKeysDirectory(this.getProps().getProperty("keysDirectory").trim());
-
-				if (this.getProps().getProperty("keyAlias") == null) {
-					logger.error(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
-					this.setKeyAlias(this.getMerchantID());
-				}
-				this.setKeyAlias(this.getProps().getProperty("keyAlias").trim());
-
-				if (this.getProps().getProperty("keyPass") == null) {
-					this.setKeyPass(this.getMerchantID());
-				}
-				this.setKeyPass(this.getProps().getProperty("keyPass"));
-
-				if (this.getProps().getProperty("keyFileName") == null) {
-					this.setKeyFilename(this.getMerchantID());
-				}
-				this.setKeyFilename(this.getProps().getProperty("keyFileName").trim());
+			if (this.getProps().getProperty("keyAlias") == null) {
+				logger.error(GlobalLabelParameters.KEY_ALIAS_NULL_EMPTY);
+				this.setKeyAlias(this.getMerchantID());
 			}
+			this.setKeyAlias(this.getProps().getProperty("keyAlias").trim());
+
+			if (this.getProps().getProperty("keyPass") == null) {
+				this.setKeyPass(this.getMerchantID());
+			}
+			this.setKeyPass(this.getProps().getProperty("keyPass"));
+
+			if (this.getProps().getProperty("keyFileName") == null) {
+				this.setKeyFilename(this.getMerchantID());
+			}
+			this.setKeyFilename(this.getProps().getProperty("keyFileName").trim());
 		} else if (this.getAuthenticationType() != null
 				&& this.getAuthenticationType().equalsIgnoreCase(GlobalLabelParameters.HTTP)) {
 			/* HTTP Signature Authentication */
@@ -953,9 +899,8 @@ public class MerchantConfig {
 			throw new ConfigException("Request MLE is only supported in JWT auth type");
 		}
 
-		//check the p12 file and set the keyFile to get the mleCert in case of JWT auth Type with P12 key
-		if(GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType) && !isSharedSecretKeyType()) 
-		{
+		//check the p12 file and set the keyFile to get the mleCert in case of JWT auth Type
+		if(GlobalLabelParameters.JWT.equalsIgnoreCase(this.authenticationType)) {
 			checkKeyFile();
 		}
 		
@@ -1583,49 +1528,5 @@ public class MerchantConfig {
 
 	public void setResponseMlePrivateKey(PrivateKey responseMlePrivateKey) {
 		this.responseMlePrivateKey = responseMlePrivateKey;
-	}
-
-	public String getJwtKeyType() {
-		return jwtKeyType;
-	}
-
-	private void setJwtKeyType(String jwtKeyType) {
-		this.jwtKeyType = jwtKeyType;
-	}
-
-	/**
-	 * Returns true if the JWT key type is SHARED_SECRET (symmetric / HS256).
-	 * @return true for shared secret, false for P12 (or default)
-	 */
-	public boolean isSharedSecretKeyType() {
-		return GlobalLabelParameters.JWT_KEY_TYPE_SHARED_SECRET.equalsIgnoreCase(this.jwtKeyType);
-	}
-
-	/**
-	 * Validates the jwtKeyType value. Must be P12 or SHARED_SECRET.
-	 * @throws ConfigException if jwtKeyType is invalid
-	 */
-	private void checkJwtKeyType() throws ConfigException {
-		if (!GlobalLabelParameters.JWT_KEY_TYPE_P12.equalsIgnoreCase(this.jwtKeyType)
-				&& !GlobalLabelParameters.JWT_KEY_TYPE_SHARED_SECRET.equalsIgnoreCase(this.jwtKeyType)) {
-			logger.error(GlobalLabelParameters.INVALID_JWT_KEY_TYPE + this.jwtKeyType);
-			throw new ConfigException(GlobalLabelParameters.INVALID_JWT_KEY_TYPE + this.jwtKeyType);
-		}
-	}
-
-	/**
-	 * Returns whether this instance is being used as part of an SDK integration.
-	 * @return true if SDK, false otherwise
-	 */
-	public boolean isSDK() {
-		return isSDK;
-	}
-
-	/**
-	 * Sets whether this instance is being used as part of an SDK integration.
-	 * @param isSDK true to mark as SDK, false otherwise
-	 */
-	public void setSDK(boolean isSDK) {
-		this.isSDK = isSDK;
 	}
 }

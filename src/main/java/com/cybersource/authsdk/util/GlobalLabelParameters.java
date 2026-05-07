@@ -21,11 +21,6 @@ public class GlobalLabelParameters {
 	public static final String MUTUALAUTH = "MutualAuth";
 	public static final String JWT = "JWT";
 	public static final String JWE = "JWE";
-
-	/* JWT Key Type constants — determines which credentials JWT uses for signing */
-	public static final String JWT_KEY_TYPE_P12 = "P12";
-	public static final String JWT_KEY_TYPE_SHARED_SECRET = "SHARED_SECRET";
-	public static final String INVALID_JWT_KEY_TYPE = "Invalid Value for jwtKeyType in merchant configuration. Value must be 'P12' or 'SHARED_SECRET'. ";
 	public static final String V_C_MERCHANTID = "v-c-merchant-id";
 	public static final String DATE = "Date";
 	public static final String HOST = "Host";
@@ -57,7 +52,7 @@ public class GlobalLabelParameters {
 	public static final String DEFAULT_LOG_NAME = "cybs";
 	public static final String DEF_KEY_DIRECTORY_PATH = "src/main/resources";
 	/* Digest Constants */
-	public static final String SHA_256 = "SHA-256";
+	public static String SHA_256 = "SHA-256";
 	/* Logging Labels */
 	public static final String RESPONSE_CODE = "Response Code";
 	public static final String DEFAULT_LOG_SIZE = "5K";
