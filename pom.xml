@@ -3,7 +3,7 @@
 	<groupId>com.cybersource</groupId>
 	<artifactId>AuthenticationSdk</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.44</version>
+	<version>0.0.45</version>
 	<name>CyberSource Authentication SDK</name>
 	<url>https://developer.cybersource.com</url>
 	<description>Cybersource Rest Auth SDK</description>
@@ -68,13 +68,13 @@
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk18on</artifactId>
-			<version>1.84</version>
+			<version>1.85</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk18on</artifactId>
-			<version>1.84</version>
+			<version>1.85</version>
 		</dependency>
 
 		<dependency>
