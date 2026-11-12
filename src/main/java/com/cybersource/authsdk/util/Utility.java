@@ -240,6 +240,11 @@ public class Utility {
 			warnMessageForBeingExpiredCert = "Certificate for Request MLE with alias {} is going to expired on {} . Please update p12 file before that.";
 			warnMessageForExpiredCert = "Certificate for Request MLE with alias {} is expired as of {} . Please update p12 file.";
 		}
+		if(GlobalLabelParameters.CERT_IDENTIFIER_FOR_JWT_SIGNING.equals(mleCacheKeyIdentifier)) {
+			warnMessageForNotHaveExpiryDate = "JWT signing certificate don't have expiry date in p12 file.";
+			warnMessageForBeingExpiredCert = "JWT signing certificate with alias {} is going to expired on {} . Please update p12 file before that.";
+			warnMessageForExpiredCert = "JWT signing certificate with alias {} is expired as of {} . Please update p12 file.";
+		}
 		
 		if (certificate.getNotAfter() == null) {
             //certificate do not have expire date
@@ -250,7 +255,7 @@ public class Utility {
             //throw new MLEException("Certificate required for MLE has been expired on : " + certificate.getNotAfter());
         } else {
             long timeToExpire = certificate.getNotAfter().getTime() - new Date().getTime();
-            if (timeToExpire < GlobalLabelParameters.CERTIFICATE_EXPIRY_DATE_WARNING_DAYS * 24 * 60 * 60) {
+            if (timeToExpire < GlobalLabelParameters.CERTIFICATE_EXPIRY_DATE_WARNING_DAYS * 24 * 60 * 60 * 1000L) {
             	logger.warn(warnMessageForBeingExpiredCert,keyAlias,certificate.getNotAfter());
             }
         }

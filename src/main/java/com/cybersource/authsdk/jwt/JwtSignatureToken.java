@@ -125,6 +125,7 @@ public class JwtSignatureToken implements TokenGenerator {
 		try {
 			if(this.isResponseMLEForApi) {
 				payloadClaimSet.put("v-c-response-mle-kid", validateAndAutoExtractResponseMleKid(merchantConfig));
+				payloadClaimSet.put("v-c-response-mle-algo", "RSA-OAEP-256");
 			}
 		} catch (Exception e) {
 			logger.fatal(GlobalLabelParameters.JWT_SIG_FAILED);
