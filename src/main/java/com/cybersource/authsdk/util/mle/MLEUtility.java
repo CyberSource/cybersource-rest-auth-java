@@ -61,25 +61,32 @@ public class MLEUtility {
         return isMLEForAPI;
     }
 
-    public static Object encryptRequestPayload(MerchantConfig merchantConfig, Object localVarPostBody) throws MLEException {
-    	if (localVarPostBody == null) {
+    // Accept serialized JSON from the client so its configured Gson adapters and payload representation are preserved.
+    public static Object encryptSerializedRequestPayload(MerchantConfig merchantConfig, Object originalPayload,
+                                                         String serializedPayload, String contentType) throws MLEException {
+        if (originalPayload == null) {
             return null;
         }
-    	
-    	X509Certificate mleCertificate = getRequestMleCertificate(merchantConfig);        
-    	// Handling special case : MLE Certificate is not currently available for HTTP Signature
-        if(mleCertificate==null && GlobalLabelParameters.HTTP.equalsIgnoreCase(merchantConfig.getAuthenticationType())) {
-		    logger.debug("The certificate to use for MLE for requests is not provided in the merchant configuration. Please ensure that the certificate path is provided.");
-		    logger.warn("Currently, MLE for requests using HTTP Signature as authentication is not supported by Cybersource. By default, the SDK will fall back to non-encrypted requests.");        	
-		    return localVarPostBody;
+        if (StringUtils.isBlank(contentType)) {
+            throw new MLEException("Request content type is required for MLE encryption");
         }
-        
-    	String payload = new Gson().toJson(localVarPostBody);
-        logger.debug("LOG_REQUEST_BEFORE_MLE: " + payload); 
+
+        X509Certificate mleCertificate = getRequestMleCertificate(merchantConfig);
+        // Handling special case : MLE Certificate is not currently available for HTTP Signature
+        if (mleCertificate == null && GlobalLabelParameters.HTTP.equalsIgnoreCase(merchantConfig.getAuthenticationType())) {
+            logger.debug("The certificate to use for MLE for requests is not provided in the merchant configuration. Please ensure that the certificate path is provided.");
+            logger.warn("Currently, MLE for requests using HTTP Signature as authentication is not supported by Cybersource. By default, the SDK will fall back to non-encrypted requests.");
+            return originalPayload;
+        }
+        if (serializedPayload == null) {
+            throw new MLEException("Serialized request payload is required for MLE encryption");
+        }
+
+        logger.debug("LOG_REQUEST_BEFORE_MLE: " + serializedPayload);
         Map<String, Object> customHeaders = new HashMap<>();
         customHeaders.put("iat", ZonedDateTime.now().toInstant().getEpochSecond());
-        String encryptedPayload = encryptAttributeWithAlgo(payload, mleCertificate, customHeaders);
-        JSONObject mleRequest= createJsonObject(encryptedPayload);
+        String encryptedPayload = encryptAttributeWithAlgo(serializedPayload, mleCertificate, customHeaders, contentType);
+        JSONObject mleRequest = createJsonObject(encryptedPayload);
         logger.debug("LOG_REQUEST_AFTER_MLE: " + new Gson().toJson(mleRequest));
         return mleRequest;
     }
@@ -208,7 +215,7 @@ public class MLEUtility {
     	}
     }
 
-    private static String encryptAttributeWithAlgo(String content, X509Certificate x509Certificate, Map<String, Object> customHeaders) throws MLEException {
+    private static String encryptAttributeWithAlgo(String content, X509Certificate x509Certificate, Map<String, Object> customHeaders, String contentType) throws MLEException {
         String serialNumber = null;
         try {
             serialNumber = Utility.extractSerialNumber(x509Certificate);
@@ -218,7 +225,7 @@ public class MLEUtility {
         
         JWEObject jweObject = new JWEObject(
                 new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A256GCM)
-                        .contentType("JWT")
+                        .contentType(contentType)
                         .keyID(serialNumber)
                         .customParams(customHeaders)
                         .build(),

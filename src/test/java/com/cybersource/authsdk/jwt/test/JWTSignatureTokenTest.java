@@ -2,6 +2,7 @@ package com.cybersource.authsdk.jwt.test;
 
 import java.util.Base64;
 import java.util.Properties;
+import java.security.KeyPairGenerator;
 
 import com.cybersource.authsdk.core.ConfigException;
 import org.junit.Assert;
@@ -352,6 +353,24 @@ public class JWTSignatureTokenTest {
 		Assert.assertNotNull("Missing 'request-method'", payload.get("request-method"));
 		Assert.assertNotNull("Missing 'v-c-merchant-id'", payload.get("v-c-merchant-id"));
 		Assert.assertNotNull("Missing 'v-c-jwt-version'", payload.get("v-c-jwt-version"));
+	}
+
+	@Test
+	public void testResponseMleTokenPayloadContainsOaep256Algorithm() throws Exception {
+		MerchantConfig responseMleConfig = createSharedSecretConfig();
+		responseMleConfig.setResponseMleKID("response-mle-kid");
+		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+		keyPairGenerator.initialize(2048);
+		responseMleConfig.setResponseMlePrivateKey(keyPairGenerator.generateKeyPair().getPrivate());
+
+		JwtSignatureToken token = new JwtSignatureToken(responseMleConfig, requestJsonData, "POST", requestTarget, true);
+		String result = token.getToken();
+
+		String payloadJson = new String(Base64.getUrlDecoder().decode(result.split("\\.")[1]));
+		JSONParser parser = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
+		JSONObject payload = (JSONObject) parser.parse(payloadJson);
+		Assert.assertEquals("response-mle-kid", payload.get("v-c-response-mle-kid"));
+		Assert.assertEquals("RSA-OAEP-256", payload.get("v-c-response-mle-algo"));
 	}
 
 	@Test
